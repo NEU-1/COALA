@@ -1,0 +1,72 @@
+.page {
+  display: flex;
+  width: 800px;
+  height: 1024px;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.coala {
+  color: #e9d5ff;
+  font-family: "SF Pro Rounded-Bold", Helvetica;
+  font-size: 64px;
+  font-weight: 700;
+}
+
+.text {
+  color: #000;
+  font-family: SF Pro Rounded;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  /* 166.667% */
+  letter-spacing: -0.12px;
+  align-self: stretch;
+}
+
+.input {
+  display: flex;
+  width: 400px;
+  height: 40px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 4px;
+  border: 1px solid #D9D9D9;
+}
+
+.input::placeholder {
+  color: #D9D9D9;
+font-family: SF Pro Rounded;
+font-size: 12px;
+font-style: normal;
+font-weight: 500;
+line-height: 20px; /* 166.667% */
+letter-spacing: -0.12px;
+flex: 1 0 0;
+}
+
+.check-Text {
+  color: #000;
+font-family: SF Pro Rounded;
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+}
+
+.button {
+  background-color: #e9d5ff;
+  border-radius: 7px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 50px;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 14px;
+}
