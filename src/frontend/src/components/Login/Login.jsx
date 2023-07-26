@@ -4,9 +4,9 @@ import "./Style.css";
 // import Check from "./Check"
 import { useNavigate } from "react-router-dom";
 
-export const Login = () => {
-  const onSubmitHandler = (event) => {
-    event.preventDefault();
+const Login = () => {
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
 
     console.log("inputId", inputId);
     console.log("inputPw", inputPw);
@@ -14,16 +14,16 @@ export const Login = () => {
 
   const [inputId, setInputId] = useState("");
   const [inputPw, setInputPw] = useState("");
-  const oninputIdHandler = (event) => {
+  const oninputIdHandler = (e) => {
     if (saveIdCheck) {
       localStorage.getItem(saveId);
       setInputId(saveId);
     } else {
-      setInputId(event.currentTarget.value);
+      setInputId(e.currentTarget.value);
     }
   };
-  const oninputPwHandler = (event) => {
-    setInputPw(event.currentTarget.value);
+  const oninputPwHandler = (e) => {
+    setInputPw(e.currentTarget.value);
   };
 
   const [loginFailCount, setLoginFailCount] = useState(0);
@@ -76,12 +76,12 @@ export const Login = () => {
       });
   };
 
-  useEffect(() => {
-    axios
-      .get("-로그인 데이터 가져올곳")
-      .then((res) => console.log(res))
-      .catch();
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("-로그인 데이터 가져올곳")
+  //     .then((res) => console.log(res))
+  //     .catch();
+  // }, []);
 
   const navigate = useNavigate();
   const navigateToHome = () => {
@@ -97,14 +97,14 @@ export const Login = () => {
   const saveId = "saveId";
   const [saveIdCheck, setSaveIDFlag] = useState(false);
 
-  const handleSaveIDFlag = (event) => {
-    setSaveIDFlag(event.target.checked);
-    if (event.target.checked) {
+  const handleSaveIDFlag = (e) => {
+    setSaveIDFlag(e.target.checked);
+    if (e.target.checked) {
       localStorage.setItem(saveId, inputId);
     } else {
       localStorage.setItem(saveId, "");
     }
-    console.log(event.target.checked, localStorage);
+    console.log(e.target.checked, localStorage);
   };
 
   return (
