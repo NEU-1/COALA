@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Style.css";
 // import Check from "./Check"
 import { useNavigate } from "react-router-dom";
+import CCheckBox from "../SignUp/components/CCheckBox"
 
 const Login = () => {
   const onSubmitHandler = (e) => {
@@ -88,7 +89,7 @@ const Login = () => {
     navigate("/");
   };
   const navigateToSignUp = () => {
-    navigate("/signup");
+    navigate("/sign-up");
   };
   const navigateToFindPw = () => {
     navigate("/findpw");
@@ -113,29 +114,28 @@ const Login = () => {
         <label className="coala" onClick={navigateToHome}>
           COALA
         </label>
-        <label className="text">아이디</label>
-        <input
-          type="id"
-          className="input"
-          value={inputId}
-          onChange={oninputIdHandler}
-          placeholder="아이디"
-        />
-        <label className="text">비밀번호</label>
-        <input
-          type="password"
-          className="input"
-          value={inputPw}
-          onChange={oninputPwHandler}
-          placeholder="비밀번호"
-        />
-        <div>
+        <div className="idBox">
+          <label className="text">아이디</label>
           <input
-            type="checkbox"
-            checked={saveIdCheck}
-            onChange={handleSaveIDFlag}
+            type="id"
+            className="input"
+            value={inputId}
+            onChange={oninputIdHandler}
+            placeholder="아이디"
           />
-          <label className="check-Text">아이디 저장</label>
+        </div>
+        <div className="pwBox">
+          <label className="text">비밀번호</label>
+          <input
+            type="password"
+            className="input"
+            value={inputPw}
+            onChange={oninputPwHandler}
+            placeholder="비밀번호"
+          />
+        </div>
+        <div>
+          <CCheckBox text={"아이디 저장"} checked={saveIdCheck} onChange={handleSaveIDFlag}/>
         </div>
         {errorMessage && <div className="error">{errorMessage}</div>}
         {/* <div className="error">Error Message</div> */}
@@ -146,7 +146,7 @@ const Login = () => {
           <label className="grey" onClick={navigateToSignUp}>
             회원가입
           </label>
-          <label className="grey">|</label>
+          <label className="ho">|</label>
           <label className="grey" onClick={navigateToFindPw}>
             비밀번호 찾기
           </label>

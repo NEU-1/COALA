@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import CertificationTimer from "./CertificationTimer";
 
 const FindPw = () => {
   const onSubmitHandler = (e) => {
@@ -21,6 +22,8 @@ const FindPw = () => {
   const [studentId, setStudentId] = useState("");
   const [sendCertification, setSendCertification] = useState(false);
   const [certification, setCertification] = useState("");
+  const [turnOnTimer, setTurnOnTimer] = useState(false);
+  const [isAvalable, setIsAvalable] = useState(false)
 
   const onEmailHandler = (e) => {
     setEmail(e.currentTarget.value);
@@ -39,6 +42,7 @@ const FindPw = () => {
 
   const onCallCertification = async (e) => {
     e.preventDefault();
+    setTurnOnTimer(true);
     if (email) {
       try {
         await axios.post("/api/send-email", { email });
@@ -90,27 +94,29 @@ const FindPw = () => {
           onChange={onNameHandler}
           placeholder="이름"
         />
-        <input
-          type="id"
-          className="input"
-          value={studentId}
-          onChange={onStudentIdHandler}
-          placeholder="학번"
-        />
-        <button className="button" type="button" onClick={onCallCertification}>
-          인증번호 발송
-        </button>
+        <div className="inputWithBtn">
+          <input
+            type="id"
+            value={studentId}
+            onChange={onStudentIdHandler}
+            placeholder="학번"
+          />
+          <button type="button" onClick={onCallCertification}>
+            인증번호 발송
+          </button>
+        </div>
         {sendCertification && (
-          <div>
-            <input
-              type="id"
-              className="input"
-              value={certification}
-              onChange={oncertificationHandler}
-              placeholder="인증번호"
-            />
+          <div className="inputWithBtn">
+            <div className="certificationInput">
+              <input
+                type="id"
+                value={certification}
+                onChange={oncertificationHandler}
+                placeholder="인증번호"
+              />
+              {turnOnTimer && <CertificationTimer setTurnOnTimer={setTurnOnTimer}/>}
+            </div>
             <button
-              className="button"
               type="button"
               onClick={onCheckCertification}
             >
