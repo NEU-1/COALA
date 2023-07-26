@@ -1,9 +1,13 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+// 로그인
 import Home from '../components/Home/Home';
 import Login from '../components/Login/Login';
+
+// 비밀번호 변경
 import FindPw from '../components/Login/FindPw';
+import ChangePw from '../components/Login/ChangePw';
 
 // 회원가입
 import SignUpContainer from '../components/SignUp/containers/SignUpContainer';
@@ -20,6 +24,7 @@ const RootNavigation = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/findpw" element={<FindPw />} />
+        <Route path="/changepw" element={<ChangePw />} />
         <Route path="/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
 

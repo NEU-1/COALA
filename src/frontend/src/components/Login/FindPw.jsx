@@ -23,7 +23,6 @@ const FindPw = () => {
   const [sendCertification, setSendCertification] = useState(false);
   const [certification, setCertification] = useState("");
   const [turnOnTimer, setTurnOnTimer] = useState(false);
-  const [isAvalable, setIsAvalable] = useState(false)
 
   const onEmailHandler = (e) => {
     setEmail(e.currentTarget.value);
