@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import "./Style.css";
-// import Check from "./Check"
 import { useNavigate } from "react-router-dom";
-import CCheckBox from "../SignUp/components/CCheckBox"
+import CCheckBox from "../SignUp/components/CCheckBox";
 
 const Login = () => {
   const onSubmitHandler = (e) => {
@@ -15,6 +14,22 @@ const Login = () => {
 
   const [inputId, setInputId] = useState("");
   const [inputPw, setInputPw] = useState("");
+  const [loginFailCount, setLoginFailCount] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [saveIdCheck, setSaveIDFlag] = useState(false);
+  const saveId = "saveId";
+
+  const navigate = useNavigate();
+  const navigateToHome = () => {
+    navigate("/");
+  };
+  const navigateToSignUp = () => {
+    navigate("/sign-up");
+  };
+  const navigateToFindPw = () => {
+    navigate("/findpw");
+  };
+
   const oninputIdHandler = (e) => {
     if (saveIdCheck) {
       localStorage.getItem(saveId);
@@ -27,15 +42,11 @@ const Login = () => {
     setInputPw(e.currentTarget.value);
   };
 
-  const [loginFailCount, setLoginFailCount] = useState(0);
-  const [errorMessage, setErrorMessage] = useState("")
-
   const onClickLogin = () => {
     if (loginFailCount >= 5) {
       setErrorMessage(
-
         "가능한 횟수를 초과하였습니다. 비밀번호를 재 설정 해주세요"
-        )
+      );
       return;
     }
     console.log("click login");
@@ -72,31 +83,9 @@ const Login = () => {
         }
       })
       .catch((err) => {
-        // 네트워크 오류 등 기타 오류 발생: 실패 횟수를 1 증가
         console.error(err);
       });
   };
-
-  // useEffect(() => {
-  //   axios
-  //     .get("-로그인 데이터 가져올곳")
-  //     .then((res) => console.log(res))
-  //     .catch();
-  // }, []);
-
-  const navigate = useNavigate();
-  const navigateToHome = () => {
-    navigate("/");
-  };
-  const navigateToSignUp = () => {
-    navigate("/sign-up");
-  };
-  const navigateToFindPw = () => {
-    navigate("/findpw");
-  };
-
-  const saveId = "saveId";
-  const [saveIdCheck, setSaveIDFlag] = useState(false);
 
   const handleSaveIDFlag = (e) => {
     setSaveIDFlag(e.target.checked);
@@ -135,10 +124,13 @@ const Login = () => {
           />
         </div>
         <div>
-          <CCheckBox text={"아이디 저장"} checked={saveIdCheck} onChange={handleSaveIDFlag}/>
+          <CCheckBox
+            text={"아이디 저장"}
+            checked={saveIdCheck}
+            onChange={handleSaveIDFlag}
+          />
         </div>
         {errorMessage && <div className="error">{errorMessage}</div>}
-        {/* <div className="error">Error Message</div> */}
         <button className="button" type="button" onClick={onClickLogin}>
           로그인
         </button>
