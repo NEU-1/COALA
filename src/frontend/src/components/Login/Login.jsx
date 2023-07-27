@@ -24,7 +24,7 @@ const Login = () => {
     navigate("/");
   };
   const navigateToSignUp = () => {
-    navigate("/sign-up");
+    navigate("/sign-up/agreement");
   };
   const navigateToFindPw = () => {
     navigate("/findpw");

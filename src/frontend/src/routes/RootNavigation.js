@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import Layout from '../pages/Layout';
+
 // 로그인
 import Home from '../components/Home/Home';
 import Login from '../components/Login/Login';
@@ -21,18 +23,20 @@ const RootNavigation = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route element={<Layout />}>
+          <Route index path="/" element={<Home />} />
+          <Route path="/my-page" element={<MyPageContainer />} />
+          <Route
+            path="/my-page/modify-userinfo"
+            element={<ModifyUserinfoContainer />}
+          />
+        </Route>
+
         <Route path="/login" element={<Login />} />
         <Route path="/findpw" element={<FindPw />} />
         <Route path="/changepw" element={<ChangePw />} />
-        <Route path="/agreement" element={<AgreementContainer />} />
+        <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
-
-        <Route path="/my-page" element={<MyPageContainer />} />
-        <Route
-          path="/my-page/modify-userinfo"
-          element={<ModifyUserinfoContainer />}
-        />
       </Routes>
     </BrowserRouter>
   );
