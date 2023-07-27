@@ -30,16 +30,25 @@ const Login = () => {
     navigate("/findpw");
   };
 
-  const oninputIdHandler = (e) => {
-    if (saveIdCheck) {
-      localStorage.getItem(saveId);
-      setInputId(saveId);
-    } else {
-      setInputId(e.currentTarget.value);
+  const oninputIdHandler = (e) => setInputId(e.currentTarget.value);
+  const oninputPwHandler = (e) => setInputPw(e.currentTarget.value);
+
+  const handleLoginFailure = (res) => {
+    setLoginFailCount(loginFailCount + 1);
+    setErrorMessage(
+      `아이디 또는 비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`
+    );
+    if (res.data.userId === null) {
+      setErrorMessage("존재하지 않는 계정입니다.");
+    } else if (res.data.msg === null) {
+      setErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
   };
-  const oninputPwHandler = (e) => {
-    setInputPw(e.currentTarget.value);
+
+  const handleLoginSuccess = () => {
+    setLoginFailCount(0);
+    sessionStorage.setItem("user_id", inputId);
+    document.location.href = "/";
   };
 
   const onClickLogin = () => {
@@ -49,9 +58,7 @@ const Login = () => {
       );
       return;
     }
-    console.log("click login");
-    console.log("ID: ", inputId);
-    console.log("PW: ", inputPw);
+
     axios
       .post("-로그인처리폼", null, {
         params: {
@@ -60,26 +67,10 @@ const Login = () => {
         },
       })
       .then((res) => {
-        console.log(res);
-        console.log("res.data.userId :: ", res.data.userId);
-        console.log("res.data.msg :: ", res.data.msg);
-        if (loginFailCount < 5) {
-          if (res.data.userId == null || res.data.msg === null) {
-            setLoginFailCount(loginFailCount + 1);
-            setErrorMessage(
-              `아이디 또는 비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`
-            );
-            if (res.data.userId === null) {
-              setErrorMessage("존재하지 않는 계정입니다.");
-            } else if (res.data.msg === null) {
-              setErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
-            }
-          } else if (res.data.userId === inputId) {
-            // 로그인 성공: 실패 횟수를 0으로 초기화
-            setLoginFailCount(0);
-            sessionStorage.setItem("user_id", inputId);
-            document.location.href = "/";
-          }
+        if (res.data.userId == null || res.data.msg === null) {
+          handleLoginFailure(res);
+        } else if (res.data.userId === inputId) {
+          handleLoginSuccess();
         }
       })
       .catch((err) => {
@@ -91,10 +82,10 @@ const Login = () => {
     setSaveIDFlag(e.target.checked);
     if (e.target.checked) {
       localStorage.setItem(saveId, inputId);
+      console.log(inputId)
     } else {
       localStorage.setItem(saveId, "");
     }
-    console.log(e.target.checked, localStorage);
   };
 
   return (
