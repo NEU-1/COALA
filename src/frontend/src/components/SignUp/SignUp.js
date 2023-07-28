@@ -13,8 +13,8 @@ const SignUp = ({
   onChangeName,
   onChangeNickName,
   onChangeStudentNo,
-  onChangeCampus,
-  onChangeClass,
+  onChangeDepart,
+  onChangeOrdinal,
   onChangePhoneNumber,
   onClickSignUpBtn,
   onClickBackBtn,
@@ -69,7 +69,7 @@ const SignUp = ({
             onChange={onChangeStudentNo}
           />
           <SSelectBox>
-            <SSelect defaultValue={'placeholder'} onChange={onChangeCampus}>
+            <SSelect defaultValue={'placeholder'} onChange={onChangeDepart}>
               <option
                 className="placeholder"
                 value={'placeholder'}
@@ -84,7 +84,7 @@ const SignUp = ({
               <option value={'광주'}>광주</option>
               <option value={'부울경'}>부울경</option>
             </SSelect>
-            <SSelect defaultValue={'placeholder'} onChange={onChangeClass}>
+            <SSelect defaultValue={'placeholder'} onChange={onChangeOrdinal}>
               <option
                 className="placeholder"
                 value={'placeholder'}

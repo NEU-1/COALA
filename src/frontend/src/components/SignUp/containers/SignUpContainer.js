@@ -10,8 +10,8 @@ const SignUpContainer = () => {
     name: '',
     nickName: '',
     studentNo: '',
-    campus: '',
-    class: '',
+    depart: '',
+    ordinal: '',
     phoneNumber: '',
   });
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -37,11 +37,11 @@ const SignUpContainer = () => {
   const onChangeStudentNo = (e) => {
     setForm({ ...form, studentNo: e.target.value });
   };
-  const onChangeCampus = (e) => {
-    setForm({ ...form, campus: e.target.value });
+  const onChangeDepart = (e) => {
+    setForm({ ...form, depart: e.target.value });
   };
-  const onChangeClass = (e) => {
-    setForm({ ...form, class: e.target.value });
+  const onChangeOrdinal = (e) => {
+    setForm({ ...form, ordinal: e.target.value });
   };
   const onChangePhoneNumber = (e) => {
     setForm({ ...form, phoneNumber: e.target.value });
@@ -61,8 +61,8 @@ const SignUpContainer = () => {
       form.name &&
       form.nickName &&
       form.studentNo &&
-      form.campus &&
-      form.class &&
+      form.depart &&
+      form.ordinal &&
       form.phoneNumber &&
       isMatch
     ) {
@@ -104,8 +104,8 @@ const SignUpContainer = () => {
       onChangeName={onChangeName}
       onChangeNickName={onChangeNickName}
       onChangeStudentNo={onChangeStudentNo}
-      onChangeCampus={onChangeCampus}
-      onChangeClass={onChangeClass}
+      onChangeDepart={onChangeDepart}
+      onChangeOrdinal={onChangeOrdinal}
       onChangePhoneNumber={onChangePhoneNumber}
       onClickSignUpBtn={onClickSignUpBtn}
       onClickBackBtn={onClickBackBtn}
