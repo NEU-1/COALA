@@ -24,8 +24,8 @@ const ChatList = () => {
     created_at : timestamp()
   }];
 
-  let {data} = useReadRoom();
-  
+  // let {data} = useReadRoom();
+  let data;
   let rooms = data ? data.rooms : [];
   Lists = [...Lists, ...rooms]
   
