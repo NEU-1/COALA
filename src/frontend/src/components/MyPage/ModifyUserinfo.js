@@ -17,7 +17,7 @@ const ModifyUserinfo = ({
   return (
     <SLayout>
       <SContainer>
-        <STitle>coala</STitle>
+        <STitle>회원정보 수정</STitle>
         <SContentsContainer>
           <SLabel>이메일</SLabel>
           <SInput
@@ -98,6 +98,7 @@ const SLayout = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 170px;
 `;
 
 const SContainer = styled.div`
@@ -111,9 +112,8 @@ const SContainer = styled.div`
 `;
 
 const STitle = styled.div`
-  margin-top: 100px;
-  color: ${colors.primary};
-  font-size: 64px;
+  margin-top: 20px;
+  font-size: 28px;
   font-weight: 700;
   line-height: normal;
   text-transform: uppercase;
