@@ -15,8 +15,8 @@ const receiveData = withCors(async (
   let data : any;
 
   if (req.method === 'GET'){
-    data = await readRoom();
-    res.status(200).json({ rooms: data })
+    data = await readRoom({user_id : 1});
+    res.status(200).json({ rooms: data });
     return
   }
   

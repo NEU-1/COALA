@@ -6,13 +6,14 @@ import {
 } from '@/db/query/crud'
 
 import {
-  buildSchema
+  buildSchema, buildConditionQuery
 } from '@/lib/queryBuilder'
 type dataForm = Partial<User>;
 
-const Read = async () => {
+const Read = async (target : object) => {
   try{
-    const result = await readQuery('user', {});
+    const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
+    const result = await readQuery('user', {conditionQuery, values});
     return result;
   }catch(error){
     console.log(error)

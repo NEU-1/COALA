@@ -11,7 +11,7 @@ const receiveData = async (
   let data : any;
 
   if (req.method === 'GET'){
-    data = await userRead();
+    data = await userRead([]);
   }
   
   if (req.method === 'POST'){

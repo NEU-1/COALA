@@ -3,6 +3,25 @@ type ConferenceCategoryID = number;
 type ConferenceID = number;
 type ConferenceHistoryID = number;
 
+interface room {
+    id :  Number,
+    user_id : Number, 
+    pr_id : Number, 
+    pp_id : Number, 
+    name : string, 
+    created_at : string,
+}
+
+interface member {
+    id :  Number,
+    user_id : Number, 
+    pr_id : Number, 
+    pp_id : Number, 
+    name : string, 
+    created_at : string,
+}
+
+
 interface User {
     id?: UserID;
     department: string;
