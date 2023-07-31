@@ -3,12 +3,11 @@ import api from '../base'
 const fetchRoom = {
   
   create : async ({roomName, user_id}) =>{
-      const name = roomName
       return await api({
         method : 'POST',
         url : `/api/receiveDB/chat_room`,
         data:{
-          name,
+          name : roomName,
           user_id
         }
       })
@@ -43,13 +42,14 @@ const fetchRoom = {
     })
   },
 
-  join : async({roomName}) =>{
+  join : async({roomName, email}) =>{
     
     return await api({
       method : 'POST',
       url : `/api/receiveDB/room_member`,
       data:{
-        roomName,
+        name : roomName,
+        email
         // 유저 정보 넣어야함...
       }
     })

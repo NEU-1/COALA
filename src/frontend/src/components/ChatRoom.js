@@ -75,7 +75,10 @@ const ChatRoom = () => {
       <h1>Entering chat room: {roomName}</h1>
       <h2>Chat app - socket state: {socket_state}</h2>
       <h3>Enter a username</h3>
-      <input value={username} onChange={(event) => setUsername(event.target.value)} />
+      <input 
+      value={username}
+      placeholder="enter your name"
+      onChange={(event) => setUsername(event.target.value)} />
 
       <br />
       <br />
@@ -107,9 +110,13 @@ export default ChatRoom;
 
 
 
-const joinRoom = (roomName) =>{
-  socket.emit('joinRoom', {roomName}, () => {
-    console.log(`join room[${roomName}]  successfully`);
-    fetchRoom.join({roomName});
-  })
+const joinRoom = async (roomName) =>{
+  try {
+    await fetchRoom.join({roomName, email : 'tncks097@naver.com'});
+    socket.emit('joinRoom', {roomName}, () => {
+      console.log(`join room[${roomName}]  successfully`);
+    })
+  }catch(err){
+    console.error(err);
+  }
 }
