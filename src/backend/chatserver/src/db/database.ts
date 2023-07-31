@@ -19,7 +19,7 @@ const pool = mysql.createPool({
 })
 
 const dbQuery = function(query:string, input:any) {
-  return new Promise((resolve, reject) => {
+  return new Promise<any>((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err) {
         return reject(err);
