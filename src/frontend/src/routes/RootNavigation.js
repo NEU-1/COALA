@@ -19,6 +19,9 @@ import AgreementContainer from '../components/SignUp/containers/AgreementContain
 import MyPageContainer from '../components/MyPage/containers/MyPageContainer';
 import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUserinfoContainer';
 
+// 제공자 페이지
+import SellListBoard from '../components/SellBoard/SellListBoard';
+
 const RootNavigation = () => {
   return (
     <BrowserRouter>
@@ -37,6 +40,8 @@ const RootNavigation = () => {
         <Route path="/changepw" element={<ChangePw />} />
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
+        <Route path="/selllistboard" element={<SellListBoard />} />
+
       </Routes>
     </BrowserRouter>
   );

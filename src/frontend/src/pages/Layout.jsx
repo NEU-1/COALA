@@ -17,8 +17,6 @@ const SLayout = styled.div`
     align-items:center;
     justify-content: center;
     flex-direction: column;
-    width: 100%;
-    margin: 0 auto;
 `
 
 export default Layout
