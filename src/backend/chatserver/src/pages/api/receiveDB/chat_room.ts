@@ -1,6 +1,7 @@
 import { 
   Create as createRoom,
-  Read as readRoom
+  Read as readRoom,
+  Search as searchRoom
 } from '@/models/chat/rooms'
 
 import withCors from '../cors'
@@ -15,7 +16,8 @@ const receiveData = withCors(async (
   let data : any;
 
   if (req.method === 'GET'){
-    data = await readRoom({user_id : 1});
+    console.log("HELLO_WORLD")
+    data = await searchRoom({member_id : 1});
     res.status(200).json({ rooms: data });
     return
   }
