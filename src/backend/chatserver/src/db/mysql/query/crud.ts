@@ -1,4 +1,4 @@
-import dbQuery from '@/db/database';
+import dbQuery from '@/db/mysql/database';
 // const dbQuery = function (query : string, input : any[]) 
 
 const createQuery = async (
@@ -26,7 +26,7 @@ const readQuery = async (table : string, target : any,
     const query = `SELECT * FROM ${table} JOIN ${joinTable} ON ?? = ?? WHERE ${conditionQuery}`;
 
     if (joinCondition && joinTable) {
-      values[0] = `${table}.${values[0]}`
+      values[0] = `${joinTable}.${values[0]}`
       const parameters = [...joinCondition, ...values];
       console.log(parameters)
       result = await dbQuery(query, parameters);
