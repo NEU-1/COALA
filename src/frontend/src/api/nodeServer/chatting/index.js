@@ -2,13 +2,12 @@ import api from '../base'
 
 const fetchRoom = {
   
-  create : async ({roomName, user_id}) =>{
+  create : async ({roomName}) =>{
       return await api({
         method : 'POST',
         url : `/api/receiveDB/chat_room`,
         data:{
           name : roomName,
-          user_id
         }
       })
       .catch(error =>{
@@ -65,6 +64,7 @@ const fetchRoom = {
       }
     })
   },
+  
   execute : async() =>{
     return await api({
       method : 'DELETE',

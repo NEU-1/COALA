@@ -4,30 +4,37 @@ type ConferenceID = number;
 type ConferenceHistoryID = number;
 
 interface room {
-    id :  Number,
-    user_id : Number, 
-    pr_id : Number, 
-    pp_id : Number, 
+    id :  BigInt,
+    member_id : BigInt, 
+    pr_id : BigInt, 
+    pp_id : BigInt, 
     name : string, 
     created_at : string,
 }
 
 interface member {
-    id :  Number,
-    user_id : Number, 
-    pr_id : Number, 
-    pp_id : Number, 
+    id :  BigInt,
+    member_id : BigInt, 
+    pr_id : BigInt, 
+    pp_id : BigInt, 
     name : string, 
     created_at : string,
 }
 
+interface chat {
+    id : BigInt,
+    room_id : BigInt,
+    member_id : BigInt,
+    text_content : Text,
+    file_path : Array[string]
+}
 
 interface User {
     id?: UserID;
     department: string;
     position: string;
     name: string;
-    user_id: string;
+    member_id: string;
     password: string;
 }
 
@@ -51,13 +58,13 @@ interface Conference {
 interface UserConference {
     id: number;
     conference_id: ConferenceID;
-    user_id: UserID;
+    member_id: UserID;
 }
 
 interface ConferenceHistory {
     id?: ConferenceHistoryID;
     conference_id: ConferenceID;
-    user_id: UserID;
+    member_id: UserID;
     action: -1 | 0 | 1;
     inserted_time: Date;
 }

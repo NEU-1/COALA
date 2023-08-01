@@ -3,7 +3,7 @@ import {
   readQuery,
   updateQuery,
   deleteQuery
-} from '@/db/query/crud'
+} from '@/db/mysql/query/crud'
 
 import {
   buildSchema, buildConditionQuery
@@ -13,7 +13,7 @@ type dataForm = Partial<User>;
 const Read = async (target : object) => {
   try{
     const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
-    const result = await readQuery('user', {conditionQuery, values});
+    const result = await readQuery('member', {conditionQuery, values});
     return result;
   }catch(error){
     console.log(error)

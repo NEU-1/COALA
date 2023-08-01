@@ -3,7 +3,7 @@ import {
   readQuery,
   updateQuery,
   deleteQuery
-} from '@/db/query/crud'
+} from '@/db/mysql/query/crud'
 
 import {
   buildSchema
