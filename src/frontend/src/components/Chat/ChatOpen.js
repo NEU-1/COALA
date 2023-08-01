@@ -2,17 +2,18 @@ import React from 'react';
 import { css, keyframes, styled } from 'styled-components';
 import { images } from '../../assets/images';
 import { colors } from '../../assets/colors';
-import ChatListContainer from './containers/ChatListContainer';
 
 const ChatOpen = ({ isChatOpen, onClickChatBtn }) => {
   return (
     <>
-      <SLayout isChatOpen={isChatOpen} onClick={onClickChatBtn}>
-        <img src={`${images.message}`} alt="" />
-      </SLayout>
-      <SModalLayout isChatOpen={isChatOpen}>
-        <ChatListContainer onClickChatBtn={onClickChatBtn} />
-      </SModalLayout>
+      {!isChatOpen && (
+        <SLayout isChatOpen={isChatOpen} onClick={onClickChatBtn}>
+          <img src={`${images.message}`} alt="" />
+        </SLayout>
+      )}
+      {isChatOpen && (
+        <SModalLayout isChatOpen={isChatOpen} src="/chat/chat-list" />
+      )}
     </>
   );
 };
@@ -60,16 +61,16 @@ const modalFadeOut = keyframes`
 `;
 
 const BtnAnime = (visible) => css`
-  visibility: ${visible ? 'visible' : 'hidden'};
+  visibility: ${visible ? 'hidden' : 'visible'};
   z-index: 15;
   animation: ${visible ? fadeIn : fadeOut} 0.15s ease-out;
   transition: visibility 0.15s ease-out;
 `;
 
 const ModalAnime = (visible) => css`
-  visibility: ${visible ? 'hidden' : 'visible'};
+  visibility: ${visible ? 'visible' : 'hidden'};
   z-index: 15;
-  animation: ${visible ? modalFadeOut : modalFadeIn} 0.3s ease-out;
+  animation: ${visible ? modalFadeIn : modalFadeOut} 0.3s ease-out;
   transition: visibility 0.3s ease-out;
 `;
 
@@ -92,9 +93,15 @@ const SLayout = styled.button`
   }
 `;
 
-const SModalLayout = styled.div`
+const SModalLayout = styled.iframe`
   ${(props) => ModalAnime(props.isChatOpen)}
-  position:fixed;
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  height: 600px;
+  box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  position: fixed;
   right: 30px;
   bottom: 30px;
 `;

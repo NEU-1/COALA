@@ -3,6 +3,6 @@ export const colors = {
   deepPrimary: '#A255F7',
   middlePrimary: '#BD84FC',
   chat: {
-    background: '#F0F0F0',
+    background: 'white',
   },
 };

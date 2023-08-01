@@ -9,11 +9,15 @@ const ChatList = ({ onClickChatBtn, list }) => {
     <SLayout>
       <SChatHeader>
         <SMyProfile>
-          <img src={`${images.default_profile}`} alt="" />
+          <img src={`${images.chatModal.default_profile}`} alt="" />
           <div>본인</div>
         </SMyProfile>
         <button onClick={onClickChatBtn}>
-          <img src={`${images.arrow_down}`} className="arrow-down" alt="" />
+          <img
+            src={`${images.chatModal.arrow_down}`}
+            className="arrow-down"
+            alt=""
+          />
         </button>
       </SChatHeader>
       <SChatList>
@@ -31,7 +35,6 @@ const SLayout = styled.div`
   width: 350px;
   height: 600px;
   background-color: ${colors.chat.background};
-  box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.35);
   border-radius: 10px;
 `;
 
@@ -41,7 +44,7 @@ const SChatHeader = styled.div`
   padding: 20px;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #cdcdcd;
+  border-bottom: 1px solid ${colors.primary};
 
   .arrow-down {
     width: 25px;

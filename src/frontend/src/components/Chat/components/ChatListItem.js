@@ -8,7 +8,11 @@ const ChatListItem = ({ item }) => {
   return (
     <SLayout to={`/chat/${item.name}`}>
       <SStart>
-        <img src={`${images.default_profile}`} className="profile" alt="" />
+        <img
+          src={`${images.chatModal.default_profile}`}
+          className="profile"
+          alt=""
+        />
         <SPartnerInfo>
           <div className="partner">{item.name}</div>
           <div className="cur-chat">가장 최근 채팅</div>

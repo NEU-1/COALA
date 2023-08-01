@@ -3,10 +3,17 @@ import useReadRoom from '../../../hooks/chatting/useReadRoom';
 import { fetchRoom } from '../../../api/nodeServer/chatting/index';
 import timestamp from '../../../utils/timestamp';
 import ChatList from '../ChatList';
+import { useDispatch } from 'react-redux';
+import { closeChatModal } from '../../../store/chatModalSlice';
 
-const ChatListContainer = ({ onClickChatBtn }) => {
+const ChatListContainer = () => {
   const [roomName, setRoomName] = useState('');
   const [user_id, setUser] = useState('');
+
+  const dispatch = useDispatch();
+  const onClickChatBtn = () => {
+    dispatch(closeChatModal());
+  };
 
   let Lists = [
     {

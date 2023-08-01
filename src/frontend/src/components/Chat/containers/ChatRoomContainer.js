@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { io as socketIOClient } from 'socket.io-client';
 import socketIO from '../../../api/nodeServer/socketIO';
 import { fetchRoom } from '../../../api/nodeServer/chatting';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ChatRoom from '../ChatRoom';
 
 let socket;
@@ -14,6 +14,24 @@ const ChatRoomContainer = () => {
   const [message, setMessage] = useState('');
   const [username, setUsername] = useState('');
   const [allMessages, setAllMessages] = useState([]);
+
+  const onChangeMessage = (e) => {
+    setMessage(e.target.value);
+  };
+
+  // 채팅방 뒤로 가기
+  const navigate = useNavigate();
+  const onClickBackBtn = () => {
+    navigate(-1, { replace: true });
+  };
+
+  // 메세지 보내면 스크롤 밑으로 내리기
+  const scrollRef = useRef(null);
+  const scrollToBottom = () => {
+    scrollRef.current?.scrollIntoView({
+      behavior: 'smooth',
+    });
+  };
 
   useEffect(() => {
     socketInitializer();
@@ -53,9 +71,11 @@ const ChatRoomContainer = () => {
     });
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const onSubmitMessage = (e) => {
     if (!socket) {
+      return;
+    }
+    if (!message) {
       return;
     }
 
@@ -67,41 +87,23 @@ const ChatRoomContainer = () => {
       message,
     });
     setMessage('');
-  }
+  };
+
+  useEffect(() => {
+    // 현재는 양쪽 다 누구라도 채티을 치면 스크롤 밑으로 내려감
+    // 자신이 보낸 채팅에 한해서만 스크롤 내리게 해야할 듯
+    scrollToBottom();
+  }, [allMessages]);
 
   return (
-    <div>
-      <h1>Entering chat room: {roomName}</h1>
-      <h2>Chat app - socket state: {socket_state}</h2>
-      <h3>Enter a username</h3>
-      <input
-        value={username}
-        onChange={(event) => setUsername(event.target.value)}
-      />
-
-      <br />
-      <br />
-
-      <div>
-        {allMessages.map(({ username, message }, index) => (
-          <div key={index}>
-            {username}: {message}
-          </div>
-        ))}
-
-        <br />
-
-        <form onSubmit={handleSubmit}>
-          <input
-            name="message"
-            placeholder="enter your message"
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            autoComplete={'off'}
-          />
-        </form>
-      </div>
-    </div>
+    <ChatRoom
+      message={message}
+      onClickBackBtn={onClickBackBtn}
+      onChangeMessage={onChangeMessage}
+      onSubmitMessage={onSubmitMessage}
+      allMessages={allMessages}
+      scrollRef={scrollRef}
+    />
   );
 };
 

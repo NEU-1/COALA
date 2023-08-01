@@ -22,6 +22,7 @@ import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUseri
 // 채팅
 import ChatListContainer from '../components/Chat/containers/ChatListContainer';
 import ChatRoomContainer from '../components/Chat/containers/ChatRoomContainer';
+import ChatContainer from '../components/Chat/containers/ChatContainer';
 
 import NotFound from '../pages/NotFound';
 
@@ -44,8 +45,10 @@ const RootNavigation = () => {
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
 
-        <Route path="/chatList" element={<ChatListContainer />} />
-        <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
+        <Route path="/chat" element={<ChatContainer />}>
+          <Route index path="/chat/chat-list" element={<ChatListContainer />} />
+          <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
+        </Route>
 
         <Route path="*" element={<NotFound />} />
       </Routes>
