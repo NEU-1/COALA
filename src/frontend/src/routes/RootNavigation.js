@@ -22,6 +22,11 @@ import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUseri
 // 제공자 페이지
 import SellListBoard from '../components/SellBoard/SellListBoard';
 
+// 테크게시판
+import TechViewPage from '../components/Techboard/components/TechViewPage';
+import TechBoardWrite from '../components/Techboard/components/TechBoardWrite';
+import TechBoardList from '../components/Techboard/components/TechBoardList';
+
 const RootNavigation = () => {
   return (
     <BrowserRouter>
@@ -41,6 +46,11 @@ const RootNavigation = () => {
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
         <Route path="/selllistboard" element={<SellListBoard />} />
+        <Route path="/tech/:postId" element={<TechViewPage />} />
+        <Route path="/tech/write" element={<TechBoardWrite />} />
+        <Route path="/tech" element={<TechBoardList />} />
+    
+
 
       </Routes>
     </BrowserRouter>
