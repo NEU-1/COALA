@@ -1,73 +1,72 @@
-import React, { useEffect, useState } from "react";
-import {io as socketIOClient } from 'socket.io-client';
-import socketIO from '../api/nodeServer/socketIO';
-import { fetchRoom } from '../api/nodeServer/chatting';
+import React, { useEffect, useState } from 'react';
+import { io as socketIOClient } from 'socket.io-client';
+import socketIO from '../../../api/nodeServer/socketIO';
+import { fetchRoom } from '../../../api/nodeServer/chatting';
 import { useParams } from 'react-router-dom';
+import ChatRoom from '../ChatRoom';
 
 let socket;
-const name = 'chats'
+const name = 'chats';
 
-const ChatRoom = () => {
+const ChatRoomContainer = () => {
   const { roomName } = useParams();
   const [socket_state, setSocket_state] = useState('try connecting...');
-  const [message, setMessage] = useState("");
-  const [username, setUsername] = useState("");
+  const [message, setMessage] = useState('');
+  const [username, setUsername] = useState('');
   const [allMessages, setAllMessages] = useState([]);
 
-  
   useEffect(() => {
-      socketInitializer();
+    socketInitializer();
 
     return () => {
-      console.log('disconected')
-      if (socket){
+      console.log('disconected');
+      if (socket) {
         socket.disconnect();
-        fetchRoom.execute({roomName});
+        fetchRoom.execute({ roomName });
       }
     };
   }, []);
 
-
   async function socketInitializer() {
     socketIO.fetchEnter(`/api/socket?name=${name}`);
 
-    socket = socketIOClient("http://localhost:3030", {
+    socket = socketIOClient('http://localhost:3030', {
       path: `/${name}/socket.io`,
       withCredentials: true,
       extraHeaders: {
-        "my-custom-header": "testheader1"
-      }
+        'my-custom-header': 'testheader1',
+      },
     });
-    
+
     socket.on('connect', () => {
       console.log('connected successfully', socket?.id);
       setSocket_state('connected successfully 👍');
       joinRoom(roomName);
-
     });
-    
-    socket.on("connect_error", (err) => {
+
+    socket.on('connect_error', (err) => {
       console.warn(`connect_error due to ${err.message}`);
     });
 
-    socket.on("receive-message", (data) => {
+    socket.on('receive-message', (data) => {
       setAllMessages((pre) => [...pre, data]);
     });
-
   }
-  
+
   function handleSubmit(event) {
     event.preventDefault();
-    if (!socket) {return;}
+    if (!socket) {
+      return;
+    }
 
-    console.log("emitted");
-    console.log(username, message)
-    socket.emit("send-message", {
+    console.log('emitted');
+    console.log(username, message);
+    socket.emit('send-message', {
       roomName,
       username,
-      message
+      message,
     });
-    setMessage("");
+    setMessage('');
   }
 
   return (
@@ -75,7 +74,10 @@ const ChatRoom = () => {
       <h1>Entering chat room: {roomName}</h1>
       <h2>Chat app - socket state: {socket_state}</h2>
       <h3>Enter a username</h3>
-      <input value={username} onChange={(event) => setUsername(event.target.value)} />
+      <input
+        value={username}
+        onChange={(event) => setUsername(event.target.value)}
+      />
 
       <br />
       <br />
@@ -95,7 +97,7 @@ const ChatRoom = () => {
             placeholder="enter your message"
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            autoComplete={"off"}
+            autoComplete={'off'}
           />
         </form>
       </div>
@@ -103,13 +105,11 @@ const ChatRoom = () => {
   );
 };
 
-export default ChatRoom;
+export default ChatRoomContainer;
 
-
-
-const joinRoom = (roomName) =>{
-  socket.emit('joinRoom', {roomName}, () => {
+const joinRoom = (roomName) => {
+  socket.emit('joinRoom', { roomName }, () => {
     console.log(`join room[${roomName}]  successfully`);
-    fetchRoom.join({roomName});
-  })
-}
+    fetchRoom.join({ roomName });
+  });
+};

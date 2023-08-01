@@ -19,10 +19,11 @@ import AgreementContainer from '../components/SignUp/containers/AgreementContain
 import MyPageContainer from '../components/MyPage/containers/MyPageContainer';
 import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUserinfoContainer';
 
-
 // 채팅
-import ChatList from '../components/ChatList';
-import ChatRoom from '../components/ChatRoom';
+import ChatListContainer from '../components/Chat/containers/ChatListContainer';
+import ChatRoomContainer from '../components/Chat/containers/ChatRoomContainer';
+
+import NotFound from '../pages/NotFound';
 
 const RootNavigation = () => {
   return (
@@ -43,8 +44,10 @@ const RootNavigation = () => {
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
 
-        <Route path="/chatList" element={<ChatList />} />
-        <Route path="/chat/:roomName" element={<ChatRoom />} />
+        <Route path="/chatList" element={<ChatListContainer />} />
+        <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
