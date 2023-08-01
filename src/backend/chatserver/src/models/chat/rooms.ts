@@ -3,15 +3,15 @@ import {
   readQuery,
   updateQuery,
   deleteQuery
-} from '@/db/query/crud'
+} from '@/db/mysql/query/crud'
 
 import { buildConditionQuery } from '@/lib/queryBuilder'
 import timestamp from '@/lib/timestamp'
 
 type dataForm = {
 name : bigint,
-user_name : string, // 이후에 user_id 로 변경해야함
-user_id : bigint,
+user_name : string, // 이후에 member_id 로 변경해야함
+member_id : bigint,
 };
 
 const Create = async (inputData : any) =>{
@@ -38,8 +38,19 @@ const Read = async (target : object) => {
   }
 }
 
+const Search = async (target : object) => {
+  try{
+    const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
+    // const result = await readQuery('chat_room', {conditionQuery, values});
+    const result = await readQuery('chat_room', {conditionQuery, values}, 'room_member', ['chat_room.id', 'room_member.room_id']);
+    return result;
+  }catch(error){
+    console.log(error)
+  }
+}
+
 export { 
   Create,
   Read,
-  
+  Search,
 }

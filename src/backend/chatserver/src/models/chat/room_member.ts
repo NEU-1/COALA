@@ -2,11 +2,10 @@ import {
     createQuery,
     readQuery,
     deleteQuery
-  } from '@/db/query/crud'
+  } from '@/db/mysql/query/crud'
 import { Read as readUser } from '@/models/user'
 import { Read as readRoom } from '@/models/chat/rooms'
 import { buildSchema, buildConditionQuery } from '@/lib/queryBuilder'
-
 
 
 const Create = async (inputData : any) =>{
@@ -17,7 +16,7 @@ const Create = async (inputData : any) =>{
 
       const room_user = {
         'room_id' : room['id'],
-        'user_id' : usr['id']
+        'member_id' : usr['id']
       };
       console.log("룸정보", await readRoom({name}));
       const [roomUserRelations] = await Read(room_user);
@@ -33,6 +32,14 @@ const Create = async (inputData : any) =>{
 }
 
 const Read = async (target : object) =>{
+  /* 
+  제공 받는 정보는 
+        const room_user = {
+        'room_id' : room['id'],
+        'member_id' : usr['id']
+      };
+  이며 room_member에서 해당 방에 대한 참석 여부를 탐색
+  */
   try{
     const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
     const result = await readQuery('room_member', {conditionQuery, values});
@@ -50,7 +57,7 @@ const Delete = async (inputData : any) => {
 
     const room_user = {
       'room_id' : room['id'],
-      'user_id' : usr['id']
+      'member_id' : usr['id']
     };
 
     const { conditionQuery, values} = buildConditionQuery(room_user, ' AND ');
