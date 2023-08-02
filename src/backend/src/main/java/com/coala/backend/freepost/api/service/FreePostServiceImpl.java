@@ -4,7 +4,6 @@ import com.coala.backend.freepost.db.dto.request.FreePostRequestDto;
 import com.coala.backend.freepost.db.entity.FreePost;
 import com.coala.backend.freepost.db.repository.FreePostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

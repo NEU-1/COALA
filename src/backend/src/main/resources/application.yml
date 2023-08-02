@@ -44,7 +44,7 @@ spring:
       strategy: org.hibernate.cfg.ImprovedNamingStrategy
       physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     # ddl-auto 사용 여부 설정
-    generate-ddl: false
+    generate-ddl: true
     # SQL문 로그 출력
     properties:
       hibernate:
