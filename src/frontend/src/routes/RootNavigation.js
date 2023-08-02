@@ -39,6 +39,7 @@ const RootNavigation = () => {
             element={<ModifyUserinfoContainer />}            
           />
           <Route path="/tech/write" element={<TechBoardWrite />} />
+          <Route path="/tech" element={<TechBoardList />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
@@ -48,7 +49,7 @@ const RootNavigation = () => {
         <Route path="/sign-up" element={<SignUpContainer />} />
         <Route path="/selllistboard" element={<SellListBoard />} />
         <Route path="/tech/:postId" element={<TechViewPage />} />  
-        <Route path="/tech" element={<TechBoardList />} />
+        
     
 
 

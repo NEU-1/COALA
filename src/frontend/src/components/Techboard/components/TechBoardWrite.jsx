@@ -17,7 +17,7 @@ const SBtn = styled.div`
   background-color: ${(props) => (props.color ? props.color : '#d9d9d9')};
   color: white;
   cursor: pointer;
-`;
+`
 
 const Slayout = styled.div`
   margin-top: 170px;
@@ -91,7 +91,7 @@ function TechBoardWrite(props){
       };
     
       const saveBoard = async () => {
-        await axios.post(`//localhost:8080/board`, board).then((res) => {
+        await axios.post(`localhost:9999/api/tech/post/`, board).then((res) => {
           alert('등록되었습니다.');
           navigate('/tech');
         });
