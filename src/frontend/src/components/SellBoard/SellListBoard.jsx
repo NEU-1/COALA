@@ -3,7 +3,7 @@ import axios from "axios";
 import CCheckBox from "../SignUp/components/CCheckBox";
 import ImgMediaCard from "./components/Carditem";
 import styled from "styled-components";
-import Slider, { Range } from "rc-slider";
+import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useNavigate } from "react-router-dom";
 
@@ -32,7 +32,7 @@ const SellListBoard = () => {
   const [isLogin, setIsLogin] = useState(
     sessionStorage.getItem("user_id") !== null
   );
-  const [priceRange, setPriceRange] = useState([25000, 75000]); 
+  const [priceRange, setPriceRange] = useState([25000, 75000]);
 
   const onFilterHandler = () => {
     setFilter(!filter);
@@ -98,8 +98,12 @@ const SellListBoard = () => {
       alert("게시글 작성은 로그인 후 가능합니다.");
       navigate("/login");
     } else {
-      navigate("게시글 작성 창");
+      navigate("/sellpostcreate");
     }
+  };
+  const handleCardClick = (id) => {
+    console.log(id)
+    navigate(`글 상세보기 주소/${id}`);
   };
 
   useEffect(() => {
@@ -133,7 +137,7 @@ const SellListBoard = () => {
           <SOpenFilter>
             <SFilterHeader>
               <SPageText>상세검색</SPageText>
-              <button onClick={onFilterHandler}>확장</button>
+              <button onClick={onFilterHandler}>⌃</button>
             </SFilterHeader>
             <SFilterProductType>
               <SFilterProduct>
@@ -191,7 +195,7 @@ const SellListBoard = () => {
         ) : (
           <SNotOpenFilter>
             <SPageText>상세검색</SPageText>
-            <button onClick={onFilterHandler}>확장</button>
+            <button onClick={onFilterHandler}>⌄</button>
           </SNotOpenFilter>
         )}
       </div>
@@ -211,7 +215,12 @@ const SellListBoard = () => {
             data
               .filter((item) => (seeProductCheck ? true : !item.isRented))
               .map((item, index) => (
-                <ImgMediaCard key={index} item={item} onLike={handleLike} />
+                <ImgMediaCard
+                  key={index}
+                  item={item}
+                  onLike={handleLike}
+                  onClick={() => handleCardClick(item.id)}
+                />
               ))}
         </SCardList>
       </div>
@@ -289,9 +298,7 @@ const SPageText = styled.p`
   color: #000;
   font-family: SF Pro Rounded;
   font-size: 12px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
 `;
 
 const STextCost = styled.p`
@@ -299,7 +306,6 @@ const STextCost = styled.p`
   text-align: center;
   font-size: 12px;
   font-weight: 700;
-  line-height: normal;
 `;
 
 const SSelectProduct = styled.div`

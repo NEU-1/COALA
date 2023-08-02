@@ -21,6 +21,8 @@ import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUseri
 
 // 제공자 페이지
 import SellListBoard from '../components/SellBoard/SellListBoard';
+import SellPostCreate from '../components/SellBoard/SellPostCreate';
+import SellPostDetail from '../components/SellBoard/SellPostDetail';
 
 // 테크게시판
 import TechViewPage from '../components/Techboard/components/TechViewPage';
@@ -48,6 +50,8 @@ const RootNavigation = () => {
         <Route path="/sign-up" element={<SignUpContainer />} />
 
         <Route path="/selllistboard" element={<SellListBoard />} />
+        <Route path="/sellpostcreate" element={<SellPostCreate />} />
+        <Route path="/sellpostdetail" element={<SellPostDetail />} />
 
         <Route path="/tech/:postId" element={<TechViewPage />} />
         <Route path="/tech" element={<TechBoardList />} />
