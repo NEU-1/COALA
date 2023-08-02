@@ -1,6 +1,6 @@
 package com.coala.backend.freepost.db.entity;
 
-import com.coala.backend.db.entity.Member;
+import com.coala.backend.member.db.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

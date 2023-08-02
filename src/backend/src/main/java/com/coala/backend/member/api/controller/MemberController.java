@@ -20,7 +20,6 @@ public class MemberController {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-
     public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
