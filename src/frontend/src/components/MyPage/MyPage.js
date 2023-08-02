@@ -1,6 +1,6 @@
-import React from 'react';
-import { styled } from 'styled-components';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { styled } from "styled-components";
+import { Link } from "react-router-dom";
 
 const MyPage = () => {
   // 추후 수정 필요(outlet써야 할듯?)

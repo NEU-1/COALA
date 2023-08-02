@@ -19,7 +19,7 @@ const HeaderV2 = () => {
         <SNav>
           <li>제공자</li>
           <li>이용자</li>
-          <li>커뮤니티</li>
+          <li><Link to="/tech">커뮤니티</Link></li>
           <li>검수</li>
         </SNav>
       </SContainer>

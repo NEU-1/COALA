@@ -25,6 +25,13 @@ import ChatRoomContainer from '../components/Chat/containers/ChatRoomContainer';
 import ChatContainer from '../components/Chat/containers/ChatContainer';
 
 import NotFound from '../pages/NotFound';
+// 제공자 페이지
+import SellListBoard from '../components/SellBoard/SellListBoard';
+
+// 테크게시판
+import TechViewPage from '../components/Techboard/components/TechViewPage';
+import TechBoardWrite from '../components/Techboard/components/TechBoardWrite';
+import TechBoardList from '../components/Techboard/components/TechBoardList';
 
 const RootNavigation = () => {
   return (
@@ -51,6 +58,10 @@ const RootNavigation = () => {
         </Route>
 
         <Route path="*" element={<NotFound />} />
+        <Route path="/selllistboard" element={<SellListBoard />} />
+        <Route path="/tech/:postId" element={<TechViewPage />} />
+        <Route path="/tech/write" element={<TechBoardWrite />} />
+        <Route path="/tech" element={<TechBoardList />} />
       </Routes>
     </BrowserRouter>
   );
