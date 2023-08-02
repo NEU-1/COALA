@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/api/tech/")
 public class TechPostController {
     private final TechPostServiceImpl techPostService;
     private final TechPostRepository techPostRepository;
 
     // 게시글 저장
-    @PostMapping("api/tech/post/save")
+    @PostMapping("post/save")
     public TechPostResponseDto savePost(@RequestBody @Valid TechPostRequestDto requestDto) {
         techPostService.savePost(requestDto);
         return new TechPostResponseDto(
@@ -43,7 +43,7 @@ public class TechPostController {
     }
 
     // 게시글 수정
-    @PutMapping("api/tech/post/update/{id}")
+    @PutMapping("post/update/{id}")
     public TechPostResponseDto updateTechPost(@PathVariable("id") Long id,
                                               @RequestBody @Valid TechPostRequestDto requestDto) {
         techPostService.updateTechPost(id, requestDto);
@@ -64,7 +64,7 @@ public class TechPostController {
     }
 
     // 모든 게시물 불러오기, page 는 page 번호
-    @GetMapping("api/tech/post/{page}")
+    @GetMapping("post/{page}")
     public List<TechPostResponseDto> techPostList(@PathVariable("page") Integer page) {
         List<TechPostRequestDto> postAll = techPostService.getPostList(page);
 
@@ -83,7 +83,7 @@ public class TechPostController {
     }
     
     // 검색어 관련 게시물 불러오기
-    @GetMapping("api/tech/post/search/{keyword}/{page}")
+    @GetMapping("post/search/{keyword}/{page}")
     public List<TechPostResponseDto> findPosts(@PathVariable("keyword") String keyword,
                                                @PathVariable("page") Integer page) {
         List<TechPostRequestDto> findAll = techPostService.searchPosts(keyword, page);
@@ -103,7 +103,7 @@ public class TechPostController {
     }
 
     // 게시물 상세화면
-    @GetMapping("api/tech/post/detail/{id}")
+    @GetMapping("post/detail/{id}")
     public TechPostResponseDto detailPost(@PathVariable("id") Long id) {
         TechPostRequestDto techPostDto = techPostService.getPost(id);
 
@@ -121,6 +121,6 @@ public class TechPostController {
     }
     
     // 게시물 삭제
-    @DeleteMapping("api/tech/delete/{id}")
+    @DeleteMapping("delete/{id}")
     public void techPostDelete(@PathVariable("id") Long id) {techPostService.deletePost(id);}
 }

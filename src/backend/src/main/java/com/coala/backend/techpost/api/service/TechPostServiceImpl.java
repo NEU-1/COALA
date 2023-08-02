@@ -3,7 +3,7 @@ package com.coala.backend.techpost.api.service;
 import com.coala.backend.techpost.db.dto.request.TechPostRequestDto;
 import com.coala.backend.techpost.db.entity.TechPost;
 import com.coala.backend.techpost.db.repository.TechPostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,13 +20,9 @@ import java.util.stream.Collectors;
 * */
 
 @Service
+@RequiredArgsConstructor
 public class TechPostServiceImpl implements TechPostService{
     private final TechPostRepository techPostRepository;
-
-    @Autowired
-    public TechPostServiceImpl(TechPostRepository techPostRepository) {
-        this.techPostRepository = techPostRepository;
-    }
 
     @Transactional
     @Override

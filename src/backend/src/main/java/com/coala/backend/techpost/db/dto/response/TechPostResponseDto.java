@@ -1,6 +1,6 @@
 package com.coala.backend.techpost.db.dto.response;
 
-import com.coala.backend.db.entity.Member;
+import com.coala.backend.member.db.entity.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

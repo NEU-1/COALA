@@ -1,6 +1,6 @@
 package com.coala.backend.freepost.db.dto.request;
 
-import com.coala.backend.db.entity.Member;
+import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.freepost.db.entity.FreePost;
 import lombok.Builder;
 import lombok.Getter;

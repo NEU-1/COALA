@@ -3,6 +3,7 @@ package com.coala.backend.freepost.api.service;
 import com.coala.backend.freepost.db.dto.request.FreePostRequestDto;
 import com.coala.backend.freepost.db.entity.FreePost;
 import com.coala.backend.freepost.db.repository.FreePostRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +21,9 @@ import java.util.stream.Collectors;
 * */
 
 @Service
+@RequiredArgsConstructor
 public class FreePostServiceImpl implements FreePostService{
     private final FreePostRepository freePostRepository;
-
-    @Autowired
-    public FreePostServiceImpl(FreePostRepository freePostRepository) {
-        this.freePostRepository = freePostRepository;
-    }
 
     @Transactional
     @Override

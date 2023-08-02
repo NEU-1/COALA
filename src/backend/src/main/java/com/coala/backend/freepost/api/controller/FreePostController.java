@@ -1,13 +1,9 @@
 package com.coala.backend.freepost.api.controller;
 
-import com.coala.backend.freepost.api.service.FreeCommentServiceImpl;
 import com.coala.backend.freepost.api.service.FreePostServiceImpl;
-import com.coala.backend.freepost.db.dto.request.FreeCommentRequestDto;
 import com.coala.backend.freepost.db.dto.request.FreePostRequestDto;
-import com.coala.backend.freepost.db.dto.response.FreeCommentResponseDto;
 import com.coala.backend.freepost.db.dto.response.FreePostResponseDto;
 import com.coala.backend.freepost.db.entity.FreePost;
-import com.coala.backend.freepost.db.repository.FreeCommentRepository;
 import com.coala.backend.freepost.db.repository.FreePostRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +20,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/api/free/")
 public class FreePostController {
     private final FreePostServiceImpl freePostService;
     private final FreePostRepository freePostRepository;
-    private final FreeCommentServiceImpl freeCommentService;
-    private final FreeCommentRepository freeCommentRepository;
 
     // 게시글 저장
-    @PostMapping("api/free/post/save")
+    @PostMapping("post/save")
     public FreePostResponseDto savePost(@RequestBody @Valid FreePostRequestDto requestDto) {
         freePostService.savePost(requestDto);
 
@@ -50,7 +44,7 @@ public class FreePostController {
     }
 
     // 게시글 수정
-    @PutMapping("api/free/post/update/{id}")
+    @PutMapping("post/update/{id}")
     public FreePostResponseDto updateFreePost(@PathVariable("id") Long id,
                                               @RequestBody @Valid FreePostRequestDto requestDto) {
         freePostService.updateFreePost(id, requestDto);
@@ -71,7 +65,7 @@ public class FreePostController {
     }
 
     // 모든 게시물 불러오기, page 는 page 번호
-    @GetMapping("api/free/post/{page}")
+    @GetMapping("post/{page}")
     public List<FreePostResponseDto> freePostList(@PathVariable("page") Integer page) {
         List<FreePostRequestDto> postAll = freePostService.getPostList(page);
 
@@ -90,7 +84,7 @@ public class FreePostController {
     }
     
     // 검색어 관련 게시물 불러오기
-    @GetMapping("api/free/post/search/{keyword}/{page}")
+    @GetMapping("post/search/{keyword}/{page}")
     public List<FreePostResponseDto> findPosts(@PathVariable("keyword") String keyword,
                                                @PathVariable("page") Integer page) {
         List<FreePostRequestDto> findAll = freePostService.searchPosts(keyword, page);
@@ -110,7 +104,7 @@ public class FreePostController {
     }
 
     // 게시물 상세화면
-    @GetMapping("api/free/post/detail/{id}")
+    @GetMapping("post/detail/{id}")
     public FreePostResponseDto detailPost(@PathVariable("id") Long id) {
         FreePostRequestDto freePostDto = freePostService.getPost(id);
 
@@ -128,21 +122,6 @@ public class FreePostController {
     }
     
     // 게시물 삭제
-    @DeleteMapping("api/free/delete/{id}")
+    @DeleteMapping("delete/{id}")
     public void freePostDelete(@PathVariable("id") Long id) {freePostService.deletePost(id);}
-
-    // 댓글 저장
-    @PostMapping("api/free/comment/save")
-    public FreeCommentResponseDto saveComment(@RequestBody @Valid FreeCommentRequestDto requestDto) {
-        freeCommentService.savePost(requestDto);
-
-        return new FreeCommentResponseDto(
-                requestDto.toEntity().getId(),
-                requestDto.toEntity().getFpId(),
-                requestDto.toEntity().getAuthor(),
-                requestDto.toEntity().getContent(),
-                requestDto.toEntity().getCreateAt(),
-                requestDto.toEntity().getUpdateAt()
-        );
-    }
 }

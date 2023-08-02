@@ -1,6 +1,6 @@
 package com.coala.backend.freepost.db.entity;
 
-import com.coala.backend.db.entity.Member;
+import com.coala.backend.member.db.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -59,7 +59,7 @@ public class FreePost {
     private List<FreeComment> comments = new ArrayList<>();
 
     @Builder
-    public FreePost(Member userId, String title, String detail ,String imagePath, boolean isAnonymous) {
+    public FreePost(Member userId, String title, String detail , String imagePath, boolean isAnonymous) {
         this.userId = userId;
         this.title = title;
         this.detail = detail;
