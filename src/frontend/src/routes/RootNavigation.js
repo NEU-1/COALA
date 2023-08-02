@@ -34,7 +34,7 @@ const RootNavigation = () => {
           <Route index path="/" element={<Home />} />
           <Route path="/my-page" element={<MyPageContainer />} />
           <Route
-            path="/my-page/modify-userinfo"
+            path="/modify-userinfo"
             element={<ModifyUserinfoContainer />}
           />
         </Route>

@@ -2,11 +2,14 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
-import { Link } from 'react-router-dom';
 
-const ChatListItem = ({ item }) => {
+const ChatListItem = ({ item, onClickListItem }) => {
   return (
-    <SLayout to={`/chat/${item.name}`}>
+    <SLayout
+      onClick={() => {
+        onClickListItem(item.name);
+      }}
+    >
       <SStart>
         <img
           src={`${images.chatModal.default_profile}`}
@@ -26,7 +29,7 @@ const ChatListItem = ({ item }) => {
   );
 };
 
-const SLayout = styled(Link)`
+const SLayout = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-between;

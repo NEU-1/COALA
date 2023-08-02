@@ -6,14 +6,14 @@ import { colors } from '../../assets/colors';
 const ChatOpen = ({ isChatOpen, onClickChatBtn }) => {
   return (
     <>
-      {!isChatOpen && (
-        <SLayout isChatOpen={isChatOpen} onClick={onClickChatBtn}>
-          <img src={`${images.message}`} alt="" />
-        </SLayout>
-      )}
-      {isChatOpen && (
-        <SModalLayout isChatOpen={isChatOpen} src="/chat/chat-list" />
-      )}
+      <SLayout isChatOpen={isChatOpen} onClick={onClickChatBtn}>
+        <img src={`${images.message}`} alt="" />
+      </SLayout>
+      <SModalLayout
+        key={'chatModal'}
+        isChatOpen={isChatOpen}
+        src="/chat/chat-list"
+      />
     </>
   );
 };
@@ -41,7 +41,7 @@ const fadeOut = keyframes`
 const modalFadeIn = keyframes`
     0% {
         opacity: 0;
-        transform: translateY(10%);
+        transform: translateY(100%);
     }
     100% {
         opacity: 1;
@@ -56,14 +56,14 @@ const modalFadeOut = keyframes`
     }
     100% {
         opacity: 0;
-        transform: translateY(10%);
+        transform: translateY(100%);
     }
 `;
 
 const BtnAnime = (visible) => css`
   visibility: ${visible ? 'hidden' : 'visible'};
   z-index: 15;
-  animation: ${visible ? fadeIn : fadeOut} 0.15s ease-out;
+  animation: ${visible ? fadeOut : fadeIn} 0.15s ease-out;
   transition: visibility 0.15s ease-out;
 `;
 

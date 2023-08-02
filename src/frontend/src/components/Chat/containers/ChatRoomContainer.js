@@ -22,7 +22,7 @@ const ChatRoomContainer = () => {
   // 채팅방 뒤로 가기
   const navigate = useNavigate();
   const onClickBackBtn = () => {
-    navigate(-1, { replace: true });
+    navigate('/chat/chat-list', { replace: true });
   };
 
   // 메세지 보내면 스크롤 밑으로 내리기

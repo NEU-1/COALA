@@ -3,16 +3,19 @@ import useReadRoom from '../../../hooks/chatting/useReadRoom';
 import { fetchRoom } from '../../../api/nodeServer/chatting/index';
 import timestamp from '../../../utils/timestamp';
 import ChatList from '../ChatList';
-import { useDispatch } from 'react-redux';
-import { closeChatModal } from '../../../store/chatModalSlice';
+import { useNavigate } from 'react-router-dom';
 
 const ChatListContainer = () => {
   const [roomName, setRoomName] = useState('');
   const [user_id, setUser] = useState('');
 
-  const dispatch = useDispatch();
   const onClickChatBtn = () => {
-    dispatch(closeChatModal());
+    window.parent.postMessage('closeChatModal', 'http://localhost:3000');
+  };
+
+  const navigate = useNavigate();
+  const onClickListItem = (roomId) => {
+    navigate(`/chat/${roomId}`, { replace: true });
   };
 
   let Lists = [
@@ -42,7 +45,13 @@ const ChatListContainer = () => {
     await fetchRoom.create({ roomName, user_id: user_number });
   };
 
-  return <ChatList onClickChatBtn={onClickChatBtn} list={Lists} />;
+  return (
+    <ChatList
+      onClickChatBtn={onClickChatBtn}
+      list={Lists}
+      onClickListItem={onClickListItem}
+    />
+  );
 };
 
 export default ChatListContainer;

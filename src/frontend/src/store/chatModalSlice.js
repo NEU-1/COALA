@@ -10,11 +10,11 @@ const chatModalSlice = createSlice({
   initialState,
   reducers: {
     openChatModal: (state) => {
-      console.log(state.isOpen);
+      // console.log(state.isOpen);
       state.isOpen = true;
     },
     closeChatModal: (state) => {
-      console.log(state.isOpen);
+      console.log('close');
       state.isOpen = false;
     },
   },

@@ -7,7 +7,7 @@ const MyPage = () => {
   return (
     <SLayout>
       <div>MyPage</div>
-      <Link to="/my-page/modify-userinfo">회원정보 수정</Link>
+      <Link to="/modify-userinfo">회원정보 수정</Link>
     </SLayout>
   );
 };

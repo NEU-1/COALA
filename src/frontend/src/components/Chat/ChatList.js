@@ -4,7 +4,7 @@ import { colors } from '../../assets/colors';
 import { images } from '../../assets/images';
 import ChatListItem from './components/ChatListItem';
 
-const ChatList = ({ onClickChatBtn, list }) => {
+const ChatList = ({ onClickChatBtn, list, onClickListItem }) => {
   return (
     <SLayout>
       <SChatHeader>
@@ -22,7 +22,13 @@ const ChatList = ({ onClickChatBtn, list }) => {
       </SChatHeader>
       <SChatList>
         {list.map((item) => {
-          return <ChatListItem key={item.id} item={item} />;
+          return (
+            <ChatListItem
+              key={item.id}
+              item={item}
+              onClickListItem={onClickListItem}
+            />
+          );
         })}
       </SChatList>
     </SLayout>
