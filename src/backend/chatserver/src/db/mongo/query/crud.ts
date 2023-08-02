@@ -13,7 +13,6 @@ const readQuery = async (table : string, target : any,
   joinTable?: string, joinCondition?: Array<any>) => {
   
   const chats = chat_content.find(target)
-
   return chats
 }
 
