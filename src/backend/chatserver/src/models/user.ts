@@ -13,6 +13,7 @@ type dataForm = Partial<User>;
 const Read = async (target : object) => {
   try{
     const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
+    console.log("Check READ member", {conditionQuery, values})
     const result = await readQuery('member', {conditionQuery, values});
     return result;
   }catch(error){
