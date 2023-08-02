@@ -5,7 +5,7 @@ const fetchRoom = {
   create : async ({roomName}) =>{
       return await api({
         method : 'POST',
-        url : `/api/receiveDB/chat_room`,
+        url : `/api/chat/chat_room`,
         data:{
           name : roomName,
         }
@@ -23,10 +23,13 @@ const fetchRoom = {
       })
   },
   
-  read : async () =>{
+  read : async ({room_id}) =>{
     return await api({
       method : 'GET',
-      url : `/api/receiveDB/chat_room`,
+      url : `/api/chat/chat_room`,
+      data:{
+        room_id
+      }
     })
     .catch(error =>{
       if (error.response){
@@ -45,7 +48,7 @@ const fetchRoom = {
     
     return await api({
       method : 'POST',
-      url : `/api/receiveDB/room_member`,
+      url : `/api/chat/room_member`,
       data:{
         name : roomName,
         email
@@ -68,7 +71,7 @@ const fetchRoom = {
   execute : async() =>{
     return await api({
       method : 'DELETE',
-      url : `/api/receiveDB/room_member`
+      url : `/api/chat/room_member`
     })
     .catch(error =>{
       if (error.response){
