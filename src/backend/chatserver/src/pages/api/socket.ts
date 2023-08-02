@@ -9,7 +9,6 @@ import { Server } from 'socket.io';
 // }
 
 const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
-
   if (!res.socket.server.io){
     const {name} = req.query
     const io = new Server(res.socket.server as any, {
