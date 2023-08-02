@@ -23,7 +23,7 @@ const TechBoardList = () => {
         {boardList.map((board) => (
           // 4) map 함수로 데이터 출력
           <li>
-          <Link to={`/board/${board.idx}`}>{board.user}{board.title}{board.content}</Link>
+          <Link to={`/board/${board.idx}`}>{board.user}</Link>
           </li>
         ))}
       </ul>
