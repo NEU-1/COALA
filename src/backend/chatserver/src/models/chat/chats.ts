@@ -13,7 +13,7 @@ import {
 
 type dataForm = {
   room_id : bigint,
-  user_name : string, // 이후에 member_id 로 변경해야함
+  member_id : bigint, // 이후에 member_id 로 변경해야함
   text_content : Text,
 };
 
@@ -28,9 +28,9 @@ const Create = async (inputData : dataForm) =>{
   }
 }
 
-const Read = async (inputData : object) => {
+const Read = async (chat_Log : object) => {
   try{
-    const result = await readQuery('member', inputData);
+    const result = await readQuery('chat_content', chat_Log);
     return result;
   }catch(error){
     console.log(error)

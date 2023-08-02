@@ -11,6 +11,8 @@ import { buildSchema, buildConditionQuery } from '@/lib/queryBuilder'
 const Create = async (inputData : any) =>{
   try{
       const {name, email} = inputData;
+      console.log(`${email}이 ${name}으로 입장합니다.`);
+      
       const [room]: room[] = await readRoom({name});
       const [usr] : member[] = await readUser({email});
 
@@ -18,9 +20,7 @@ const Create = async (inputData : any) =>{
         'room_id' : room['id'],
         'member_id' : usr['id']
       };
-      console.log("룸정보", await readRoom({name}));
       const [roomUserRelations] = await Read(room_user);
-      console.log("엑스는",roomUserRelations)
       if (roomUserRelations) {return roomUserRelations;} 
       
       const result = await createQuery('room_member', room_user);
@@ -63,7 +63,6 @@ const Delete = async (inputData : any) => {
     const { conditionQuery, values} = buildConditionQuery(room_user, ' AND ');
     const result = await deleteQuery('room_member', conditionQuery, values);
     return result;
-
   }catch(error){
     console.log(error)
   }
