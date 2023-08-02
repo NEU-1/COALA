@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Viewer } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 
 const TechBoardItem = ({ idx, title, contents, createdBy }) => {
   const navigate = useNavigate();
@@ -24,6 +26,9 @@ const TechBoardItem = ({ idx, title, contents, createdBy }) => {
 
   return (
     <div>
+      <Viewer 
+      initialValue={contents}
+    />
       <div>
         <h2>{title}</h2>
         <h5>{createdBy}</h5>
