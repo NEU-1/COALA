@@ -7,7 +7,7 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useNavigate } from "react-router-dom";
 
-const SellListBoard = () => {
+const Store = () => {
   const product = ["키보드", "마우스", "헤드셋", "태블릿"];
   const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
 
@@ -98,12 +98,12 @@ const SellListBoard = () => {
       alert("게시글 작성은 로그인 후 가능합니다.");
       navigate("/login");
     } else {
-      navigate("/sellpostcreate");
+      navigate("/store/write");
     }
   };
   const handleCardClick = (id) => {
     console.log(id)
-    navigate(`글 상세보기 주소/${id}`);
+    navigate(`store/${id}`);
   };
 
   useEffect(() => {
@@ -388,4 +388,4 @@ const SGage = styled(Slider)`
   height: 13px;
 `;
 
-export default SellListBoard;
+export default Store;

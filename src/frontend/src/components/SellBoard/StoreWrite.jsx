@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { images } from '../../assets/images';
 import { useNavigate } from "react-router-dom";
 
-const SellPostDetail = () => {
+const StoreWrite = () => {
   const [pictureNum, setpictureNum] = useState("");
   const [like, setlike] = useState(false);
   const [login, setLogin] = useState(false);
@@ -23,16 +23,16 @@ const SellPostDetail = () => {
   const handleDeleteClick = () => {
     setShowModal(true);
   }
+  const navigate = useNavigate();
   const handleConfirmDelete = () => {
     setShowModal(false)
     // 서버에 글 삭제 요청
-    navigate("/selllistboard")
+    navigate("/store")
   }
   const handleCancel = () => {
     setShowModal(false)
   }
 
-  const navigate = useNavigate();
   const goProfile = () => {
     navigate("/profile");
   };
@@ -45,7 +45,7 @@ const SellPostDetail = () => {
     }
   }
   const goList = () => {
-    navigate("/selllistboard")
+    navigate("/store")
   }
 
   useEffect(() => {
@@ -134,4 +134,4 @@ const SellPostDetail = () => {
   );
 };
 
-export default SellPostDetail;
+export default StoreWrite;

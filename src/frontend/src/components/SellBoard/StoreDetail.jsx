@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from '../../assets/images';
 
-const SellPostCreate = () => {
+const StoreDetail = () => {
   console.log(images)
 
   const product = ["키보드", "마우스", "헤드셋", "태블릿"];
@@ -120,7 +120,7 @@ const SellPostCreate = () => {
     );
   };
   const goBackBtn = () => {
-    navigate("/selllistboard");
+    navigate("/store");
   };
   const goSellBtn = () => {
     console.log({
@@ -152,7 +152,7 @@ const SellPostCreate = () => {
         })
         .then((response) => {
           console.log(response);
-          navigate("/selllistboard");
+          navigate("/store");
         })
         .catch((error) => {
           console.log(error);
@@ -368,7 +368,7 @@ const SellPostCreate = () => {
     </SMain>
   );
 };
-export default SellPostCreate;
+export default StoreDetail;
 
 const SMain = styled.div`
   display: flex;
