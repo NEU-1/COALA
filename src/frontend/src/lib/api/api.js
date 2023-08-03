@@ -21,6 +21,7 @@ export const requestPost = async (url, body) => {
     return data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
@@ -30,5 +31,6 @@ export const requestPut = async (url, body) => {
     return data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };

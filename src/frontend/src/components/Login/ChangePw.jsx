@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import "./Style.css";
 import { requestPut } from "../../lib/api/api";
+import Swal from "sweetalert2";
 
 const ChangePw = () => {
   const [email, setEmail] = useState("");
@@ -28,24 +29,44 @@ const ChangePw = () => {
 
   const onClickChangePw = async (e) => {
     e.preventDefault();
-    if (password === passwordCheck) {
-      
-      requestPut(`member/updatepassword`, { email: email, password: password })
-      .then((res) => {
-        if (res.status === 200) {
-          alert("비밀번호 변경이 완료되었습니다. 로그인 해주세요.");
-          navigate("/login");
-        } else {
-          console.log("비밀번호 변경 중 에러 발생");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
+    const showAlert = (icon, title) => {
+      Swal.fire({
+        icon,
+        title,
+        html: "",
+        timer: 1000,
+        showConfirmButton: false,
       });
-    } else {
-      console.log("비밀번호가 다릅니다!")
+    };
+    
+    const isPasswordValid = (password, passwordCheck) => {
+      if (!email) {
+        showAlert("warning", "이메일 칸이 비어있습니다.\n이메일을 입력해주세요.");
+        return false;
+      }
+      if (!password || !passwordCheck) {
+        showAlert("warning", "비밀번호 칸이 비어있습니다.\n비밀번호를 입력해주세요.");
+        return false;
+      }
+      if (password !== passwordCheck) {
+        showAlert("warning", "비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
+        return false;
+      }
+      return true;
+    };
+  
+    if (isPasswordValid(password, passwordCheck)) {
+      requestPut(`member/updatepassword`, { email: email, password: password })
+        .then((res) => {
+          showAlert("success", "비밀번호 변경이 완료되었습니다.\n로그인 해주세요.");
+          // navigate("/login");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
+  
 
   return (
     <div className="page">

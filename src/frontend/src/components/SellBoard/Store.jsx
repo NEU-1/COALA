@@ -6,6 +6,8 @@ import styled from "styled-components";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
 
 const Store = () => {
   const product = ["키보드", "마우스", "헤드셋", "태블릿"];
@@ -95,7 +97,13 @@ const Store = () => {
   const onClickHandler = () => {
     console.log(isLogin);
     if (!isLogin) {
-      alert("게시글 작성은 로그인 후 가능합니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "게시글 작성은 로그인 후 가능합니다.",
+        html: "",
+        timer: 1000,
+        showConfirmButton: false,
+      })
       navigate("/login");
     } else {
       navigate("/store/write");

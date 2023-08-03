@@ -5,6 +5,8 @@ import "react-calendar/dist/Calendar.css";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from '../../assets/images';
+import Swal from "sweetalert2";
+
 
 const StoreWrite = () => {
   console.log(images)
@@ -108,59 +110,85 @@ const StoreWrite = () => {
 
     setImageList(newImages);
   };
-  const validateForm = () => {
-    return (
-      title !== "" &&
-      productName !== "" &&
-      rentalFee !== "" &&
-      minRentalDay !== "" &&
-      maxRentalDay !== "" &&
-      maxRentalDay >= minRentalDay &&
-      content !== ""
-    );
-  };
   const goBackBtn = () => {
     navigate("/store");
   };
-  const goSellBtn = () => {
-    console.log({
-      title,
-      productName,
-      rentalFee,
-      minRentalDay,
-      maxRentalDay,
-      content,
-    });
-    if (validateForm()) {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("productName", productName);
-      formData.append("rentalFee", rentalFee);
-      formData.append("minReminRentalDay", minRentalDay);
-      formData.append("maxRemaxRentalDay", maxRentalDay);
-      formData.append("content", content);
-      formData.append("upperLimitDate", `${year}-${month}-${date}`);
+  const validateForm = () => {
+    return {
+        isValid: title !== "" &&
+                 productSelect !== "" &&
+                 productName !== "" &&
+                 rentalFee !== "" &&
+                 minRentalDay !== "" &&
+                 maxRentalDay !== "" &&
+                 maxRentalDay >= minRentalDay &&
+                 content !== "",
+        errorField: title === "" ? "제목" : 
+                    productSelect === "" ? "분류" : 
+                    productName === "" ? "제품명" : 
+                    rentalFee === "" ? "대여료" :
+                    minRentalDay === "" ? "최소 대여 기간" :
+                    maxRentalDay === "" ? "최대 대여 기간" :
+                    content === "" ? "내용" : null
+    };
+};
 
-      imageList.forEach((image, index) => {
-        formData.append("imageList", image, `image${index}.png`);
+const displayMessage = (type, message) => {
+    Swal.fire({
+        icon: type,
+        title: message,
+        html: "",
+        timer: 1000,
+        showConfirmButton: false,
+    });
+};
+
+const goSellBtn = () => {
+    console.log({
+        title,
+        productName,
+        rentalFee,
+        minRentalDay,
+        maxRentalDay,
+        content,
+    });
+
+    const validation = validateForm();
+
+    if (validation.isValid) {
+      const formData = new FormData();
+    formData.append("title", title);
+    formData.append("productName", productName);
+    formData.append("rentalFee", rentalFee);
+    formData.append("minRentalDay", minRentalDay);
+    formData.append("maxRentalDay", maxRentalDay);
+    formData.append("content", content);
+    formData.append("upperLimitDate", `${year}-${month}-${date}`);
+
+    imageList.forEach((image, index) => {
+      formData.append("imageList", image, `image${index}.png`);
+    });
+
+    axios
+      .post("--서버 주소--", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        displayMessage("success", "게시글 등록됨");
+        console.log(response);
+        navigate("/store");
+      })
+      .catch((error) => {
+        displayMessage("error", "게시글 등록에 실패하였습니다.");
+        console.log(error);
       });
-      axios
-        .post("--서버 주소--", formData, {
-          headrs: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log(response);
-          navigate("/store");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     } else {
-      alert("빈칸이 존재합니다!");
+        displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
     }
-  };
+};
+
 
   useEffect(() => {
     console.log(productSelect, mindaySelect, maxdaySelect, calendarDay);
@@ -212,7 +240,7 @@ const StoreWrite = () => {
               type="file"
               onChange={(e) => onUpload(e)}
             />
-            <img src={`${images.img_plus}`} alt="Plus" />
+            <img src={images.plus} alt="Plus" />
             
           </SLabel>
         </SPictureList>
@@ -642,7 +670,6 @@ const SContent = styled.div`
 
 const SContentBorder = styled.div`
   display: flex;
-  align-items: flex-start;
   gap: 50px;
   align-self: stretch;
 `;

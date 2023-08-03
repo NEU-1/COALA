@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { images } from '../../assets/images';
+import { images } from "../../assets/images";
 import { useNavigate, useParams } from "react-router-dom";
 
 const StoreDetail = () => {
@@ -8,11 +8,11 @@ const StoreDetail = () => {
   const [login, setLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState("현재 로그인한 사용자 정보");
   const [postAuthor, setPostAuthor] = useState("게시글 작성자 정보");
-  const isAuthor = currentUser === postAuthor; 
-  const [showModal, setShowModal] = useState(false)
+  const isAuthor = currentUser === postAuthor;
+  const [showModal, setShowModal] = useState(false);
 
   const { postId } = useParams();
-  console.log(postId)
+  console.log(postId);
   const picturePlusBtn = () => {
     setpictureNum((pictureNum + 1) % "사진수");
   };
@@ -24,36 +24,36 @@ const StoreDetail = () => {
   };
   const goDelete = () => {
     setShowModal(true);
-  }
+  };
   const navigate = useNavigate();
   const handleConfirmDelete = () => {
-    setShowModal(false)
+    setShowModal(false);
     // 서버에 글 삭제 요청
-    navigate("/store")
-  }
+    navigate("/store");
+  };
   const handleCancel = () => {
-    setShowModal(false)
-  }
+    setShowModal(false);
+  };
 
   const goProfile = () => {
     navigate("/profile");
   };
   const goChat = () => {
     if (login) {
-        // 채팅 연결
+      // 채팅 연결
     } else {
-        alert('로그인하세요')
-        navigate("/login")
+      alert("로그인하세요");
+      navigate("/login");
     }
-  }
+  };
   const goList = () => {
-    navigate("/store")
-  }
-  const goUpdate =() => {
-    if ('대기중') {
-      navigate(`/update/${postId}`)
+    navigate("/store");
+  };
+  const goUpdate = () => {
+    if ("대기중") {
+      navigate(`/update/${postId}`);
     }
-  }
+  };
 
   useEffect(() => {
     if (like) {
@@ -93,15 +93,12 @@ const StoreDetail = () => {
             ${"product"} / ${"day"}
           </p>
         </div>
-        {!isAuthor && (like ? (
-          <img
-            src={images.like}
-            alt="React"
-            onClick={likeBtn}
-          />
-        ) : (
-          <img src={images.notlike} alt="React" onClick={likeBtn} />
-        ))}
+        {!isAuthor &&
+          (like ? (
+            <img src={images.like} alt="React" onClick={likeBtn} />
+          ) : (
+            <img src={images.notlike} alt="React" onClick={likeBtn} />
+          ))}
       </div>
       <div>
         <p>{"content"} 이걸 안씀?</p>
@@ -129,12 +126,12 @@ const StoreDetail = () => {
       </div>
       {showModal && (
         <div>
-            <p>삭제</p>
-            <p>정말 삭제하시겠습니까?</p>
-            <div>
-                <button onClick={handleConfirmDelete}>삭제</button>
-                <button onClick={handleCancel}>취소</button>
-            </div>
+          <p>삭제</p>
+          <p>정말 삭제하시겠습니까?</p>
+          <div>
+            <button onClick={handleConfirmDelete}>삭제</button>
+            <button onClick={handleCancel}>취소</button>
+          </div>
         </div>
       )}
     </div>

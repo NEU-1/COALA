@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CertificationTimer from "./CertificationTimer";
-import { requestPost } from '../../lib/api/api';
-
+import { requestPost } from "../../lib/api/api";
+import Swal from "sweetalert2";
 
 const FindPw = () => {
   const onSubmitHandler = (e) => {
@@ -38,49 +38,110 @@ const FindPw = () => {
     setCertification(e.currentTarget.value);
   };
 
-
-
   const onCallCertification = async (e) => {
     e.preventDefault();
     setTurnOnTimer(true);
-    if (email) {
-      try {
-        await requestPost("member/findpassword", {
-          email:email,
-          name:name,
-          studentId:studentId,
-          type : "find"
+
+    const showAlert = (icon, title) => {
+      setTimeout(() => {
+        Swal.fire({
+          icon,
+          title,
+          html: "",
+          timer: 1000,
+          showConfirmButton: false,
         });
-        alert("이메일을 보냈습니다.");
-      } catch (error) {
-        console.error("이메일 발송 에러", error);
-      }
-      setSendCertification(true);
-    } else {
-      alert("이메일을 입력해주세요.");
+      }, 300);
+    };
+    if (!email) {
+      showAlert("warning", "이메일 칸이 비어있습니다.\n이메일을 입력해주세요.");
+      return false;
+    }
+    if (!name) {
+      showAlert("warning", "이메일 칸이 비어있습니다.\n이메일을 입력해주세요.");
+      return false;
+    }
+    if (!name) {
+      showAlert("warning", "이름 칸이 비어있습니다.\n이름을 입력해주세요.");
+      return false;
+    }
+    if (!studentId) {
+      showAlert("warning", "학번 칸이 비어있습니다.\n학번을 입력해주세요.");
+      return false;
+    }
+
+    if (email) {
+      Swal.fire({
+        title: "잠시 기다려 주세요...",
+        html: "",
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      requestPost("member/findpassword", {
+        email: email,
+        name: name,
+        studentId: studentId,
+        type: "find",
+      })
+        .then((res) => {
+          showAlert(
+            "success",
+            `${email}로\n인증번호가 전송되었습니다.`
+          );
+          console.log(res);
+          setSendCertification(true);
+        })
+        .catch((err) => {
+          let errorMessage;
+          if (err.response.status === 404) {
+            errorMessage = "존재하지 않는 회원입니다.";
+          } else if (err.response.status === 400) {
+            errorMessage = "이름 또는 학번이 일치하지 않습니다.";
+          } else if (err.response.status === 500) {
+            errorMessage = "실패. 나중에 다시 시도해주세요.";
+          }
+          showAlert("error", errorMessage);
+          console.log(err);
+        });
     }
   };
-  
 
   const onCheckCertification = async (e) => {
     e.preventDefault();
-    try {
-      const response = await requestPost("member/certification", {
-        email:email,
-        otp:certification,
-        type:"find",
+  
+    const showAlert = (icon, title) => {
+      Swal.fire({
+        icon,
+        title,
+        html: "",
+        timer: 1000,
+        showConfirmButton: false,
       });
-      console.log(response)
-      if (response.data.statusCode) {
-        alert('인증 완료!')
-        navigate("/changepw");
-      } else {
-        alert("인증번호가 다릅니다");
+    };
+  
+    try {
+      const res = await requestPost("member/certification", {
+        email: email,
+        otp: certification,
+        type: "find",
+      });
+      showAlert("success", "인증이 완료되었습니다.<br/>비밀번호를 변경해주세요.");
+      navigate("/changepw");
+    } catch (err) {
+      let errorMessage;
+      if (err.response.status === 404) {
+        errorMessage = "인증번호가 일치하지 않습니다.";
+      } else if (err.response.status === 500) {
+        errorMessage = "인증번호가 존재하지 않습니다.<br/>다시 시도해 주세요";
       }
-    } catch (error) {
-      console.error("Error checking certification code", error);
+      showAlert("error", errorMessage);
+      console.log(err);
     }
   };
+  
 
   return (
     <div className="page">
@@ -122,12 +183,11 @@ const FindPw = () => {
                 onChange={oncertificationHandler}
                 placeholder="인증번호"
               />
-              {turnOnTimer && <CertificationTimer setTurnOnTimer={setTurnOnTimer}/>}
+              {turnOnTimer && (
+                <CertificationTimer setTurnOnTimer={setTurnOnTimer} />
+              )}
             </div>
-            <button
-              type="button"
-              onClick={onCheckCertification}
-            >
+            <button type="button" onClick={onCheckCertification}>
               인증
             </button>
           </div>
