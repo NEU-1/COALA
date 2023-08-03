@@ -9,7 +9,6 @@ import { Server } from 'socket.io';
 // }
 
 const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
-
   if (!res.socket.server.io){
     const {name} = req.query
     const io = new Server(res.socket.server as any, {
@@ -31,7 +30,7 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
       socket.join(roomName);
       callback();
     })
-
+    
     socket.on("send-message", ({roomName, username, message}) => {
       console.log(`username[${username} | ${socket.id}] send message at ${roomName} : ${message}`)
       io.to(roomName).emit("receive-message", {username, message});

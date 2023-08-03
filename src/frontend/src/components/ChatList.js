@@ -3,11 +3,11 @@ import { NavLink } from 'react-router-dom'
 import useReadRoom from '../hooks/chatting/useReadRoom'
 import { fetchRoom } from '../api/nodeServer/chatting'
 import timestamp from '../utils/timestamp';
-
+import _ from 'lodash'
 
 const ChatList = () => {
   const [roomName, setRoomName] = useState("");
-  const [user_id, setUser] = useState("");
+  const [member_id, setUser] = useState("1");
   
 
   let Lists = [{
@@ -25,20 +25,20 @@ const ChatList = () => {
   }];
 
   let {data} = useReadRoom();
-  // let data;
-  let rooms = data ? data.rooms : [];
+  console.log(data);
+  let rooms = data && !_.isEmpty(data) ? data.rooms : [];
   Lists = [...Lists, ...rooms]
-  
+  console.log(Lists)
   const handleClick = async () =>{
-    const user_number = Number(user_id);
-    await fetchRoom.create({roomName, user_id : user_number});
+    const user_number = Number(member_id);
+    await fetchRoom.create({roomName, member_id : user_number});
   }
   
   return (
     <div>
       <h1>This is Chat Page</h1>
       <label>사용자 : </label>
-      <input value={user_id} onChange={(event) => setUser(event.target.value)} />
+      <input value={member_id} onChange={(event) => setUser(event.target.value)} />
       <hr/>
       <input value={roomName} onChange={(event) => setRoomName(event.target.value)} />
         <button onClick={handleClick}>방 생성</button>
