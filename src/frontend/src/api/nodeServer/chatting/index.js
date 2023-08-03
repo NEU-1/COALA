@@ -23,13 +23,11 @@ const fetchRoom = {
       })
   },
   
-  read : async ({room_id}) =>{
+  read : async () =>{
     return await api({
       method : 'GET',
       url : `/api/chat/chat_room`,
-      data:{
-        room_id
-      }
+
     })
     .catch(error =>{
       if (error.response){

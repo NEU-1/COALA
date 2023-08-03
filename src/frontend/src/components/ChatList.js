@@ -7,7 +7,7 @@ import _ from 'lodash'
 
 const ChatList = () => {
   const [roomName, setRoomName] = useState("");
-  const [member_id, setUser] = useState("");
+  const [member_id, setUser] = useState("1");
   
 
   let Lists = [{
@@ -25,9 +25,10 @@ const ChatList = () => {
   }];
 
   let {data} = useReadRoom();
+  console.log(data);
   let rooms = data && !_.isEmpty(data) ? data.rooms : [];
   Lists = [...Lists, ...rooms]
-  
+  console.log(Lists)
   const handleClick = async () =>{
     const user_number = Number(member_id);
     await fetchRoom.create({roomName, member_id : user_number});
