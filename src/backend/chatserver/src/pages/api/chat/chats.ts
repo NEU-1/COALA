@@ -15,6 +15,7 @@ const receiveData = withCors(async (
   
   if (req.method === 'POST'){
     const inputData = req.body;
+    console.log("채팅을 생성중입니다. ", inputData);
     const result = await createChatContent(inputData);
     if (!result){ 
       res.status(500).json({ message: `Fail to Send... at ${timestamp()}` });
@@ -26,6 +27,7 @@ const receiveData = withCors(async (
 
   if (req.method === 'GET'){
     const inputData = req.body;
+    console.log("채팅을 불러오는 중입니다. ", inputData);
     const result = await readChatContent(inputData);
     console.log(result)
     if (!result){ 

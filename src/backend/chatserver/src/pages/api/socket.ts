@@ -30,7 +30,7 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
       socket.join(roomName);
       callback();
     })
-
+    
     socket.on("send-message", ({roomName, username, message}) => {
       console.log(`username[${username} | ${socket.id}] send message at ${roomName} : ${message}`)
       io.to(roomName).emit("receive-message", {username, message});
