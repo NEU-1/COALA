@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FreePostResponseDto {
     private Long id;
-    private Member userId;
+    private Member memberId;
+    private String email;
     private String title;
     private String detail;
     private LocalDateTime createAt;
@@ -27,11 +28,11 @@ public class FreePostResponseDto {
     private int count;
 
     @Builder
-    public FreePostResponseDto(Long id, Member userId, String title, String detail,
+    public FreePostResponseDto(Member memberId, String title, String detail,
                               LocalDateTime createAt, LocalDateTime updateAt, String imagePath,
                               boolean isAnonymous, int views, int count) {
-        this.id = id;
-        this.userId = userId;
+        this.memberId = memberId;
+        this.email= memberId.getEmail();
         this.title = title;
         this.detail = detail;
         this.createAt = createAt;
