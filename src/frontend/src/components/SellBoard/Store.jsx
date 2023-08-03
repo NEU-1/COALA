@@ -103,7 +103,7 @@ const Store = () => {
   };
   const handleCardClick = (id) => {
     console.log(id)
-    navigate(`store/${id}`);
+    navigate(`${id}`);
   };
 
   useEffect(() => {

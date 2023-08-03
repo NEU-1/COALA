@@ -1,10 +1,10 @@
 import * as React from "react";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { useState } from "react";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 
-export default function ImgMediaCard({ item, onLike }) {
+export default function ImgMediaCard({ item, onLike, onClick }) {
   const [isLiked, setIsLiked] = useState(false);
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -12,7 +12,7 @@ export default function ImgMediaCard({ item, onLike }) {
   };
 
   return (
-    <SCard $isRented={item.isRented}>
+    <SCard $isRented={item.isRented} onClick={onClick}>
       <SCardMedia image={item.image}>
         <div>{item.isRented ? <SRental>대여 완료</SRental> : ""}</div>
       </SCardMedia>
