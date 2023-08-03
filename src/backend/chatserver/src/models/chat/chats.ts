@@ -21,7 +21,6 @@ const Create = async (inputData : dataForm) =>{
   try{
     const chatting_data = {...inputData, created_at : timestamp()}
     const result = await createQuery('chat_content', chatting_data);
-    console.log("결과는",result)
     return result;
   }catch(error){
     console.log(error)
