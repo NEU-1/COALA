@@ -50,6 +50,9 @@ public class WebSecurityConfig {
         // csrf disable
         http.csrf(csrf -> csrf.disable());
 
+        // cors disable
+        http.cors(cors -> cors.disable());
+
         // STATELESS
         http.sessionManagement(
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

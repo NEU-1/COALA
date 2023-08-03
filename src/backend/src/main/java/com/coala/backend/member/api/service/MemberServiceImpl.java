@@ -78,7 +78,7 @@ public class MemberServiceImpl implements MemberService{
 
         // 중복 가입 방지 용
         certificationRepository.save(new Certification(member.getEmail(), null));
-        return new BaseResponseDto("회원가입이 성공적으로 완료되었습니다.", 201);
+        return new BaseResponseDto("회원가입이 성공적으로 완료되었습니다.", 200);
     }
 
     @Override
@@ -245,7 +245,7 @@ public class MemberServiceImpl implements MemberService{
 
         // 검색 되지 않음
         if(temp.isEmpty()){
-            return new BaseResponseDto("인증번호가 존재하지 않습니다.", 500);
+            return new BaseResponseDto("인증번호가 존재하지 않습니다.", 404);
         }
 
         // otp가 일치하지 않음
@@ -262,10 +262,11 @@ public class MemberServiceImpl implements MemberService{
         if(info.get("type").equals("find")){
             Certification certification = new Certification();
             certification.setEmail(email);
+            certification.setOtp("");
             certificationRepository.save(certification);
         }
 
-        return new BaseResponseDto("인증이 완료되었습니다. 비밀번호를 변경해주세요.", 200);
+        return new BaseResponseDto("인증이 완료되었습니다. ", 200);
     }
 
     // 비밀번호 찾기 후 수행.
