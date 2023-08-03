@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Style.css";
 import { useNavigate } from "react-router-dom";
-import CCheckBox from "../SignUp/components/CCheckBox";
+import CCheckBox from "../Common/CCheckBox";
 
 const Login = () => {
   const onSubmitHandler = (e) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { css, styled } from 'styled-components';
-import { colors } from '../../../assets/colors';
+import { colors } from '../../assets/colors';
 
 const CCheckBox = ({ text, checked, onChange }) => {
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import CCheckBox from "../SignUp/components/CCheckBox";
+import CCheckBox from "../Common/CCheckBox";
 import ImgMediaCard from "./components/Carditem";
 import styled from "styled-components";
 import Slider from "rc-slider";
