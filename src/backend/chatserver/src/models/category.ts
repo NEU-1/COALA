@@ -3,7 +3,7 @@ import {
   readQuery,
   updateQuery,
   deleteQuery
-} from '@/db/query/crud'
+} from '@/db/mysql/query/crud'
 
 import {
   buildSchema
@@ -11,9 +11,9 @@ import {
 
 type dataForm = Partial<ConferenceCategory>;
 
-const Read = async () => {
+const Read = async (target : Array<any>) => {
   try{
-    const result = await readQuery('conference_category');
+    const result = await readQuery('conference_category', []);
     return result;
   }catch(error){
     console.log(error)
@@ -42,9 +42,8 @@ const Create = async (inputData : dataForm) =>{
 
 const Delete = async (deleteData : dataForm) => {
   try{
-    // `DELETE FROM channel WHERE id = [what_to_DELETE]`
-    const {values} = buildSchema(deleteData)
-    const result = await deleteQuery('conference_category','?',values);
+
+    const result = undefined;
     return result;
   }catch(error){
     console.log(error)

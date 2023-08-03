@@ -2,14 +2,12 @@ import api from '../base'
 
 const fetchRoom = {
   
-  create : async ({roomName, user_id}) =>{
-      const name = roomName
+  create : async ({roomName}) =>{
       return await api({
         method : 'POST',
-        url : `/api/receiveDB/chat_room`,
+        url : `/api/chat/chat_room`,
         data:{
-          name,
-          user_id
+          name : roomName,
         }
       })
       .catch(error =>{
@@ -28,7 +26,8 @@ const fetchRoom = {
   read : async () =>{
     return await api({
       method : 'GET',
-      url : `/api/receiveDB/chat_room`,
+      url : `/api/chat/chat_room`,
+
     })
     .catch(error =>{
       if (error.response){
@@ -43,13 +42,14 @@ const fetchRoom = {
     })
   },
 
-  join : async({roomName}) =>{
+  join : async({roomName, email}) =>{
     
     return await api({
       method : 'POST',
-      url : `/api/receiveDB/room_member`,
+      url : `/api/chat/room_member`,
       data:{
-        roomName,
+        name : roomName,
+        email
         // 유저 정보 넣어야함...
       }
     })
@@ -65,10 +65,11 @@ const fetchRoom = {
       }
     })
   },
+  
   execute : async() =>{
     return await api({
       method : 'DELETE',
-      url : `/api/receiveDB/room_member`
+      url : `/api/chat/room_member`
     })
     .catch(error =>{
       if (error.response){
