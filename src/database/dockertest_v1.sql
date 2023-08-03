@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS `member` (
 
 INSERT INTO `member` 
 (`id`,`email`,`password`,`name`,`nickname`,`student_id`,`depart`,`ordinal`,`phone_no`)
- VALUES (1,'tncks097@naver.com','1234','my_name','nickname','929229','gumi',9,'01099557124');
+ VALUES (1,'tncks097@naver.com','1234','my_name','nickname','929229','gumi',`9기`,'01099557124');
 INSERT INTO `member` 
 (`id`,`email`,`password`,`name`,`nickname`,`student_id`,`depart`,`ordinal`,`phone_no`) 
-VALUES (2,'tncks097@gmail.com','1234','eman_ym','emankcin','922929','gumi',9,'41275599010');
+VALUES (2,'tncks097@gmail.com','1234','eman_ym','emankcin','922929','gumi',`9기`,'41275599010');
 
 CREATE TABLE IF NOT EXISTS `chat_room` (
 	`id`	bigint NOT NULL AUTO_INCREMENT,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `chat_room` (
 	`pp_id`	bigint	NULL,
 	`name`	varchar(10)	NOT NULL,
 	`created_at`	DATETIME	DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `room_member` (
