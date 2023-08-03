@@ -1,6 +1,5 @@
-package com.coala.backend.techpost.db.entity;
+package com.coala.backend.notice.db.entity;
 
-import com.coala.backend.member.db.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -11,20 +10,16 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /*
-- 추천 수 기능 미구현
+- 공지 게시판
 * */
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TechPost {
+public class Notice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "member_email", referencedColumnName = "email")
-    @NotNull
-    private Member memberId;
 
     @NotNull
     private String title;
@@ -41,25 +36,11 @@ public class TechPost {
     @Column(name = "image_path")
     private String imagePath;
 
-    @ManyToOne
-    @JoinColumn(name = "nickname")
-    private Member nickname;
-
-    @Column(columnDefinition = "integer default 0")
-    @NotNull
-    private int views;
-
-    @Column(columnDefinition = "integer default 0")
-    @NotNull
-    private int count;
-
     @Builder
-    public TechPost(Member memberId, String title, String detail , String imagePath, Member nickname) {
-        this.memberId = memberId;
+    public Notice(String title, String detail , String imagePath) {
         this.title = title;
         this.detail = detail;
         this.imagePath = imagePath;
-        this.nickname = nickname;
     }
 
     @PrePersist
@@ -67,16 +48,10 @@ public class TechPost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateTechPost(Member memberId, String title, String detail, String imagePath, Member nickname) {
-        this.memberId = memberId;
+    public void updateFreePost(String title, String detail, String imagePath) {
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();
         this.imagePath = imagePath;
-        this.nickname = nickname;
-    }
-
-    public void views() {
-        this.views++;
     }
 }

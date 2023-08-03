@@ -24,9 +24,9 @@ public class FreePost {
     private Long id;
 
     @ManyToOne(targetEntity = Member.class)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "memberId", referencedColumnName = "email")
     @NotNull
-    private Member userId;
+    private Member memberId;
 
     @NotNull
     private String title;
@@ -59,8 +59,8 @@ public class FreePost {
     private List<FreeComment> comments = new ArrayList<>();
 
     @Builder
-    public FreePost(Member userId, String title, String detail ,String imagePath, boolean isAnonymous) {
-        this.userId = userId;
+    public FreePost(Member memberId, String title, String detail , String imagePath, boolean isAnonymous) {
+        this.memberId = memberId;
         this.title = title;
         this.detail = detail;
         this.imagePath = imagePath;
@@ -72,8 +72,8 @@ public class FreePost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateFreePost(Member userId, String title, String detail, String imagePath, boolean isAnonymous) {
-        this.userId = userId;
+    public void updateFreePost(Member memberId, String title, String detail, String imagePath, boolean isAnonymous) {
+        this.memberId = memberId;
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();
