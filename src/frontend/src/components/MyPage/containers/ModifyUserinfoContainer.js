@@ -9,11 +9,11 @@ const ModifyUserinfoContainer = () => {
     email: 'coala1080@gmail.com',
     password: '',
     name: '코알라',
-    nickName: '코딩장비 알아보고 나눠쓰고',
-    studentNo: '1234567',
-    campus: '구미',
-    class: 9,
-    phoneNumber: '010-1234-5678',
+    nickname: '코딩장비 알아보고 나눠쓰고',
+    studentId: '1234567',
+    depart: '구미',
+    ordinal: 9,
+    phoneNo: '010-1234-5678',
   });
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
@@ -26,11 +26,8 @@ const ModifyUserinfoContainer = () => {
   const onChangePasswordConfirm = (e) => {
     setPasswordConfirm(e.target.value);
   };
-  const onChangeNickName = (e) => {
+  const onChangeNickname = (e) => {
     setForm({ ...form, nickName: e.target.value });
-  };
-  const onChangePhoneNumber = (e) => {
-    setForm({ ...form, phoneNumber: e.target.value });
   };
 
   const onClickModifyBtn = () => {
@@ -73,8 +70,7 @@ const ModifyUserinfoContainer = () => {
       passwordConfirm={passwordConfirm}
       onChangePassword={onChangePassword}
       onChangePasswordConfirm={onChangePasswordConfirm}
-      onChangeNickName={onChangeNickName}
-      onChangePhoneNumber={onChangePhoneNumber}
+      onChangeNickname={onChangeNickname}
       onClickModifyBtn={onClickModifyBtn}
       onClickBackBtn={onClickBackBtn}
     />

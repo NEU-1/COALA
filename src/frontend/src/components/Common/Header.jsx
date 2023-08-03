@@ -17,7 +17,7 @@ const HeaderV2 = () => {
           <SLoginLink to="/login">로그인</SLoginLink>
         </SLogoBox>
         <SNav>
-          <li>제공자</li>
+          <li><Link to="/store">제공자</Link></li>
           <li>이용자</li>
           <li><Link to="/tech">커뮤니티</Link></li>
           <li>검수</li>

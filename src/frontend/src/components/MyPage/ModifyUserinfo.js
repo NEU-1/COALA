@@ -1,6 +1,6 @@
-import React from "react";
-import { styled } from "styled-components";
-import { colors } from "../../assets/colors";
+import React from 'react';
+import { styled } from 'styled-components';
+import { colors } from '../../assets/colors';
 
 const ModifyUserinfo = ({
   form,
@@ -9,15 +9,14 @@ const ModifyUserinfo = ({
   passwordConfirm,
   onChangePassword,
   onChangePasswordConfirm,
-  onChangeNickName,
-  onChangePhoneNumber,
+  onChangeNickname,
   onClickModifyBtn,
   onClickBackBtn,
 }) => {
   return (
     <SLayout>
       <SContainer>
-      <STitle>회원정보 수정</STitle>
+        <STitle>회원정보 수정</STitle>
         <SContentsContainer>
           <SLabel>이메일</SLabel>
           <SInput
@@ -50,26 +49,26 @@ const ModifyUserinfo = ({
           <SInput
             type="text"
             placeholder="별명"
-            value={form.nickName}
-            onChange={onChangeNickName}
+            value={form.nickname}
+            onChange={onChangeNickname}
           />
           <SLabel>학번</SLabel>
           <SInput
             type="text"
             placeholder="학번"
-            value={form.studentNo}
+            value={form.studentId}
             readOnly
           />
           <SLabel>지역(캠퍼스) / 기수</SLabel>
           <SSelectBox>
-            <SSelect defaultValue={form.campus} disabled>
-              <option value={"서울"}>서울</option>
-              <option value={"대전"}>대전</option>
-              <option value={"구미"}>구미</option>
-              <option value={"광주"}>광주</option>
-              <option value={"부울경"}>부울경</option>
+            <SSelect defaultValue={form.depart} disabled>
+              <option value={'서울'}>서울</option>
+              <option value={'대전'}>대전</option>
+              <option value={'구미'}>구미</option>
+              <option value={'광주'}>광주</option>
+              <option value={'부울경'}>부울경</option>
             </SSelect>
-            <SSelect defaultValue={form.class} disabled>
+            <SSelect defaultValue={form.ordinal} disabled>
               <option value={9}>9기</option>
               <option value={10}>10기</option>
             </SSelect>
@@ -78,7 +77,7 @@ const ModifyUserinfo = ({
           <SInput
             type="text"
             placeholder="전화번호"
-            value={form.phoneNumber}
+            value={form.phoneNo}
             readOnly
           />
         </SContentsContainer>
@@ -98,7 +97,6 @@ const SLayout = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 170px;
 `;
 
 const SContainer = styled.div`
@@ -171,7 +169,7 @@ const SInputWithConfirmMsg = styled.div`
     font-size: 12px;
     font-weight: 500;
     padding: 5px;
-    visibility: ${(props) => (props.isMatch ? "hidden" : "visible")};
+    visibility: ${(props) => (props.isMatch ? 'hidden' : 'visible')};
   }
 `;
 
@@ -212,7 +210,7 @@ const SBtn = styled.div`
   gap: 10px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => (props.color ? props.color : "#d9d9d9")};
+  background-color: ${(props) => (props.color ? props.color : '#d9d9d9')};
   color: white;
   cursor: pointer;
 `;
