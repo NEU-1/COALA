@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
@@ -26,19 +25,19 @@ const TechBoardUpdate = () => {
   };
 
   const getBoard = async () => {
-    const resp = await (await axios.get(`//localhost:8080/board/${idx}`)).data;
+    const resp = await (await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/detail/${idx}`)).data;
     setBoard(resp.data);
   };
 
   const updateBoard = async () => {
-    await axios.patch(`//localhost:8080/board`, board).then((res) => {
+    await axios.patch(`http://i9d108.p.ssafy.io:9999/api/tech/update/{id}`, board).then((res) => {
       alert('수정되었습니다.');
-      navigate('/board/' + idx);
+      navigate('/tech/' + idx);
     });
   };
 
   const backToDetail = () => {
-    navigate('/board/' + idx);
+    navigate('/tech/' + idx);
   };
 
   useEffect(() => {

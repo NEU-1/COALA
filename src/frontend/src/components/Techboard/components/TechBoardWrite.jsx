@@ -1,6 +1,6 @@
-import React, {useState, useRef} from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from "styled-components"
+import styled from "styled-components";
 import axios from 'axios';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -22,12 +22,10 @@ const SBtn = styled.div`
 const Slayout = styled.div`
   margin-top: 170px;
   width: 800px;
-
 `
 const Textinput = styled.input`
   font-size: 20px;
 `
-
 
 const SBtnContainer = styled.div`
   display: flex;
@@ -45,8 +43,7 @@ const MainTitle = styled.div`
   font-size: 50px;
   border-bottom: 1px solid #d9d9d9;
   padding-bottom: 20px;
-  ;
-`
+`;
 
 const Titletext = styled.div`
   margin-bottom: 10px;
@@ -56,99 +53,125 @@ const Titletext = styled.div`
 const Title = styled.div`
   margin-right: 10px;
   font-size: 30px;
-
 `
 
+function TechBoardWrite(props) {
+  const navigate = useNavigate();
 
-const Container = styled.div`
-    width: 100%;
-    max-width: 720px;
+  const [board, setBoard] = useState({
+    userId: {
+      id: 'Long',
+      name: 'String',
+      email: 'String',
+    },
+    title: '',
+    detail: '',
+    imagePath: 'String',
+    isAnonymous: false,
+  });
 
-    & > * {
-        :not(:last-child){
-            magin-bottom: 16px;
-        }
-    };
-`;
+  const { title, detail } = board;
 
-function TechBoardWrite(props){
-    const navigate = useNavigate();
+  const onChange = (event) => {
+    const { value, name } = event.target;
+    setBoard({
+      ...board,
+      [name]: value,
+    });
+  };
 
-    const [board, setBoard] = useState({
-        title: '',
-        createdBy: '',
-        contents: '',
-      });
-
-    const { title } = board;
-    
-    const onChange = (event) => {
-        const { value, name } = event.target; //event.target에서 name과 value만 가져오기
-        setBoard({
-          ...board,
-          [name]: value,
-        });
-      };
-    
-      const saveBoard = async () => {
-        await axios.post(`localhost:9999/api/tech/post/`, board).then((res) => {
-          alert('등록되었습니다.');
-          navigate('/tech');
-        });
-      };
-    
-      const backToList = () => {
-        navigate('/tech');
+  const saveBoard = async () => {
+    try {
+      // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
+      const dataToSend = {
+        ...board,
+        userId: {
+          id: 1,
+          name: 'seonjae',
+          email: 'seonjae',
+        },
       };
 
-      const editorRef = useRef();
-  
-      // 등록 버튼 핸들러
-      const handleRegisterButton = () => {
-      // 입력창에 입력한 내용을 HTML 태그 형태로 취득
-      console.log(editorRef.current?.getInstance().getHTML());
-      // 입력창에 입력한 내용을 MarkDown 형태로 취득
-      console.log(editorRef.current?.getInstance().getMarkdown());
-    };
-  
-    
-      return (
-        <Slayout>
-          <div>
-            <MainTitle >게시글 등록</MainTitle>
-            <Titletext>
-            <Title>제목</Title>
-            <Textinput type="text" name="title" value={title} onChange={onChange} />
-            </Titletext>  
-          </div>
-          <div>
-            <h1> </h1>
-              <Editor
-                ref={editorRef} // DOM 선택용 useRef
-                placeholder="내용을 입력해주세요."
-                previewStyle="vertical" // 미리보기 스타일 지정
-                height="500px" // 에디터 창 높이
-                width="100%"
-                initialEditType="wysiwyg" //
-                toolbarItems={[
-                  // 툴바 옵션 설정
-                  ['heading', 'bold', 'italic', 'strike'],
-                  ['hr', 'quote'],
-                  ['ul', 'ol', 'task', 'indent', 'outdent'],
-                  ['table', 'image', 'link'],
-                  ['code', 'codeblock']
-                ]}
-                useCommandShortcut={false} // 키보드 입력 컨트롤 방지
-              ></Editor>
-          </div>
-          <br />
-          <SBtnContainer>
-            <SBtn onClick={backToList}>취소</SBtn>
-            <SBtn onClick={handleRegisterButton}>등록</SBtn>
-          </SBtnContainer>
-        </Slayout>
+      await axios.post('http://i9d108.p.ssafy.io:9999/api/tech/post/save', dataToSend);
+      alert('등록되었습니다.');
+      navigate('/tech');
+    } catch (error) {
+      console.error('게시글 등록 에러:', error);
+    }
+  };
 
-      );
-    };
-    
-    export default TechBoardWrite;
+  const backToList = () => {
+    navigate('/tech');
+  };
+
+  const editorRef = useRef();
+
+  const handleRegisterButton = () => {
+    // 에디터 내용을 얻어와서 변수에 저장
+    const editorContent = editorRef.current?.getInstance().getMarkdown();
+
+    // 저장하고자 하는 내용을 board 객체에 추가
+    setBoard({
+      ...board,
+      detail: editorContent,
+    });
+
+    // board 객체의 detail 필드가 정상적으로 값이 채워져 있는지 확인
+    console.log("에디터 내용:", editorContent);
+
+    if (editorContent.trim() === "") {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+
+    // 서버에 저장하는 코드를 이곳에 추가 (예: saveBoard 함수 호출 등)
+    // saveBoard 함수에서 이미 에러 핸들링이 있으므로 중복되지 않도록 주의
+    saveBoard();
+  };
+
+  return (
+    <Slayout>
+      <div>
+        <MainTitle>게시글 등록</MainTitle>
+        <Titletext>
+          <Title>제목</Title>
+          <Textinput type="text" name="title" value={title} onChange={onChange} />
+        </Titletext>
+      </div>
+      <div>
+        <h1> </h1>
+        <Editor
+          ref={editorRef}
+          placeholder="내용을 입력해주세요."
+          previewStyle="vertical"
+          height="500px"
+          width="100%"
+          initialEditType="wysiwyg"
+          language="ko-KR"
+          toolbarItems={[
+            ['heading', 'bold', 'italic', 'strike'],
+            ['hr', 'quote'],
+            ['ul', 'ol', 'task', 'indent', 'outdent'],
+            ['table', 'image', 'link'],
+            ['code', 'codeblock']
+          ]}
+          useCommandShortcut={false}
+        />
+        <SBtn onClick={handleRegisterButton}>확인</SBtn>
+      </div>
+      <br />
+      <SBtnContainer>
+        <SBtn onClick={backToList}>취소</SBtn>
+        <SBtn onClick={saveBoard}>등록</SBtn>
+      </SBtnContainer>
+    </Slayout>
+  );
+};
+
+export default TechBoardWrite;
+
+
+
+
+
+

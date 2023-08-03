@@ -1,9 +1,69 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {Link} from "react-router-dom";
 import styled from "styled-components"
 import { useNavigate } from 'react-router-dom';
-import Pagination from "react-js-pagination";
+import Pagination from "./Pagination";
+
+
+
+
+const TechBoardList = () => {
+  const navigate = useNavigate();
+
+  const [posts, setPosts] = useState([]);
+  const limit = 8;
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * limit;
+
+  const getBoardList = async () => {
+    const resp = (await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)).data
+    console.log(resp.data)
+  }
+  const goTowrite = () => {
+    navigate('/tech/write');
+  };
+  useEffect(() => {
+    getBoardList(); // 1) 게시글 목록 조회 함수 호출
+  }, []);
+
+  return (
+    
+    <Slayout>
+      <Layout>
+
+      <div>
+
+        {posts.slice(offset, offset + limit).map(({ id, title, detail, views, creatat, user,image }) => (
+          <Contentbox key={id}>
+            <h3>
+              {title}
+            </h3>
+            <Userbox>
+              <h4>user</h4>
+              <User1>2023/08/03</User1>
+              <h4>| 조회수0</h4>
+            </Userbox>
+            <p>{detail}</p>
+
+          </Contentbox>
+        ))}
+      </div>
+
+      <footer>
+        <Pagination
+          total={posts.length}
+          limit={limit}
+          page={page}
+          setPage={setPage}
+        />
+      </footer>
+    </Layout>
+      <Button onClick={goTowrite}>게시글 등록하기</Button>
+    </Slayout>
+  );
+};
+
+export default TechBoardList;
 
 const Slayout = styled.div`
   margin-top: 170px;
@@ -22,44 +82,27 @@ const Button = styled.div`
   cursor: pointer;
 `
 
+const Layout = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+`;
 
-const TechBoardList = () => {
-  const navigate = useNavigate();
+const Contentbox = styled.div`
+  border-top: 1px solid #f5a4a4;
+  border-bottom: 1px solid #f5a4a4;
+  margin-bottom: 20px;
+  border-radius: 3%;
+`
 
-  const [boardList, setBoardList] = useState([]);
-  
-
-  const getBoardList = async () => {
-    // const resp = await (await axios.get('//localhost:8080/board')).data; // 2) 게시글 목록 데이터에 할당
-    // setBoardList(resp.data); // 3) boardList 변수에 할당
-
-    // const pngn = resp.pagination;
-    // console.log(pngn);
-  }
-  const goTowrite = () => {
-    navigate('/tech/write');
-  };
-
-  useEffect(() => {
-    getBoardList(); // 1) 게시글 목록 조회 함수 호출
-  }, []);
-
-  return (
-    <Slayout>
-      
-      <div>
-        <ul>
-          {boardList.map((board) => (
-            // 4) map 함수로 데이터 출력
-            <li>
-            <Link to={`/board/${board.idx}`}>{board.user}</Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <Button onClick={goTowrite}>게시글 등록하기</Button>
-    </Slayout>
-  );
-};
-
-export default TechBoardList;
+const Userbox = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+  margin-top: 5px;
+`
+const User1 = styled.div`
+  margin-left: 5px;
+  margin-right: 5px;
+`
