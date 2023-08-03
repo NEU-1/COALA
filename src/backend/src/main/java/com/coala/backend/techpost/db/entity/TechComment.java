@@ -39,13 +39,14 @@ public class TechComment {
     }
 
     @Builder
-    public TechComment(TechPost fpId, String author, String content) {
+    public TechComment(TechPost fpId, String author, String content, LocalDateTime updateAt) {
         this.fpId = fpId;
         this.author = author;
         this.content = content;
+        this.updateAt = updateAt;
     }
 
-    public void TechCommentUpdate(String author, String content) {
+    public void updateTechComment(String author, String content) {
         this.author = author;
         this.content = content;
         this.updateAt = LocalDateTime.now();

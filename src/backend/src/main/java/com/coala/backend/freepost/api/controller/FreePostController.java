@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins="*")
 @RequestMapping("/api/free/")
 public class FreePostController {
     private final FreePostServiceImpl freePostService;
@@ -28,11 +29,11 @@ public class FreePostController {
     // 게시글 저장
     @PostMapping("post/save")
     public FreePostResponseDto savePost(@RequestBody @Valid FreePostRequestDto requestDto) {
+        System.out.println(requestDto);
         freePostService.savePost(requestDto);
 
         return new FreePostResponseDto(
-                requestDto.toEntity().getId(),
-                requestDto.toEntity().getUserId(),
+                requestDto.toEntity().getMemberId(),
                 requestDto.toEntity().getTitle(),
                 requestDto.toEntity().getDetail(),
                 requestDto.toEntity().getCreateAt(),
@@ -45,15 +46,14 @@ public class FreePostController {
 
     // 게시글 수정
     @PutMapping("post/update/{id}")
-    public FreePostResponseDto updateFreePost(@PathVariable("id") Long id,
+    public FreePostResponseDto updatePost(@PathVariable("id") Long id,
                                               @RequestBody @Valid FreePostRequestDto requestDto) {
         freePostService.updateFreePost(id, requestDto);
         Optional<FreePost> findPost = freePostRepository.findById(id);
         FreePost freePost = findPost.get();
 
         return new FreePostResponseDto(
-                freePost.getId(),
-                freePost.getUserId(),
+                freePost.getMemberId(),
                 freePost.getTitle(),
                 freePost.getDetail(),
                 freePost.getCreateAt(),
@@ -71,8 +71,7 @@ public class FreePostController {
 
         return postAll.stream()
                 .map(freePostRequestDto -> new FreePostResponseDto(
-                        freePostRequestDto.getId(),
-                        freePostRequestDto.getUserId(),
+                        freePostRequestDto.getMemberId(),
                         freePostRequestDto.getTitle(),
                         freePostRequestDto.getDetail(),
                         freePostRequestDto.getCreateAt(),
@@ -91,8 +90,7 @@ public class FreePostController {
 
         return findAll.stream()
                 .map(freePostRequestDto -> new FreePostResponseDto(
-                        freePostRequestDto.getId(),
-                        freePostRequestDto.getUserId(),
+                        freePostRequestDto.getMemberId(),
                         freePostRequestDto.getTitle(),
                         freePostRequestDto.getDetail(),
                         freePostRequestDto.getCreateAt(),
@@ -109,8 +107,7 @@ public class FreePostController {
         FreePostRequestDto freePostDto = freePostService.getPost(id);
 
         return new FreePostResponseDto(
-                freePostDto.getId(),
-                freePostDto.getUserId(),
+                freePostDto.getMemberId(),
                 freePostDto.getTitle(),
                 freePostDto.getDetail(),
                 freePostDto.getCreateAt(),
@@ -122,6 +119,6 @@ public class FreePostController {
     }
     
     // 게시물 삭제
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("post/delete/{id}")
     public void freePostDelete(@PathVariable("id") Long id) {freePostService.deletePost(id);}
 }

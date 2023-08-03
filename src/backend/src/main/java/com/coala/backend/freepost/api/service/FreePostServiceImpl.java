@@ -27,6 +27,7 @@ public class FreePostServiceImpl implements FreePostService{
     @Transactional
     @Override
     public void savePost(FreePostRequestDto postDto) {
+
         freePostRepository.save(postDto.toEntity());
     }
 
@@ -37,7 +38,7 @@ public class FreePostServiceImpl implements FreePostService{
         return freePostRepository.findAll(pageable).stream()
                 .map(freePost -> FreePostRequestDto.builder()
                         .id(freePost.getId())
-                        .userId(freePost.getUserId())
+                        .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())
                         .createAt(freePost.getCreateAt())
@@ -60,7 +61,7 @@ public class FreePostServiceImpl implements FreePostService{
 
         return FreePostRequestDto.builder()
                 .id(free.getId())
-                .userId(free.getUserId())
+                .memberId(free.getMemberId())
                 .title(free.getTitle())
                 .detail(free.getDetail())
                 .createAt(free.getCreateAt())
@@ -85,7 +86,7 @@ public class FreePostServiceImpl implements FreePostService{
         return freePostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(freePost -> FreePostRequestDto.builder()
                         .id(freePost.getId())
-                        .userId(freePost.getUserId())
+                        .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())
                         .createAt(freePost.getCreateAt())
@@ -104,7 +105,11 @@ public class FreePostServiceImpl implements FreePostService{
         Optional<FreePost> byId = freePostRepository.findById(id);
         FreePost freePost = byId.get();
 
-        freePost.updateFreePost(dto.getUserId(), dto.getTitle(), dto.getDetail()
-                , dto.getImagePath(), dto.isAnonymous());
+        freePost.updateFreePost(
+                dto.getMemberId(),
+                dto.getTitle(),
+                dto.getDetail(),
+                dto.getImagePath(),
+                dto.isAnonymous());
     }
 }

@@ -1,7 +1,7 @@
 package com.coala.backend.techpost.db.dto.request;
 
-import com.coala.backend.techpost.db.entity.TechPost;
 import com.coala.backend.techpost.db.entity.TechComment;
+import com.coala.backend.techpost.db.entity.TechPost;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +33,7 @@ public class TechCommentRequestDto {
         return TechComment.builder()
                 .fpId(this.fpId)
                 .author(this.author)
+                .updateAt(this.updateAt)
                 .content(this.content)
                 .build();
     }

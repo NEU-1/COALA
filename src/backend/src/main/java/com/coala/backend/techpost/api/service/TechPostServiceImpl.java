@@ -37,7 +37,7 @@ public class TechPostServiceImpl implements TechPostService{
         return techPostRepository.findAll(pageable).stream()
                 .map(techPost -> TechPostRequestDto.builder()
                         .id(techPost.getId())
-                        .userId(techPost.getUserId())
+                        .memberId(techPost.getMemberId())
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
                         .createAt(techPost.getCreateAt())
@@ -60,7 +60,7 @@ public class TechPostServiceImpl implements TechPostService{
 
         return TechPostRequestDto.builder()
                 .id(tech.getId())
-                .userId(tech.getUserId())
+                .memberId(tech.getMemberId())
                 .title(tech.getTitle())
                 .detail(tech.getDetail())
                 .createAt(tech.getCreateAt())
@@ -85,7 +85,7 @@ public class TechPostServiceImpl implements TechPostService{
         return techPostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(techPost -> TechPostRequestDto.builder()
                         .id(techPost.getId())
-                        .userId(techPost.getUserId())
+                        .memberId(techPost.getMemberId())
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
                         .createAt(techPost.getCreateAt())
@@ -104,7 +104,7 @@ public class TechPostServiceImpl implements TechPostService{
         Optional<TechPost> byId = techPostRepository.findById(id);
         TechPost techPost = byId.get();
 
-        techPost.updateTechPost(dto.getUserId(), dto.getTitle(), dto.getDetail()
+        techPost.updateTechPost(dto.getMemberId(), dto.getTitle(), dto.getDetail()
                 , dto.getImagePath(), dto.getNickname());
     }
 }

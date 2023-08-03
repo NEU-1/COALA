@@ -15,15 +15,13 @@ public class FreeCommentResponseDto {
     private String author;
     private String content;
     private LocalDateTime createAt;
-    private LocalDateTime updateAt;
 
     @Builder
-    public FreeCommentResponseDto(Long id, FreePost fpId, String author, String content, LocalDateTime createAt, LocalDateTime updateAt) {
+    public FreeCommentResponseDto(Long id, FreePost fpId, String author, String content, LocalDateTime createAt) {
         this.id = id;
         this.fpId = fpId;
         this.author = author;
         this.content = content;
         this.createAt = createAt;
-        this.updateAt = updateAt;
     }
 }
