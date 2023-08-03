@@ -1,12 +1,8 @@
 import React from 'react';
 import { styled } from 'styled-components';
 
-const Home = () => {
-  return(
-    <SLayout>
-      <div>Home</div>
-    </SLayout>
-  )
+const NotFound = () => {
+  return <SLayout>NotFound</SLayout>;
 };
 
 const SLayout = styled.div`
@@ -14,7 +10,11 @@ const SLayout = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 170px;
+  height: 100vh;
+  background-color: black;
+  color: white;
+  font-size: 64px;
+  font-weight: 700;
 `;
 
-export default Home;
+export default NotFound;

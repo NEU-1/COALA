@@ -1,6 +1,6 @@
-import React from 'react';
-import { styled } from 'styled-components';
-import { colors } from '../../assets/colors';
+import React from "react";
+import { styled } from "styled-components";
+import { colors } from "../../assets/colors";
 
 const ModifyUserinfo = ({
   form,
@@ -17,7 +17,7 @@ const ModifyUserinfo = ({
   return (
     <SLayout>
       <SContainer>
-        <STitle>회원정보 수정</STitle>
+      <STitle>회원정보 수정</STitle>
         <SContentsContainer>
           <SLabel>이메일</SLabel>
           <SInput
@@ -63,11 +63,11 @@ const ModifyUserinfo = ({
           <SLabel>지역(캠퍼스) / 기수</SLabel>
           <SSelectBox>
             <SSelect defaultValue={form.campus} disabled>
-              <option value={'서울'}>서울</option>
-              <option value={'대전'}>대전</option>
-              <option value={'구미'}>구미</option>
-              <option value={'광주'}>광주</option>
-              <option value={'부울경'}>부울경</option>
+              <option value={"서울"}>서울</option>
+              <option value={"대전"}>대전</option>
+              <option value={"구미"}>구미</option>
+              <option value={"광주"}>광주</option>
+              <option value={"부울경"}>부울경</option>
             </SSelect>
             <SSelect defaultValue={form.class} disabled>
               <option value={9}>9기</option>
@@ -114,6 +114,7 @@ const SContainer = styled.div`
 const STitle = styled.div`
   margin-top: 20px;
   font-size: 28px;
+
   font-weight: 700;
   line-height: normal;
   text-transform: uppercase;
@@ -170,7 +171,7 @@ const SInputWithConfirmMsg = styled.div`
     font-size: 12px;
     font-weight: 500;
     padding: 5px;
-    visibility: ${(props) => (props.isMatch ? 'hidden' : 'visible')};
+    visibility: ${(props) => (props.isMatch ? "hidden" : "visible")};
   }
 `;
 
@@ -211,7 +212,7 @@ const SBtn = styled.div`
   gap: 10px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => (props.color ? props.color : '#d9d9d9')};
+  background-color: ${(props) => (props.color ? props.color : "#d9d9d9")};
   color: white;
   cursor: pointer;
 `;

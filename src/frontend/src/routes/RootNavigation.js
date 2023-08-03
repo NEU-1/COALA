@@ -19,10 +19,19 @@ import AgreementContainer from '../components/SignUp/containers/AgreementContain
 import MyPageContainer from '../components/MyPage/containers/MyPageContainer';
 import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUserinfoContainer';
 
-
 // 채팅
-import ChatList from '../components/ChatList';
-import ChatRoom from '../components/ChatRoom';
+import ChatListContainer from '../components/Chat/containers/ChatListContainer';
+import ChatRoomContainer from '../components/Chat/containers/ChatRoomContainer';
+import ChatContainer from '../components/Chat/containers/ChatContainer';
+
+import NotFound from '../pages/NotFound';
+// 제공자 페이지
+import SellListBoard from '../components/SellBoard/SellListBoard';
+
+// 테크게시판
+import TechViewPage from '../components/Techboard/components/TechViewPage';
+import TechBoardWrite from '../components/Techboard/components/TechBoardWrite';
+import TechBoardList from '../components/Techboard/components/TechBoardList';
 
 const RootNavigation = () => {
   return (
@@ -32,7 +41,7 @@ const RootNavigation = () => {
           <Route index path="/" element={<Home />} />
           <Route path="/my-page" element={<MyPageContainer />} />
           <Route
-            path="/my-page/modify-userinfo"
+            path="/modify-userinfo"
             element={<ModifyUserinfoContainer />}
           />
         </Route>
@@ -43,8 +52,16 @@ const RootNavigation = () => {
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
 
-        <Route path="/chatList" element={<ChatList />} />
-        <Route path="/chat/:roomName" element={<ChatRoom />} />
+        <Route path="/chat" element={<ChatContainer />}>
+          <Route index path="/chat/chat-list" element={<ChatListContainer />} />
+          <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+        <Route path="/selllistboard" element={<SellListBoard />} />
+        <Route path="/tech/:postId" element={<TechViewPage />} />
+        <Route path="/tech/write" element={<TechBoardWrite />} />
+        <Route path="/tech" element={<TechBoardList />} />
       </Routes>
     </BrowserRouter>
   );
