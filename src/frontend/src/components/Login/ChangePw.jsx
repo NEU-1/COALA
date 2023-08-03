@@ -28,7 +28,7 @@ const ChangePw = () => {
 
   const onClickChangePw = async (e) => {
     e.preventDefault();
-    if (password === setPassword) {
+    if (password === passwordCheck) {
       
       requestPut(`member/updatepassword`, { email: email, password: password })
       .then((res) => {
