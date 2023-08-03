@@ -20,9 +20,9 @@ import MyPageContainer from '../components/MyPage/containers/MyPageContainer';
 import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUserinfoContainer';
 
 // 제공자 페이지
-import SellListBoard from '../components/SellBoard/SellListBoard';
-import SellPostCreate from '../components/SellBoard/SellPostCreate';
-import SellPostDetail from '../components/SellBoard/SellPostDetail';
+import Store from '../components/SellBoard/Store';
+import StoreDetail from '../components/SellBoard/StoreDetail';
+import StoreWrite from '../components/SellBoard/StoreWrite';
 
 // 테크게시판
 import TechViewPage from '../components/Techboard/components/TechViewPage';
@@ -50,9 +50,9 @@ const RootNavigation = () => {
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
 
-        <Route path="/selllistboard" element={<SellListBoard />} />
-        <Route path="/sellpostcreate" element={<SellPostCreate />} />
-        <Route path="/sellpostdetail" element={<SellPostDetail />} />
+        <Route path="/store" element={<Store />} />
+        <Route path="/store/write" element={<StoreWrite />} />
+        <Route path="/store/:postId" element={<StoreDetail />} />
 
         <Route path="/tech/:postId" element={<TechViewPage />} />
         <Route path="/tech" element={<TechBoardList />} />

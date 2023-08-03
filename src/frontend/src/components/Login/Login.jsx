@@ -36,17 +36,21 @@ const Login = () => {
   const handleLoginFailure = (res) => {
     setLoginFailCount(loginFailCount + 1);
     setErrorMessage(
-      `아이디 또는 비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`
+      `이메일 또는 비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`
     );
-    if (res.data.userId === null) {
-      setErrorMessage("존재하지 않는 계정입니다.");
-    } else if (res.data.msg === null) {
-      setErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
+    if (res.statusCode == 404) {
+      setErrorMessage("존재하지 않는 회원입니다.");
+    } else if (res.statusCode == 400) {
+      setErrorMessage("비밀번호가 일치하지 않습니다.");
+    } else {
+      setErrorMessage("누구세요?")
     }
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (res) => {
     setLoginFailCount(0);
+    const accessToken = res.headers['Access_token']
+    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
     sessionStorage.setItem("user_id", inputId);
     document.location.href = "/";
   };
@@ -58,19 +62,18 @@ const Login = () => {
       );
       return;
     }
+    const data = {
+      "email": inputId,
+      "password": inputPw,
+    };
 
     axios
-      .post("-로그인처리폼", null, {
-        params: {
-          user_id: inputId,
-          user_pw: inputPw,
-        },
-      })
+      .post("http://192.168.100.129:9999/api/member/login", data)
       .then((res) => {
-        if (res.data.userId == null || res.data.msg === null) {
+        if (res.statusCode === 200) {
+          handleLoginSuccess(res);
+        } else {
           handleLoginFailure(res);
-        } else if (res.data.userId === inputId) {
-          handleLoginSuccess();
         }
       })
       .catch((err) => {
