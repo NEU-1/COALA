@@ -3,8 +3,7 @@ import axios from "axios";
 import "./Style.css";
 import { useNavigate } from "react-router-dom";
 import CCheckBox from "../Common/CCheckBox";
-import { requestPost } from '../../lib/api/api';
-
+import { requestPost } from "../../lib/api/api";
 
 const Login = () => {
   const onSubmitHandler = (e) => {
@@ -40,36 +39,36 @@ const Login = () => {
     setErrorMessage(
       `이메일 또는 비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`
     );
-    console.log(res)
+    console.log(res);
     if (res.data.status === 404) {
       setErrorMessage("존재하지 않는 회원입니다.");
     } else if (res.data.status === 400) {
       setErrorMessage("비밀번호가 일치하지 않습니다.");
     } else {
-      setErrorMessage("누구세요?")
+      setErrorMessage("누구세요?");
     }
   };
-  
+
   const handleLoginSuccess = (res) => {
     setLoginFailCount(0);
-    const accessToken = res.headers['Access_Token']
-    const refreshToken = res.headers['Refresh_Token']
-    axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-    axios.defaults.headers.common['Refresh-Token'] = refreshToken;
+    const accessToken = res.headers["Access_Token"];
+    // const refreshToken = res.headers['Refresh_Token']
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    // axios.defaults.headers.common['Refresh-Token'] = refreshToken;
     document.location.href = "/";
   };
-  
+
   const onClickLogin = () => {
     if (loginFailCount >= 5) {
       setErrorMessage(
         "가능한 횟수를 초과하였습니다. 비밀번호를 재 설정 해주세요"
-        );
-        return;
-      }
-      requestPost(`member/login`, {
-        email: inputId,
-        password: inputPw,
-      })
+      );
+      return;
+    }
+    requestPost(`member/login`, {
+      email: inputId,
+      password: inputPw,
+    })
       .then((res) => {
         if (res.status === 200) {
           handleLoginSuccess(res);
@@ -86,7 +85,7 @@ const Login = () => {
     setSaveIDFlag(e.target.checked);
     if (e.target.checked) {
       localStorage.setItem(saveId, inputId);
-      console.log(inputId)
+      console.log(inputId);
     } else {
       localStorage.setItem(saveId, "");
     }

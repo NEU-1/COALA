@@ -23,3 +23,12 @@ export const requestPost = async (url, body) => {
     console.log(error);
   }
 };
+
+export const requestPut = async (url, body) => {
+  try {
+    const data = await axios.put(baseUrl + url, body, headers);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};

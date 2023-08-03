@@ -1,7 +1,8 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import CertificationTimer from "./CertificationTimer";
+import { requestPost } from '../../lib/api/api';
+
 
 const FindPw = () => {
   const onSubmitHandler = (e) => {
@@ -44,25 +45,33 @@ const FindPw = () => {
     setTurnOnTimer(true);
     if (email) {
       try {
-        await axios.post("/api/send-email", { email });
-        alert("Email sent");
+        await requestPost("member/findpassword", {
+          email:email,
+          name:name,
+          studentId:studentId,
+          type : "find"
+        });
+        alert("이메일을 보냈습니다.");
       } catch (error) {
-        console.error("Error sending email", error);
+        console.error("이메일 발송 에러", error);
       }
       setSendCertification(true);
     } else {
       alert("이메일을 입력해주세요.");
     }
   };
+  
 
   const onCheckCertification = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/check-certification", {
-        email,
-        certification,
+      const response = await requestPost("member/certification", {
+        email:email,
+        otp:certification,
+        type:"find",
       });
-      if (response.data.success) {
+      console.log(response)
+      if (response.data.statusCode) {
         alert('인증 완료!')
         navigate("/changepw");
       } else {
