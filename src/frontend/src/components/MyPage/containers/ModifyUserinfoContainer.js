@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ModifyUserinfo from '../ModifyUserinfo';
 import { useNavigate } from 'react-router-dom';
+import { requestGet, requestPut } from '../../../lib/api/api';
+import Swal from 'sweetalert2';
 
 const ModifyUserinfoContainer = () => {
   const navigate = useNavigate();
@@ -9,11 +11,11 @@ const ModifyUserinfoContainer = () => {
     email: 'coala1080@gmail.com',
     password: '',
     name: '코알라',
-    nickName: '코딩장비 알아보고 나눠쓰고',
-    studentNo: '1234567',
-    campus: '구미',
-    class: 9,
-    phoneNumber: '010-1234-5678',
+    nickname: '코딩장비 알아보고 나눠쓰고',
+    studentId: '1234567',
+    depart: '구미',
+    ordinal: 9,
+    phoneNo: '010-1234-5678',
   });
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
@@ -26,18 +28,35 @@ const ModifyUserinfoContainer = () => {
   const onChangePasswordConfirm = (e) => {
     setPasswordConfirm(e.target.value);
   };
-  const onChangeNickName = (e) => {
+  const onChangeNickname = (e) => {
     setForm({ ...form, nickName: e.target.value });
-  };
-  const onChangePhoneNumber = (e) => {
-    setForm({ ...form, phoneNumber: e.target.value });
   };
 
   const onClickModifyBtn = () => {
-    if (form.password && form.nickName && isMatch) {
+    if (form.password && form.nickname && isMatch) {
       // 회원정보 수정 api 호출
       console.log(form, isMatch);
-      navigate('/', { replace: true }); // 이동한 home으로 history를 초기화하고 싶음.
+      requestPut(`member/update-info`, {
+        nickname: form.nickname,
+        password: form.password,
+      }).then((res) => {
+        if (res.data.statusCode === 200) {
+          Swal.fire({
+            title: `<div style="font-size: 20px; font-weight: 700">${res.data.msg}</div>`,
+            text: '다시 로그인 해주세요.',
+          }).then(() => {
+            //로그아웃 처리
+            navigate('/login', { replace: true }); // 이동한 로그인 페이지로 history를 초기화하고 싶음.
+          });
+        } else if (res.data.statusCode === 401) {
+          Swal.fire({
+            title: `<div style="font-size: 20px; font-weight: 700">${res.data.msg}</div>`,
+          }).then(() => {
+            //로그아웃 처리
+            navigate('/login', { replace: true }); // 이동한 로그인 페이지로 history를 초기화하고 싶음.
+          });
+        }
+      });
     }
   };
 
@@ -45,6 +64,7 @@ const ModifyUserinfoContainer = () => {
     navigate(-1);
   };
 
+  // 비밀번호, 비밀번호 확인에 값이 변할 경우 둘의 일치여부 확인
   useEffect(() => {
     if (passwordConfirm) {
       if (form.password !== passwordConfirm) {
@@ -62,23 +82,54 @@ const ModifyUserinfoContainer = () => {
 
   useEffect(() => {
     // 유저 정보를 가져와서 form에 저장
+    requestGet(`member/info`)
+      .then((res) => {
+        if (res.data.statusCode === 200) {
+          console.log(res.data);
+          setForm({ ...form, email: res.data.email });
+          setForm({ ...form, name: res.data.name });
+          setForm({ ...form, nickname: res.data.nickname });
+          setForm({ ...form, studentId: res.data.studentId });
+          setForm({ ...form, depart: res.data.depart });
+          setForm({ ...form, phoneNo: res.data.phoneNo });
+        } else if (res.data.statusCode === 401) {
+          Swal.fire({
+            title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
+          }).then(() => {
+            //로그아웃 처리
+            navigate('/login', { replace: true });
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
-  return (
-    <ModifyUserinfo
-      form={form}
-      setForm={setForm}
-      passwordConfirmMsg={passwordConfirmMsg}
-      isMatch={isMatch}
-      passwordConfirm={passwordConfirm}
-      onChangePassword={onChangePassword}
-      onChangePasswordConfirm={onChangePasswordConfirm}
-      onChangeNickName={onChangeNickName}
-      onChangePhoneNumber={onChangePhoneNumber}
-      onClickModifyBtn={onClickModifyBtn}
-      onClickBackBtn={onClickBackBtn}
-    />
-  );
+  if (
+    form.email &&
+    form.name &&
+    form.nickname &&
+    form.studentId &&
+    form.depart &&
+    form.ordinal &&
+    form.phoneNo
+  ) {
+    return (
+      <ModifyUserinfo
+        form={form}
+        setForm={setForm}
+        passwordConfirmMsg={passwordConfirmMsg}
+        isMatch={isMatch}
+        passwordConfirm={passwordConfirm}
+        onChangePassword={onChangePassword}
+        onChangePasswordConfirm={onChangePasswordConfirm}
+        onChangeNickname={onChangeNickname}
+        onClickModifyBtn={onClickModifyBtn}
+        onClickBackBtn={onClickBackBtn}
+      />
+    );
+  }
 };
 
 export default ModifyUserinfoContainer;

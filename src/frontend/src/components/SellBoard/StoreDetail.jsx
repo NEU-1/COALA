@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { images } from '../../assets/images';
-import { useNavigate } from "react-router-dom";
+import { images } from "../../assets/images";
+import { useNavigate, useParams } from "react-router-dom";
 
-const SellPostDetail = () => {
+const StoreDetail = () => {
   const [pictureNum, setpictureNum] = useState("");
   const [like, setlike] = useState(false);
   const [login, setLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState("현재 로그인한 사용자 정보");
   const [postAuthor, setPostAuthor] = useState("게시글 작성자 정보");
-  const isAuthor = currentUser === postAuthor; 
-  const [showModal, setShowModal] = useState(false)
+  const isAuthor = currentUser === postAuthor;
+  const [showModal, setShowModal] = useState(false);
 
+  const { postId } = useParams();
+  console.log(postId);
   const picturePlusBtn = () => {
     setpictureNum((pictureNum + 1) % "사진수");
   };
@@ -20,33 +22,38 @@ const SellPostDetail = () => {
   const likeBtn = () => {
     setlike(!like);
   };
-  const handleDeleteClick = () => {
+  const goDelete = () => {
     setShowModal(true);
-  }
-  const handleConfirmDelete = () => {
-    setShowModal(false)
-    // 서버에 글 삭제 요청
-    navigate("/selllistboard")
-  }
-  const handleCancel = () => {
-    setShowModal(false)
-  }
-
+  };
   const navigate = useNavigate();
+  const handleConfirmDelete = () => {
+    setShowModal(false);
+    // 서버에 글 삭제 요청
+    navigate("/store");
+  };
+  const handleCancel = () => {
+    setShowModal(false);
+  };
+
   const goProfile = () => {
     navigate("/profile");
   };
   const goChat = () => {
     if (login) {
-        // 채팅 연결
+      // 채팅 연결
     } else {
-        alert('로그인하세요')
-        navigate("/login")
+      alert("로그인하세요");
+      navigate("/login");
     }
-  }
+  };
   const goList = () => {
-    navigate("/selllistboard")
-  }
+    navigate("/store");
+  };
+  const goUpdate = () => {
+    if ("대기중") {
+      navigate(`/update/${postId}`);
+    }
+  };
 
   useEffect(() => {
     if (like) {
@@ -86,15 +93,12 @@ const SellPostDetail = () => {
             ${"product"} / ${"day"}
           </p>
         </div>
-        {!isAuthor && (like ? (
-          <img
-            src={images.like}
-            alt="React"
-            onClick={likeBtn}
-          />
-        ) : (
-          <img src={images.notlike} alt="React" onClick={likeBtn} />
-        ))}
+        {!isAuthor &&
+          (like ? (
+            <img src={images.like} alt="React" onClick={likeBtn} />
+          ) : (
+            <img src={images.notlike} alt="React" onClick={likeBtn} />
+          ))}
       </div>
       <div>
         <p>{"content"} 이걸 안씀?</p>
@@ -114,24 +118,24 @@ const SellPostDetail = () => {
           </div>
         ) : (
           <div>
-            <button onClick={handleDeleteClick}>삭제</button>
-            <button>수정</button>
-            <button>목록</button>
+            <button onClick={goDelete}>삭제</button>
+            <button onClick={goUpdate}>수정</button>
+            <button onClick={goList}>목록</button>
           </div>
         )}
       </div>
       {showModal && (
         <div>
-            <p>삭제</p>
-            <p>정말 삭제하시겠습니까?</p>
-            <div>
-                <button onClick={handleConfirmDelete}>삭제</button>
-                <button onClick={handleCancel}>취소</button>
-            </div>
+          <p>삭제</p>
+          <p>정말 삭제하시겠습니까?</p>
+          <div>
+            <button onClick={handleConfirmDelete}>삭제</button>
+            <button onClick={handleCancel}>취소</button>
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default SellPostDetail;
+export default StoreDetail;

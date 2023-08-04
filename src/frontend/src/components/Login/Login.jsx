@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Style.css";
 import { useNavigate } from "react-router-dom";
-import CCheckBox from "../SignUp/components/CCheckBox";
+import CCheckBox from "../Common/CCheckBox";
+import { requestPost } from "../../lib/api/api";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const onSubmitHandler = (e) => {
@@ -33,21 +35,24 @@ const Login = () => {
   const oninputIdHandler = (e) => setInputId(e.currentTarget.value);
   const oninputPwHandler = (e) => setInputPw(e.currentTarget.value);
 
-  const handleLoginFailure = (res) => {
+  const handleLoginFailure = (err) => {
     setLoginFailCount(loginFailCount + 1);
-    setErrorMessage(
-      `아이디 또는 비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`
-    );
-    if (res.data.userId === null) {
-      setErrorMessage("존재하지 않는 계정입니다.");
-    } else if (res.data.msg === null) {
-      setErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
+    
+    if (err.response.status === 404) {
+      setErrorMessage("존재하지 않는 회원입니다.");
+    } else if (err.response.status === 400) {
+      setErrorMessage(`비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`);
+    } else {
+      setErrorMessage("누구세요?");
     }
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (res) => {
     setLoginFailCount(0);
-    sessionStorage.setItem("user_id", inputId);
+    const accessToken = res.headers["Access_Token"];
+    // const refreshToken = res.headers['Refresh_Token']
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    // axios.defaults.headers.common['Refresh-Token'] = refreshToken;
     document.location.href = "/";
   };
 
@@ -58,23 +63,25 @@ const Login = () => {
       );
       return;
     }
-
-    axios
-      .post("-로그인처리폼", null, {
-        params: {
-          user_id: inputId,
-          user_pw: inputPw,
-        },
-      })
+    requestPost(`member/login`, {
+      email: inputId,
+      password: inputPw,
+    })
       .then((res) => {
-        if (res.data.userId == null || res.data.msg === null) {
-          handleLoginFailure(res);
-        } else if (res.data.userId === inputId) {
-          handleLoginSuccess();
+        if (res.status === 200) {
+          Swal.fire({
+            icon: "success",
+            title: "로그인 성공!",
+            html: "",
+            timer: 1000,
+            showConfirmButton: false,
+          }).then(() => {
+            handleLoginSuccess(res);
+          });
         }
       })
       .catch((err) => {
-        console.error(err);
+        handleLoginFailure(err);
       });
   };
 
@@ -82,7 +89,7 @@ const Login = () => {
     setSaveIDFlag(e.target.checked);
     if (e.target.checked) {
       localStorage.setItem(saveId, inputId);
-      console.log(inputId)
+      console.log(inputId);
     } else {
       localStorage.setItem(saveId, "");
     }

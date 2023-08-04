@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import CCheckBox from "../SignUp/components/CCheckBox";
+import CCheckBox from "../Common/CCheckBox";
 import ImgMediaCard from "./components/Carditem";
 import styled from "styled-components";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
-const SellListBoard = () => {
+
+const Store = () => {
   const product = ["키보드", "마우스", "헤드셋", "태블릿"];
   const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
 
@@ -95,15 +97,21 @@ const SellListBoard = () => {
   const onClickHandler = () => {
     console.log(isLogin);
     if (!isLogin) {
-      alert("게시글 작성은 로그인 후 가능합니다.");
+      Swal.fire({
+        icon: "warning",
+        title: "게시글 작성은 로그인 후 가능합니다.",
+        html: "",
+        timer: 1000,
+        showConfirmButton: false,
+      })
       navigate("/login");
     } else {
-      navigate("/sellpostcreate");
+      navigate("/store/write");
     }
   };
   const handleCardClick = (id) => {
     console.log(id)
-    navigate(`글 상세보기 주소/${id}`);
+    navigate(`${id}`);
   };
 
   useEffect(() => {
@@ -388,4 +396,4 @@ const SGage = styled(Slider)`
   height: 13px;
 `;
 
-export default SellListBoard;
+export default Store;

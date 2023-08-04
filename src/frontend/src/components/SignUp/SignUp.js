@@ -11,11 +11,11 @@ const SignUp = ({
   onChangePassword,
   onChangePasswordConfirm,
   onChangeName,
-  onChangeNickName,
-  onChangeStudentNo,
+  onChangeNickname,
+  onChangeStudentId,
   onChangeDepart,
   onChangeOrdinal,
-  onChangePhoneNumber,
+  onChangePhoneNo,
   onClickSignUpBtn,
   onClickBackBtn,
   onClickEmailAuthBtn,
@@ -25,6 +25,18 @@ const SignUp = ({
       <SContainer>
         <STitle>coala</STitle>
         <SContentsContainer>
+          <SInput
+            type="text"
+            placeholder="이름"
+            value={form.name}
+            onChange={onChangeName}
+          />
+          <SInput
+            type="text"
+            placeholder="학번"
+            value={form.studentId}
+            onChange={onChangeStudentId}
+          />
           <SInputEmail>
             <input
               type="text"
@@ -52,22 +64,11 @@ const SignUp = ({
 
           <SInput
             type="text"
-            placeholder="이름"
-            value={form.name}
-            onChange={onChangeName}
-          />
-          <SInput
-            type="text"
             placeholder="별명"
-            value={form.nickName}
-            onChange={onChangeNickName}
+            value={form.nickname}
+            onChange={onChangeNickname}
           />
-          <SInput
-            type="text"
-            placeholder="학번"
-            value={form.studentNo}
-            onChange={onChangeStudentNo}
-          />
+
           <SSelectBox>
             <SSelect defaultValue={'placeholder'} onChange={onChangeDepart}>
               <option
@@ -93,15 +94,15 @@ const SignUp = ({
               >
                 기수
               </option>
-              <option value={9}>9기</option>
-              <option value={10}>10기</option>
+              <option value={'9기'}>9기</option>
+              <option value={'10기'}>10기</option>
             </SSelect>
           </SSelectBox>
           <SInput
             type="text"
-            placeholder="전화번호"
-            value={form.phoneNumber}
-            onChange={onChangePhoneNumber}
+            placeholder="전화번호('-'없이)"
+            value={form.phoneNo}
+            onChange={onChangePhoneNo}
           />
         </SContentsContainer>
         <SBtnContainer>
@@ -215,6 +216,7 @@ const SInputEmail = styled.div`
     background: ${colors.primary};
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     color: white;
+    text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
     cursor: pointer;
   }
 `;
@@ -258,6 +260,7 @@ const SBtn = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: ${(props) => (props.color ? props.color : '#d9d9d9')};
   color: white;
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 `;
 

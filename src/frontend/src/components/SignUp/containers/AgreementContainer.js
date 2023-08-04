@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import Agreement from '../Agreement';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const AgreementContainer = () => {
   const navigate = useNavigate();
@@ -30,6 +31,12 @@ const AgreementContainer = () => {
   const onClickNextBtn = () => {
     if (isAgree1 && isAgree2) {
       navigate('/sign-up');
+    } else {
+      Swal.fire({
+        title:
+          '<div style="font-size: 16px; font-weight: 700">전체 동의해주세요.</div>',
+        width: '300px',
+      });
     }
   };
 
