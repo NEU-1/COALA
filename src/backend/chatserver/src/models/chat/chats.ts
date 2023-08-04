@@ -11,13 +11,8 @@ import {
   buildSchema
 } from '@/lib/queryBuilder'
 
-type dataForm = {
-  room_id : bigint,
-  member_id : bigint, // 이후에 member_id 로 변경해야함
-  text_content : Text,
-};
 
-const Create = async (inputData : dataForm) =>{
+const Create = async (inputData : Partial<chat>) =>{
   try{
     const chatting_data = {...inputData, created_at : timestamp()}
     const result = await createQuery('chat_content', chatting_data);

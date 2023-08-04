@@ -8,7 +8,7 @@ import {
 import {
   buildSchema, buildConditionQuery
 } from '@/lib/queryBuilder'
-type dataForm = Partial<User>;
+type dataForm = any;
 
 const Read = async (target : object) => {
   try{
