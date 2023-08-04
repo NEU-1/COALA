@@ -20,7 +20,7 @@ public class FreeCommentRequestDto {
 
     @Builder
     public FreeCommentRequestDto(Long id, FreePost fpId, String author, String content,
-                             LocalDateTime createAt, LocalDateTime updateAt) {
+                                 LocalDateTime createAt, LocalDateTime updateAt) {
         this.id = id;
         this.fpId = fpId;
         this.author = author;
@@ -36,6 +36,4 @@ public class FreeCommentRequestDto {
                 .content(this.content)
                 .build();
     }
-
-
 }

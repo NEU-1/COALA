@@ -19,19 +19,20 @@ import java.util.stream.Collectors;
 */
 
 @RestController
+@CrossOrigin(origins="*")
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/api/tech/")
 public class TechPostController {
     private final TechPostServiceImpl techPostService;
     private final TechPostRepository techPostRepository;
 
     // 게시글 저장
-    @PostMapping("api/tech/post/save")
-    public TechPostResponseDto savePost(@RequestBody @Valid TechPostRequestDto requestDto) {
+    @PostMapping("post/save")
+    public TechPostResponseDto saveTechPost(@RequestBody @Valid TechPostRequestDto requestDto) {
         techPostService.savePost(requestDto);
         return new TechPostResponseDto(
                 requestDto.toEntity().getId(),
-                requestDto.toEntity().getUserId(),
+                requestDto.toEntity().getMemberId(),
                 requestDto.toEntity().getTitle(),
                 requestDto.toEntity().getDetail(),
                 requestDto.toEntity().getCreateAt(),
@@ -43,7 +44,7 @@ public class TechPostController {
     }
 
     // 게시글 수정
-    @PutMapping("api/tech/post/update/{id}")
+    @PutMapping("post/update/{id}")
     public TechPostResponseDto updateTechPost(@PathVariable("id") Long id,
                                               @RequestBody @Valid TechPostRequestDto requestDto) {
         techPostService.updateTechPost(id, requestDto);
@@ -52,7 +53,7 @@ public class TechPostController {
 
         return new TechPostResponseDto(
                 techPost.getId(),
-                techPost.getUserId(),
+                techPost.getMemberId(),
                 techPost.getTitle(),
                 techPost.getDetail(),
                 techPost.getCreateAt(),
@@ -64,14 +65,14 @@ public class TechPostController {
     }
 
     // 모든 게시물 불러오기, page 는 page 번호
-    @GetMapping("api/tech/post/{page}")
+    @GetMapping("post/{page}")
     public List<TechPostResponseDto> techPostList(@PathVariable("page") Integer page) {
         List<TechPostRequestDto> postAll = techPostService.getPostList(page);
 
         return postAll.stream()
                 .map(techPostRequestDto -> new TechPostResponseDto(
                         techPostRequestDto.getId(),
-                        techPostRequestDto.getUserId(),
+                        techPostRequestDto.getMemberId(),
                         techPostRequestDto.getTitle(),
                         techPostRequestDto.getDetail(),
                         techPostRequestDto.getCreateAt(),
@@ -83,15 +84,15 @@ public class TechPostController {
     }
     
     // 검색어 관련 게시물 불러오기
-    @GetMapping("api/tech/post/search/{keyword}/{page}")
-    public List<TechPostResponseDto> findPosts(@PathVariable("keyword") String keyword,
+    @GetMapping("post/search/{keyword}/{page}")
+    public List<TechPostResponseDto> findTechPosts(@PathVariable("keyword") String keyword,
                                                @PathVariable("page") Integer page) {
         List<TechPostRequestDto> findAll = techPostService.searchPosts(keyword, page);
 
         return findAll.stream()
                 .map(techPostRequestDto -> new TechPostResponseDto(
                         techPostRequestDto.getId(),
-                        techPostRequestDto.getUserId(),
+                        techPostRequestDto.getMemberId(),
                         techPostRequestDto.getTitle(),
                         techPostRequestDto.getDetail(),
                         techPostRequestDto.getCreateAt(),
@@ -103,13 +104,13 @@ public class TechPostController {
     }
 
     // 게시물 상세화면
-    @GetMapping("api/tech/post/detail/{id}")
-    public TechPostResponseDto detailPost(@PathVariable("id") Long id) {
+    @GetMapping("post/detail/{id}")
+    public TechPostResponseDto detailTechPost(@PathVariable("id") Long id) {
         TechPostRequestDto techPostDto = techPostService.getPost(id);
 
         return new TechPostResponseDto(
                 techPostDto.getId(),
-                techPostDto.getUserId(),
+                techPostDto.getMemberId(),
                 techPostDto.getTitle(),
                 techPostDto.getDetail(),
                 techPostDto.getCreateAt(),
@@ -121,6 +122,6 @@ public class TechPostController {
     }
     
     // 게시물 삭제
-    @DeleteMapping("api/tech/delete/{id}")
+    @DeleteMapping("post/delete/{id}")
     public void techPostDelete(@PathVariable("id") Long id) {techPostService.deletePost(id);}
 }

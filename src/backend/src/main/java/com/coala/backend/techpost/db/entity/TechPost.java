@@ -22,9 +22,9 @@ public class TechPost {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_email", referencedColumnName = "email")
     @NotNull
-    private Member userId;
+    private Member memberId;
 
     @NotNull
     private String title;
@@ -54,8 +54,8 @@ public class TechPost {
     private int count;
 
     @Builder
-    public TechPost(Member userId, String title, String detail , String imagePath, Member nickname) {
-        this.userId = userId;
+    public TechPost(Member memberId, String title, String detail , String imagePath, Member nickname) {
+        this.memberId = memberId;
         this.title = title;
         this.detail = detail;
         this.imagePath = imagePath;
@@ -67,8 +67,8 @@ public class TechPost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateTechPost(Member userId, String title, String detail, String imagePath, Member nickname) {
-        this.userId = userId;
+    public void updateTechPost(Member memberId, String title, String detail, String imagePath, Member nickname) {
+        this.memberId = memberId;
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();

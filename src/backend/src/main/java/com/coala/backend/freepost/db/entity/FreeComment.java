@@ -45,7 +45,7 @@ public class FreeComment {
         this.content = content;
     }
 
-    public void FreeCommentUpdate(String author, String content) {
+    public void updateFreeComment(String author, String content) {
         this.author = author;
         this.content = content;
         this.updateAt = LocalDateTime.now();

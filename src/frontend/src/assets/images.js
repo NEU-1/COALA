@@ -12,4 +12,7 @@ export const images = {
     attach: '../assets/images/ic-attach.png',
     send: '../assets/images/ic-message-send.png',
   },
+  plus: '/assets/images/plus.png',
+  like: '/assets/images/like.png',
+  notlike: '/assets/images/notlike.png',
 };

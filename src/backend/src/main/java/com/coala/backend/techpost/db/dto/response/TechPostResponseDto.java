@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TechPostResponseDto {
     private Long id;
-    private Member userId;
+    private Member memberId;
     private String title;
     private String detail;
     private LocalDateTime createAt;
@@ -26,10 +26,10 @@ public class TechPostResponseDto {
     private int count;
 
     @Builder
-    public TechPostResponseDto(Long id, Member userId, String title, String detail, LocalDateTime createAt, LocalDateTime updateAt,
+    public TechPostResponseDto(Long id, Member memberId, String title, String detail, LocalDateTime createAt, LocalDateTime updateAt,
                                String imagePath, Member nickname, int views, int count) {
         this.id = id;
-        this.userId = userId;
+        this.memberId = memberId;
         this.title = title;
         this.detail = detail;
         this.createAt = createAt;
