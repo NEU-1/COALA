@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./Style.css";
 import { useNavigate } from "react-router-dom";
 import CCheckBox from "../Common/CCheckBox";
-import { requestPost } from "../../lib/api/api";
+import { ACCESS_TOKEN_EXPIRE_TIME, getAccessToken, requestPost } from "../../lib/api/api";
 import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/LoginSlice";
 
 const Login = () => {
   const onSubmitHandler = (e) => {
@@ -20,6 +21,8 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [saveIdCheck, setSaveIDFlag] = useState(false);
   const saveId = "saveId";
+
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const navigateToHome = () => {
@@ -49,11 +52,15 @@ const Login = () => {
 
   const handleLoginSuccess = (res) => {
     setLoginFailCount(0);
-    const accessToken = res.headers["Access_Token"];
-    // const refreshToken = res.headers['Refresh_Token']
-    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-    // axios.defaults.headers.common['Refresh-Token'] = refreshToken;
-    document.location.href = "/";
+    const accessToken = res.headers['access_token'];
+    const refreshToken = res.headers['refresh_token']
+    localStorage.setItem('access_token', accessToken);
+    localStorage.setItem('refresh_token', refreshToken);
+    setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
+    // 전역 상태인 isLogin을 true로 설정
+    dispatch(login());
+    
+    navigate('/', {replace: true});
   };
 
   const onClickLogin = () => {
@@ -68,6 +75,7 @@ const Login = () => {
       password: inputPw,
     })
       .then((res) => {
+        console.log(res)
         if (res.status === 200) {
           Swal.fire({
             icon: "success",
