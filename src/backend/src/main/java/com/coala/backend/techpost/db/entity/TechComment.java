@@ -1,4 +1,4 @@
-package com.coala.backend.freepost.db.entity;
+package com.coala.backend.techpost.db.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class FreeComment {
+public class TechComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "fp_id")
     @NotNull
-    private FreePost fpId;
+    private TechPost fpId;
 
     @NotNull
     private String author;
@@ -39,13 +39,14 @@ public class FreeComment {
     }
 
     @Builder
-    public FreeComment(FreePost fpId, String author, String content) {
+    public TechComment(TechPost fpId, String author, String content, LocalDateTime updateAt) {
         this.fpId = fpId;
         this.author = author;
         this.content = content;
+        this.updateAt = updateAt;
     }
 
-    public void updateFreeComment(String author, String content) {
+    public void updateTechComment(String author, String content) {
         this.author = author;
         this.content = content;
         this.updateAt = LocalDateTime.now();

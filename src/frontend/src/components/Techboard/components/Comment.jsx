@@ -21,7 +21,7 @@ const ContentText = styled.p`
     font-size: 14px;
 `;
 
-function CommentListItem(props) {
+function Comment(props) {
     const { comment } = props;
 
     return (
@@ -31,4 +31,4 @@ function CommentListItem(props) {
     )
 }
 
-export default CommentListItem
+export default Comment
