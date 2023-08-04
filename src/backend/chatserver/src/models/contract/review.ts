@@ -38,6 +38,6 @@ const Read = async (target : object) => {
 
 
 export { 
-Create,
-Read,
+    Create,
+    Read,
 }
