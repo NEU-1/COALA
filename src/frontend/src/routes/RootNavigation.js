@@ -26,6 +26,7 @@ import SellListBoard from '../components/SellBoard/SellListBoard';
 import TechBoardDetail from '../components/Techboard/components/TechBoardDetail';
 import TechBoardWrite from '../components/Techboard/components/TechBoardWrite';
 import TechBoardList from '../components/Techboard/components/TechBoardList';
+import Commentapp from '../components/Techboard/components/Commentapp';
 
 const RootNavigation = () => {
   return (
@@ -41,6 +42,7 @@ const RootNavigation = () => {
           <Route path="/tech/write" element={<TechBoardWrite />} />
           <Route path="/tech" element={<TechBoardList />} />
           <Route path="/tech/:postId" element={<TechBoardDetail />} />
+          <Route path="/tech/comment" element={<Commentapp />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

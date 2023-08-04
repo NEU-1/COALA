@@ -22,6 +22,7 @@ const SBtn = styled.div`
 const Slayout = styled.div`
   margin-top: 170px;
   width: 800px;
+  z-index: 0;
 `
 const Textinput = styled.input`
   font-size: 20px;
@@ -59,11 +60,7 @@ function TechBoardWrite(props) {
   const navigate = useNavigate();
 
   const [board, setBoard] = useState({
-    userId: {
-      id: 'Long',
-      name: 'String',
-      email: 'String',
-    },
+    email:'',
     title: '',
     detail: '',
     imagePath: 'String',
@@ -85,11 +82,11 @@ function TechBoardWrite(props) {
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
       const dataToSend = {
         ...board,
-        userId: {
-          id: 1,
-          name: 'seonjae',
-          email: 'seonjae',
-        },
+        email:'',
+        title: '',
+        detail: '',
+        imagePath: 'String',
+        isAnonymous: false,
       };
 
       await axios.post('http://i9d108.p.ssafy.io:9999/api/tech/post/save', dataToSend);
@@ -110,23 +107,6 @@ function TechBoardWrite(props) {
     // 에디터 내용을 얻어와서 변수에 저장
     const editorContent = editorRef.current?.getInstance().getMarkdown();
 
-    // 저장하고자 하는 내용을 board 객체에 추가
-    setBoard({
-      ...board,
-      detail: editorContent,
-    });
-
-    // board 객체의 detail 필드가 정상적으로 값이 채워져 있는지 확인
-    console.log("에디터 내용:", editorContent);
-
-    if (editorContent.trim() === "") {
-      alert("내용을 입력해주세요.");
-      return;
-    }
-
-    // 서버에 저장하는 코드를 이곳에 추가 (예: saveBoard 함수 호출 등)
-    // saveBoard 함수에서 이미 에러 핸들링이 있으므로 중복되지 않도록 주의
-    saveBoard();
   };
 
   return (
@@ -139,7 +119,6 @@ function TechBoardWrite(props) {
         </Titletext>
       </div>
       <div>
-        <h1> </h1>
         <Editor
           ref={editorRef}
           placeholder="내용을 입력해주세요."
@@ -156,6 +135,7 @@ function TechBoardWrite(props) {
             ['code', 'codeblock']
           ]}
           useCommandShortcut={false}
+          
         />
         <SBtn onClick={handleRegisterButton}>확인</SBtn>
       </div>

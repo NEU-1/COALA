@@ -4,7 +4,9 @@ import { colors } from '../../assets/colors';
 import { images } from '../../assets/images';
 import { Link } from 'react-router-dom';
 
+
 const HeaderV2 = () => {
+  
   return (
     <SLayout>
       <SContainer>
@@ -37,6 +39,7 @@ const SLayout = styled.div`
   top: 0;
   left: 0;
   background-color: white;
+  z-index: 30;
 `;
 
 const SContainer = styled.div`
@@ -69,6 +72,12 @@ const SLoginLink = styled(Link)`
   font-size: 16px;
   font-weight: 500;
 `;
+
+const SMypageLink = styled(Link)`
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+`
 
 const SSearchBar = styled.div`
   display: flex;

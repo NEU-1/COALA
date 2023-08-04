@@ -33,15 +33,15 @@ const TechBoardList = () => {
 
       <div>
 
-        {posts.slice(offset, offset + limit).map(({ id, title, detail, views, creatat, user,image }) => (
+        {posts.slice(offset, offset + limit).map(({ id, title, detail, views, creatat, nickname,image }) => (
           <Contentbox key={id}>
             <h3>
               {title}
             </h3>
             <Userbox>
-              <h4>user</h4>
-              <User1>2023/08/03</User1>
-              <h4>| 조회수0</h4>
+              <h4>{nickname}</h4>
+              <User1>{creatat}</User1>
+              <h4>| {views}</h4>
             </Userbox>
             <p>{detail}</p>
 
