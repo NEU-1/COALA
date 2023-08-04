@@ -1,5 +1,5 @@
 import { 
-  Create as createRoomMember,
+  Create as createOrUseRoomMember,
   Delete as DeleteRoomMember
 } from '@/models/chat/room_member'
 
@@ -15,13 +15,13 @@ const receiveData = withCors(async (
   
   if (req.method === 'POST'){
     const inputData = req.body;
-    await createRoomMember(inputData);
-    res.status(200).json({ inputData });
+    const roomUser = await createOrUseRoomMember(inputData);
+    console.log(`${inputData.name} 방으로 입장했습니다.`)
+    res.status(200).json({ roomUser });
     return 
   }
 
   if (req.method === 'DELETE'){
-
     const inputData = req.body;
     let email = 'tncks097@gmail.com';
     const testdata = {...inputData, email} // 실제로는 이렇게 받아와짐
