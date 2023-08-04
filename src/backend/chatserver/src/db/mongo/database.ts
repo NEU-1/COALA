@@ -10,7 +10,7 @@ if (!url) throw new Error('Please check your mongo URL');
 const connectDB = async (): Promise<void> => {
   try {
     await mongoose.connect(`${url}/${dbName}`, options);
-    console.log('MongoDB connected...');
+    console.log('MongoDB connected!');
   } catch (error) {
     console.error(`Error in DB connection: ${error instanceof Error ? error.message : 'unknown error'}`);
     process.exit(1);
