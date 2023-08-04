@@ -13,7 +13,7 @@ class CommentForm extends Component{
     };
     handleSubmit = e => {
         e.preventDefault();
-        const obj = {userid: 'jenny', content: this.state.value, date: '2022-04-25', updateFlag: true};
+        const obj = {userid: '', content: this.state.value, date: '', updateFlag:''};
         this.props.addList(obj);
         this.setState({
             ...this.state,

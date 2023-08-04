@@ -1,34 +1,18 @@
-import React from "react";
+import React, {Component}from "react";
 import styled from "styled-components";
+import CommentForm from './CommentForm';
+import CommentList from './CommentList';
 
-const Wrapper = styled.div`
-    width: calc(100% - 32px);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    border: 1px solid grey;
-    border-radius: 8px;
-    cursor: pointer;
-    background: white;
-    :hover {
-        background: lightgrey;
+
+class Comment extends Component{
+    render() {
+        return(
+            <ul className='comment'>
+                {this.props.children}
+            </ul>
+        )
     }
-`;
+};
 
-const ContentText = styled.p`
-    font-size: 14px;
-`;
+export default Comment;
 
-function Comment(props) {
-    const { comment } = props;
-
-    return (
-        <Wrapper>
-            <ContentText>{comment.content}</ContentText>
-        </Wrapper>
-    )
-}
-
-export default Comment

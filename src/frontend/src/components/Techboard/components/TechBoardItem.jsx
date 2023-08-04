@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
+import styled from 'styled-components'
 
 const TechBoardItem = ({ idx, title, contents, createdBy }) => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const TechBoardItem = ({ idx, title, contents, createdBy }) => {
   };
 
   return (
-    <div>
+    <Slayout>
       <Viewer 
       initialValue={contents}
     />
@@ -44,8 +45,13 @@ const TechBoardItem = ({ idx, title, contents, createdBy }) => {
         <button onClick={moveToList}>뒤로가기</button>
         <button onClick={deleteBoard}>삭제</button>
       </div>
-    </div>
+    </Slayout>
   );
 };
 
 export default TechBoardItem ;
+
+const Slayout = styled.div`
+  margin-top: 170px;
+  width: 800px;
+`
