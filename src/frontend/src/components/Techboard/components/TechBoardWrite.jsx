@@ -2,8 +2,6 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import axios from 'axios';
-import { Editor } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
 
 const SBtn = styled.div`
   display: flex;
