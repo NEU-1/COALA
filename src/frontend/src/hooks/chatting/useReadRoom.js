@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { fetchRoom } from '../../api/nodeServer/chatting'
+import { fetchRoom } from '../../api/nodeServer/Room'
 
 function useReadRoom() {
   const [data, setData] = useState([])

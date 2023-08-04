@@ -7,12 +7,8 @@ const MyPage = () => {
   return (
     <SLayout>
       <div>MyPage</div>
-<<<<<<< HEAD
-      <Link to="/modify-userinfo">회원정보 수정</Link>
-=======
       <Link to="/my-page/modify-userinfo">회원정보 수정</Link>
       <Outlet />
->>>>>>> ad5ca11fde5f06982b5a12e130700b06895e3e4c
     </SLayout>
   );
 };

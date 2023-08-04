@@ -60,7 +60,7 @@ const RootNavigation = () => {
         </Route>
 
         <Route path="*" element={<NotFound />} />
-        <Route path="/selllistboard" element={<SellListBoard />} />
+        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
         <Route path="/tech/:postId" element={<TechViewPage />} />
         <Route path="/tech" element={<TechBoardList />} />
       </Routes>
