@@ -64,9 +64,9 @@ const RootNavigation = () => {
 
         <Route path="*" element={<NotFound />} />
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
-        <Route path="/tech/:postId" element={<TechViewPage />} />
+        {/* <Route path="/tech/:postId" element={<TechViewPage />} /> */}
         <Route path="/tech" element={<TechBoardList />} />
-        <Route path="/selllistboard" element={<SellListBoard />} />
+        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
       </Routes>
     </BrowserRouter>
   );
