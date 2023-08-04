@@ -55,9 +55,6 @@ const RootNavigation = () => {
         <Route path="/store/write" element={<StoreWrite />} />
         <Route path="/store/:postId" element={<StoreDetail />} />
 
-        <Route path="/tech/:postId" element={<TechViewPage />} />
-        <Route path="/tech" element={<TechBoardList />} />
-        <Route path="/selllistboard" element={<SellListBoard />} />
       </Routes>
     </BrowserRouter>
   );

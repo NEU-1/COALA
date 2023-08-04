@@ -12,10 +12,10 @@ const TechBoardUpdate = () => {
     idx: 0,
     title: '',
     createdBy: '',
-    contents: '',
+    detail: '',
   });
   const editorRef = useRef();
-  const { title,contents } = board; //비구조화 할당
+  const { title,detail } = board; //비구조화 할당
 
   const onChange = (event) => {
     const { value, name } = event.target; //event.target에서 name과 value만 가져오기
@@ -46,7 +46,7 @@ const TechBoardUpdate = () => {
   }, []);
   const handleRegisterButton = () => {
     // 에디터 내용을 얻어와서 변수에 저장
-    const editorContent = editorRef.current?.getInstance().getMarkdown();
+    const detail = editorRef.current?.getInstance().getMarkdown();
   }
   return (
     <Slayout>
