@@ -11,17 +11,17 @@ const TechBoardItem = ({ idx, title, contents, createdBy }) => {
     navigate('/update/' + idx);
   };
 
-//   const deleteBoard = async () => {
-//     if (window.confirm('게시글을 삭제하시겠습니까?')) {
-//       await axios.delete(`//localhost:8080/board/${idx}`).then((res) => {
-//         alert('삭제되었습니다.');
-//         navigate('/board');
-//       });
-//     }
-//   };
+  const deleteBoard = async () => {
+    if (window.confirm('게시글을 삭제하시겠습니까?')) {
+      await axios.delete(`http://i9d108.p.ssafy.io:9999/api/tech/post/${idx}`).then((res) => {
+        alert('삭제되었습니다.');
+        navigate('/tech');
+      });
+    }
+  };
 
   const moveToList = () => {
-    navigate('/board');
+    navigate('/tech');
   };
 
   return (
@@ -42,6 +42,7 @@ const TechBoardItem = ({ idx, title, contents, createdBy }) => {
         <button onClick={moveToUpdate}>수정</button>
         {/* <button onClick={deleteBoard}>삭제</button> */}
         <button onClick={moveToList}>뒤로가기</button>
+        <button onClick={deleteBoard}>삭제</button>
       </div>
     </div>
   );
