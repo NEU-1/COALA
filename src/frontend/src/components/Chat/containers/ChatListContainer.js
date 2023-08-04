@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useReadRoom from '../../../hooks/chatting/useReadRoom';
-import { fetchRoom } from '../../../api/nodeServer/chatting/index';
+import { fetchRoom } from '../../../api/nodeServer/Room/index';
 import timestamp from '../../../utils/timestamp';
 import ChatList from '../ChatList';
 import { useNavigate } from 'react-router-dom';
@@ -18,25 +18,10 @@ const ChatListContainer = () => {
     navigate(`/chat/${roomId}`, { replace: true });
   };
 
-  let Lists = [
-    {
-      id: 9998,
-      name: '테스트룸1',
-      pp_id: null,
-      pr_id: null,
-      created_at: timestamp(),
-    },
-    {
-      id: 9999,
-      name: '테스트룸2',
-      pp_id: null,
-      pr_id: null,
-      created_at: timestamp(),
-    },
-  ];
+  let Lists = [ ];
 
-  // let {data} = useReadRoom();
-  let data;
+  let {data} = useReadRoom();
+  // let data;
   let rooms = data ? data.rooms : [];
   Lists = [...Lists, ...rooms];
 

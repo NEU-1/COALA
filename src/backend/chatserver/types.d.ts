@@ -22,11 +22,18 @@ interface member {
 }
 
 interface chat {
-    id : BigInt,
-    room_id : BigInt,
-    member_id : BigInt,
-    text_content : Text,
-    file_path : Array[string]
+    id : Number,
+    room_id : Number,
+    member_id : Number,
+    text_content : String,
+    chat_file_path: {
+        type : [String],
+        default : []
+    },
+    created_at: {
+      type: Date,
+      default: Date.now,
+    },
 }
 
 interface User {

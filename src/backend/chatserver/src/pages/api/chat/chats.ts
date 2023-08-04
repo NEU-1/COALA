@@ -18,9 +18,11 @@ const receiveData = withCors(async (
     console.log("채팅을 생성중입니다. ", inputData);
     const result = await createChatContent(inputData);
     if (!result){ 
+      console.log("채팅생성 실패");
       res.status(500).json({ message: `Fail to Send... at ${timestamp()}` });
       return 
     }
+    console.log("채팅생성 성공");
     res.status(200).json({ inputData, message: `Message Send! at ${timestamp()}` });
     return 
   }

@@ -1,2 +1,5 @@
-*.DS_Store
-docker_testing/
+/**/*.DS_Store
+/**/*.properties
+/**/*.propertie
+/**/*.yml
+/**/*.ym

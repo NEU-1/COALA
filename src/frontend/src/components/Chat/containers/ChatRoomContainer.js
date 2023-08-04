@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { io as socketIOClient } from 'socket.io-client';
 import socketIO from '../../../api/nodeServer/socketIO';
-import { fetchRoom } from '../../../api/nodeServer/chatting';
+import { fetchRoom } from '../../../api/nodeServer/Room';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatRoom from '../ChatRoom';
 
 let socket;
+let inform = {};
 const name = 'chats';
+
 
 const ChatRoomContainer = () => {
   const { roomName } = useParams();
@@ -30,6 +32,17 @@ const ChatRoomContainer = () => {
   const scrollToBottom = () => {
     scrollRef.current?.scrollIntoView({
       behavior: 'smooth',
+    });
+  };
+  // 초기에 메시지 로그 받아오기
+  const joinRoom = (roomName) => {
+    const email = 'tncks097@naver.com'
+    socket.emit('joinRoom', { roomName }, async (chatting_logs) => {
+      console.log(`join room[${roomName}]  successfully`);
+      const {data} = await fetchRoom.join({ roomName, email });
+      inform = data;
+      setAllMessages((pre) => [...pre, ...chatting_logs]);
+      // console.log("올 메시지",allMessages)
     });
   };
 
@@ -79,11 +92,9 @@ const ChatRoomContainer = () => {
       return;
     }
 
-    console.log('emitted');
-    console.log(username, message);
+    console.log('message emitted');
     socket.emit('send-message', {
-      roomName,
-      username,
+      roomUser : inform.roomUser,
       message,
     });
     setMessage('');
@@ -108,10 +119,3 @@ const ChatRoomContainer = () => {
 };
 
 export default ChatRoomContainer;
-
-const joinRoom = (roomName) => {
-  socket.emit('joinRoom', { roomName }, () => {
-    console.log(`join room[${roomName}]  successfully`);
-    fetchRoom.join({ roomName });
-  });
-};

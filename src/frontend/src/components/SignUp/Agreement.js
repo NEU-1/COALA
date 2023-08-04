@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
-import CCheckBox from './components/CCheckBox';
+import CCheckBox from '../Common/CCheckBox';
 
 const Agreement = ({
   isAgree1,

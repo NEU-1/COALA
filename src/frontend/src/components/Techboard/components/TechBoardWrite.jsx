@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components"
-import TextInput from './TextInput';
-import Button from './Button';
+// import TextInput from './TextInput';
+// import Button from './Button';
 import axios from 'axios';
 
-const NoSsrEditor = dynamic(() => import('components/TuiEditor'), {
-    ssr: false,
-  });
+// const NoSsrEditor = dynamic(() => import('components/TuiEditor'), {
+//     ssr: false,
+//   });
 
 const Wrapper = styled.div`
     padding: 16px;

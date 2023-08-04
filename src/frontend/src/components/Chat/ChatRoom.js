@@ -42,7 +42,7 @@ const ChatRoom = ({
         {/* key는 메세지 id로 */}
         {allMessages &&
           allMessages.map((message) => {
-            return <ChatBubble key={message.message} message={message} />;
+            return <ChatBubble key={message._id} message={message} />;
           })}
         <div ref={scrollRef}></div>
       </SChatBubbleList>

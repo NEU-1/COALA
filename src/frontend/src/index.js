@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/core.css';
 import App from './components/App';
+import axios from 'axios';
 
 // 리덕스 적용
 import { Provider } from 'react-redux';
