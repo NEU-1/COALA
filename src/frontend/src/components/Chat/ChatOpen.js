@@ -4,6 +4,7 @@ import { images } from '../../assets/images';
 import { colors } from '../../assets/colors';
 
 const ChatOpen = ({ isChatOpen, onClickChatBtn }) => {
+  
   return (
     <>
       <SLayout isChatOpen={isChatOpen} onClick={onClickChatBtn}>
