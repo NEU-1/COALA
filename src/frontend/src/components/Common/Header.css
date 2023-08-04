@@ -1,0 +1,32 @@
+#page-header {
+    position : sticky;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height : 120px;
+    background-color : #e9d5ff;
+    border-bottom: 1px #eee solid;
+    padding-top: 10px;
+    width: 100%;
+}
+#main-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+}
+#login{
+    margin-left: 800px;
+   
+}
+#buttons{
+    display: flex;
+    flex-direction: end;
+    justify-content: space-around;
+    align-items: end;
+
+}
+
