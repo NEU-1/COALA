@@ -27,18 +27,18 @@ public class FreeGood {
     private FreePost writerId;
 
     @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     @NotNull
-    private Member userId;
+    private Member memberId;
 
     @Column(columnDefinition = "integer default 0", name = "is_good")
     private int isGood;
 
     @Builder
-    public FreeGood(FreePost fpId, FreePost writerId, Member userId, int isGood) {
+    public FreeGood(FreePost fpId, FreePost writerId, Member memberId, int isGood) {
         this.fpId = fpId;
         this.writerId = writerId;
-        this.userId = userId;
+        this.memberId = memberId;
         this.isGood = isGood;
     }
 }

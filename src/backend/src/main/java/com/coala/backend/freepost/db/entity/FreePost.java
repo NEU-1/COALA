@@ -24,7 +24,7 @@ public class FreePost {
     private Long id;
 
     @ManyToOne(targetEntity = Member.class)
-    @JoinColumn(name = "memberId", referencedColumnName = "email")
+    @JoinColumn(name = "member_id", referencedColumnName = "email")
     @NotNull
     private Member memberId;
 

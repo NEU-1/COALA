@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 public class FreePostRequestDto {
     private Long id;
     private Member memberId;
-    private String email;
     private String title;
     private String detail;
     private LocalDateTime createAt;
@@ -32,7 +31,6 @@ public class FreePostRequestDto {
                               boolean isAnonymous, int views, int count) {
         this.id = id;
         this.memberId = memberId;
-        this.email = memberId.getEmail();
         this.title = title;
         this.detail = detail;
         this.createAt = createAt;

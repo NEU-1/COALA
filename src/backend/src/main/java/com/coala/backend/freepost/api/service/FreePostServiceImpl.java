@@ -86,7 +86,6 @@ public class FreePostServiceImpl implements FreePostService{
         return freePostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(freePost -> FreePostRequestDto.builder()
                         .id(freePost.getId())
-                        .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())
                         .createAt(freePost.getCreateAt())

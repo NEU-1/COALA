@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class FreePostResponseDto {
     private Long id;
     private Member memberId;
-    private String email;
     private String title;
     private String detail;
     private LocalDateTime createAt;
@@ -29,10 +28,9 @@ public class FreePostResponseDto {
 
     @Builder
     public FreePostResponseDto(Member memberId, String title, String detail,
-                              LocalDateTime createAt, LocalDateTime updateAt, String imagePath,
-                              boolean isAnonymous, int views, int count) {
+                               LocalDateTime createAt, LocalDateTime updateAt, String imagePath,
+                               boolean isAnonymous, int views, int count) {
         this.memberId = memberId;
-        this.email= memberId.getEmail();
         this.title = title;
         this.detail = detail;
         this.createAt = createAt;

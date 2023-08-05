@@ -7,6 +7,9 @@ import com.coala.backend.freepost.db.entity.FreePost;
 import com.coala.backend.freepost.db.repository.FreePostRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
     - 업데이트 시 추천수미구현, 페이징 기능 개선 필요
 */
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins="*")
@@ -28,40 +32,26 @@ public class FreePostController {
 
     // 게시글 저장
     @PostMapping("post/save")
-    public FreePostResponseDto savePost(@RequestBody @Valid FreePostRequestDto requestDto) {
-        System.out.println(requestDto);
+    public ResponseEntity savePost(@RequestBody @Valid FreePostRequestDto requestDto) {
+
         freePostService.savePost(requestDto);
 
-        return new FreePostResponseDto(
-                requestDto.toEntity().getMemberId(),
-                requestDto.toEntity().getTitle(),
-                requestDto.toEntity().getDetail(),
-                requestDto.toEntity().getCreateAt(),
-                requestDto.toEntity().getUpdateAt(),
-                requestDto.toEntity().getImagePath(),
-                requestDto.toEntity().isAnonymous(),
-                requestDto.toEntity().getViews(),
-                requestDto.toEntity().getCount());
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("게시글 작성", "성공")
+                .body(requestDto.toEntity());
     }
 
     // 게시글 수정
     @PutMapping("post/update/{id}")
-    public FreePostResponseDto updatePost(@PathVariable("id") Long id,
-                                              @RequestBody @Valid FreePostRequestDto requestDto) {
+    public ResponseEntity updatePost(@PathVariable("id") Long id,
+                                     @RequestBody @Valid FreePostRequestDto requestDto) {
         freePostService.updateFreePost(id, requestDto);
         Optional<FreePost> findPost = freePostRepository.findById(id);
         FreePost freePost = findPost.get();
 
-        return new FreePostResponseDto(
-                freePost.getMemberId(),
-                freePost.getTitle(),
-                freePost.getDetail(),
-                freePost.getCreateAt(),
-                freePost.getUpdateAt(),
-                freePost.getImagePath(),
-                freePost.isAnonymous(),
-                freePost.getViews(),
-                freePost.getCount());
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("게시글 수정", "성공")
+                .body(freePost);
     }
 
     // 모든 게시물 불러오기, page 는 page 번호
@@ -81,7 +71,7 @@ public class FreePostController {
                         freePostRequestDto.getViews(),
                         freePostRequestDto.getCount())).collect(Collectors.toList());
     }
-    
+
     // 검색어 관련 게시물 불러오기
     @GetMapping("post/search/{keyword}/{page}")
     public List<FreePostResponseDto> findPosts(@PathVariable("keyword") String keyword,
@@ -117,7 +107,7 @@ public class FreePostController {
                 freePostDto.getViews(),
                 freePostDto.getCount());
     }
-    
+
     // 게시물 삭제
     @DeleteMapping("post/delete/{id}")
     public void freePostDelete(@PathVariable("id") Long id) {freePostService.deletePost(id);}
