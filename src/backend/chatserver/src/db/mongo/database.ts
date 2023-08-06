@@ -1,9 +1,9 @@
 import mongoose, { ConnectOptions, Model } from 'mongoose';
-
-const url = process.env.MONGO_DB_URI;
+import config from '@/config'
+const url = process.env.MONGO_DB_URI || config.MONGO_DB_URI;
 const options: ConnectOptions = {};
 
-const dbName = process.env.MONGO_DB_DATABASE; // 사용할 데이터베이스의 이름
+const dbName = process.env.MONGO_DB_DATABASE || config.MONGO_DB_DATABASE; // 사용할 데이터베이스의 이름
 
 if (!url) throw new Error('Please check your mongo URL');
 
