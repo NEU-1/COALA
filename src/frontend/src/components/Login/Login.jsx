@@ -17,7 +17,7 @@ const Login = () => {
 
   const [inputId, setInputId] = useState("");
   const [inputPw, setInputPw] = useState("");
-  const [loginFailCount, setLoginFailCount] = useState(0);
+  const [loginFailCount, setLoginFailCount] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const [saveIdCheck, setSaveIDFlag] = useState(false);
   const saveId = "saveId";
@@ -64,7 +64,7 @@ const Login = () => {
   };
 
   const onClickLogin = () => {
-    if (loginFailCount >= 5) {
+    if (loginFailCount > 5) {
       setErrorMessage(
         "가능한 횟수를 초과하였습니다. 비밀번호를 재 설정 해주세요"
       );
