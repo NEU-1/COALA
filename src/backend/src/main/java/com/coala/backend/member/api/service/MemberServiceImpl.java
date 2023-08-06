@@ -126,18 +126,12 @@ public class MemberServiceImpl implements MemberService{
         accessToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Access");
         refreshToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Refresh");
 
-        BaseResponseDto baseResponseDto = reissue(httpServletRequest, httpServletResponse);
-
-        if(baseResponseDto.getStatusCode() != 200){
-            return new MemberInfoResponseDto("인증정보가 만료되었습니다. 재 로그인 해주세요.", 401);
-        }
-
         String email = jwtTokenProvider.getEmailFromToken(accessToken);
-
 
         Member member = memberRepository.findByEmail(email).get();
 
         MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto();
+        memberInfoResponseDto.setId(member.getId());
         memberInfoResponseDto.setEmail(member.getEmail());
         memberInfoResponseDto.setName(member.getName());
         memberInfoResponseDto.setNickname(member.getNickname());
@@ -245,12 +239,12 @@ public class MemberServiceImpl implements MemberService{
 
         // 검색 되지 않음
         if(temp.isEmpty()){
-            return new BaseResponseDto("인증번호가 존재하지 않습니다.", 500);
+            return new BaseResponseDto("인증번호가 존재하지 않습니다.", 500, 500);
         }
 
         // otp가 일치하지 않음
         if(!temp.get().getOtp().equals(info.get("otp"))){
-            return new BaseResponseDto("인증번호가 일치하지 않습니다.", 404);
+            return new BaseResponseDto("인증번호가 일치하지 않습니다.", 200, 204);
         }
 
         // 회원가입 인증 완료시 삭제
@@ -265,7 +259,7 @@ public class MemberServiceImpl implements MemberService{
             certificationRepository.save(certification);
         }
 
-        return new BaseResponseDto("인증이 완료되었습니다. 비밀번호를 변경해주세요.", 200);
+        return new BaseResponseDto("인증이 완료되었습니다. 비밀번호를 변경해주세요.", 200, 201);
     }
 
     // 비밀번호 찾기 후 수행.

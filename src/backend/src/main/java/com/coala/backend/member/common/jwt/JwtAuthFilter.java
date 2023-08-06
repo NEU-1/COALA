@@ -2,12 +2,15 @@ package com.coala.backend.member.common.jwt;
 
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwt;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +21,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
-
+    private Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
     private final JwtTokenProvider jwtTokenProvider;
 
     // Http 요청이 오면 WAS가 request, response 객체를 생성해준다
@@ -26,6 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     // 요청이 들어오면 dFilterInternal이 한번 실행됨
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        logger.info("Filter : JWTFilter");
         // WebSecurityConfig의 UsernamePasswordAuthenticationFilter 보다 먼저 동작
 
         // Access / Refresh 헤더에서 토큰을 가져옴

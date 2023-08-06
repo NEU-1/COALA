@@ -3,7 +3,7 @@ package com.coala.backend.freepost.api.service;
 import com.coala.backend.freepost.db.dto.request.FreePostRequestDto;
 import com.coala.backend.freepost.db.entity.FreePost;
 import com.coala.backend.freepost.db.repository.FreePostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,17 +20,14 @@ import java.util.stream.Collectors;
 * */
 
 @Service
+@RequiredArgsConstructor
 public class FreePostServiceImpl implements FreePostService{
     private final FreePostRepository freePostRepository;
-
-    @Autowired
-    public FreePostServiceImpl(FreePostRepository freePostRepository) {
-        this.freePostRepository = freePostRepository;
-    }
 
     @Transactional
     @Override
     public void savePost(FreePostRequestDto postDto) {
+
         freePostRepository.save(postDto.toEntity());
     }
 
@@ -41,7 +38,7 @@ public class FreePostServiceImpl implements FreePostService{
         return freePostRepository.findAll(pageable).stream()
                 .map(freePost -> FreePostRequestDto.builder()
                         .id(freePost.getId())
-                        .userId(freePost.getUserId())
+                        .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())
                         .createAt(freePost.getCreateAt())
@@ -64,7 +61,7 @@ public class FreePostServiceImpl implements FreePostService{
 
         return FreePostRequestDto.builder()
                 .id(free.getId())
-                .userId(free.getUserId())
+                .memberId(free.getMemberId())
                 .title(free.getTitle())
                 .detail(free.getDetail())
                 .createAt(free.getCreateAt())
@@ -89,7 +86,7 @@ public class FreePostServiceImpl implements FreePostService{
         return freePostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(freePost -> FreePostRequestDto.builder()
                         .id(freePost.getId())
-                        .userId(freePost.getUserId())
+                        .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())
                         .createAt(freePost.getCreateAt())
@@ -108,7 +105,11 @@ public class FreePostServiceImpl implements FreePostService{
         Optional<FreePost> byId = freePostRepository.findById(id);
         FreePost freePost = byId.get();
 
-        freePost.updateFreePost(dto.getUserId(), dto.getTitle(), dto.getDetail()
-                , dto.getImagePath(), dto.isAnonymous());
+        freePost.updateFreePost(
+                dto.getMemberId(),
+                dto.getTitle(),
+                dto.getDetail(),
+                dto.getImagePath(),
+                dto.isAnonymous());
     }
 }

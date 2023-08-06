@@ -1,92 +1,72 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router";
 import "./Style.css";
-import { useNavigate } from "react-router-dom";
-import CCheckBox from "../Common/CCheckBox";
+import { requestPut } from "../../lib/api/api";
+import Swal from "sweetalert2";
 
-const Login = () => {
+const ChangePw = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+
   const onSubmitHandler = (e) => {
     e.preventDefault();
-
-    console.log("inputId", inputId);
-    console.log("inputPw", inputPw);
   };
-
-  const [inputId, setInputId] = useState("");
-  const [inputPw, setInputPw] = useState("");
-  const [loginFailCount, setLoginFailCount] = useState(0);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [saveIdCheck, setSaveIDFlag] = useState(false);
-  const saveId = "saveId";
-
   const navigate = useNavigate();
   const navigateToHome = () => {
     navigate("/");
   };
-  const navigateToSignUp = () => {
-    navigate("/sign-up/agreement");
-  };
-  const navigateToFindPw = () => {
-    navigate("/findpw");
-  };
 
-  const oninputIdHandler = (e) => setInputId(e.currentTarget.value);
-  const oninputPwHandler = (e) => setInputPw(e.currentTarget.value);
-
-  const handleLoginFailure = (res) => {
-    setLoginFailCount(loginFailCount + 1);
-    setErrorMessage(
-      `아이디 또는 비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`
-    );
-    if (res.data.userId === null) {
-      setErrorMessage("존재하지 않는 계정입니다.");
-    } else if (res.data.msg === null) {
-      setErrorMessage("아이디 또는 비밀번호가 일치하지 않습니다.");
-    }
+  const emailHandler = (e) => {
+    setEmail(e.currentTarget.value);
+  };
+  const passwordHandler = (e) => {
+    setPassword(e.currentTarget.value);
+  };
+  const passwordCheckHandler = (e) => {
+    setPasswordCheck(e.currentTarget.value);
   };
 
-  const handleLoginSuccess = () => {
-    setLoginFailCount(0);
-    sessionStorage.setItem("user_id", inputId);
-    document.location.href = "/";
-  };
-
-  const onClickLogin = () => {
-    if (loginFailCount >= 5) {
-      setErrorMessage(
-        "가능한 횟수를 초과하였습니다. 비밀번호를 재 설정 해주세요"
-      );
-      return;
-    }
-
-    axios
-      .post("/login", null, {
-        params: {
-          email: inputId,
-          password: inputPw,
-        },
-      })
-      .then((res) => {
-        if (res.data.userId == null || res.data.msg === null) {
-          handleLoginFailure(res);
-        } else if (res.data.userId === inputId) {
-          handleLoginSuccess();
-        }
-      })
-      .catch((err) => {
-        console.error(err);
+  const onClickChangePw = async (e) => {
+    e.preventDefault();
+    const showAlert = (icon, title) => {
+      Swal.fire({
+        icon,
+        title,
+        html: "",
+        timer: 1000,
+        showConfirmButton: false,
       });
-  };
-
-  const handleSaveIDFlag = (e) => {
-    setSaveIDFlag(e.target.checked);
-    if (e.target.checked) {
-      localStorage.setItem(saveId, inputId);
-      console.log(inputId);
-    } else {
-      localStorage.setItem(saveId, "");
+    };
+    
+    const isPasswordValid = (password, passwordCheck) => {
+      if (!email) {
+        showAlert("warning", "이메일 칸이 비어있습니다.\n이메일을 입력해주세요.");
+        return false;
+      }
+      if (!password || !passwordCheck) {
+        showAlert("warning", "비밀번호 칸이 비어있습니다.\n비밀번호를 입력해주세요.");
+        return false;
+      }
+      if (password !== passwordCheck) {
+        showAlert("warning", "비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
+        return false;
+      }
+      return true;
+    };
+  
+    if (isPasswordValid(password, passwordCheck)) {
+      requestPut(`member/updatepassword`, { email: email, password: password })
+        .then((res) => {
+          showAlert("success", "비밀번호 변경이 완료되었습니다.\n로그인 해주세요.");
+          // navigate("/login");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
+  
 
   return (
     <div className="page">
@@ -94,49 +74,37 @@ const Login = () => {
         <label className="coala" onClick={navigateToHome}>
           COALA
         </label>
-        <div className="idBox">
-          <label className="text">아이디</label>
-          <input
-            type="id"
-            className="input"
-            value={inputId}
-            onChange={oninputIdHandler}
-            placeholder="아이디"
-          />
-        </div>
-        <div className="pwBox">
-          <label className="text">비밀번호</label>
-          <input
-            type="password"
-            className="input"
-            value={inputPw}
-            onChange={oninputPwHandler}
-            placeholder="비밀번호"
-          />
-        </div>
-        <div>
-          <CCheckBox
-            text={"아이디 저장"}
-            checked={saveIdCheck}
-            onChange={handleSaveIDFlag}
-          />
-        </div>
-        {errorMessage && <div className="error">{errorMessage}</div>}
-        <button className="button" type="button" onClick={onClickLogin}>
-          로그인
+        <label className="text">이메일</label>
+        <input
+          type="id"
+          className="input"
+          value={email}
+          onChange={emailHandler}
+          placeholder="이메일"
+        />
+        <label className="text">비밀번호</label>
+        <input
+          type="password"
+          className="input"
+          value={password}
+          onChange={passwordHandler}
+          placeholder="비밀번호"
+        />
+        <label className="text">비밀번호 확인</label>
+        <input
+          type="password"
+          className="input"
+          value={passwordCheck}
+          onChange={passwordCheckHandler}
+          placeholder="비밀번호 확인"
+        />
+
+        <button className="button" type="button" onClick={onClickChangePw}>
+          비밀번호 변경
         </button>
-        <div className="afterlogin">
-          <label className="grey" onClick={navigateToSignUp}>
-            회원가입
-          </label>
-          <label className="ho">|</label>
-          <label className="grey" onClick={navigateToFindPw}>
-            비밀번호 찾기
-          </label>
-        </div>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default ChangePw;
