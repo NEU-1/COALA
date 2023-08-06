@@ -6,7 +6,7 @@ const url = 'mongodb+srv://coala1080:9TtkfCk7X7NVYPbc@cluster0.zbqdn4e.mongodb.n
 const dbName = 'chat_logs'
 const options: ConnectOptions = {};
 
-
+console.log("url", url);
 if (!url) throw new Error('Please check your mongo URL');
 
 const connectDB = async (): Promise<void> => {
