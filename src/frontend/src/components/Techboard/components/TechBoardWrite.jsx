@@ -4,6 +4,7 @@ import styled from "styled-components";
 import axios from 'axios';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
+import api from '/lib/api'
 
 
 const SBtn = styled.div`
@@ -58,23 +59,30 @@ const Title = styled.div`
   font-size: 30px;
 `
 
+
 function TechBoardWrite() {
   const navigate = useNavigate();
+  
+
+  
+
+  const requestGet = async (params) => {
+  try {
+    const data = await axios.get('http://i9d108.p.ssafy.io:9999/api/member/info', params);
+    const memberId = data.email
+    return data;
+  } catch (error) {
+    console.log(error);
+    
+  }
+};
 
   const [board, setBoard] = useState({
-    memberId : '',
     title: '',
     detail: '',
     imagePath: 'String',
     isAnonymous: false,
   });
-
-  const getMemberId = () => {
-    axios.get('http://i9d108.p.ssafy.io:9999/api/member/info')
-     .then((response) => {
-      const memberId = response.data
-     })
-  }
 
   const { memberId, title, detail } = board;
 
@@ -91,7 +99,7 @@ function TechBoardWrite() {
       
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
       const dataToSend = {
-        memberId: board.memberId,
+        email: board.memberId,
         title: board.title,
         detail: board.detail,
         imagePath: board.imagePath,
