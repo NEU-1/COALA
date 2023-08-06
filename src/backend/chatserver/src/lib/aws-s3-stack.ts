@@ -13,7 +13,7 @@ export class AwsS3Stack extends cdk.Stack {
         {
           allowedHeaders: ['*'],
           allowedOrigins: ['*'],
-          allowedMethods: [s3.HttpMethods.POST],
+          allowedMethods: [s3.HttpMethods.POST, s3.HttpMethods.GET],
         },
       ],
     })
