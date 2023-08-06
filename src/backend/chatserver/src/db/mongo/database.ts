@@ -1,5 +1,5 @@
 import mongoose, { ConnectOptions, Model } from 'mongoose';
-import config from '@/config'
+import config from '../../config'
 const url = process.env.MONGO_DB_URI || config.MONGO_DB_URI;
 const options: ConnectOptions = {};
 
