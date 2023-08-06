@@ -9,8 +9,8 @@ export default function Home() {
         Home page
       </h1>
       <ul>
-        <li><Link href={"/confCategory"}>/confCategory</Link></li>
-        <li><Link href={"/chat"}>/chat</Link></li>
+        <li><Link href={"/sendImage"}>/sendImage</Link></li>
+        {/* <li><Link href={"/chat"}>/chat</Link></li> */}
         {/* <li><Link href={"/sub/about"}>/sub/about</Link></li>
         <li><Link href={"/sub/1"}>/sub/[id].js</Link></li> */}
       </ul>
