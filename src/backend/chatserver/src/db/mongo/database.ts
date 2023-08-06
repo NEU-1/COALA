@@ -1,9 +1,11 @@
 import mongoose, { ConnectOptions, Model } from 'mongoose';
 import config from '../../config'
-const url = process.env.MONGO_DB_URI || config.MONGO_DB_URI;
+// const url = process.env.MONGO_DB_URI || config.MONGO_DB_URI;
+// const dbName = process.env.MONGO_DB_DATABASE || config.MONGO_DB_DATABASE; // 사용할 데이터베이스의 이름
+const url = 'mongodb+srv://coala1080:9TtkfCk7X7NVYPbc@cluster0.zbqdn4e.mongodb.net'
+const dbName = 'chat_logs'
 const options: ConnectOptions = {};
 
-const dbName = process.env.MONGO_DB_DATABASE || config.MONGO_DB_DATABASE; // 사용할 데이터베이스의 이름
 
 if (!url) throw new Error('Please check your mongo URL');
 
