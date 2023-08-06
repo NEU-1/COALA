@@ -13,9 +13,9 @@ import config from '../../config'
 
 const pool = mysql.createPool({
   host     : 'localhost',
-  user     : 'root',
+  user     : 'coala',
   port     : 3306,
-  password : 'Ssafy123!',
+  password : 'Coala123!',
   database : 'coala',
   dateStrings : true,
 })
