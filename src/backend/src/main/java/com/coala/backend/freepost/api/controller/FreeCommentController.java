@@ -7,6 +7,7 @@ import com.coala.backend.freepost.db.entity.FreeComment;
 import com.coala.backend.freepost.db.repository.FreeCommentRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,32 +28,25 @@ public class FreeCommentController {
 
     // 댓글 저장
     @PostMapping("comment/save")
-    public FreeCommentResponseDto saveComment(@RequestBody @Valid FreeCommentRequestDto requestDto) {
+    public ResponseEntity<FreeComment> saveComment(@RequestBody @Valid FreeCommentRequestDto requestDto) {
         freeCommentService.saveComment(requestDto);
 
-        return new FreeCommentResponseDto(
-                requestDto.toEntity().getId(),
-                requestDto.toEntity().getFpId(),
-                requestDto.toEntity().getAuthor(),
-                requestDto.toEntity().getContent(),
-                requestDto.toEntity().getCreateAt()
-        );
+        return ResponseEntity.ok()
+                .header("성공", "댓글 저장")
+                .body(requestDto.toEntity());
     }
 
     @PutMapping("comment/update/{id}")
-    public FreeCommentResponseDto updateComment(@PathVariable("id") Long id,
+    public ResponseEntity<FreeComment> updateComment(@PathVariable("id") Long id,
                                                     @RequestBody @Valid FreeCommentRequestDto requestDto) {
 
         freeCommentService.updateFreeComment(id, requestDto);
         Optional<FreeComment> findComment = freeCommentRepository.findById(id);
         FreeComment freeComment = findComment.get();
 
-        return new FreeCommentResponseDto(
-                freeComment.getId(),
-                freeComment.getFpId(),
-                freeComment.getAuthor(),
-                freeComment.getContent(),
-                freeComment.getCreateAt());
+        return ResponseEntity.ok()
+                .header("성공", "댓글 수정")
+                .body(freeComment);
     }
 
     @GetMapping("comment/{page}")

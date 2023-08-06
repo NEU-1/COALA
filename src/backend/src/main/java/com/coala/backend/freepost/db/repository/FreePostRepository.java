@@ -1,6 +1,7 @@
 package com.coala.backend.freepost.db.repository;
 
 import com.coala.backend.freepost.db.entity.FreePost;
+import com.coala.backend.member.db.entity.Member;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

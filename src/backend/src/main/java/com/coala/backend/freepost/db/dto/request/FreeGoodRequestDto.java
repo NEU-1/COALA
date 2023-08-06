@@ -1,6 +1,5 @@
 package com.coala.backend.freepost.db.dto.request;
 
-import com.coala.backend.freepost.db.entity.FreeComment;
 import com.coala.backend.freepost.db.entity.FreeGood;
 import com.coala.backend.freepost.db.entity.FreePost;
 import com.coala.backend.member.db.entity.Member;

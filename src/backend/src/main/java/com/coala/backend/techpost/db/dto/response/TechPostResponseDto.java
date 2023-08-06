@@ -23,11 +23,12 @@ public class TechPostResponseDto {
     private String imagePath;
     private Member nickname;
     private int views;
-    private int count;
+    private int commentCount;
+    private int goodCount;
 
     @Builder
     public TechPostResponseDto(Long id, Member memberId, String title, String detail, LocalDateTime createAt, LocalDateTime updateAt,
-                               String imagePath, Member nickname, int views, int count) {
+                               String imagePath, Member nickname, int views, int commentCount, int goodCount) {
         this.id = id;
         this.memberId = memberId;
         this.title = title;
@@ -37,7 +38,8 @@ public class TechPostResponseDto {
         this.imagePath = imagePath;
         this.nickname = nickname;
         this.views = views;
-        this.count = count;
+        this.commentCount = commentCount;
+        this.goodCount = goodCount;
     }
 
 }

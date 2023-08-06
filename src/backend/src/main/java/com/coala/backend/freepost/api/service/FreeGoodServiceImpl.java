@@ -41,14 +41,18 @@ public class FreeGoodServiceImpl implements FreeGoodService{
         });
 
         if (freeGoodRepository.findByMemberIdAndFpId(member, freePost).isPresent()) {
-            new IllegalArgumentException("이미 추천되어있습니다.");
+            return;
         };
 
-        freeGoodRepository.save(FreeGood.builder()
+        FreeGood freeGood = FreeGood.builder()
                 .fpId(freePost)
                 .writerId(freePost)
                 .memberId(member)
-                .build());
+                .build();
+
+        freeGoodRepository.saveAndFlush(freeGood);
+        freePost.getGoods().add(freeGood);
+
     }
 
     @Transactional
@@ -66,8 +70,8 @@ public class FreeGoodServiceImpl implements FreeGoodService{
             return new IllegalArgumentException("없는 추천 입니다.");
         });
 
-        System.out.println(freeGood.getId());
 
         freeGoodRepository.deleteById(freeGood.getId());
+        freePost.getGoods().remove(freeGood);
     }
 }

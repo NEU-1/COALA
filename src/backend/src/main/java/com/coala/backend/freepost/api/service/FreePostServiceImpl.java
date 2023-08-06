@@ -2,6 +2,7 @@ package com.coala.backend.freepost.api.service;
 
 import com.coala.backend.freepost.db.dto.request.FreePostRequestDto;
 import com.coala.backend.freepost.db.entity.FreePost;
+import com.coala.backend.freepost.db.repository.FreeGoodRepository;
 import com.coala.backend.freepost.db.repository.FreePostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +24,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FreePostServiceImpl implements FreePostService{
     private final FreePostRepository freePostRepository;
+    private final FreeGoodRepository freeGoodRepository;
 
     @Transactional
     @Override
     public void savePost(FreePostRequestDto postDto) {
-
         freePostRepository.save(postDto.toEntity());
     }
 
@@ -46,7 +47,8 @@ public class FreePostServiceImpl implements FreePostService{
                         .imagePath(freePost.getImagePath())
                         .isAnonymous(freePost.isAnonymous())
                         .views(freePost.getViews())
-                        .count(freePost.getCount())
+                        .commentCount(freePost.getComments().size())
+                        .goodCount(freePost.getGoods().size())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -69,13 +71,23 @@ public class FreePostServiceImpl implements FreePostService{
                 .imagePath(free.getImagePath())
                 .isAnonymous(free.isAnonymous())
                 .views(free.getViews())
-                .count(free.getCount())
+                .commentCount(free.getComments().size())
+                .goodCount(free.getGoods().size())
                 .build();
     }
 
     @Transactional
     @Override
-    public void deletePost(Long id) {
+    public void deletePost(Long id, FreePostRequestDto dto) {
+        FreePost freePost = freePostRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("게시판이 존재하지 않습니다.");
+        });
+
+        if (!freePost.getMemberId().getEmail().equals(dto.getMemberId().getEmail())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
+
+        freeGoodRepository.deleteByFpId(freePost);
         freePostRepository.deleteById(id);
     }
 
@@ -93,7 +105,8 @@ public class FreePostServiceImpl implements FreePostService{
                         .imagePath(freePost.getImagePath())
                         .isAnonymous(freePost.isAnonymous())
                         .views(freePost.getViews())
-                        .count(freePost.getCount())
+                        .commentCount(freePost.getComments().size())
+                        .goodCount(freePost.getGoods().size())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -101,11 +114,15 @@ public class FreePostServiceImpl implements FreePostService{
     @Transactional
     @Override
     public void updateFreePost(Long id, FreePostRequestDto dto) {
-        Optional<FreePost> byId = freePostRepository.findById(id);
-        FreePost freePost = byId.get();
+        FreePost freePost = freePostRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("게시글이 존재하지 않습니다.");
+        });
+
+        if (!freePost.getMemberId().getEmail().equals(dto.getMemberId().getEmail())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
 
         freePost.updateFreePost(
-                dto.getMemberId(),
                 dto.getTitle(),
                 dto.getDetail(),
                 dto.getImagePath(),

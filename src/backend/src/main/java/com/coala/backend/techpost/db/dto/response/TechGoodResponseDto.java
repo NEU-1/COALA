@@ -1,7 +1,7 @@
-package com.coala.backend.freepost.db.dto.response;
+package com.coala.backend.techpost.db.dto.response;
 
-import com.coala.backend.freepost.db.entity.FreePost;
 import com.coala.backend.member.db.entity.Member;
+import com.coala.backend.techpost.db.entity.TechPost;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FreeGoodResponseDto {
+public class TechGoodResponseDto {
 
     private Member memberId;
-    private FreePost fpId;
-    private FreePost writerId;
+    private TechPost tpId;
+    private TechPost writerId;
 
     @Builder
-    public FreeGoodResponseDto(Member memberId, FreePost fpId, FreePost writerId) {
+    public TechGoodResponseDto(Member memberId, TechPost tpId, TechPost writerId) {
         this.memberId = memberId;
-        this.fpId = fpId;
+        this.tpId = tpId;
         this.writerId = writerId;
     }
 }

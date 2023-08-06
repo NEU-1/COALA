@@ -51,9 +51,16 @@ public class FreePost {
     @NotNull
     private int views;
 
-    @Column(columnDefinition = "integer default 0")
+    @Column
     @NotNull
-    private int count;
+    private int commentCount;
+
+    @Column
+    @NotNull
+    private int goodCount;
+
+    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<FreeGood> goods = new ArrayList<>();
 
     @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FreeComment> comments = new ArrayList<>();
@@ -65,6 +72,8 @@ public class FreePost {
         this.detail = detail;
         this.imagePath = imagePath;
         this.isAnonymous = isAnonymous;
+        this.commentCount = this.getComments().size();
+        this.goodCount = this.getGoods().size();
     }
 
     @PrePersist
@@ -72,8 +81,7 @@ public class FreePost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateFreePost(Member memberId, String title, String detail, String imagePath, boolean isAnonymous) {
-        this.memberId = memberId;
+    public void updateFreePost(String title, String detail, String imagePath, boolean isAnonymous) {
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();

@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /*
@@ -43,11 +42,12 @@ public class FreePostController {
 
     // 게시글 수정
     @PutMapping("post/update/{id}")
-    public ResponseEntity updatePost(@PathVariable("id") Long id,
+    public ResponseEntity<FreePost> updatePost(@PathVariable("id") Long id,
                                      @RequestBody @Valid FreePostRequestDto requestDto) {
         freePostService.updateFreePost(id, requestDto);
-        Optional<FreePost> findPost = freePostRepository.findById(id);
-        FreePost freePost = findPost.get();
+        FreePost freePost = freePostRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("게시물이 존재하지 않습니다.");
+        });
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header("게시글 수정", "성공")
@@ -69,12 +69,14 @@ public class FreePostController {
                         freePostRequestDto.getImagePath(),
                         freePostRequestDto.isAnonymous(),
                         freePostRequestDto.getViews(),
-                        freePostRequestDto.getCount())).collect(Collectors.toList());
+                        freePostRequestDto.getCommentCount(),
+                        freePostRequestDto.getGoodCount()))
+                .collect(Collectors.toList());
     }
 
     // 검색어 관련 게시물 불러오기
     @GetMapping("post/search/{keyword}/{page}")
-    public List<FreePostResponseDto> findPosts(@PathVariable("keyword") String keyword,
+    public List<FreePostResponseDto> findFreePosts(@PathVariable("keyword") String keyword,
                                                @PathVariable("page") Integer page) {
         List<FreePostRequestDto> findAll = freePostService.searchPosts(keyword, page);
 
@@ -88,27 +90,22 @@ public class FreePostController {
                         freePostRequestDto.getImagePath(),
                         freePostRequestDto.isAnonymous(),
                         freePostRequestDto.getViews(),
-                        freePostRequestDto.getCount())).collect(Collectors.toList());
+                        freePostRequestDto.getCommentCount(),
+                        freePostRequestDto.getGoodCount()))
+                .collect(Collectors.toList());
     }
 
     // 게시물 상세화면
     @GetMapping("post/detail/{id}")
-    public FreePostResponseDto detailPost(@PathVariable("id") Long id) {
+    public ResponseEntity<FreePostRequestDto> detailFreePost(@PathVariable("id") Long id) {
         FreePostRequestDto freePostDto = freePostService.getPost(id);
 
-        return new FreePostResponseDto(
-                freePostDto.getMemberId(),
-                freePostDto.getTitle(),
-                freePostDto.getDetail(),
-                freePostDto.getCreateAt(),
-                freePostDto.getUpdateAt(),
-                freePostDto.getImagePath(),
-                freePostDto.isAnonymous(),
-                freePostDto.getViews(),
-                freePostDto.getCount());
+        return ResponseEntity.ok()
+                .header("성공", "게시글 상세")
+                .body(freePostDto);
     }
 
     // 게시물 삭제
     @DeleteMapping("post/delete/{id}")
-    public void freePostDelete(@PathVariable("id") Long id) {freePostService.deletePost(id);}
+    public void freePostDelete(@PathVariable("id") Long id, @RequestBody @Valid FreePostRequestDto freePostRequestDto) {freePostService.deletePost(id, freePostRequestDto);}
 }

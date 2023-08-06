@@ -16,7 +16,7 @@ public class FreeGood {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "fp_id")
     @NotNull
     private FreePost fpId;
@@ -27,18 +27,14 @@ public class FreeGood {
     private FreePost writerId;
 
     @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", referencedColumnName = "email")
     @NotNull
     private Member memberId;
 
-    @Column(columnDefinition = "integer default 0", name = "is_good")
-    private int isGood;
-
     @Builder
-    public FreeGood(FreePost fpId, FreePost writerId, Member memberId, int isGood) {
+    public FreeGood(FreePost fpId, FreePost writerId, Member memberId) {
         this.fpId = fpId;
         this.writerId = writerId;
         this.memberId = memberId;
-        this.isGood = isGood;
     }
 }
