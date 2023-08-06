@@ -7,7 +7,7 @@ const dbName = 'chat_logs'
 const options: ConnectOptions = {};
 
 console.log("url", url);
-if (!url) throw new Error('Please check your mongo URL');
+if (!url) throw new Error('Please check your mongoDB URL');
 
 const connectDB = async (): Promise<void> => {
   try {
