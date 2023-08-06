@@ -1,5 +1,5 @@
 import mysql, { RowDataPacket } from 'mysql2'
-import config from '@/config'
+import config from '../../config'
 
 
 const pool = mysql.createPool({
