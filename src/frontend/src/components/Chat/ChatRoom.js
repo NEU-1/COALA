@@ -14,6 +14,7 @@ const ChatRoom = ({
   memberId,
   scrollRef,
 }) => {
+  console.log("로그 계속 나오는지 채크")
   return (
     <SLayout>
       <SChatHeader>

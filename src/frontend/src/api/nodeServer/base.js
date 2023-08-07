@@ -10,7 +10,7 @@ const api = axios.create({
 api.setToken = function (token) {
   const access_token = localStorage.getItem('access_token');
   const refresh_token = localStorage.getItem('refresh_token');
-  console.log(access_token, refresh_token);
+  // console.log(access_token, refresh_token);
   this.defaults.headers.common['access_token'] = access_token;
   this.defaults.headers.common['refresh_token'] = refresh_token;
   this.defaults.headers.common['Access-Control-Allow-Origin'] = [API_URL];

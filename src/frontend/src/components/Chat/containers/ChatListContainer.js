@@ -39,8 +39,8 @@ const ChatListContainer = () => {
   Lists = [...Lists, ...rooms];
 
   const handleClick = async () => {
-    const user_number = Number(user_id);
-    await fetchRoom.create({ roomName, user_id: user_number });
+    // const user_number = Number(user_id);
+    await fetchRoom.create({ roomName });
   };
 
   useEffect(() => {

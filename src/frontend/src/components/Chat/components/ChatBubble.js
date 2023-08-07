@@ -4,6 +4,7 @@ import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
 
 const ChatBubble = ({ message, memberId }) => {
+  console.log(message)
   const dateObject = new Date(message.created_at);
   dateObject.setHours(dateObject.getHours() - 9);
   // 옵션 설정
@@ -81,4 +82,6 @@ const SSendTime = styled.div`
   font-weight: 400;
 `;
 
-export default ChatBubble;
+const MemoziedChatBubble = React.memo(ChatBubble)
+
+export default MemoziedChatBubble;
