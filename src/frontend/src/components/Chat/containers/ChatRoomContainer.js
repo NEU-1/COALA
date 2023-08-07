@@ -41,7 +41,6 @@ const ChatRoomContainer = () => {
     socket.emit('joinRoom', { roomName }, async ({ok, chatting_logs}) => {
       if (!ok) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}
       console.log(`join room[${roomName}]  successfully`);
-      await api.setToken();
 
       const result = await fetchRoom.join({ roomName });
       inform = result?.data;
@@ -72,7 +71,8 @@ const ChatRoomContainer = () => {
   }, []);
 
   async function socketInitializer() {
-    socketIO.fetchEnter(`/api/socket?name=${name}`);
+    await api.setToken();
+    await socketIO.fetchEnter(`/api/socket?name=${name}`);
 
     socket = socketIOClient('http://i9d108.p.ssafy.io:3030', {
       path: `/${name}/socket.io`,
