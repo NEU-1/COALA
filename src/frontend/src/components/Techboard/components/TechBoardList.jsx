@@ -1,29 +1,33 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import styled from "styled-components"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Pagination from "./Pagination";
-
+import {requestGet} from "../../../lib/api/api"
 
 
 
 const TechBoardList = () => {
   const navigate = useNavigate();
-
   const [posts, setPosts] = useState([]);
   const limit = 8;
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const offset = (page - 1) * limit;
 
   const getBoardList = async () => {
-    const resp = (await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)).data
-    console.log(resp.data)
+    // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
+    const resp = await requestGet(`tech/post/${page}`)
+    console.log("확인",resp.data)
+    setPosts(resp.data);
+    return resp.data
+
   }
   const goTowrite = () => {
     navigate('/tech/write');
   };
+
   useEffect(() => {
-    getBoardList(); // 1) 게시글 목록 조회 함수 호출
+    getBoardList() // 1) 게시글 목록 조회 함수 호출
   }, []);
 
   return (
@@ -32,33 +36,44 @@ const TechBoardList = () => {
       <Layout>
 
       <div>
-
-        {posts.slice(offset, offset + limit).map(({ id, title, detail, views, creatat, nickname,image }) => (
+        
+        {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
+        {posts.map(({ id, title, detail, views, createAt,imagePath,memberId }) => (
           <Contentbox key={id}>
-            <h3>
-              {title}
-            </h3>
-            <Userbox>
-              <h4>{nickname}</h4>
-              <User1>{creatat}</User1>
-              <h4>| {views}</h4>
-            </Userbox>
-            <p>{detail}</p>
+            <div>
+            <Link to={`/tech/post/detail/${id}`}>
 
+              <Titletext>
+                {title}
+              </Titletext>
+              <Userbox>
+                <Usertext>{memberId.nickname}</Usertext>
+                <Numbertext>|</Numbertext>
+                <Numbertext>{createAt.slice(0,10)}</Numbertext>
+                <Numbertext>|</Numbertext>
+                <Usertext>조회수</Usertext>
+                <Numbertext>{views}</Numbertext>
+              </Userbox>
+              </Link>
+              <p>{detail}</p>
+            </div>
+            
+            <img src="/assets/images/testimg.png" alt="사진" />
+            
           </Contentbox>
         ))}
       </div>
-
-      <footer>
+      <Button onClick={goTowrite}>게시글 등록하기</Button>
+      {/* <footer>
         <Pagination
           total={posts.length}
           limit={limit}
           page={page}
           setPage={setPage}
         />
-      </footer>
+      // </footer> */}
     </Layout>
-      <Button onClick={goTowrite}>게시글 등록하기</Button>
+      
     </Slayout>
   );
 };
@@ -91,10 +106,14 @@ const Layout = styled.div`
 `;
 
 const Contentbox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   border-top: 1px solid #f5a4a4;
   border-bottom: 1px solid #f5a4a4;
   margin-bottom: 20px;
   border-radius: 3%;
+  width: 800px;
 `
 
 const Userbox = styled.div`
@@ -102,7 +121,18 @@ const Userbox = styled.div`
   margin-bottom: 10px;
   margin-top: 5px;
 `
-const User1 = styled.div`
+const Usertext = styled.div`
   margin-left: 5px;
   margin-right: 5px;
+  font-size: 13px;
+`
+const Numbertext = styled.div`
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 13px;
+  margin-top: 3px;
+`
+const Titletext = styled.div`
+  font-size: 15px;
+  margin-left: 5px;
 `

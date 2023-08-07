@@ -4,17 +4,18 @@ import axios from 'axios';
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import styled from 'styled-components'
+import { requestGet, requestPost } from '../../../lib/api/api';
 
-const TechBoardItem = ({ idx, title, contents, createdBy }) => {
+const TechBoardItem = ({ postid, title, contents, createdBy }) => {
   const navigate = useNavigate();
 
   const moveToUpdate = () => {
-    navigate('/update/' + idx);
+    navigate('/update/' + postid);
   };
-
+  
   const deleteBoard = async () => {
     if (window.confirm('게시글을 삭제하시겠습니까?')) {
-      await axios.delete(`http://i9d108.p.ssafy.io:9999/api/tech/post/${idx}`).then((res) => {
+      await axios.delete(`http://i9d108.p.ssafy.io:9999/api/tech/post//${postid}`).then((res) => {
         alert('삭제되었습니다.');
         navigate('/tech');
       });
@@ -31,6 +32,7 @@ const TechBoardItem = ({ idx, title, contents, createdBy }) => {
       initialValue={contents}
     />
       <div>
+        <h1>{postid}</h1>
         <h2>{title}</h2>
         <h5>{createdBy}</h5>
         <hr />

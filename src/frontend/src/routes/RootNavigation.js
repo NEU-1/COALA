@@ -41,7 +41,7 @@ const RootNavigation = () => {
           </Route>
           <Route path="/tech/write" element={<TechBoardWrite />} />
           <Route path="/tech" element={<TechBoardList />} />
-          <Route path="/tech/:postId" element={<TechBoardDetail />} />
+          <Route path="/tech/post/detail/:postid" element={<TechBoardDetail />} />
           <Route path="/tech/comment" element={<Commentapp />} />
         </Route>
 

@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
-import axios from 'axios';
+// import axios from 'axios';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import api from '/lib/api'
+import { requestPost, requestGet } from "../../../lib/api/api";
 
 
 const SBtn = styled.div`
@@ -64,18 +64,6 @@ function TechBoardWrite() {
   const navigate = useNavigate();
   
 
-  
-
-  const requestGet = async (params) => {
-  try {
-    const data = await axios.get('http://i9d108.p.ssafy.io:9999/api/member/info', params);
-    const memberId = data.email
-    return data;
-  } catch (error) {
-    console.log(error);
-    
-  }
-};
 
   const [board, setBoard] = useState({
     title: '',
@@ -93,26 +81,54 @@ function TechBoardWrite() {
       [name]: value,
     });
   };
+  
+
 
   const saveBoard = async () => {
     try {
       
+
+    //   const params = {
+    //     "memberId": {
+    //         "id": 2,
+    //         "name": "테스터A",
+    //         "email": "tncks097@naver.com"
+    //     },
+    //     "title": "ㅎㅇ",
+    //     "detail": "This is an example detail.",
+    //     "imagePath": "/path/to/image.jpg",
+    //     "isAnonymous": false
+    // }
+    const params ={
+      memberId: {
+            "id": 2,
+            "name": "테스터A",
+            "email": "tncks097@naver.com"
+      }, // 이부분은 이후에 토큰으로 관리 예정
+      title : board.title,
+      detail: board.detail,
+      imagePath: board.imagePath,
+      isAnonymous: board.isAnonymous,
+    }
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-      const dataToSend = {
-        email: board.memberId,
-        title: board.title,
-        detail: board.detail,
-        imagePath: board.imagePath,
-        isAnonymous: board.isAnonymous,
-      };
-
-      console.log(dataToSend)
-
-      await axios.post('http://i9d108.p.ssafy.io:9999/api/tech/post/save', dataToSend);
+      const resoponse = await requestPost("tech/post/save", params)
+      
+      console.log(resoponse)
       alert('등록되었습니다.');
-      navigate('/tech');
+      navigate(`/tech`);
     } catch (error) {
       console.error('게시글 등록 에러:', error);
+    }
+
+    const handleRegisterButton = () => {
+      // 에디터 내용을 얻어와서 변수에 저장
+      const editorContent = editorRef.current?.getInstance().getMarkdown();
+      console.log(editorContent)
+      // 저장하고자 하는 내용을 board 객체에 추가
+      setBoard({
+        ...board,
+        detail: editorContent,
+      });
     }
   };
 
@@ -122,16 +138,7 @@ function TechBoardWrite() {
 
   const editorRef = useRef();
 
-  const handleRegisterButton = () => {
-    // 에디터 내용을 얻어와서 변수에 저장
-    const editorContent = editorRef.current?.getInstance().getMarkdown();
-    console.log(editorContent)
-    // 저장하고자 하는 내용을 board 객체에 추가
-    setBoard({
-      ...board,
-      detail: editorContent,
-    });
-  }
+  
   return (
     <Slayout>
       <div>
@@ -159,7 +166,7 @@ function TechBoardWrite() {
           ]}
           useCommandShortcut={false}
         />
-        <SBtn onClick={handleRegisterButton}>확인</SBtn>
+        {/* <SBtn onClick={handleRegisterButton}>확인</SBtn> */}
       </div>
       <br />
       <SBtnContainer>
