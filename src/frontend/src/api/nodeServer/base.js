@@ -8,9 +8,14 @@ const api = axios.create({
 
 // api token 설정 메소드 정의
 api.setToken = function(token){
-    this.defaults.headers.common['Authorization'] = `Token ${token}`
+    const Access_Token = localStorage.getItem('access_tocken');
+    const Refresh_Tocken = localStorage.getItem('refresh_token');
+    this.defaults.headers.common['Access_Token'] = Access_Token
+    this.defaults.headers.common['Access_Token'] = Refresh_Tocken
     this.defaults.headers.common['Access-Control-Allow-Origin'] = [API_URL]
 }
+
+
 // api token 제거 메소드 정의
 api.clearToken = function(){
     delete this.defaults.headers.common['Authorization']
