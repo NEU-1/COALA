@@ -4,15 +4,15 @@ import { colors } from '../../assets/colors';
 import { images } from '../../assets/images';
 import ChatListItem from './components/ChatListItem';
 
-const ChatList = ({ onClickChatBtn, list, onClickListItem }) => {
+const ChatList = ({ onClickCloseChatBtn, list, onClickListItem, user }) => {
   return (
     <SLayout>
       <SChatHeader>
         <SMyProfile>
           <img src={`${images.chatModal.default_profile}`} alt="" />
-          <div>본인</div>
+          <div>{user.nickname}</div>
         </SMyProfile>
-        <button onClick={onClickChatBtn}>
+        <button onClick={onClickCloseChatBtn}>
           <img
             src={`${images.chatModal.arrow_down}`}
             className="arrow-down"

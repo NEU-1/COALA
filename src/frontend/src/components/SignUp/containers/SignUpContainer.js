@@ -90,12 +90,22 @@ const SignUpContainer = () => {
       studentId: form.studentId,
       type: 'certification',
     })
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
         checkOtp();
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        if (err.response.data.statusCode === 400) {
+          Swal.fire({
+            title: `<div style="font-size: 16px; font-weight: 700">${err.response.data.msg}</div>`,
+          });
+        } else if (err.response.status === 500) {
+          Swal.fire({
+            title: `<div style="font-size: 16px; font-weight: 700">예상치 못한 오류가 발생하였습니다.</div>`,
+            icon: 'error',
+          }).then(() => {
+            navigate('/', { replace: true });
+          });
+        }
       });
   };
 
@@ -121,21 +131,30 @@ const SignUpContainer = () => {
           type: 'certification',
         })
           .then((res) => {
+            console.log(res);
             if (res.data.statusCode === 200) {
-              setIsAuthEmail(true);
-              Swal.fire({
-                title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
-              });
-            } else if (res.data.statusCode === 404) {
-              console.log('res에서 처리');
-              Swal.fire({
-                title: `<div style="font-size: 20px; font-weight: 700">${res.data.msg}</div>`,
-                text: '다시 인증해주세요.',
-              });
+              if (res.data.detail === 201) {
+                setIsAuthEmail(true);
+                Swal.fire({
+                  title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
+                });
+              } else if (res.data.detail === 204) {
+                Swal.fire({
+                  title: `<div style="font-size: 20px; font-weight: 700">${res.data.msg}</div>`,
+                  text: '다시 인증해주세요.',
+                });
+              } else {
+                Swal.fire({
+                  title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
+                });
+              }
             }
           })
           .catch((err) => {
             console.log(err);
+            Swal.fire({
+              title: `<div style="font-size: 16px; font-weight: 700">예상치 못한 오류가 발생하였습니다.</div>`,
+            });
           });
       }
     });
@@ -157,20 +176,21 @@ const SignUpContainer = () => {
       // 회원가입 api 호출
       requestPost(`member/signup`, form)
         .then((res) => {
-          if (res.data.statusCode === 200) {
+          console.log('success', res);
+          if (res.data.statusCode === 201) {
             Swal.fire({
               title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
             }).then(() => {
               navigate('/login', { replace: true });
             });
-          } else {
-            Swal.fire({
-              title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
-            });
           }
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.data.statusCode === 400) {
+            Swal.fire({
+              title: `<div style="font-size: 16px; font-weight: 700">${err.response.data.msg}</div>`,
+            });
+          }
         });
     } else {
       // 입력되지 않은 정보 존재.

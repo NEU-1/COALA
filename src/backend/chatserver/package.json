@@ -28,6 +28,7 @@
     "cross-env": "^7.0.3",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
+    "jsonwebtoken": "^9.0.1",
     "minimist": "^1.2.8",
     "mongodb": "^5.7.0",
     "mongoose": "^7.4.1",
@@ -44,6 +45,7 @@
     "ws": "^7.1.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.4.5",
     "@types/ws": "^8.5.5"
   }

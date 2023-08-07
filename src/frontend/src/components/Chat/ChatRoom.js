@@ -11,6 +11,7 @@ const ChatRoom = ({
   onChangeMessage,
   onSubmitMessage,
   allMessages,
+  memberId,
   scrollRef,
 }) => {
   return (
@@ -42,7 +43,13 @@ const ChatRoom = ({
         {/* key는 메세지 id로 */}
         {allMessages &&
           allMessages.map((message) => {
-            return <ChatBubble key={message._id} message={message} />;
+            return (
+              <ChatBubble
+                key={message._id}
+                message={message}
+                memberId={memberId}
+              />
+            );
           })}
         <div ref={scrollRef}></div>
       </SChatBubbleList>

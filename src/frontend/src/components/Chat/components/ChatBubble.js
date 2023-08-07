@@ -3,14 +3,20 @@ import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
 
-const ChatBubble = ({ message }) => {
+const ChatBubble = ({ message, memberId }) => {
   const dateObject = new Date(message.created_at);
   // 옵션 설정
   const options = { hour: '2-digit', minute: '2-digit', hour12: true };
   // 원하는 형식으로 시간 변환
   const formattedTime = dateObject.toLocaleTimeString('ko-KR', options);
+  console.log(memberId, message.member_id);
 
-  return (
+  return memberId === message.member_id ? (
+    <SMyBubble>
+      <SSendTime>03:12 AM</SSendTime>
+      <SMyBubbleContent>{message.text_content}</SMyBubbleContent>
+    </SMyBubble>
+  ) : (
     <SOtherBubble>
       <img
         src={`${images.chatModal.default_profile}`}
@@ -20,10 +26,6 @@ const ChatBubble = ({ message }) => {
       <SOtherBubbleContent>{message.text_content}</SOtherBubbleContent>
       <SSendTime>{formattedTime}</SSendTime>
     </SOtherBubble>
-    // <SMyBubble>
-    //   <SSendTime>03:12 AM</SSendTime>
-    //   <SMyBubbleContent>{message.text_content}</SMyBubbleContent>
-    // </SMyBubble>
   );
 };
 

@@ -13,7 +13,7 @@ type dataForm = any;
 const Read = async (target : object) => {
   try{
     const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
-    const result = await readQuery('member', {conditionQuery, values});
+    const result = await readQuery('Member', {conditionQuery, values});
     return result;
   }catch(error){
     console.log(error)
