@@ -8,7 +8,7 @@ import "rc-slider/assets/index.css";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
-
+import { images } from "../../assets/images";
 
 const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
@@ -141,7 +141,7 @@ const Store = () => {
           <SOpenFilter>
             <SFilterHeader>
               <SPageText>상세검색</SPageText>
-              <button onClick={handleFilterToggle}>⌃</button>
+              <img src={images.up} alt="React" onClick={handleFilterToggle} />
             </SFilterHeader>
             <SFilterProductType>
               <SFilterProduct>
@@ -199,7 +199,7 @@ const Store = () => {
         ) : (
           <SNotOpenFilter>
             <SPageText>상세검색</SPageText>
-            <button onClick={handleFilterToggle}>⌄</button>
+            <img src={images.down} alt="React" onClick={handleFilterToggle} />
           </SNotOpenFilter>
         )}
       </div>
