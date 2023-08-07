@@ -8,6 +8,7 @@ import { Read as readUser } from '@/models/user'
 import withCors from '../cors'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
+import jwtVerify from '@/lib/jwtVerify';
 
 const receiveData = withCors(async (
   req: NextApiRequest,
@@ -17,14 +18,21 @@ const receiveData = withCors(async (
   let data : any;
 
   if (req.method === 'GET'){
-    const inputData = req.body;
-    console.log(req.headers?.Access_tocken)
-    console.log(`유저가 들어간 채팅방 탐색중입니다.`, inputData);
-    const [usr] : member[] = await readUser({email : 'tncks097@naver.com'});
+    // const inputData = req.body;
+    // console.log("될걸",req.headers?.access_token);
+    const {access_token, refresh_token} = req.headers;
+    const verified_token = await jwtVerify(access_token);
 
-    data = await searchRoom({member_id : usr['id']});
-    res.status(200).json({ rooms: data });
-    return
+    if (verified_token.ok){
+      
+      const email = verified_token.id;
+      console.log(`${email} 들어간 채팅방 탐색중입니다.`);
+      const [usr] : member[] = await readUser({email});
+      data = await searchRoom({member_id : usr['id']});
+      res.status(200).json({ rooms: data });
+      
+      return
+    }
   }
   
   if (req.method === 'POST'){
