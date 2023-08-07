@@ -1,0 +1,148 @@
+.page {
+  display: flex;
+  height: 700px;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.coala {
+  color: #e9d5ff;
+  font-size: 64px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.text {
+  color: #000;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.12px;
+  align-self: stretch;
+}
+
+.input {
+  width: 400px;
+  height: 40px;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #D9D9D9;
+  margin-bottom: 10px;
+}
+
+.inputWithBtn {
+  width: 400px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.inputWithBtn input {
+  width: auto;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #D9D9D9;
+  margin-right: 10px;
+  flex-grow: 1;
+}
+
+.inputWithBtn input::placeholder {
+  color: #D9D9D9;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.inputWithBtn button {
+  background-color: #e9d5ff;
+  border-radius: 7px;
+  box-shadow: 0px 4px 4px #00000040;
+  color: #ffffff;
+  font-size: 14px;
+  padding: 8px 30px;
+}
+
+.certificationInput {
+  position:relative;
+  flex-grow: 1;
+  margin-right: 10px;
+}
+.inputWithBtn .certificationInput input {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #D9D9D9;
+  width:100%;
+}
+
+.certificationTimer {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translate(-50%, -50%);
+  color: #D9D9D9;
+}
+
+.input::placeholder {
+  color: #D9D9D9;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.check-Text {
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.button {
+  background-color: #e9d5ff;
+  border-radius: 7px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 50px;
+  color: #ffffff;
+  font-size: 14px;
+  margin: 15px;
+}
+
+.afterlogin {
+  display: flex;
+  justify-content: center;
+  width: 400px;
+}
+
+.afterlogin .ho {
+  color: #D9D9D9;
+  line-height: 20px;
+  margin: 10px;
+}
+
+.afterlogin .grey {
+  color: #D9D9D9;
+  font-size: 14px;
+  line-height: 20px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.error {
+  color: #ff6060;
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.idBox, .pwBox{
+  display:flex;
+  flex-direction: column;
+  margin-bottom: 15px;;
+}
+

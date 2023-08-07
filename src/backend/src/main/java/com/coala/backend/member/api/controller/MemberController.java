@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
@@ -19,7 +20,6 @@ public class MemberController {
     private final MemberService memberService;
 
     private final JwtTokenProvider jwtTokenProvider;
-
 
     public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
