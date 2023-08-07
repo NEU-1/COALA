@@ -4,12 +4,15 @@ import { fetchRoom } from '../../../api/nodeServer/Room/index';
 import timestamp from '../../../utils/timestamp';
 import ChatList from '../ChatList';
 import { useNavigate } from 'react-router-dom';
+import { List } from '@mui/material';
+import { requestGet, setToken } from '../../../lib/api/api';
 
 const ChatListContainer = () => {
   const [roomName, setRoomName] = useState('');
-  const [user_id, setUser] = useState('');
+  const [user_id, setUser_id] = useState('');
+  const [user, setUser] = useState('');
 
-  const onClickChatBtn = () => {
+  const onClickCloseChatBtn = () => {
     window.parent.postMessage('closeChatModal', 'http://localhost:3000');
   };
 
@@ -18,9 +21,9 @@ const ChatListContainer = () => {
     navigate(`/chat/${roomId}`, { replace: true });
   };
 
-  let Lists = [ ];
+  let Lists = [];
 
-  let {data} = useReadRoom();
+  let { data } = useReadRoom();
   // let data;
   let rooms = data ? data.rooms : [];
   Lists = [...Lists, ...rooms];
@@ -30,11 +33,20 @@ const ChatListContainer = () => {
     await fetchRoom.create({ roomName, user_id: user_number });
   };
 
+  useEffect(() => {
+    setToken();
+    requestGet(`member/info`).then((res) => {
+      // 나중에 잘되었는지 아닌지 필터 필요
+      setUser(res.data);
+    });
+  }, []);
+
   return (
     <ChatList
-      onClickChatBtn={onClickChatBtn}
+      onClickCloseChatBtn={onClickCloseChatBtn}
       list={Lists}
       onClickListItem={onClickListItem}
+      user={user}
     />
   );
 };

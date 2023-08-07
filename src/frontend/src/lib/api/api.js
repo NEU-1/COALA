@@ -9,6 +9,7 @@ const headers = {
 export const ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000;
 
 export const getAccessToken = async () => {
+  console.log('새로 토큰을 얻어오자!');
   const accessToken = localStorage.getItem('access_token');
   const refreshToken = localStorage.getItem('refresh_token');
   const headers = {

@@ -4,17 +4,17 @@ import socketIO from '../../../api/nodeServer/socketIO';
 import { fetchRoom } from '../../../api/nodeServer/Room';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatRoom from '../ChatRoom';
+import { requestGet, setToken } from '../../../lib/api/api';
 
 let socket;
 let inform = {};
 const name = 'chats';
 
-
 const ChatRoomContainer = () => {
   const { roomName } = useParams();
   const [socket_state, setSocket_state] = useState('try connecting...');
   const [message, setMessage] = useState('');
-  const [username, setUsername] = useState('');
+  const [memberId, setMemberId] = useState('');
   const [allMessages, setAllMessages] = useState([]);
 
   const onChangeMessage = (e) => {
@@ -36,11 +36,12 @@ const ChatRoomContainer = () => {
   };
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
-    const email = 'tncks097@naver.com'
+    const email = 'tncks097@naver.com';
     socket.emit('joinRoom', { roomName }, async (chatting_logs) => {
       console.log(`join room[${roomName}]  successfully`);
-      const {data} = await fetchRoom.join({ roomName, email });
+      const { data } = await fetchRoom.join({ roomName, email });
       inform = data;
+      console.log('니먼데', inform);
       setAllMessages((pre) => [...pre, ...chatting_logs]);
       // console.log("올 메시지",allMessages)
     });
@@ -48,7 +49,11 @@ const ChatRoomContainer = () => {
 
   useEffect(() => {
     socketInitializer();
-
+    setToken();
+    requestGet(`member/info`).then((res) => {
+      // 나중에 잘되었는지 아닌지 필터 필요
+      setMemberId(res.data.id);
+    });
     return () => {
       console.log('disconected');
       if (socket) {
@@ -61,7 +66,7 @@ const ChatRoomContainer = () => {
   async function socketInitializer() {
     socketIO.fetchEnter(`/api/socket?name=${name}`);
 
-    socket = socketIOClient('http://localhost:3030', {
+    socket = socketIOClient('http://i9d108.p.ssafy.io:3030', {
       path: `/${name}/socket.io`,
       withCredentials: true,
       extraHeaders: {
@@ -94,7 +99,7 @@ const ChatRoomContainer = () => {
 
     console.log('message emitted');
     socket.emit('send-message', {
-      roomUser : inform.roomUser,
+      roomUser: inform.roomUser,
       message,
     });
     setMessage('');
@@ -113,6 +118,7 @@ const ChatRoomContainer = () => {
       onChangeMessage={onChangeMessage}
       onSubmitMessage={onSubmitMessage}
       allMessages={allMessages}
+      memberId={memberId}
       scrollRef={scrollRef}
     />
   );
