@@ -18,6 +18,7 @@ const receiveData = withCors(async (
 
   if (req.method === 'GET'){
     const inputData = req.body;
+    console.log(req.headers)
     console.log(`유저가 들어간 채팅방 탐색중입니다.`, inputData);
     const [usr] : member[] = await readUser({email : 'tncks097@naver.com'});
 
