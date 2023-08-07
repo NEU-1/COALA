@@ -5,6 +5,7 @@ import { images } from '../../../assets/images';
 
 const ChatBubble = ({ message, memberId }) => {
   const dateObject = new Date(message.created_at);
+  dateObject.setHours(dateObject.getHours() - 9);
   // 옵션 설정
   const options = { hour: '2-digit', minute: '2-digit', hour12: true };
   // 원하는 형식으로 시간 변환
@@ -13,7 +14,7 @@ const ChatBubble = ({ message, memberId }) => {
 
   return memberId === message.member_id ? (
     <SMyBubble>
-      <SSendTime>03:12 AM</SSendTime>
+      <SSendTime>{formattedTime}</SSendTime>
       <SMyBubbleContent>{message.text_content}</SMyBubbleContent>
     </SMyBubble>
   ) : (
@@ -29,7 +30,6 @@ const ChatBubble = ({ message, memberId }) => {
   );
 };
 
-// 메세지가 내껀지 남의 껀지에 따라 style 변경 필요
 const SMyBubble = styled.div`
   display: flex;
   align-items: end;

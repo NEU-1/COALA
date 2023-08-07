@@ -37,22 +37,19 @@ const ChatRoomContainer = () => {
   };
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
-    const email = 'tncks097@naver.com';
-    socket.emit('joinRoom', { roomName }, async (chatting_logs) => {
+    socket.emit('joinRoom', { roomName }, async ({ chattingLogs }) => {
       console.log(`join room[${roomName}]  successfully`);
-      await api.setToken();
-      const { data } = await fetchRoom.join({ roomName, email });
+      const { data } = await fetchRoom.join({ roomName });
       inform = data;
       console.log('니먼데', inform);
-      setAllMessages((pre) => [...pre, ...chatting_logs]);
+      setAllMessages((pre) => [...pre, ...chattingLogs]);
       // console.log("올 메시지",allMessages)
     });
   };
 
   useEffect(() => {
-    
     setToken();
-    
+
     socketInitializer();
 
     requestGet(`member/info`).then((res) => {
@@ -69,6 +66,7 @@ const ChatRoomContainer = () => {
   }, []);
 
   async function socketInitializer() {
+    await api.setToken();
     socketIO.fetchEnter(`/api/socket?name=${name}`);
 
     socket = socketIOClient('http://i9d108.p.ssafy.io:3030', {
