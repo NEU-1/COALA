@@ -19,8 +19,8 @@ const receiveData = withCors(async (
   let email : string | undefined;
   const verified_token = await jwtVerify(access_token);
   console.log("웨안돼",verified_token);
-  if (verified_token.ok){
-    email = verified_token.id;
+  if (verified_token.ok === true){
+    email = verified_token.sub;
   }else{
     res.status(500).json({message: 'token is not validated' });
   }

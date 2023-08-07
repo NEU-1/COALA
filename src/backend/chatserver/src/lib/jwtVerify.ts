@@ -7,6 +7,7 @@ interface TokenDecodingResult {
     id?: string;
     role?: string;
     message?: string;
+    sub?: string;
 }
 
 export default async (token: any): Promise<TokenDecodingResult> => { // access token 검증
