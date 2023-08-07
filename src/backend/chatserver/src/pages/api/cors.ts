@@ -19,7 +19,6 @@ function runCorsHandler(
       if (result instanceof Error) {
         return reject(result)
       }
-
       return resolve(result)
     })
   })
@@ -32,6 +31,8 @@ function withCORS(handler : any) {
     req: NextApiRequest,
     res: NextApiResponse
     ) => {
+    // 헤더에서 accesstocken이 먼저 있는지 확인해봅니다.
+
     // 먼저 CORS 처리를 실행합니다.
     await runCorsHandler(req, res, cors);
     // 그런 다음 요청 핸들러 함수를 실행합니다.
