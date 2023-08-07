@@ -1,6 +1,7 @@
 package com.coala.backend.freepost.db.entity;
 
 import com.coala.backend.member.db.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -16,7 +17,7 @@ public class FreeGood {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "fp_id")
     @NotNull
     private FreePost fpId;
@@ -26,19 +27,16 @@ public class FreeGood {
     @NotNull
     private FreePost writerId;
 
+    @JsonIgnore
     @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     @NotNull
-    private Member userId;
-
-    @Column(columnDefinition = "integer default 0", name = "is_good")
-    private int isGood;
+    private Member memberId;
 
     @Builder
-    public FreeGood(FreePost fpId, FreePost writerId, Member userId, int isGood) {
+    public FreeGood(FreePost fpId, FreePost writerId, Member memberId) {
         this.fpId = fpId;
         this.writerId = writerId;
-        this.userId = userId;
-        this.isGood = isGood;
+        this.memberId = memberId;
     }
 }

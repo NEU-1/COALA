@@ -12,17 +12,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TechCommentRequestDto {
     private Long id;
-    private TechPost fpId;
+    private TechPost tpId;
     private String author;
     private String content;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
     @Builder
-    public TechCommentRequestDto(Long id, TechPost fpId, String author, String content,
+    public TechCommentRequestDto(Long id, TechPost tpId, String author, String content,
                                  LocalDateTime createAt, LocalDateTime updateAt) {
         this.id = id;
-        this.fpId = fpId;
+        this.tpId = tpId;
         this.author = author;
         this.content = content;
         this.createAt = createAt;
@@ -31,9 +31,8 @@ public class TechCommentRequestDto {
 
     public TechComment toEntity() {
         return TechComment.builder()
-                .fpId(this.fpId)
+                .tpId(this.tpId)
                 .author(this.author)
-                .updateAt(this.updateAt)
                 .content(this.content)
                 .build();
     }

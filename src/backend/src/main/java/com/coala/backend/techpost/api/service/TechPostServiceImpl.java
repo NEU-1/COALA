@@ -2,6 +2,8 @@ package com.coala.backend.techpost.api.service;
 
 import com.coala.backend.techpost.db.dto.request.TechPostRequestDto;
 import com.coala.backend.techpost.db.entity.TechPost;
+import com.coala.backend.techpost.db.repository.TechCommentRepository;
+import com.coala.backend.techpost.db.repository.TechGoodRepository;
 import com.coala.backend.techpost.db.repository.TechPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TechPostServiceImpl implements TechPostService{
     private final TechPostRepository techPostRepository;
+    private final TechGoodRepository techGoodRepository;
 
     @Transactional
     @Override
@@ -45,7 +48,8 @@ public class TechPostServiceImpl implements TechPostService{
                         .imagePath(techPost.getImagePath())
                         .nickname(techPost.getNickname())
                         .views(techPost.getViews())
-                        .count(techPost.getCount())
+                        .commentCount(techPost.getComments().size())
+                        .goodCount(techPost.getGoods().size())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -68,13 +72,23 @@ public class TechPostServiceImpl implements TechPostService{
                 .imagePath(tech.getImagePath())
                 .nickname(tech.getNickname())
                 .views(tech.getViews())
-                .count(tech.getCount())
+                .commentCount(tech.getComments().size())
+                .goodCount(tech.getGoods().size())
                 .build();
     }
 
     @Transactional
     @Override
-    public void deletePost(Long id) {
+    public void deletePost(Long id, TechPostRequestDto dto) {
+        TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("게시판이 존재하지 않습니다.");
+        });
+
+        if (!techPost.getMemberId().getEmail().equals(dto.getMemberId().getEmail())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
+
+        techGoodRepository.deleteByTpId(techPost);
         techPostRepository.deleteById(id);
     }
 
@@ -93,7 +107,8 @@ public class TechPostServiceImpl implements TechPostService{
                         .imagePath(techPost.getImagePath())
                         .nickname(techPost.getNickname())
                         .views(techPost.getViews())
-                        .count(techPost.getCount())
+                        .commentCount(techPost.getComments().size())
+                        .goodCount((techPost.getGoods().size()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -101,10 +116,18 @@ public class TechPostServiceImpl implements TechPostService{
     @Transactional
     @Override
     public void updateTechPost(Long id, TechPostRequestDto dto) {
-        Optional<TechPost> byId = techPostRepository.findById(id);
-        TechPost techPost = byId.get();
+        TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
+            return  new IllegalArgumentException("게시글이 존재하지 않습니다.");
+        });
 
-        techPost.updateTechPost(dto.getMemberId(), dto.getTitle(), dto.getDetail()
-                , dto.getImagePath(), dto.getNickname());
+        if (!techPost.getMemberId().getEmail().equals(dto.getMemberId().getEmail())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
+
+        techPost.updateTechPost(
+                dto.getTitle(),
+                dto.getDetail(),
+                dto.getImagePath(),
+                dto.getNickname());
     }
 }

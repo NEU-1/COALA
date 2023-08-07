@@ -17,10 +17,10 @@ public class TechComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "fp_id")
+    @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "tp_id")
     @NotNull
-    private TechPost fpId;
+    private TechPost tpId;
 
     @NotNull
     private String author;
@@ -39,11 +39,10 @@ public class TechComment {
     }
 
     @Builder
-    public TechComment(TechPost fpId, String author, String content, LocalDateTime updateAt) {
-        this.fpId = fpId;
+    public TechComment(TechPost tpId, String author, String content) {
+        this.tpId = tpId;
         this.author = author;
         this.content = content;
-        this.updateAt = updateAt;
     }
 
     public void updateTechComment(String author, String content) {

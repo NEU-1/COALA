@@ -1,8 +1,16 @@
 package com.coala.backend.freepost.api.service;
 
 import com.coala.backend.freepost.db.dto.request.FreePostRequestDto;
+import com.coala.backend.freepost.db.dto.response.BaseResponseDto;
+import com.coala.backend.freepost.db.dto.response.FreePostResponseDto;
 import com.coala.backend.freepost.db.entity.FreePost;
+import com.coala.backend.freepost.db.repository.FreeGoodRepository;
 import com.coala.backend.freepost.db.repository.FreePostRepository;
+import com.coala.backend.member.common.jwt.JwtTokenProvider;
+import com.coala.backend.member.db.entity.Member;
+import com.coala.backend.member.db.repository.MemberRepository;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,21 +31,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FreePostServiceImpl implements FreePostService{
     private final FreePostRepository freePostRepository;
+    private final FreeGoodRepository freeGoodRepository;
 
     @Transactional
     @Override
-    public void savePost(FreePostRequestDto postDto) {
+    public Member savePost(FreePostRequestDto postDto, Member member) {
 
-        freePostRepository.save(postDto.toEntity());
+        freePostRepository.save(postDto.toEntity(member));
+
+        return member;
     }
 
     @Transactional
     @Override
-    public List<FreePostRequestDto> getPostList(int page) {
-        Pageable pageable = PageRequest.of(page,3, Sort.by("createAt").descending().and(Sort.by("updateAt")));
-        return freePostRepository.findAll(pageable).stream()
-                .map(freePost -> FreePostRequestDto.builder()
-                        .id(freePost.getId())
+    public BaseResponseDto getPostList(int page) {
+        Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+
+        List<FreePostResponseDto> allList = freePostRepository.findAll(pageable).stream()
+                .map(freePost -> FreePostResponseDto.builder()
                         .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())
@@ -46,46 +57,63 @@ public class FreePostServiceImpl implements FreePostService{
                         .imagePath(freePost.getImagePath())
                         .isAnonymous(freePost.isAnonymous())
                         .views(freePost.getViews())
-                        .count(freePost.getCount())
+                        .commentCount(freePost.getComments().size())
+                        .goodCount(freePost.getGoods().size())
                         .build())
                 .collect(Collectors.toList());
-    }
 
-    @Transactional
-    @Override
-    public FreePostRequestDto getPost(Long id) {
-        Optional<FreePost> freePost = freePostRepository.findById(id);
-        FreePost free = freePost.get();
-
-        free.views();
-
-        return FreePostRequestDto.builder()
-                .id(free.getId())
-                .memberId(free.getMemberId())
-                .title(free.getTitle())
-                .detail(free.getDetail())
-                .createAt(free.getCreateAt())
-                .updateAt(free.getUpdateAt())
-                .imagePath(free.getImagePath())
-                .isAnonymous(free.isAnonymous())
-                .views(free.getViews())
-                .count(free.getCount())
+        return BaseResponseDto.builder()
+                .statusCode(200)
+                .msg("성공")
+                .detail(allList.size())
+                .list(allList)
                 .build();
     }
 
     @Transactional
     @Override
-    public void deletePost(Long id) {
+    public FreePostResponseDto getPost(Long id) {
+        FreePost freePost = freePostRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("없는 게시글 입니다.");
+        });
+
+        freePost.views();
+
+        return FreePostResponseDto.builder()
+                .memberId(freePost.getMemberId())
+                .title(freePost.getTitle())
+                .detail(freePost.getDetail())
+                .createAt(freePost.getCreateAt())
+                .updateAt(freePost.getUpdateAt())
+                .imagePath(freePost.getImagePath())
+                .isAnonymous(freePost.isAnonymous())
+                .views(freePost.getViews())
+                .commentCount(freePost.getComments().size())
+                .goodCount(freePost.getGoods().size())
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public void deletePost(Long id, FreePostRequestDto dto, Member member) {
+        FreePost freePost = freePostRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("게시판이 존재하지 않습니다.");
+        });
+
+        if (!freePost.getMemberId().getEmail().equals(member.getEmail())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
+
+        freeGoodRepository.deleteByFpId(freePost);
         freePostRepository.deleteById(id);
     }
 
     @Transactional
     @Override
-    public List<FreePostRequestDto> searchPosts(String keyword, int page) {
+    public BaseResponseDto searchPosts(String keyword, int page) {
         Pageable pageable = PageRequest.of(page,3, Sort.by("createAt").descending().and(Sort.by("updateAt")));
-        return freePostRepository.findByTitleContaining(keyword, pageable).stream()
-                .map(freePost -> FreePostRequestDto.builder()
-                        .id(freePost.getId())
+        List<FreePostResponseDto> searchList = freePostRepository.findByTitleContaining(keyword, pageable).stream()
+                .map(freePost -> FreePostResponseDto.builder()
                         .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())
@@ -94,19 +122,31 @@ public class FreePostServiceImpl implements FreePostService{
                         .imagePath(freePost.getImagePath())
                         .isAnonymous(freePost.isAnonymous())
                         .views(freePost.getViews())
-                        .count(freePost.getCount())
+                        .commentCount(freePost.getComments().size())
+                        .goodCount(freePost.getGoods().size())
                         .build())
                 .collect(Collectors.toList());
+
+        return BaseResponseDto.builder()
+                .statusCode(200)
+                .msg("성공")
+                .detail(searchList.size())
+                .list(searchList)
+                .build();
     }
 
     @Transactional
     @Override
-    public void updateFreePost(Long id, FreePostRequestDto dto) {
-        Optional<FreePost> byId = freePostRepository.findById(id);
-        FreePost freePost = byId.get();
+    public void updateFreePost(Long id, FreePostRequestDto dto, Member member) {
+        FreePost freePost = freePostRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("게시글이 존재하지 않습니다.");
+        });
+
+        if (!freePost.getMemberId().getEmail().equals(member.getEmail())) {
+            throw new IllegalArgumentException("작성자가 아닙니다.");
+        }
 
         freePost.updateFreePost(
-                dto.getMemberId(),
                 dto.getTitle(),
                 dto.getDetail(),
                 dto.getImagePath(),
