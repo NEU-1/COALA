@@ -36,7 +36,7 @@ public class FreeCommentServiceImpl implements FreeCommentService{
     @Transactional
     @Override
     public List<FreeCommentRequestDto> getCommentList(int page) {
-        Pageable pageable = PageRequest.of(page, 3, Sort.by("createAt").descending());
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("createAt").descending());
         return freeCommentRepository.findAll(pageable).stream()
                 .map(freeComment -> FreeCommentRequestDto.builder()
                         .id(freeComment.getId())

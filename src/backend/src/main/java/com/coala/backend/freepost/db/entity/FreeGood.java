@@ -1,6 +1,7 @@
 package com.coala.backend.freepost.db.entity;
 
 import com.coala.backend.member.db.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -26,8 +27,9 @@ public class FreeGood {
     @NotNull
     private FreePost writerId;
 
+    @JsonIgnore
     @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "email")
+    @JoinColumn(name = "member_id")
     @NotNull
     private Member memberId;
 

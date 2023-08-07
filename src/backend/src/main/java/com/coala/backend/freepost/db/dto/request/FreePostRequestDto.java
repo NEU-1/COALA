@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class FreePostRequestDto {
     private Long id;
-    private Member memberId;
     private String title;
     private String detail;
     private LocalDateTime createAt;
@@ -27,11 +26,10 @@ public class FreePostRequestDto {
     private int goodCount;
 
     @Builder
-    public FreePostRequestDto(Long id, Member memberId, String title, String detail,
+    public FreePostRequestDto(Long id, String title, String detail,
                               LocalDateTime createAt, LocalDateTime updateAt, String imagePath,
                               boolean isAnonymous, int views, int commentCount, int goodCount) {
         this.id = id;
-        this.memberId = memberId;
         this.title = title;
         this.detail = detail;
         this.createAt = createAt;
@@ -43,9 +41,9 @@ public class FreePostRequestDto {
         this.goodCount = goodCount;
     }
 
-    public FreePost toEntity() {
+    public FreePost toEntity(Member member) {
         return FreePost.builder()
-                .memberId(this.memberId)
+                .memberId(member)
                 .title(this.title)
                 .detail(this.detail)
                 .imagePath(this.imagePath)

@@ -1,6 +1,7 @@
 package com.coala.backend.freepost.db.entity;
 
 import com.coala.backend.member.db.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -15,6 +16,7 @@ import java.util.List;
 /*
 - 추천 수 기능 미구현
 * */
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,8 +25,9 @@ public class FreePost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(targetEntity = Member.class)
-    @JoinColumn(name = "member_id", referencedColumnName = "email")
+    @JoinColumn(name = "member_id")
     @NotNull
     private Member memberId;
 

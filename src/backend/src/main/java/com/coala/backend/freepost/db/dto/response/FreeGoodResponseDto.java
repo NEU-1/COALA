@@ -11,13 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FreeGoodResponseDto {
 
-    private Member memberId;
     private FreePost fpId;
     private FreePost writerId;
 
     @Builder
     public FreeGoodResponseDto(Member memberId, FreePost fpId, FreePost writerId) {
-        this.memberId = memberId;
         this.fpId = fpId;
         this.writerId = writerId;
     }
