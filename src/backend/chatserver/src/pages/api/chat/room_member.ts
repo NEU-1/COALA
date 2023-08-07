@@ -14,7 +14,9 @@ const receiveData = withCors(async (
 ) => {
   
   if (req.method === 'POST'){
-    const inputData = req.body;
+    const inputData = req.body; // 이메일 넣어주세요
+    console.log("될걸",req.headers?.Access_token);
+
     const roomUser = await createOrUseRoomMember(inputData);
     console.log(`${inputData.name} 방으로 입장했습니다.`)
     res.status(200).json({ roomUser });
