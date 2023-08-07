@@ -39,13 +39,14 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
 
     socket.on('joinRoom', async ({roomName}, callback) => {
       const [room]: room[] = await readRoom({name : roomName});
+      if (! room?.id) {callback({ ok : false, chattingLogs : []})}
       const room_id = room.id;
 
       const chattingLogs = await readQuery('chat_content', {room_id});
       console.log(`${socket.id} joined ${roomName}`)
 
       socket.join(roomName);
-      callback(chattingLogs);
+      callback({ ok : true, chattingLogs : chattingLogs});
     })
     
     socket.on("send-message", async ({roomUser, message}) => {
