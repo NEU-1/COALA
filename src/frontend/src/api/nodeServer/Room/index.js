@@ -38,13 +38,12 @@ const fetchRoom = {
     });
   },
 
-  join: async ({ roomName, email }) => {
+  join: async ({ roomName }) => {
     return await api({
       method: 'POST',
       url: `/api/chat/room_member`,
       data: {
         name: roomName,
-        email,
         // 유저 정보 넣어야함...
       },
     }).catch((error) => {
@@ -60,10 +59,15 @@ const fetchRoom = {
     });
   },
 
-  execute: async () => {
+  execute: async ({ roomName }) => {
     return await api({
       method: 'DELETE',
       url: `/api/chat/room_member`,
+      url: `/api/chat/room_member`,
+      data: {
+        name: roomName,
+        // 유저 정보 넣어야함...
+      },
     }).catch((error) => {
       if (error.response) {
         // console.log(error.response.data)

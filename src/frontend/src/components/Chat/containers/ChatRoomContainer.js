@@ -44,8 +44,9 @@ const ChatRoomContainer = () => {
       await api.setToken();
 
       const result = await fetchRoom.join({ roomName });
-      inform = result.data;
+      inform = result?.data;
       console.log('니먼데', inform);
+      console.log(chatting_logs)
       setAllMessages((pre) => [...pre, ...chatting_logs]);
       // console.log("올 메시지",allMessages)
     });

@@ -56,12 +56,14 @@ const Delete = async (inputData : any) => {
     console.log("룸",room, name)
     const [usr] : member[] = await readUser({email});
     console.log("유저",usr, email)
-
+    
+    if (!room || !usr) {return; }
+    
     const room_user = {
       'room_id' : room.id,
       'member_id' : usr.id
     };
-
+    
     const { conditionQuery, values} = buildConditionQuery(room_user, ' AND ');
     const result = await deleteQuery('room_member', conditionQuery, values);
     return result;
