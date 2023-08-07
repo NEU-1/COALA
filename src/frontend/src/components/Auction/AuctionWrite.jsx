@@ -8,7 +8,7 @@ import { images } from '../../assets/images';
 import Swal from "sweetalert2";
 
 
-const StoreWrite = () => {
+const AuctionWrite = () => {
   console.log(images)
 
   const product = ["키보드", "마우스", "헤드셋", "태블릿"];
@@ -395,7 +395,7 @@ const goSellBtn = () => {
     </SMain>
   );
 };
-export default StoreWrite;
+export default AuctionWrite;
 
 const SMain = styled.div`
 margin-top: 170px;

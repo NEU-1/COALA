@@ -21,9 +21,15 @@ import ModifyUserinfoContainer from "../components/MyPage/containers/ModifyUseri
 
 // 제공자 페이지
 import Store from '../components/Store/Store';
-import StoreDetail from '../components/Store/StoreDetail';
 import StoreWrite from '../components/Store/StoreWrite';
+import StoreDetail from '../components/Store/StoreDetail';
 import StoreUpdate from '../components/Store/StoreUpdate';
+
+// 이용자 페이지
+import Auction from "../components/Auction/Auction";
+import AuctionWrite from "../components/Auction/AuctionWrite";
+import AuctionDetail from "../components/Auction/AuctionDetail";
+import AuctionUpdate from "../components/Auction/AuctionUpdate";
 
 // 테크게시판
 import TechBoardDetail from "../components/Techboard/components/TechBoardDetail";
@@ -44,6 +50,16 @@ const RootNavigation = () => {
           <Route path="/tech" element={<TechBoardList />} />
           <Route path="/tech/:postId" element={<TechBoardDetail />} />
           <Route path="/tech/comment" element={<Commentapp />} />
+
+          <Route path="/store" element={<Store />} />
+          <Route path="/store/write" element={<StoreWrite />} />
+          <Route path="/store/:postId" element={<StoreDetail />} />
+          <Route path="/store/:postId/update" element={<StoreUpdate />} />
+
+          <Route path="/auction" element={<Auction />} />
+          <Route path="/auction/write" element={<AuctionWrite />} />
+          <Route path="/auction/:postId" element={<AuctionDetail />} />
+          <Route path="/auction/:postId/update" element={<AuctionUpdate />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
@@ -51,11 +67,6 @@ const RootNavigation = () => {
         <Route path="/changepw" element={<ChangePw />} />
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
-
-        <Route path="/store" element={<Store />} />
-        <Route path="/store/write" element={<StoreWrite />} />
-        <Route path="/store/:postId" element={<StoreDetail />} />
-        <Route path="/store/:postId/update" element={<StoreUpdate />} />
 
       </Routes>
     </BrowserRouter>

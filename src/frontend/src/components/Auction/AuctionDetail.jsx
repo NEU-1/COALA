@@ -5,7 +5,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-const StoreDetail = () => {
+const AuctionDetail = () => {
   const [postData, setPostData] = useState(null);
   const [pictures, setPictures] = useState([]); 
   const [pictureNum, setPictureNum] = useState(0);
@@ -186,7 +186,7 @@ const StoreDetail = () => {
   );
 };
 
-export default StoreDetail;
+export default AuctionDetail;
 
 const SMain = styled.div`
 margin-top: 170px;
