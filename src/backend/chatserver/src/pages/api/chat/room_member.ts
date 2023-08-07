@@ -18,7 +18,7 @@ const receiveData = withCors(async (
   const {access_token, refresh_token} = req.headers;
   let email : string | undefined;
   const verified_token = await jwtVerify(access_token);
-
+  console.log("웨안돼",verified_token);
   if (verified_token.ok){
     email = verified_token.id;
   }else{
