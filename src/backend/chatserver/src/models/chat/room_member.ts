@@ -22,6 +22,7 @@ const Create = async (inputData : any) =>{
     };
   
     const [roomUserRelations] = await Read(room_user);
+    console.log("흐음 중계테이블 확인",roomUserRelations)
     if (roomUserRelations) {return data;} 
     await createQuery('room_member', room_user);
     return data;
