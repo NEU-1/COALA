@@ -79,7 +79,7 @@ const Auction = () => {
         product: "태블릿",
         title: "반응속도 빠름",
         minday: 8,
-        writeday: "07.31",
+        writeday: "01.31",
       },
       {
         id: 9,
@@ -152,22 +152,22 @@ const Auction = () => {
   const handlePageClick = (page) => {
     setCurrentPage(page);
     const startItem = (page - 1) * itemsPerPage;
-    const endItem = page * itemsPerPage
+    const endItem = page * itemsPerPage;
     setData(initialData().slice(startItem, endItem));
   };
   const handlePrevGroup = () => {
     if (pageGroup > 1) {
-      setPageGroup(pageGroup-1)
+      setPageGroup(pageGroup - 1);
     }
   };
   const handleNextGroup = () => {
-    setPageGroup(pageGroup+1)
-    }
+    setPageGroup(pageGroup + 1);
+  };
   const generagePagenationNumbers = () => {
     const startPage = (pageGroup - 1) * 5 + 1;
-    return Array.from({length: 5}, (_, idx) => startPage + idx);
+    return Array.from({ length: 5 }, (_, idx) => startPage + idx);
   };
-  
+
   const onClickHandler = () => {
     console.log(isLogin);
     if (!isLogin) {
@@ -180,12 +180,25 @@ const Auction = () => {
       });
       navigate("/login");
     } else {
-      navigate("/store/write");
+      navigate("/auction/write");
     }
   };
   const handleListClick = (id) => {
     console.log(id);
     navigate(`${id}`);
+  };
+
+  const calculateDaysAgo = (writeday) => {
+    const currentDate = new Date();
+    const writeDate = new Date(writeday);
+    
+    const diffTime = Math.abs(currentDate - writeDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))-8036; 
+    if (diffDays === 0) {
+      return '오늘'
+    }
+  
+    return `${diffDays}일 전`;
   };
 
   useEffect(() => {
@@ -194,101 +207,104 @@ const Auction = () => {
 
   return (
     <Smain>
-        {filter ? (
-          <SOpenFilter>
-            <SFilterHeader>
-              <SPageText>상세검색</SPageText>
-              <img src={images.up} alt="React" onClick={handleFilterToggle} />
-            </SFilterHeader>
-            <SFilterProductType>
-              <SFilterProduct>
-                <SPageText>분류</SPageText>
-                <SSelectProduct>
-                  {product.map((product, index) => {
-                    return (
-                      <SSelectProductBtn
-                        key={index}
-                        onClick={() => handleProductTypeChange(index)}
-                        $activeProduct={productType === index}
-                      >
-                        {product}
-                      </SSelectProductBtn>
-                    );
-                  })}
-                </SSelectProduct>
-              </SFilterProduct>
-              <SFilterProduct>
-                <SPageText>대여 기간</SPageText>
-                <SSelectProduct>
-                  {day.map((day, index) => {
-                    return (
-                      <SSelectDayBtn
-                        key={index}
-                        onClick={() => handleDayTypeChange(index)}
-                        $activeDay={dayType === index}
-                      >
-                        {day}
-                      </SSelectDayBtn>
-                    );
-                  })}
-                </SSelectProduct>
-              </SFilterProduct>
-            </SFilterProductType>
-            <SFilterGageBar>
-              <STextCost>가격</STextCost>
-                {priceRange[0]} - {priceRange[1]}
-              <SGage
-                range
-                min={0}
-                max={100000}
-                defaultValue={[25000, 75000]}
-                step={1000}
-                onChange={(value) => setPriceRange(value)}
-              />
-            </SFilterGageBar>
-            <SFilterFooter>
-              <SResetBtn onClick={resetDayAndProduct}>초기화</SResetBtn>
-              <SOKBtn>적용</SOKBtn>
-            </SFilterFooter>
-          </SOpenFilter>
-        ) : (
-          <SNotOpenFilter>
+      {filter ? (
+        <SOpenFilter>
+          <SFilterHeader>
             <SPageText>상세검색</SPageText>
-            <img src={images.down} alt="React" onClick={handleFilterToggle} />
-          </SNotOpenFilter>
-        )}
+            <img src={images.up} alt="React" onClick={handleFilterToggle} />
+          </SFilterHeader>
+          <SFilterProductType>
+            <SFilterProduct>
+              <SPageText>분류</SPageText>
+              <SSelectProduct>
+                {product.map((product, index) => {
+                  return (
+                    <SSelectProductBtn
+                      key={index}
+                      onClick={() => handleProductTypeChange(index)}
+                      $activeProduct={productType === index}
+                    >
+                      {product}
+                    </SSelectProductBtn>
+                  );
+                })}
+              </SSelectProduct>
+            </SFilterProduct>
+            <SFilterProduct>
+              <SPageText>대여 기간</SPageText>
+              <SSelectProduct>
+                {day.map((day, index) => {
+                  return (
+                    <SSelectDayBtn
+                      key={index}
+                      onClick={() => handleDayTypeChange(index)}
+                      $activeDay={dayType === index}
+                    >
+                      {day}
+                    </SSelectDayBtn>
+                  );
+                })}
+              </SSelectProduct>
+            </SFilterProduct>
+          </SFilterProductType>
+          <SFilterGageBar>
+            <STextCost>가격</STextCost>
+            {priceRange[0]} - {priceRange[1]}
+            <SGage
+              range
+              min={0}
+              max={100000}
+              defaultValue={[25000, 75000]}
+              step={1000}
+              onChange={(value) => setPriceRange(value)}
+            />
+          </SFilterGageBar>
+          <SFilterFooter>
+            <SResetBtn onClick={resetDayAndProduct}>초기화</SResetBtn>
+            <SOKBtn>적용</SOKBtn>
+          </SFilterFooter>
+        </SOpenFilter>
+      ) : (
+        <SNotOpenFilter>
+          <SPageText>상세검색</SPageText>
+          <img src={images.down} alt="React" onClick={handleFilterToggle} />
+        </SNotOpenFilter>
+      )}
       <SAuctionList>
-      <SAuctionDetail>
-
-        <SAuctionTitleP1>분류</SAuctionTitleP1>
-        <SAuctionTitleP2>제목</SAuctionTitleP2>
-        <SAuctionTitleP3>최소기간</SAuctionTitleP3>
-        <SAuctionTitleP4>작성일</SAuctionTitleP4>
-      </SAuctionDetail>
+        <SAuctionDetail>
+          <SAuctionTitleP1>분류</SAuctionTitleP1>
+          <SAuctionTitleP2>제목</SAuctionTitleP2>
+          <SAuctionTitleP3>최소기간</SAuctionTitleP3>
+          <SAuctionTitleP4>작성일</SAuctionTitleP4>
+        </SAuctionDetail>
         <SCardList>
           {data.map((item, index) => (
             <SAuctionDetail onClick={() => handleListClick(item.id)}>
               <SAuctionP1>{item.product}</SAuctionP1>
               <SAuctionP2>{item.title}</SAuctionP2>
               <SAuctionP3>{item.minday}일</SAuctionP3>
-              <SAuctionP4>{item.writeday}</SAuctionP4>
+              <SAuctionP4>{calculateDaysAgo(item.writeday)}</SAuctionP4>
             </SAuctionDetail>
           ))}
         </SCardList>
       </SAuctionList>
-        <SChangePageAndCreateBtn>
-          <SChangePage>
-            <SFooterText onClick={handlePrevGroup}>&lt;</SFooterText>
-            {generagePagenationNumbers().map((item, index) => (
-              <SFooterText
-              key = {index}
-              onClick={()=>{handlePageClick(item)}}
-              >{item}</SFooterText>
-            ))}
-            <SFooterText onClick={handleNextGroup}>&gt;</SFooterText>
-          </SChangePage>
-          <SOKBtn onClick={onClickHandler}>등록</SOKBtn>
-        </SChangePageAndCreateBtn>
+      <SChangePageAndCreateBtn>
+        <SChangePage>
+          <SFooterText onClick={handlePrevGroup}>&lt;</SFooterText>
+          {generagePagenationNumbers().map((item, index) => (
+            <SFooterText
+              key={index}
+              onClick={() => {
+                handlePageClick(item);
+              }}
+            >
+              {item}
+            </SFooterText>
+          ))}
+          <SFooterText onClick={handleNextGroup}>&gt;</SFooterText>
+        </SChangePage>
+        <SOKBtn onClick={onClickHandler}>등록</SOKBtn>
+      </SChangePageAndCreateBtn>
     </Smain>
   );
 };
@@ -434,11 +450,11 @@ const SOKBtn = styled.button`
 `;
 
 const SChangePageAndCreateBtn = styled.div`
-display: flex;
-// padding: 0px 35px;
-// justify-content: flex-end;
-gap: 216px;
-// align-self: stretch;
+  display: flex;
+  // padding: 0px 35px;
+  // justify-content: flex-end;
+  gap: 216px;
+  // align-self: stretch;
 `;
 
 const SCardList = styled.div`
@@ -457,85 +473,85 @@ const SGage = styled(Slider)`
 `;
 
 const SAuctionList = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-gap: 30px;
-`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+`;
 
 const SAuctionDetail = styled.div`
-display: flex;
-width: 800px;
-padding: 0px 37px;
-justify-content: space-between;
-align-items: center;
-`
+  display: flex;
+  width: 800px;
+  padding: 0px 37px;
+  justify-content: space-between;
+  align-items: center;
+`;
 const SAuctionTitleP1 = styled.p`
-font-size: 16px;
-font-weight: 500;
-width: 50px;
-text-align: center;
-`
+  font-size: 16px;
+  font-weight: 500;
+  width: 50px;
+  text-align: center;
+`;
 
 const SAuctionTitleP2 = styled.p`
-font-size: 16px;
-font-weight: 500;
-text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
   width: 300px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow:hidden;
-`
+  overflow: hidden;
+`;
 const SAuctionTitleP3 = styled.p`
-font-size: 16px;
-font-weight: 500;
-width: 60px;
-`
+  font-size: 16px;
+  font-weight: 500;
+  width: 60px;
+`;
 const SAuctionTitleP4 = styled.p`
-font-size: 16px;
-font-weight: 500;
-width: 50px;
-`
+  font-size: 16px;
+  font-weight: 500;
+  width: 50px;
+`;
 
 const SAuctionP1 = styled.p`
-font-size: 16px;
-font-weight: 500;
-width: 50px;
-text-align: center;
-`
+  font-size: 16px;
+  font-weight: 500;
+  width: 50px;
+  text-align: center;
+`;
 
 const SAuctionP2 = styled.p`
-font-size: 16px;
-font-weight: 500;
-text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
   width: 300px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow:hidden;
-`
+  overflow: hidden;
+`;
 const SAuctionP3 = styled.p`
-font-size: 16px;
-font-weight: 500;
-width: 60px;
-text-align: center;
-`
+  font-size: 16px;
+  font-weight: 500;
+  width: 60px;
+  text-align: center;
+`;
 const SAuctionP4 = styled.p`
-font-size: 16px;
-font-weight: 500;
-width: 50px;
-text-align: center;
-`
+  font-size: 16px;
+  font-weight: 500;
+  width: 70px;
+  text-align: center;
+`;
 const SChangePage = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-margin-left: 300px;
-`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-left: 300px;
+`;
 
 const SFooterText = styled.p`
-font-family: SF Pro Rounded;
-font-size: 12px;
-font-weight: 700;
-`
+  font-family: SF Pro Rounded;
+  font-size: 12px;
+  font-weight: 700;
+`;
