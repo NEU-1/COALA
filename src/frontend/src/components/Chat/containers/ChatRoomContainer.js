@@ -37,12 +37,14 @@ const ChatRoomContainer = () => {
   };
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
-    const email = 'tncks097@naver.com';
-    socket.emit('joinRoom', { roomName }, async (chatting_logs) => {
+    // const email = 'tncks097@naver.com';
+    socket.emit('joinRoom', { roomName }, async ({ok, chatting_logs}) => {
+      if (!ok) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}
       console.log(`join room[${roomName}]  successfully`);
       await api.setToken();
-      const { data } = await fetchRoom.join({ roomName, email });
-      inform = data;
+
+      const result = await fetchRoom.join({ roomName });
+      inform = result.data;
       console.log('니먼데', inform);
       setAllMessages((pre) => [...pre, ...chatting_logs]);
       // console.log("올 메시지",allMessages)

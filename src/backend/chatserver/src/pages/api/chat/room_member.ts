@@ -18,6 +18,7 @@ const receiveData = withCors(async (
     // console.log("될걸",req.headers?.access_token);
     const {access_token, refresh_token} = req.headers;
 
+    console.log(access_token, refresh_token);
     const verified_token = await jwtVerify(access_token);
     
     if (verified_token.ok){
@@ -27,7 +28,6 @@ const receiveData = withCors(async (
       res.status(200).json({ roomUser });
       return 
     } 
-
 
   }
 
