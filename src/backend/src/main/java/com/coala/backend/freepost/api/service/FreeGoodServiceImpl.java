@@ -31,6 +31,10 @@ public class FreeGoodServiceImpl implements FreeGoodService{
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
+        if (freeGoodRepository.findByMemberIdAndFpId(member, freePost).isPresent()) {
+            throw new IllegalArgumentException("이미 추천되어 있습니다.");
+        };
+
         List<FreeGood> allGood = freeGoodRepository.findByFpId(freePost);
 
         FreeGood freeGood = FreeGood.builder()

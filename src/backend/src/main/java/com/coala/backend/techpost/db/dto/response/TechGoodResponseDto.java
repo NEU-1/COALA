@@ -11,13 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TechGoodResponseDto {
 
-    private Member memberId;
     private TechPost tpId;
     private TechPost writerId;
 
     @Builder
-    public TechGoodResponseDto(Member memberId, TechPost tpId, TechPost writerId) {
-        this.memberId = memberId;
+    public TechGoodResponseDto(TechPost tpId, TechPost writerId) {
         this.tpId = tpId;
         this.writerId = writerId;
     }

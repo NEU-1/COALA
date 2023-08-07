@@ -12,20 +12,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TechGoodRequestDto {
 
-    private Member memberId;
     private TechPost tpId;
     private TechPost writerId;
 
     @Builder
-    public TechGoodRequestDto(Member memberId, TechPost tpId, TechPost writerId) {
-        this.memberId = memberId;
+    public TechGoodRequestDto(TechPost tpId, TechPost writerId) {
         this.tpId = tpId;
         this.writerId = writerId;
     }
 
-    public TechGood toEntity() {
+    public TechGood toEntity(Member member) {
         return TechGood.builder()
-                .memberId(this.memberId)
+                .memberId(member)
                 .tpId(this.tpId)
                 .writerId(this.writerId)
                 .build();

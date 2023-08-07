@@ -22,12 +22,12 @@ public class TechGood {
     private TechPost tpId;
 
     @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_id", referencedColumnName = "member_id")
+    @JoinColumn(name = "writer_id")
     @NotNull
     private TechPost writerId;
 
     @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", referencedColumnName = "email")
+    @JoinColumn(name = "member_id")
     @NotNull
     private Member memberId;
 

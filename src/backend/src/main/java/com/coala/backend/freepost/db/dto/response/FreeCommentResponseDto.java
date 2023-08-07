@@ -10,15 +10,13 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class FreeCommentResponseDto {
-    private Long id;
     private FreePost fpId;
     private String author;
     private String content;
     private LocalDateTime createAt;
 
     @Builder
-    public FreeCommentResponseDto(Long id, FreePost fpId, String author, String content, LocalDateTime createAt) {
-        this.id = id;
+    public FreeCommentResponseDto(FreePost fpId, String author, String content, LocalDateTime createAt) {
         this.fpId = fpId;
         this.author = author;
         this.content = content;

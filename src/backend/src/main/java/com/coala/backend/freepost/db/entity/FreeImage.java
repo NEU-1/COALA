@@ -15,7 +15,7 @@ public class FreeImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.LAZY)
     @JoinColumn (name = "fp_id")
     @NotNull
     private FreePost fpId;

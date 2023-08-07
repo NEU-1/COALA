@@ -37,7 +37,7 @@ public class FreePostServiceImpl implements FreePostService{
     @Override
     public Member savePost(FreePostRequestDto postDto, Member member) {
 
-        freePostRepository.save(postDto.toEntity(member));
+        freePostRepository.saveAndFlush(postDto.toEntity(member));
 
         return member;
     }

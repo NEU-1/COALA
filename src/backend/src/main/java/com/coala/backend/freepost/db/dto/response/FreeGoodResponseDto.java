@@ -15,7 +15,7 @@ public class FreeGoodResponseDto {
     private FreePost writerId;
 
     @Builder
-    public FreeGoodResponseDto(Member memberId, FreePost fpId, FreePost writerId) {
+    public FreeGoodResponseDto(FreePost fpId, FreePost writerId) {
         this.fpId = fpId;
         this.writerId = writerId;
     }

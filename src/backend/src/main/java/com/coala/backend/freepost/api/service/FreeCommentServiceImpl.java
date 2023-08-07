@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +38,6 @@ public class FreeCommentServiceImpl implements FreeCommentService{
         Pageable pageable = PageRequest.of(page, 10, Sort.by("createAt").descending());
         return freeCommentRepository.findAll(pageable).stream()
                 .map(freeComment -> FreeCommentRequestDto.builder()
-                        .id(freeComment.getId())
                         .fpId(freeComment.getFpId())
                         .author(freeComment.getAuthor())
                         .content(freeComment.getContent())

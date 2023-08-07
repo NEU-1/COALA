@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
-- 추천 수 기능 미구현
+- 자유게시판 Entity 입니다.
 * */
 
 @Entity

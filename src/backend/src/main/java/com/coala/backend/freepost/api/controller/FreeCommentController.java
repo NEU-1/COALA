@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 
 /*
 * 자유게시판 댓글 controller 입니다.
+*
+* 댓글
+*
 * */
 
 @RestController
@@ -49,13 +52,12 @@ public class FreeCommentController {
                 .body(freeComment);
     }
 
-    @GetMapping("comment/{page}")
+    @GetMapping("comment/{page}/{}")
     public List<FreeCommentResponseDto> freeCommentList(@PathVariable("page") Integer page) {
         List<FreeCommentRequestDto> commentAll = freeCommentService.getCommentList(page);
 
         return commentAll.stream()
                 .map(freeCommentRequestDto -> new FreeCommentResponseDto(
-                        freeCommentRequestDto.getId(),
                         freeCommentRequestDto.getFpId(),
                         freeCommentRequestDto.getAuthor(),
                         freeCommentRequestDto.getContent(),

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
-- 추천 수 기능 미구현
+- 테크 게시판 Entity 입니다.
 * */
 @Entity
 @Getter
@@ -24,7 +24,7 @@ public class TechPost {
     private Long id;
 
     @ManyToOne(targetEntity = Member.class)
-    @JoinColumn(name = "member_id", referencedColumnName = "email")
+    @JoinColumn(name = "member_id")
     @NotNull
     private Member memberId;
 

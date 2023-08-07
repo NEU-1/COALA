@@ -1,6 +1,10 @@
 package com.coala.backend.techpost.api.service;
 
+import com.coala.backend.freepost.db.dto.response.BaseResponseDto;
+import com.coala.backend.freepost.db.entity.FreePost;
+import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.techpost.db.dto.request.TechPostRequestDto;
+import com.coala.backend.techpost.db.dto.response.TechPostResponseDto;
 import com.coala.backend.techpost.db.entity.TechPost;
 import com.coala.backend.techpost.db.repository.TechCommentRepository;
 import com.coala.backend.techpost.db.repository.TechGoodRepository;
@@ -29,17 +33,20 @@ public class TechPostServiceImpl implements TechPostService{
 
     @Transactional
     @Override
-    public void savePost(TechPostRequestDto postDto) {
-        techPostRepository.save(postDto.toEntity());
+    public Member savePost(TechPostRequestDto postDto, Member member) {
+
+        techPostRepository.saveAndFlush(postDto.toEntity(member));
+
+        return member;
     }
 
     @Transactional
     @Override
-    public List<TechPostRequestDto> getPostList(int page) {
-        Pageable pageable = PageRequest.of(page,3, Sort.by("createAt").descending().and(Sort.by("updateAt")));
-        return techPostRepository.findAll(pageable).stream()
-                .map(techPost -> TechPostRequestDto.builder()
-                        .id(techPost.getId())
+    public BaseResponseDto getPostList(int page) {
+        Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+
+        List <TechPostResponseDto> allList = techPostRepository.findAll(pageable).stream()
+                .map(techPost -> TechPostResponseDto.builder()
                         .memberId(techPost.getMemberId())
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
@@ -52,39 +59,47 @@ public class TechPostServiceImpl implements TechPostService{
                         .goodCount(techPost.getGoods().size())
                         .build())
                 .collect(Collectors.toList());
-    }
 
-    @Transactional
-    @Override
-    public TechPostRequestDto getPost(Long id) {
-        Optional<TechPost> techPost = techPostRepository.findById(id);
-        TechPost tech = techPost.get();
-
-        tech.views();
-
-        return TechPostRequestDto.builder()
-                .id(tech.getId())
-                .memberId(tech.getMemberId())
-                .title(tech.getTitle())
-                .detail(tech.getDetail())
-                .createAt(tech.getCreateAt())
-                .updateAt(tech.getUpdateAt())
-                .imagePath(tech.getImagePath())
-                .nickname(tech.getNickname())
-                .views(tech.getViews())
-                .commentCount(tech.getComments().size())
-                .goodCount(tech.getGoods().size())
+        return BaseResponseDto.builder()
+                .statusCode(200)
+                .msg("성공")
+                .detail(allList.size())
+                .list(allList)
                 .build();
     }
 
     @Transactional
     @Override
-    public void deletePost(Long id, TechPostRequestDto dto) {
+    public TechPostResponseDto getPost(Long id) {
+        TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("없는 게시글 입니다.");
+        });
+
+        techPost.views();
+
+        return TechPostResponseDto.builder()
+                .id(techPost.getId())
+                .memberId(techPost.getMemberId())
+                .title(techPost.getTitle())
+                .detail(techPost.getDetail())
+                .createAt(techPost.getCreateAt())
+                .updateAt(techPost.getUpdateAt())
+                .imagePath(techPost.getImagePath())
+                .nickname(techPost.getNickname())
+                .views(techPost.getViews())
+                .commentCount(techPost.getComments().size())
+                .goodCount(techPost.getGoods().size())
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public void deletePost(Long id, TechPostRequestDto dto, Member member) {
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("게시판이 존재하지 않습니다.");
         });
 
-        if (!techPost.getMemberId().getEmail().equals(dto.getMemberId().getEmail())) {
+        if (!techPost.getMemberId().getEmail().equals(member.getEmail())) {
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
 
@@ -94,11 +109,10 @@ public class TechPostServiceImpl implements TechPostService{
 
     @Transactional
     @Override
-    public List<TechPostRequestDto> searchPosts(String keyword, int page) {
+    public BaseResponseDto searchPosts(String keyword, int page) {
         Pageable pageable = PageRequest.of(page,3, Sort.by("createAt").descending().and(Sort.by("updateAt")));
-        return techPostRepository.findByTitleContaining(keyword, pageable).stream()
-                .map(techPost -> TechPostRequestDto.builder()
-                        .id(techPost.getId())
+        List<TechPostResponseDto> searchList = techPostRepository.findByTitleContaining(keyword, pageable).stream()
+                .map(techPost -> TechPostResponseDto.builder()
                         .memberId(techPost.getMemberId())
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
@@ -111,16 +125,23 @@ public class TechPostServiceImpl implements TechPostService{
                         .goodCount((techPost.getGoods().size()))
                         .build())
                 .collect(Collectors.toList());
+
+        return BaseResponseDto.builder()
+                .statusCode(200)
+                .msg("성공")
+                .detail(searchList.size())
+                .list(searchList)
+                .build();
     }
 
     @Transactional
     @Override
-    public void updateTechPost(Long id, TechPostRequestDto dto) {
+    public void updateTechPost(Long id, TechPostRequestDto dto, Member member) {
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
             return  new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
-        if (!techPost.getMemberId().getEmail().equals(dto.getMemberId().getEmail())) {
+        if (!techPost.getMemberId().getEmail().equals(member.getEmail())) {
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
 

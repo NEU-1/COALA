@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TechPostRequestDto {
     private Long id;
-    private Member memberId;
     private String title;
     private String detail;
     private LocalDateTime createAt;
@@ -28,11 +27,10 @@ public class TechPostRequestDto {
     private int goodCount;
 
     @Builder
-    public TechPostRequestDto(Long id, Member memberId, String title, String detail,
+    public TechPostRequestDto(Long id, String title, String detail,
                               LocalDateTime createAt, LocalDateTime updateAt, String imagePath,
                               Member nickname, int views, int commentCount, int goodCount) {
         this.id = id;
-        this.memberId = memberId;
         this.title = title;
         this.detail = detail;
         this.createAt = createAt;
@@ -44,9 +42,9 @@ public class TechPostRequestDto {
         this.goodCount = goodCount;
     }
 
-    public TechPost toEntity() {
+    public TechPost toEntity(Member member) {
         return TechPost.builder()
-                .memberId(this.memberId)
+                .memberId(member)
                 .title(this.title)
                 .detail(this.detail)
                 .imagePath(this.imagePath)

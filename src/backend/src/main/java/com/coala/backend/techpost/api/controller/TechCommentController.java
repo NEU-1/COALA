@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins="*")
-@RequestMapping("/api/tech/")
+@RequestMapping("/api/tech/comment/")
 public class TechCommentController {
     private final TechCommentServiceImpl techCommentService;
     private final TechCommentRepository techCommentRepository;
 
     // 댓글 저장
-    @PostMapping("comment/save")
+    @PostMapping("save")
     public ResponseEntity<TechComment> saveComment(@RequestBody @Valid TechCommentRequestDto requestDto) {
         techCommentService.saveComment(requestDto);
 
@@ -36,7 +36,7 @@ public class TechCommentController {
                 .body(requestDto.toEntity());
     }
 
-    @PutMapping("comment/update/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<TechComment> updateTechComment(@PathVariable("id") Long id,
                                                     @RequestBody @Valid TechCommentRequestDto requestDto) {
 
@@ -49,13 +49,12 @@ public class TechCommentController {
                 .body(techComment);
     }
 
-    @GetMapping("comment/{page}")
+    @GetMapping("{page}")
     public List<TechCommentResponseDto> techCommentList(@PathVariable("page") Integer page) {
         List<TechCommentRequestDto> commentAll = techCommentService.getCommentList(page);
 
         return commentAll.stream()
                 .map(techCommentRequestDto -> new TechCommentResponseDto(
-                        techCommentRequestDto.getId(),
                         techCommentRequestDto.getTpId(),
                         techCommentRequestDto.getAuthor(),
                         techCommentRequestDto.getContent(),
@@ -63,7 +62,7 @@ public class TechCommentController {
                 .collect(Collectors.toList());
     }
 
-    @DeleteMapping("comment/delete/{id}")
+    @DeleteMapping("delete/{id}")
     public void techCommentDelete(@PathVariable("id") Long id) {
         techCommentService.deleteComment(id);
     }

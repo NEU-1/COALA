@@ -29,7 +29,6 @@ public class TechPostResponseDto {
     @Builder
     public TechPostResponseDto(Long id, Member memberId, String title, String detail, LocalDateTime createAt, LocalDateTime updateAt,
                                String imagePath, Member nickname, int views, int commentCount, int goodCount) {
-        this.id = id;
         this.memberId = memberId;
         this.title = title;
         this.detail = detail;

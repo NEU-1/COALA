@@ -40,7 +40,7 @@ public class FreeGoodController {
     }
 
     public Member getEmail(HttpServletRequest httpServletRequest) {
-        accessToken = httpServletRequest.getHeader("Access");
+        accessToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Access");
         String email = jwtTokenProvider.getEmailFromToken(accessToken);
 
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> {

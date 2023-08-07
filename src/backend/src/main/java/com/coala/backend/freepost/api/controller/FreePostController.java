@@ -94,10 +94,12 @@ public class FreePostController {
     }
 
     public Member getEmail(HttpServletRequest httpServletRequest) {
-        accessToken = httpServletRequest.getHeader("Access");
+        accessToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Access");
         String email = jwtTokenProvider.getEmailFromToken(accessToken);
 
-        Member member = memberRepository.findByEmail(email).get();
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> {
+            return new IllegalArgumentException("작성자 ID가 존재하지 않습니다.");
+        });;
 
         return member;
     }
