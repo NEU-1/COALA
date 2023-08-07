@@ -33,6 +33,7 @@
     "mongoose": "^7.4.1",
     "mysql2": "^3.5.2",
     "next": "^13.2.4",
+    "next-s3-upload": "^0.3.0",
     "postcss": "8.4.24",
     "react": "18.2.0",
     "react-dom": "18.2.0",

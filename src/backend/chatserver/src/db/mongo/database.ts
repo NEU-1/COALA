@@ -32,6 +32,10 @@ const chatSchema = new mongoose.Schema({
       type: Date,
       default: Date.now,
     },
+    is_readed:{
+      type : Boolean,
+      default : false
+    }
 });
 
 let chat_content: Model<any>;
