@@ -78,10 +78,6 @@ const StoreDetail = () => {
       navigate("/login");
     }
   };
-
-  const goList = () => {
-    navigate("/store");
-  };
   const goUpdate = () => {
     if ("대기중") {
       navigate(`update`);
@@ -165,14 +161,12 @@ const StoreDetail = () => {
       </SFooter>
       {isAuthor ? (
         <SButtons>
-          <SButtonGray onClick={goList}>목록</SButtonGray>
           <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
         </SButtons>
       ) : (
         <SButtons>
           <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
           <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
-          <SButtonGray onClick={goList}>목록</SButtonGray>
         </SButtons>
       )}
       {showModal && (
@@ -361,25 +355,6 @@ const SButtonPurple = styled.button`
   letter-spacing: -0.14px;
 `;
 
-const SButtonGray = styled.button`
-  display: flex;
-  width: 106px;
-  height: 40px;
-  padding: 10px 40px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 7px;
-  background: #d9d9d9;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  color: white;
-  text-align: center;
-  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: -0.14px;
-`;
-
 const SModal = styled.div`
   position: fixed;
   top: 50%;
@@ -406,8 +381,7 @@ const SModalBackdrop = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  // opacity: 0.8;
-  z-index: 5;
+  z-index: 30;
   display: flex;
   justify-content: center;
   align-items: center;
