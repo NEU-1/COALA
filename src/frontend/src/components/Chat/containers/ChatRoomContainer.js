@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { io as socketIOClient } from 'socket.io-client';
 import socketIO from '../../../api/nodeServer/socketIO';
+import api from '../../../api/nodeServer/base';
 import { fetchRoom } from '../../../api/nodeServer/Room';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatRoom from '../ChatRoom';
@@ -39,6 +40,7 @@ const ChatRoomContainer = () => {
     const email = 'tncks097@naver.com';
     socket.emit('joinRoom', { roomName }, async (chatting_logs) => {
       console.log(`join room[${roomName}]  successfully`);
+      await api.setToken();
       const { data } = await fetchRoom.join({ roomName, email });
       inform = data;
       console.log('니먼데', inform);
@@ -48,8 +50,11 @@ const ChatRoomContainer = () => {
   };
 
   useEffect(() => {
-    socketInitializer();
+    
     setToken();
+    
+    socketInitializer();
+
     requestGet(`member/info`).then((res) => {
       // 나중에 잘되었는지 아닌지 필터 필요
       setMemberId(res.data.id);
