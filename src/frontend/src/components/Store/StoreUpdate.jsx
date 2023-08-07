@@ -10,7 +10,6 @@ const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "7일", " 14일", "30일"];
 const SERVER_URL = "--서버 주소--";
 
-
 const fetchPostData = (postId, setData) => {
   axios
     .get(`${SERVER_URL}/post/${postId}`)
@@ -25,7 +24,7 @@ const fetchMySellData = (setMySell) => {
     .catch((error) => console.error("Error fetching my sell data:", error));
 };
 
-const SelectButton = ({ itemList, activeIndex, onClickHandler }) => (
+const SelectButton = ({ itemList, activeIndex, onClickHandler }) =>
   itemList.map((item, index) => (
     <SSelectProductBtn
       key={index}
@@ -34,8 +33,7 @@ const SelectButton = ({ itemList, activeIndex, onClickHandler }) => (
     >
       {item}
     </SSelectProductBtn>
-  ))
-);
+  ));
 
 const StoreUpdate = () => {
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
@@ -129,7 +127,6 @@ const StoreUpdate = () => {
     const files = e.target.files;
     const newImages = [...imageList];
     setImageList([...imageList, ...files]);
-
 
     for (let i = 0; i < files.length; i++) {
       let reader = new FileReader();

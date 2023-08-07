@@ -14,7 +14,6 @@ const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
 
 const Store = () => {
-
   const [filter, setFilter] = useState(false);
   const [productType, setProductType] = useState("");
   const [dayType, setDayType] = useState("");
@@ -24,7 +23,7 @@ const Store = () => {
   const [loading, setLoading] = useState(false);
   const [likedItems, setLikedItems] = useState([]);
   const [priceRange, setPriceRange] = useState([25000, 75000]);
-  const isLogin = useSelector(state => state.login.isLogin);
+  const isLogin = useSelector((state) => state.login.isLogin);
   const navigate = useNavigate();
 
   function initialData() {
@@ -109,14 +108,14 @@ const Store = () => {
         html: "",
         timer: 1000,
         showConfirmButton: false,
-      })
+      });
       navigate("/login");
     } else {
       navigate("/store/write");
     }
   };
   const handleCardClick = (id) => {
-    console.log(id)
+    console.log(id);
     navigate(`${id}`);
   };
 
