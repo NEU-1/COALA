@@ -46,7 +46,7 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
       console.log(`${socket.id} joined ${roomName}`)
 
       socket.join(roomName);
-      callback({ ok : true, chattingLogs : chattingLogs});
+      callback({ ok : true, chattingLogs : chattingLogs||[]});
     })
     
     socket.on("send-message", async ({roomUser, message}) => {
