@@ -23,7 +23,7 @@ const Create = async (inputData : any) =>{
   
     const [roomUserRelations] = await Read(room_user);
     if (roomUserRelations) {return data;} 
-    // await createQuery('room_member', room_user);
+    await createQuery('room_member', room_user);
     return data;
 
   }catch(error){
