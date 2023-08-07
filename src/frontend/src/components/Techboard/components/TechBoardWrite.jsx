@@ -149,7 +149,7 @@ function TechBoardWrite() {
         </Titletext>
       </div>
       <div>
-        <Editor
+        {<Editor
           ref={editorRef}
           placeholder="내용을 입력해주세요."
           previewStyle="vertical"
@@ -166,7 +166,7 @@ function TechBoardWrite() {
           ]}
           useCommandShortcut={false}
         />
-        {/* <SBtn onClick={handleRegisterButton}>확인</SBtn> */}
+}
       </div>
       <br />
       <SBtnContainer>

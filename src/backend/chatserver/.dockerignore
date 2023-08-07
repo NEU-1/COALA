@@ -1,0 +1,11 @@
+.idea
+.git
+.gitignore
+.dockerignore
+dockerfile
+*.md
+*.sh
+*.yml
+scripts
+
+node_modules
