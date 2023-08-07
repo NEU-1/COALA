@@ -19,7 +19,6 @@ function runCorsHandler(
       if (result instanceof Error) {
         return reject(result)
       }
-
       return resolve(result)
     })
   })

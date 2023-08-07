@@ -131,6 +131,7 @@ public class MemberServiceImpl implements MemberService{
         Member member = memberRepository.findByEmail(email).get();
 
         MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto();
+        memberInfoResponseDto.setId(member.getId());
         memberInfoResponseDto.setEmail(member.getEmail());
         memberInfoResponseDto.setName(member.getName());
         memberInfoResponseDto.setNickname(member.getNickname());

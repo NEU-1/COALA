@@ -24,7 +24,7 @@ const receiveData = withCors(async (
     const verified_token = await jwtVerify(access_token);
 
     if (verified_token.ok){
-      
+
       const email = verified_token.id;
       console.log(`${email} 들어간 채팅방 탐색중입니다.`);
       const [usr] : member[] = await readUser({email});

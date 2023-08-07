@@ -8318,6 +8318,10 @@ react-transition-group@^4.4.5:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> d5126a1ab93b503e7ed1aabada8a445277154fba
 "react@15.x.x - 16.x.x":
   version "16.14.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
@@ -8327,6 +8331,11 @@ react-transition-group@^4.4.5:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 5a86ab34f04023cd3913df0c16b81a5ab6f10f9f
+>>>>>>> d5126a1ab93b503e7ed1aabada8a445277154fba
 react@^18.2.0:
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
