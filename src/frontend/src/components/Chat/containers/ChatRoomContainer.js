@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 let socket;
 let inform = {};
 const name = 'chats';
-let email; 
+let email;
 const ChatRoomContainer = () => {
   const { roomName } = useParams();
   const [socket_state, setSocket_state] = useState('try connecting...');
@@ -45,24 +45,29 @@ const ChatRoomContainer = () => {
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
     requestGet(`member/info`).then(() => {
-
-      socket.emit('joinRoom', { roomName }, async ({ isRoom, chattingLogs }) => {
-        if (!isRoom) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}
-        console.log(`join room[${roomName}]  successfully`);
-        const { data } = await fetchRoom.join({ roomName, email });
-        inform = data;
-        if (inform.roomUser.room.pr_id)
-          setProductId(...productId, { pr_id: inform.roomUser.room.pr_id });
-        else if (inform.roomUser.room.pp_id)
-          setProductId(...productId, { pp_id: inform.roomUser.room.pp_id });
-        setAllMessages((pre) => [...pre, ...chattingLogs]);
-        // console.log("올 메시지",allMessages)
-      });
+      socket.emit(
+        'joinRoom',
+        { roomName },
+        async ({ isRoom, chattingLogs }) => {
+          if (!isRoom) {
+            navigate('/chat-list/there-is-no-chat-room', { replace: true });
+          }
+          console.log(`join room[${roomName}]  successfully`);
+          const { data } = await fetchRoom.join({ roomName, email });
+          inform = data;
+          if (inform.roomUser.room.pr_id)
+            setProductId(...productId, { pr_id: inform.roomUser.room.pr_id });
+          else if (inform.roomUser.room.pp_id)
+            setProductId(...productId, { pp_id: inform.roomUser.room.pp_id });
+          setAllMessages((pre) => [...pre, ...chattingLogs]);
+          // console.log("올 메시지",allMessages)
+        }
+      );
     });
   };
 
   useEffect(() => {
-    // setToken();
+    setToken();
     requestGet(`member/info`).then((res) => {
       socketInitializer();
       // 나중에 잘되었는지 아닌지 필터 필요
@@ -79,7 +84,6 @@ const ChatRoomContainer = () => {
   }, []);
 
   async function socketInitializer() {
-
     socketIO.fetchEnter(`/api/socket?name=${name}`);
 
     socket = socketIOClient('http://i9d108.p.ssafy.io:3030', {
@@ -113,14 +117,13 @@ const ChatRoomContainer = () => {
       return;
     }
     requestGet(`member/info`).then((res) => {
-    
       console.log('message emitted');
       socket.emit('send-message', {
         roomUser: inform.roomUser,
         message,
       });
       setMessage('');
-    })
+    });
   };
 
   // 채팅방 나가기
