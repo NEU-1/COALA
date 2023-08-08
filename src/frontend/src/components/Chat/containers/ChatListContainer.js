@@ -35,9 +35,10 @@ const ChatListContainer = () => {
     }).then(() => {
       // const email = user.email;
       fetchRoom.read({ email })
-      .then(data => {
-        console.log("데이터",data)  
-      })
+      .then((res) => {
+        console.log("데이터",res)
+        setList(res.data.rooms);
+      })  
       // .then(resJson => setData(resJson))
     });
   }, []);
