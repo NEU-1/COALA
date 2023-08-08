@@ -2,7 +2,6 @@ package com.coala.backend.member.common.jwt;
 
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwt;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,11 +70,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     response.setHeader("Access_Token", newAccessToken);
                     response.setHeader("Refresh_Token", refreshToken);
 
+                    request.setAttribute("Access_Token", newAccessToken);
                     // Security context에 인증정보 넣기
                     setAuthentication(jwtTokenProvider.getEmailFromToken(newAccessToken));
 
-                    // 이거 처리 너무 힘들다 => 재발급 받는 경우 그냥 프론트에서 다시 한번 쏘는걸로 구성 부탁해야할듯. GPT도 클라이언트에서 해줘 하네...
-
+                    // 필터 처리 후 AccessToken에 접근하기 위함
+                    request.setAttribute("Access_Token", newAccessToken);
                 }
                 // 모든 토큰 만료
                 else{
