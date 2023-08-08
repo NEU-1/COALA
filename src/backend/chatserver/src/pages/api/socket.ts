@@ -39,6 +39,7 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
 
     socket.on('joinRoom', async ({roomName}, callback) => {
       const [room]: room[] = await readRoom({name : roomName});
+      console.log('room', room)
       if (!room || room === undefined) {callback({ isRoom : false, chattingLogs : []})}
       const room_id = room.id;
 
