@@ -47,7 +47,8 @@ const ChatRoomContainer = () => {
     requestGet(`member/info`).then((res) => {
       const email = res.data.email;
 
-      socket.emit('joinRoom', { roomName }, async ({ chattingLogs }) => {
+      socket.emit('joinRoom', { roomName }, async ({ isRoom, chattingLogs }) => {
+        if (!isRoom) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}
         console.log(`join room[${roomName}]  successfully`);
         const { data } = await fetchRoom.join({ roomName, email });
         inform = data;
@@ -59,7 +60,6 @@ const ChatRoomContainer = () => {
         // console.log("올 메시지",allMessages)
       });
     });
-
   };
 
   useEffect(() => {

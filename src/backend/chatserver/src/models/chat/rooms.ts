@@ -46,6 +46,7 @@ const Search = async (target : object) => {
     return result;
   }catch(error){
     console.log(error)
+    return [];
   }
 }
 
