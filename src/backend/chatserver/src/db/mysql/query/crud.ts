@@ -38,8 +38,9 @@ const readQuery = async (table : string, target : any,
   return result
 }
 
-const updateQuery = async (table : string, schema : string, value : any[]) => {
-  
+const updateQuery = async (table : string, target : any, value : any[]) => {
+  return await dbQuery(
+    `UPDATE ${table} SET ${target} WHERE id = ?`, value);
 }
 
 const deleteQuery = async (

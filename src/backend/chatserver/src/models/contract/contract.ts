@@ -48,9 +48,22 @@ const Read_Consumer = async (target : object) => {
 }
 
 
+const Update = async (target : any) => {
+    try{
+        const {target_images, id} = target;
+        // const {conditionQuery, values} = buildConditionQuery(target_images, ' AND ');
+        // const result = await readQuery('history', {conditionQuery, values});
+        const result = await updateQuery('history', target_images, [id]);
+        return result;
+    }catch(error){
+        console.log(error)
+    }
+}
+
 
 export { 
     Create,
     Read_Producer,
-    Read_Consumer
+    Read_Consumer,
+    Update,
 }
