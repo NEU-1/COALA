@@ -1,6 +1,7 @@
 import { 
     Create as createContract,
-    Read_Producer as readContract,
+    Read_Producer as readContract_P,
+    Read_Consumer as readContract_C
   } from '@/models/contract/contract'
   
   import withCors from '../cors'
@@ -16,7 +17,7 @@ import {
   
     if (req.method === 'GET'){
       console.log("HELLO_WORLD")
-      data = await readContract({member_id : 1});
+      data = await readContract_P({member_id : 1});
       res.status(200).json({ rooms: data });
       return
     }
