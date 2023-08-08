@@ -4,6 +4,7 @@ import {
   Search as searchRoom
 } from '@/models/chat/rooms'
 import { Read as readUser } from '@/models/user'
+import memberInfo from '@/api/memberInfo'
 
 import withCors from '../cors'
 
@@ -18,11 +19,12 @@ const receiveData = withCors(async (
   let data : any;
   console.log("될걸",req.headers?.access_token);
   // console.log(access_token, refresh_token);
-
+  console.log("memberinfo", memberInfo);
   const {access_token, refresh_token} = req.headers;
   let email : string | undefined;
   const verified_token = await jwtVerify(access_token);
   console.log("웨안돼",verified_token);
+
   if (verified_token.ok === true){
     email = verified_token.sub;
   }else{
