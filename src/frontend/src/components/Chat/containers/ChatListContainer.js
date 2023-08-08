@@ -8,10 +8,13 @@ import { useNavigate } from 'react-router-dom';
 import { List } from '@mui/material';
 import { requestGet, setToken } from '../../../lib/api/api';
 
+let email;
+
 const ChatListContainer = () => {
   const [roomName, setRoomName] = useState('');
   const [user_id, setUser_id] = useState('');
   const [user, setUser] = useState('');
+  const [Lists, setList] = useState([]);
 
   const onClickCloseChatBtn = () => {
     window.parent.postMessage('closeChatModal', 'http://localhost:3000');
@@ -23,20 +26,28 @@ const ChatListContainer = () => {
   };
 
   useEffect(() => {
-    api.setToken();
+    // api.setToken();
     setToken();
     requestGet(`member/info`).then((res) => {
       // 나중에 잘되었는지 아닌지 필터 필요
       setUser(res.data);
+      email = res.data.email;
+    }).then(() => {
+      // const email = user.email;
+      fetchRoom.read({ email : "tncks097@gmail.com" })
+      .then(data => {
+        console.log("데이터",data)  
+      })
+      // .then(resJson => setData(resJson))
     });
   }, []);
 
-  let Lists = [];
+  // let Lists = [];
 
-  let { data } = useReadRoom();
-  // let data;
-  let rooms = data ? data.rooms : [];
-  Lists = [...Lists, ...rooms];
+  // let { data } = useReadRoom();
+  // // let data;
+  // let rooms = data ? data.rooms : [];
+  // Lists = [...Lists, ...rooms];
 
   const handleClick = async () => {
     // const user_number = Number(user_id);

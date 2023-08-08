@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 let socket;
 let inform = {};
 const name = 'chats';
-
+let email; 
 const ChatRoomContainer = () => {
   const { roomName } = useParams();
   const [socket_state, setSocket_state] = useState('try connecting...');
@@ -68,8 +68,8 @@ const ChatRoomContainer = () => {
       socketInitializer();
       // 나중에 잘되었는지 아닌지 필터 필요
       setMemberId(res.data.id);
+      email = res.data.email;
     });
-    const email = res.data.email;
     return () => {
       console.log('disconected');
       if (socket) {
