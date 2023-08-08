@@ -16,14 +16,15 @@ const receiveData = withCors(async (
   
   if (req.method === 'POST'){
     const inputData = req.body; // 이메일 넣어주세요
+    const {email, name} = inputData;
     // console.log("될걸",req.headers?.access_token);
     // const {access_token, refresh_token} = req.headers;
 
     // const verified_token = await jwtVerify(access_token);
-    
+    if (!email && !name) {res.status(200).json({ message : 'Catch error' });}
  
     const roomUser = await createOrUseRoomMember(inputData);
-    console.log(`${inputData.email}님이 ${inputData.name} 방으로 입장했습니다.`)
+    console.log(`${email}님이 ${name} 방으로 입장했습니다.`)
     res.status(200).json({ roomUser });
     return 
 
