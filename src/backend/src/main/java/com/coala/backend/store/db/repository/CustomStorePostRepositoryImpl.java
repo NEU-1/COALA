@@ -25,9 +25,9 @@ public class CustomStorePostRepositoryImpl implements CustomStorePostRepository{
         StringBuilder sb = new StringBuilder();
         sb.append("select s from StorePost s");
 
-        if(info.get("category").equals("") &&  info.get("minRentalPeriod").equals("") &&  info.get("minRentalCost").equals("") &&  info.get("maxRentalCost").equals("") ){
+        if(info.get("category").equals("") &&  info.get("minRentalPeriod").equals("") &&  info.get("minRentalCost").equals("") &&  info.get("maxRentalCost").equals("") && !info.get("status").equals("1") ){
             System.out.println(sb);
-            return entityManager.createQuery(sb.toString(), StorePost.class).getResultList();
+            return entityManager.createQuery(sb.toString(), StorePost.class).setFirstResult(page * 10).setMaxResults(10).getResultList();
         }
 
         sb.append(" where ");

@@ -1,19 +1,18 @@
-package com.coala.backend.store.api.service;
+package com.coala.backend.auction.api.service;
 
+import com.coala.backend.auction.db.entity.AuctionPost;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.member.db.entity.Member;
-import com.coala.backend.store.db.dto.response.PostResponseDto;
-import com.coala.backend.store.db.entity.StorePost;
+import com.coala.backend.auction.db.dto.response.PostResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
-public interface StoreService {
+public interface AuctionService {
 
-
-    List<StorePost> list(Integer page, Map<String, String> info);
+    List<AuctionPost> list(Integer page, Map<String, String> info);
 
     BaseResponseDto write(Map<String, String> info, Member member);
 
@@ -25,7 +24,7 @@ public interface StoreService {
 
     BaseResponseDto delete(Long id, String email);
 
-    BaseResponseDto like(Long id, String email);
+    BaseResponseDto apply(Long id, Map<String, String> info, String email);
 
     BaseResponseDto status(Long id, String email);
 }
