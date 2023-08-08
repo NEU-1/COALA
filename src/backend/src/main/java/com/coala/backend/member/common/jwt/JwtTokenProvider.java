@@ -59,11 +59,6 @@ public class JwtTokenProvider {
         return type.equals("Access") ? request.getHeader(ACCESS_TOKEN) : request.getHeader(REFRESH_TOKEN);
     }
 
-    // Create All token
-    public TokenDto createAllToken(String email){
-        return new TokenDto(createToken(email, "Access"), createToken(email, "Refresh"));
-    }
-
     // Create Token
     public String  createToken(String email, String type){
         Date date = new Date();
@@ -92,7 +87,6 @@ public class JwtTokenProvider {
     // RefreshToken certification
     // DB 조회 방식이지만 나중에 Redis를 이용하는게 좋다.
     public Boolean refreshTokenValidation(String token){
-
         // 1st cetification
         if(!tokenValidation(token)) return false;
 
@@ -105,7 +99,6 @@ public class JwtTokenProvider {
     // 인증 객체 생성
     public Authentication createAuthentication(String email){
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -123,26 +116,12 @@ public class JwtTokenProvider {
     public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken){
         response.setHeader("Refresh_Token", refreshToken);
     }
+
+    public String getMail(HttpServletRequest request){
+        if(request.getAttribute("Access_Token") != null){
+            return getEmailFromToken((String)request.getAttribute("Access_Token"));
+        }
+        String email = getEmailFromToken(getHeaderToken(request, "Access"));
+        return email;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
