@@ -4,7 +4,6 @@ import { images } from '../../assets/images';
 import { colors } from '../../assets/colors';
 
 const ChatOpen = ({ isChatOpen, onClickChatBtn }) => {
-  
   return (
     <>
       <SLayout isChatOpen={isChatOpen} onClick={onClickChatBtn}>
@@ -12,6 +11,7 @@ const ChatOpen = ({ isChatOpen, onClickChatBtn }) => {
       </SLayout>
       <SModalLayout
         key={'chatModal'}
+        id="chatModal"
         isChatOpen={isChatOpen}
         src="/chat/chat-list"
       />
@@ -105,6 +105,7 @@ const SModalLayout = styled.iframe`
   position: fixed;
   right: 30px;
   bottom: 30px;
+  z-index: 999;
 `;
 
 export default ChatOpen;

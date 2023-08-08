@@ -2,7 +2,8 @@ import {
     createQuery,
     readQuery,
     updateQuery,
-    deleteQuery
+    deleteQuery,
+    readQueryLatestLog
 } from '@/db/mongo/query/crud'
 
 import timestamp from '@/lib/timestamp';
@@ -31,5 +32,15 @@ const Read = async (chat_Log : object) => {
   }
 }
 
+const Search = async (room_id : Number) => {
+  try{
+    const result = await readQueryLatestLog('chat_content', room_id);
+    return result;
+  }catch(error){
+    console.log(error)
+  }
+}
 
-export { Create, Read }
+
+
+export { Create, Read, Search }

@@ -20,7 +20,8 @@ const Create = async (inputData : any) =>{
       'room_id' : room['id'],
       'member_id' : usr['id']
     };
-  
+    
+    
     const [roomUserRelations] = await Read(room_user);
     console.log("흐음 중계테이블 확인",roomUserRelations)
     if (roomUserRelations) {return data;} 

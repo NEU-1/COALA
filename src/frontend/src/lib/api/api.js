@@ -26,12 +26,12 @@ export const getAccessToken = async () => {
   });
 };
 
-export const setToken = () => {
-  const access_token = localStorage.getItem('access_token');
-  const refresh_token = localStorage.getItem('refresh_token');
-  axios.defaults.headers.common['access_token'] = access_token;
-  axios.defaults.headers.common['refresh_token'] = refresh_token;
-};
+// export const setToken = () => {
+//   const access_token = localStorage.getItem('access_token');
+//   const refresh_token = localStorage.getItem('refresh_token');
+//   axios.defaults.headers.common['access_token'] = access_token;
+//   axios.defaults.headers.common['refresh_token'] = refresh_token;
+// };
 
 export const requestGet = async (url, params) => {
   try {

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import useReadRoom from '../../../hooks/chatting/useReadRoom';
-import { fetchRoom } from '../../../api/nodeServer/Room/index';
+import { fetchRoom } from '../../../api/nodeServer/Room';
+import api from '../../../api/nodeServer/base';
 import timestamp from '../../../utils/timestamp';
 import ChatList from '../ChatList';
 import { useNavigate } from 'react-router-dom';
 import { List } from '@mui/material';
 import { requestGet, setToken } from '../../../lib/api/api';
-import api from '../../../api/nodeServer/base';
 
 const ChatListContainer = () => {
   const [roomName, setRoomName] = useState('');
@@ -21,7 +21,7 @@ const ChatListContainer = () => {
   const onClickListItem = (roomId) => {
     navigate(`/chat/${roomId}`, { replace: true });
   };
-  
+
   useEffect(() => {
     api.setToken();
     setToken();
@@ -39,10 +39,10 @@ const ChatListContainer = () => {
   Lists = [...Lists, ...rooms];
 
   const handleClick = async () => {
-    const user_number = Number(user_id);
-    await fetchRoom.create({ roomName, user_id: user_number });
+    // const user_number = Number(user_id);
+    await fetchRoom.create({ roomName });
   };
-
+  
   return (
     <ChatList
       onClickCloseChatBtn={onClickCloseChatBtn}

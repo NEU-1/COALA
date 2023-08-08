@@ -3,33 +3,43 @@ import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
 
-const ChatBubble = ({ message, memberId }) => {
+const ChatBubble = ({ message, memberId, displayDate, today }) => {
+  // console.log(message)
   const dateObject = new Date(message.created_at);
+  dateObject.setHours(dateObject.getHours() - 9);
   // 옵션 설정
   const options = { hour: '2-digit', minute: '2-digit', hour12: true };
   // 원하는 형식으로 시간 변환
   const formattedTime = dateObject.toLocaleTimeString('ko-KR', options);
-  console.log(memberId, message.member_id);
+  // console.log(memberId, message.member_id);
 
-  return memberId === message.member_id ? (
-    <SMyBubble>
-      <SSendTime>03:12 AM</SSendTime>
-      <SMyBubbleContent>{message.text_content}</SMyBubbleContent>
-    </SMyBubble>
-  ) : (
-    <SOtherBubble>
-      <img
-        src={`${images.chatModal.default_profile}`}
-        alt="profile"
-        className="profile"
-      />
-      <SOtherBubbleContent>{message.text_content}</SOtherBubbleContent>
-      <SSendTime>{formattedTime}</SSendTime>
-    </SOtherBubble>
+  return (
+    <>
+      {memberId === message.member_id ? (
+        <SMyBubble>
+          <SSendTime>{formattedTime}</SSendTime>
+          <SMyBubbleContent>{message.text_content}</SMyBubbleContent>
+        </SMyBubble>
+      ) : (
+        <SOtherBubble>
+          <img
+            src={`${images.chatModal.default_profile}`}
+            alt="profile"
+            className="profile"
+          />
+          <SOtherBubbleContent>{message.text_content}</SOtherBubbleContent>
+          <SSendTime>{formattedTime}</SSendTime>
+        </SOtherBubble>
+      )}
+      {displayDate && (
+        <SDateDiv>
+          <div className="day">{today}</div>
+        </SDateDiv>
+      )}
+    </>
   );
 };
 
-// 메세지가 내껀지 남의 껀지에 따라 style 변경 필요
 const SMyBubble = styled.div`
   display: flex;
   align-items: end;
@@ -81,4 +91,21 @@ const SSendTime = styled.div`
   font-weight: 400;
 `;
 
-export default ChatBubble;
+const SDateDiv = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 15px 0px;
+
+  .day {
+    background-color: rgba(217, 217, 217, 0.5);
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: #707070;
+    font-size: 10px;
+  }
+`;
+
+const MemoziedChatBubble = React.memo(ChatBubble);
+
+export default MemoziedChatBubble;
