@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class LoginRequestDto {
+    private Long id;
 
     private String email;
 
