@@ -4,8 +4,7 @@ import {
   Search as searchRoom
 } from '@/models/chat/rooms'
 import { Read as readUser } from '@/models/user'
-import memberInfo from '@/api/memberInfo'
-
+import { Search as searchLog } from '@/models/chat/chats'
 import withCors from '../cors'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -17,27 +16,24 @@ const receiveData = withCors(async (
 ) => {
 
   let data : any;
-  console.log("될걸",req.headers?.access_token);
-  // console.log(access_token, refresh_token);
-  console.log("memberinfo", memberInfo);
-  const {access_token, refresh_token} = req.headers;
-  let email : string | undefined;
-  const verified_token = await jwtVerify(access_token);
-  console.log("웨안돼",verified_token);
-
-  if (verified_token.ok === true){
-    email = verified_token.sub;
-  }else{
-    res.status(500).json({message: 'token is not validated' });
-  }
 
 
-  if (req.method === 'GET'){
-    // const inputData = req.body;
+  if (req.method === 'GET'){ // read.chatroom
+
+    const inputData = req.body;
+    const email = inputData.email;
     console.log(`${email} 들어간 채팅방 탐색중입니다.`);
     const [usr] : member[] = await readUser({email});
     data = await searchRoom({member_id : usr['id']});
-    res.status(200).json({ rooms: data });
+
+    const updatedData = await Promise.all(data.map(async (room : room) => {
+      const id = room.id;
+      const latestLog = await searchLog(Number(id));
+      return {...room, latestLog};
+    }));
+    
+
+    res.status(200).json({ rooms: updatedData });
     
     return
 

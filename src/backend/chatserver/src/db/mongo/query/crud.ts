@@ -18,6 +18,11 @@ const readQuery = async (table : string, target : any,
   return chats
 }
 
+const readQueryLatestLog = async (table : string, room_id: Number) => {
+  const chat = await chat_content.findOne({room_id: room_id}).sort({created_at: -1});
+  return chat;
+}
+
 const updateQuery = async (table : string, schema : string, value : any[]) => {
   
 }
@@ -34,5 +39,6 @@ export {
   createQuery,
   readQuery,
   updateQuery,
-  deleteQuery
+  deleteQuery,
+  readQueryLatestLog
 }

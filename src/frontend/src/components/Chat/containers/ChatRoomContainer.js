@@ -6,6 +6,7 @@ import { fetchRoom } from '../../../api/nodeServer/Room';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatRoom from '../ChatRoom';
 import { requestGet, setToken } from '../../../lib/api/api';
+import Swal from 'sweetalert2';
 
 let socket;
 let inform = {};
@@ -17,8 +18,14 @@ const ChatRoomContainer = () => {
   const [message, setMessage] = useState('');
   const [memberId, setMemberId] = useState('');
   const [allMessages, setAllMessages] = useState([]);
+  const [productId, setProductId] = useState({
+    pp_id: '',
+    pr_id: '',
+  });
 
+  const inputRef = useRef();
   const onChangeMessage = (e) => {
+    inputRef.current = e.target.value;
     setMessage(e.target.value);
   };
 
@@ -37,42 +44,44 @@ const ChatRoomContainer = () => {
   };
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
-    // const email = 'tncks097@naver.com';
-    socket.emit('joinRoom', { roomName }, async ({ok, chattingLogs}) => {
-      if (!ok) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}
-      console.log(`join room[${roomName}]  successfully`);
+    requestGet(`member/info`).then((res) => {
+      const email = res.data.email;
 
-      const result = await fetchRoom.join({ roomName });
-      inform = result?.data;
-      console.log('니먼데', inform);
-      console.log(chattingLogs)
-      setAllMessages((pre) => [...pre, ...chattingLogs]);
-      // console.log("올 메시지",allMessages)
+      socket.emit('joinRoom', { roomName }, async ({ isRoom, chattingLogs }) => {
+        if (!isRoom) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}
+        console.log(`join room[${roomName}]  successfully`);
+        const { data } = await fetchRoom.join({ roomName, email });
+        inform = data;
+        if (inform.roomUser.room.pr_id)
+          setProductId(...productId, { pr_id: inform.roomUser.room.pr_id });
+        else if (inform.roomUser.room.pp_id)
+          setProductId(...productId, { pp_id: inform.roomUser.room.pp_id });
+        setAllMessages((pre) => [...pre, ...chattingLogs]);
+        // console.log("올 메시지",allMessages)
+      });
     });
   };
 
   useEffect(() => {
-    
-    setToken();
-    
-    socketInitializer();
-
+    // setToken();
     requestGet(`member/info`).then((res) => {
+      socketInitializer();
       // 나중에 잘되었는지 아닌지 필터 필요
       setMemberId(res.data.id);
     });
+    const email = res.data.email;
     return () => {
       console.log('disconected');
       if (socket) {
         socket.disconnect();
-        fetchRoom.execute({ roomName });
+        fetchRoom.execute({ roomName, email });
       }
     };
   }, []);
 
   async function socketInitializer() {
-    await api.setToken();
-    await socketIO.fetchEnter(`/api/socket?name=${name}`);
+
+    socketIO.fetchEnter(`/api/socket?name=${name}`);
 
     socket = socketIOClient('http://i9d108.p.ssafy.io:3030', {
       path: `/${name}/socket.io`,
@@ -97,20 +106,38 @@ const ChatRoomContainer = () => {
     });
   }
 
-  const onSubmitMessage = (e) => {
+  const onSubmitMessage = () => {
     if (!socket) {
       return;
     }
     if (!message) {
       return;
     }
+    requestGet(`member/info`).then((res) => {
+    
+      console.log('message emitted');
+      socket.emit('send-message', {
+        roomUser: inform.roomUser,
+        message,
+      });
+      setMessage('');
+    })
+  };
 
-    console.log('message emitted');
-    socket.emit('send-message', {
-      roomUser: inform.roomUser,
-      message,
+  // 채팅방 나가기
+  const onClickExitBtn = () => {
+    Swal.fire({
+      title:
+        '<div style="font-size: 20px; font-weight: 700">채팅방 나가기</div>',
+      text: '정말 나가시겠습니까?',
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //나가기 호출
+        console.log('나가자~');
+        navigate('/chat/chat-list', { replace: true });
+      }
     });
-    setMessage('');
   };
 
   useEffect(() => {
@@ -121,6 +148,7 @@ const ChatRoomContainer = () => {
 
   return (
     <ChatRoom
+      inputRef={inputRef}
       message={message}
       onClickBackBtn={onClickBackBtn}
       onChangeMessage={onChangeMessage}
@@ -128,6 +156,8 @@ const ChatRoomContainer = () => {
       allMessages={allMessages}
       memberId={memberId}
       scrollRef={scrollRef}
+      productId={productId}
+      onClickExitBtn={onClickExitBtn}
     />
   );
 };
