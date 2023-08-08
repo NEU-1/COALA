@@ -3,9 +3,10 @@ package com.coala.backend.store.db.dto.request;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.product.db.entity.Category;
 import com.coala.backend.store.db.entity.StorePost;
-import lombok.*;
-
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter

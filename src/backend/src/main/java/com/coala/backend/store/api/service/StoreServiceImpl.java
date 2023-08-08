@@ -1,24 +1,24 @@
 package com.coala.backend.store.api.service;
 
-import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
 import com.coala.backend.product.db.entity.Category;
 import com.coala.backend.product.db.repository.CategoryRepository;
-import com.coala.backend.store.db.dto.request.PostRequestDto;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
 import com.coala.backend.store.db.entity.StoreLike;
 import com.coala.backend.store.db.entity.StorePost;
 import com.coala.backend.store.db.repository.CustomStorePostRepository;
 import com.coala.backend.store.db.repository.StoreLikeRepository;
 import com.coala.backend.store.db.repository.StorePostRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class StoreServiceImpl implements StoreService {
@@ -26,17 +26,15 @@ public class StoreServiceImpl implements StoreService {
     private StorePostRepository storePostRepository;
     private StoreLikeRepository storeLikeRepository;
     private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
 
     private CustomStorePostRepository customStorePostRepository;
 
     private CategoryRepository categoryRepository;
 
-    public StoreServiceImpl(StorePostRepository storePostRepository, StoreLikeRepository storeLikeRepository, MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider, CustomStorePostRepository customStorePostRepository, CategoryRepository categoryRepository) {
+    public StoreServiceImpl(StorePostRepository storePostRepository, StoreLikeRepository storeLikeRepository, MemberRepository memberRepository, CustomStorePostRepository customStorePostRepository, CategoryRepository categoryRepository) {
         this.storePostRepository = storePostRepository;
         this.storeLikeRepository = storeLikeRepository;
         this.memberRepository = memberRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.customStorePostRepository = customStorePostRepository;
         this.categoryRepository = categoryRepository;
     }
@@ -46,24 +44,6 @@ public class StoreServiceImpl implements StoreService {
         return customStorePostRepository.findAllFilter(info, page);
     }
 
-//    @Override
-//    public BaseResponseDto write(PostRequestDto postRequestDto, Member member) {
-//        StorePost storePost = new StorePost();
-//
-//        storePost.setTitle(postRequestDto.getTitle());
-//        storePost.setDetail(postRequestDto.getDetail());
-//        storePost.setMinRentalPeriod(postRequestDto.getMinRentalPeriod());
-//        storePost.setMaxRentalPeriod(postRequestDto.getMaxRentalPeriod());
-//        storePost.setLimitDate(postRequestDto.getLimitDate());
-//        storePost.setRentalCost(postRequestDto.getRentalCost());
-//        storePost.setDeposit(postRequestDto.getDeposit());
-//        storePost.setAuthor(member.getName());
-//        storePost.setMember(member);
-//        storePost.setCategory();
-//
-//        storePostRepository.save(storePost);
-//        return new BaseResponseDto("게시글이 성공적으로 저장되었습니다.", 200);
-//    }
     @Override
     public BaseResponseDto write(Map<String, String> info, Member member) {
         StorePost storePost = new StorePost();
@@ -126,6 +106,7 @@ public class StoreServiceImpl implements StoreService {
             storePost.setUpdatedAt(LocalDateTime.now());
             storePostRepository.save(storePost);
             return new BaseResponseDto("게시글이 정상적으로 수정되었습니다.", 200);
+
         }
         return new BaseResponseDto("게시글 작성자가 아닙니다.", 403);
     }
@@ -152,7 +133,9 @@ public class StoreServiceImpl implements StoreService {
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("회원이 존재하지 않습니다."));
-
+        if(storePost.getMember().getEmail().equals(email)){
+            return new BaseResponseDto("작성자는 추천할 수 없습니다.", 403);
+        }
         Optional<StoreLike> temp = storeLikeRepository.findByMemberAndStorePost(member, storePost);
         if(temp.isPresent()){
             storeLikeRepository.deleteById(temp.get().getId());

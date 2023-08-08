@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="*")
 @RequestMapping("/api/free/")
 public class FreePostController {
     private final FreePostServiceImpl freePostService;
