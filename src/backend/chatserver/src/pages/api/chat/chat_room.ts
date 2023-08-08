@@ -20,7 +20,7 @@ const receiveData = withCors(async (
 
   if (req.method === 'GET'){ // read.chatroom
 
-    const inputData = req.body;
+    const inputData = req.query;
     console.log(inputData)
     const email = inputData.email;
     console.log(`${email} 들어간 채팅방 탐색중입니다.`);
