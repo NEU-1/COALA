@@ -1,11 +1,8 @@
 package com.coala.backend.community.techpost.api.controller;
 
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.techpost.api.service.TechCommentServiceImpl;
 import com.coala.backend.community.techpost.db.dto.request.TechCommentRequestDto;
-import com.coala.backend.community.techpost.db.dto.response.TechCommentResponseDto;
-import com.coala.backend.community.techpost.db.entity.TechComment;
-import com.coala.backend.community.techpost.db.repository.TechCommentRepository;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/tech/comment/")
 public class TechCommentController {
     private final TechCommentServiceImpl techCommentService;
-    private final TechCommentRepository techCommentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
 
@@ -33,46 +29,41 @@ public class TechCommentController {
 
     // 댓글 저장
     @PostMapping("save")
-    public ResponseEntity<TechComment> saveComment(@RequestBody @Valid TechCommentRequestDto requestDto) {
-        techCommentService.saveComment(requestDto);
+    public ResponseEntity<CommunityBaseResponseDto> saveComment(@RequestBody @Valid TechCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
 
-        return ResponseEntity.ok()
-                .body(requestDto.toEntity());
+        CommunityBaseResponseDto responseDto = techCommentService.saveComment(requestDto, getEmail(httpServletRequest));
+
+        return ResponseEntity.status(responseDto.getStatusCode())
+                .body(responseDto);
     }
 
+    // 댓글 수정
     @PutMapping("update/{id}")
-    public ResponseEntity<TechCommentResponseDto> updateTechComment(@PathVariable("id") Long id,
-                                                    @RequestBody @Valid TechCommentRequestDto requestDto) {
+    public ResponseEntity<CommunityBaseResponseDto> updateTechComment(@PathVariable("id") Long id,
+                                                                      @RequestBody @Valid TechCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
 
-        techCommentService.updateTechComment(id, requestDto);
-        TechComment techComment = techCommentRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("댓글이 존재하지 않습니다.");
-        });
+        CommunityBaseResponseDto responseDto = techCommentService.updateTechComment(id, requestDto, getEmail(httpServletRequest));
 
-        return ResponseEntity.ok()
-                .body(TechCommentResponseDto.builder()
-                        .id(techComment.getId())
-                        .tpId(techComment.getTpId())
-                        .author(techComment.getAuthor())
-                        .content(techComment.getContent())
-                        .createAt(techComment.getCreateAt())
-                        .updateAt(techComment.getUpdateAt())
-                        .build());
+        return ResponseEntity.status(responseDto.getStatusCode())
+                .body(responseDto);
     }
 
+    // 댓글 목록
     @GetMapping("{id}/{page}")
-    public ResponseEntity<BasePostResponseDto> techCommentList(@PathVariable("id") Long id, @PathVariable("page") int page) {
-        BasePostResponseDto commentAll = techCommentService.getCommentList(id, page);
+    public ResponseEntity<CommunityBaseResponseDto> techCommentList(@PathVariable("id") Long id, @PathVariable("page") int page) {
+        CommunityBaseResponseDto responseDto = techCommentService.getCommentList(id, page);
 
-        return ResponseEntity.status(commentAll.getStatusCode())
-                .body(commentAll);
+        return ResponseEntity.status(responseDto.getStatusCode())
+                .body(responseDto);
     }
 
+    // 댓글 삭제
     @DeleteMapping("delete/{id}")
-    public void techCommentDelete(@PathVariable("id") Long id) {
-        techCommentService.deleteComment(id);
+    public void techCommentDelete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+        techCommentService.deleteComment(id, getEmail(httpServletRequest));
     }
 
+    // Access_Token 값 조회
     public Member getEmail(HttpServletRequest httpServletRequest) {
         accessToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Access");
         String email = jwtTokenProvider.getEmailFromToken(accessToken);

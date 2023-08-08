@@ -1,6 +1,6 @@
 package com.coala.backend.community.notice.api.service;
 
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.notice.db.dto.response.NoticeResponseDto;
 import com.coala.backend.community.notice.db.entity.Notice;
 import com.coala.backend.community.notice.db.dto.request.NoticeRequestDto;
@@ -33,7 +33,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Transactional
     @Override
-    public BasePostResponseDto getPostList(int page) {
+    public CommunityBaseResponseDto getPostList(int page) {
         Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
         List<NoticeResponseDto> allList = noticeRepository.findAll(pageable).stream()
@@ -47,7 +47,7 @@ public class NoticeServiceImpl implements NoticeService {
                         .build())
                 .collect(Collectors.toList());
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공")
                 .detail(allList.size())
@@ -80,7 +80,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Transactional
     @Override
-    public BasePostResponseDto searchPosts(String keyword, int page) {
+    public CommunityBaseResponseDto searchPosts(String keyword, int page) {
             Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
             List<NoticeResponseDto> searchList = noticeRepository.findByTitleContaining(keyword, pageable).stream()
                     .map(notice -> NoticeResponseDto.builder()
@@ -93,7 +93,7 @@ public class NoticeServiceImpl implements NoticeService {
                             .build())
                     .collect(Collectors.toList());
 
-            return BasePostResponseDto.builder()
+            return CommunityBaseResponseDto.builder()
                     .statusCode(200)
                     .msg("성공")
                     .detail(searchList.size())

@@ -1,6 +1,6 @@
 package com.coala.backend.community.notice.api.controller;
 
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.community.notice.api.service.NoticeServiceImpl;
 import com.coala.backend.community.notice.db.dto.request.NoticeRequestDto;
@@ -63,8 +63,8 @@ public class NoticeController {
 
     // 모든 게시물 불러오기, page 는 page 번호
     @GetMapping("post/{page}")
-    public ResponseEntity<BasePostResponseDto> noticeList(@PathVariable("page") Integer page) {
-        BasePostResponseDto postAll = noticeService.getPostList(page);
+    public ResponseEntity<CommunityBaseResponseDto> noticeList(@PathVariable("page") Integer page) {
+        CommunityBaseResponseDto postAll = noticeService.getPostList(page);
 
         return ResponseEntity.status(postAll.getStatusCode())
                 .body(postAll);
@@ -72,9 +72,9 @@ public class NoticeController {
     
     // 검색어 관련 게시물 불러오기
     @GetMapping("post/search/{keyword}/{page}")
-    public ResponseEntity<BasePostResponseDto> findNoticePosts(@PathVariable("keyword") String keyword,
-                                               @PathVariable("page") Integer page) {
-        BasePostResponseDto findAll = noticeService.searchPosts(keyword, page);
+    public ResponseEntity<CommunityBaseResponseDto> findNoticePosts(@PathVariable("keyword") String keyword,
+                                                                    @PathVariable("page") Integer page) {
+        CommunityBaseResponseDto findAll = noticeService.searchPosts(keyword, page);
 
         return ResponseEntity.status(findAll.getStatusCode())
                 .body(findAll);

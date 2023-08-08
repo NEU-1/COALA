@@ -3,7 +3,7 @@ package com.coala.backend.community.freepost.api.service;
 import com.coala.backend.community.freepost.db.dto.request.FreeGoodRequestDto;
 import com.coala.backend.community.freepost.db.entity.FreePost;
 import com.coala.backend.community.freepost.db.repository.FreeGoodRepository;
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.db.entity.FreeGood;
 import com.coala.backend.community.freepost.db.repository.FreePostRepository;
 import com.coala.backend.member.db.entity.Member;
@@ -23,7 +23,7 @@ public class FreeGoodServiceImpl implements FreeGoodService{
 
     @Transactional
     @Override
-    public BasePostResponseDto good(FreeGoodRequestDto freeGoodRequestDto, Member member) {
+    public CommunityBaseResponseDto good(FreeGoodRequestDto freeGoodRequestDto, Member member) {
 
         FreePost freePost = freePostRepository.findById(freeGoodRequestDto.getFpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
@@ -44,7 +44,7 @@ public class FreeGoodServiceImpl implements FreeGoodService{
         freeGoodRepository.saveAndFlush(freeGood);
         freePost.getGoods().add(freeGood);
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("좋아요")
                 .detail(allGood.size())
@@ -54,7 +54,7 @@ public class FreeGoodServiceImpl implements FreeGoodService{
 
     @Transactional
     @Override
-    public BasePostResponseDto unGood(FreeGoodRequestDto freeGoodRequestDto, Member member) {
+    public CommunityBaseResponseDto unGood(FreeGoodRequestDto freeGoodRequestDto, Member member) {
         FreePost freePost = freePostRepository.findById(freeGoodRequestDto.getFpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
@@ -68,9 +68,9 @@ public class FreeGoodServiceImpl implements FreeGoodService{
         freeGoodRepository.deleteById(freeGood.getId());
         freePost.getGoods().remove(freeGood);
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
-                .msg("좋아요")
+                .msg("좋아요 취소")
                 .detail(allGood.size())
                 .build();
     }

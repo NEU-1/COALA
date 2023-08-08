@@ -21,7 +21,7 @@ public class TechImage {
     private TechPost tpId;
 
     @NotNull
-    @Column (name = "image_path")
+    @Column
     private String imagePath;
 
     @Builder

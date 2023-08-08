@@ -1,5 +1,6 @@
 package com.coala.backend.community.freepost.db.entity;
 
+import com.coala.backend.member.db.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,6 +24,9 @@ public class FreeComment {
     private FreePost fpId;
 
     @NotNull
+    private String memberId;
+
+    @NotNull
     private String author;
 
     @NotNull
@@ -39,9 +43,10 @@ public class FreeComment {
     }
 
     @Builder
-    public FreeComment(FreePost fpId, String author, String content) {
+    public FreeComment(FreePost fpId, String author, String content, Member memberId) {
         this.fpId = fpId;
         this.author = author;
+        this.memberId = memberId.getEmail();
         this.content = content;
     }
 

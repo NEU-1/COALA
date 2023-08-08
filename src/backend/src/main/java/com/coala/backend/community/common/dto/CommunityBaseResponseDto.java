@@ -10,16 +10,18 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class BasePostResponseDto {
+public class CommunityBaseResponseDto {
 
     private String msg;
     private int statusCode;
     private int detail;
+    private Long id;
     private List<?> list = new ArrayList<>();
 
     @Builder
-    public BasePostResponseDto(String msg, int statusCode, int detail, List<?> list) {
+    public CommunityBaseResponseDto(String msg, int statusCode, int detail, List<?> list, Long id) {
         this.msg = msg;
+        this.id = id;
         this.statusCode = statusCode;
         this.detail = detail;
         this.list = list;

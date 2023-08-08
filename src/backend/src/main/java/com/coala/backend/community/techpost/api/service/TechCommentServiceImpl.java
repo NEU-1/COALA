@@ -1,12 +1,13 @@
 package com.coala.backend.community.techpost.api.service;
 
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.techpost.db.dto.request.TechCommentRequestDto;
 import com.coala.backend.community.techpost.db.dto.response.TechCommentResponseDto;
 import com.coala.backend.community.techpost.db.entity.TechComment;
 import com.coala.backend.community.techpost.db.entity.TechPost;
 import com.coala.backend.community.techpost.db.repository.TechCommentRepository;
 import com.coala.backend.community.techpost.db.repository.TechPostRepository;
+import com.coala.backend.member.db.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,18 +26,31 @@ public class TechCommentServiceImpl implements TechCommentService {
 
     @Transactional
     @Override
-    public void saveComment(TechCommentRequestDto commentDto) {
+    public CommunityBaseResponseDto saveComment(TechCommentRequestDto commentDto, Member member) {
         TechPost techPost = techPostRepository.findById(commentDto.getTpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
-        techCommentRepository.saveAndFlush(commentDto.toEntity());
-        techPost.getComments().add(commentDto.toEntity());
+        TechComment techComment = TechComment.builder()
+                .tpId(commentDto.getTpId())
+                .author(commentDto.getAuthor())
+                .content(commentDto.getContent())
+                .memberId(member)
+                .build();
+
+        techCommentRepository.saveAndFlush(techComment);
+        techPost.getComments().add(techComment);
+
+        return CommunityBaseResponseDto.builder()
+                .statusCode(200)
+                .msg("성공, 게시글 Id 반환")
+                .id(techPost.getId())
+                .build();
     }
 
     @Transactional
     @Override
-    public BasePostResponseDto getCommentList(Long id, int page) {
+    public CommunityBaseResponseDto getCommentList(Long id, int page) {
         Pageable pageable = PageRequest.of(page, 5, Sort.by("createAt").descending());
 
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
@@ -53,17 +67,17 @@ public class TechCommentServiceImpl implements TechCommentService {
                         .build())
                 .collect(Collectors.toList());
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
-                .msg("성공")
-                .detail(postComments.size())
+                .msg("성공, 페이지 수 && 해당 페이지 댓글 목록")
+                .detail(1 + postComments.size() / 5)
                 .list(postComments)
                 .build();
     }
 
     @Transactional
     @Override
-    public void deleteComment(Long id) {
+    public void deleteComment(Long id, Member member) {
         TechComment techComment = techCommentRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("댓글이 존재하지 않습니다.");
         });
@@ -72,17 +86,34 @@ public class TechCommentServiceImpl implements TechCommentService {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
+        if (!techComment.getMemberId().equals(member.getEmail())) {
+            throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다!!!");
+        } else if (techComment.getTpId().equals(techPost.getId())) {
+            throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다!!!");
+        }
+
         techCommentRepository.deleteById(id);
         techPost.getComments().remove(techComment);
     }
 
     @Transactional
     @Override
-    public void updateTechComment(Long id, TechCommentRequestDto dto) {
+    public CommunityBaseResponseDto updateTechComment(Long id, TechCommentRequestDto dto, Member member) {
         TechComment techComment = techCommentRepository.findById(id).orElseThrow(() -> {
            return new IllegalArgumentException("댓글이 존재하지 않습니다.");
         });
 
+        if (!techComment.getMemberId().equals(member.getEmail())) {
+            throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다!!!");
+        }
+
         techComment.updateTechComment(dto.getAuthor(), dto.getContent());
+        techCommentRepository.save(techComment);
+
+        return CommunityBaseResponseDto.builder()
+                .statusCode(200)
+                .msg("성공, 게시글 Id 반환")
+                .id(techComment.getTpId().getId())
+                .build();
     }
 }

@@ -1,6 +1,9 @@
 package com.coala.backend.community.techpost.api.service;
 
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.techpost.db.entity.TechImage;
+import com.coala.backend.community.techpost.db.repository.TechImageRepository;
+import com.coala.backend.s3.S3UploadService;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.techpost.db.dto.request.TechPostRequestDto;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.community.techpost.db.dto.response.TechPostResponseDto;
@@ -8,12 +11,16 @@ import com.coala.backend.community.techpost.db.entity.TechPost;
 import com.coala.backend.community.techpost.db.repository.TechGoodRepository;
 import com.coala.backend.community.techpost.db.repository.TechPostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,24 +29,58 @@ import java.util.stream.Collectors;
 
 * */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TechPostServiceImpl implements TechPostService{
     private final TechPostRepository techPostRepository;
     private final TechGoodRepository techGoodRepository;
+    private final TechImageRepository techImageRepository;
+
+    private final S3UploadService s3UploadService;
 
     @Transactional
     @Override
-    public Member savePost(TechPostRequestDto postDto, Member member) {
+    public CommunityBaseResponseDto savePost(List<MultipartFile> multipartFile, TechPostRequestDto postDto, Member member) throws IOException {
+        TechPost techPost = TechPost.builder()
+                .memberId(member)
+                .title(postDto.getTitle())
+                .detail(postDto.getDetail())
+                .nickname(postDto.getNickname())
+                .build();
 
-        techPostRepository.saveAndFlush(postDto.toEntity(member));
+        techPostRepository.saveAndFlush(techPost);
 
-        return member;
+        if (!multipartFile.isEmpty()) {
+            for (int i = 0; i < multipartFile.size(); i++) {
+                String storedFileName = s3UploadService.S3Upload(multipartFile.get(i), "Tech");
+
+                techImageRepository.save(TechImage.builder()
+                        .imagePath(storedFileName)
+                        .tpId(techPost)
+                        .build());
+            }
+            log.info("TechImage 업로드 성공");
+        }
+
+        List<String> uri = new ArrayList<>();
+        List<TechImage> imageList = techImageRepository.findByTpId(techPost);
+        for (int i = 0; i < imageList.size(); i++) {
+            TechImage techImage = imageList.get(i);
+            uri.add(techImage.getImagePath());
+        }
+
+        return CommunityBaseResponseDto.builder()
+                .statusCode(200)
+                .msg("성공, 게시글 Id 반환, image 주소 반환")
+                .id(techPost.getId())
+                .list(uri)
+                .build();
     }
 
     @Transactional
     @Override
-    public BasePostResponseDto getPostList(int page) {
+    public CommunityBaseResponseDto getPostList(int page) {
         Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
         List <TechPostResponseDto> allList = techPostRepository.findAll(pageable).stream()
@@ -50,18 +91,16 @@ public class TechPostServiceImpl implements TechPostService{
                         .detail(techPost.getDetail())
                         .createAt(techPost.getCreateAt())
                         .updateAt(techPost.getUpdateAt())
-                        .imagePath(techPost.getImagePath())
-                        .nickname(techPost.getNickname())
                         .views(techPost.getViews())
                         .commentCount(techPost.getComments().size())
                         .goodCount(techPost.getGoods().size())
                         .build())
                 .collect(Collectors.toList());
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
-                .msg("성공")
-                .detail(allList.size())
+                .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
+                .detail(1 + (allList.size() / 8))
                 .list(allList)
                 .build();
     }
@@ -82,8 +121,6 @@ public class TechPostServiceImpl implements TechPostService{
                 .detail(techPost.getDetail())
                 .createAt(techPost.getCreateAt())
                 .updateAt(techPost.getUpdateAt())
-                .imagePath(techPost.getImagePath())
-                .nickname(techPost.getNickname())
                 .views(techPost.getViews())
                 .commentCount(techPost.getComments().size())
                 .goodCount(techPost.getGoods().size())
@@ -101,13 +138,14 @@ public class TechPostServiceImpl implements TechPostService{
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
 
+        techImageRepository.findByTpId(techPost);
         techGoodRepository.deleteByTpId(techPost);
         techPostRepository.deleteById(id);
     }
 
     @Transactional
     @Override
-    public BasePostResponseDto searchPosts(String keyword, int page) {
+    public CommunityBaseResponseDto searchPosts(String keyword, int page) {
         Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
         List<TechPostResponseDto> searchList = techPostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(techPost -> TechPostResponseDto.builder()
@@ -117,25 +155,23 @@ public class TechPostServiceImpl implements TechPostService{
                         .detail(techPost.getDetail())
                         .createAt(techPost.getCreateAt())
                         .updateAt(techPost.getUpdateAt())
-                        .imagePath(techPost.getImagePath())
-                        .nickname(techPost.getNickname())
                         .views(techPost.getViews())
                         .commentCount(techPost.getComments().size())
                         .goodCount((techPost.getGoods().size()))
                         .build())
                 .collect(Collectors.toList());
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
-                .msg("성공")
-                .detail(searchList.size())
+                .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
+                .detail(1 + searchList.size() / 8)
                 .list(searchList)
                 .build();
     }
 
     @Transactional
     @Override
-    public void updateTechPost(Long id, TechPostRequestDto dto, Member member) {
+    public CommunityBaseResponseDto updateTechPost(List<MultipartFile> multipartFile, Long id, TechPostRequestDto dto, Member member) {
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
             return  new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
@@ -147,7 +183,13 @@ public class TechPostServiceImpl implements TechPostService{
         techPost.updateTechPost(
                 dto.getTitle(),
                 dto.getDetail(),
-                dto.getImagePath(),
                 dto.getNickname());
+        techPostRepository.save(techPost);
+
+        return CommunityBaseResponseDto.builder()
+                .statusCode(200)
+                .msg("성공, 게시글 Id 반환")
+                .id(id)
+                .build();
     }
 }

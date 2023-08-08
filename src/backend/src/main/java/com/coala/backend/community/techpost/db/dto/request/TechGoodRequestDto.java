@@ -15,7 +15,7 @@ public class TechGoodRequestDto {
     private TechPost tpId;
 
     @Builder
-    public TechGoodRequestDto(TechPost tpId, TechPost writerId) {
+    public TechGoodRequestDto(TechPost tpId) {
         this.tpId = tpId;
     }
 

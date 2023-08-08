@@ -2,7 +2,7 @@ package com.coala.backend.community.freepost.api.controller;
 
 import com.coala.backend.community.freepost.api.service.FreeGoodService;
 import com.coala.backend.community.freepost.db.dto.request.FreeGoodRequestDto;
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
@@ -27,14 +27,14 @@ public class FreeGoodController {
 
     @PostMapping("is/good")
     public ResponseEntity good(@RequestBody @Valid FreeGoodRequestDto freegoodRequestDto, HttpServletRequest httpServletRequest) {
-        BasePostResponseDto baseResponseDto = freeGoodService.good(freegoodRequestDto, getEmail(httpServletRequest));
+        CommunityBaseResponseDto baseResponseDto = freeGoodService.good(freegoodRequestDto, getEmail(httpServletRequest));
         return ResponseEntity.status(baseResponseDto.getStatusCode())
                 .body(baseResponseDto);
     }
 
     @DeleteMapping("un/good")
     public ResponseEntity unGood(@RequestBody @Valid FreeGoodRequestDto freeGoodRequestDto, HttpServletRequest httpServletRequest) {
-        BasePostResponseDto baseResponseDto = freeGoodService.unGood(freeGoodRequestDto, getEmail(httpServletRequest));
+        CommunityBaseResponseDto baseResponseDto = freeGoodService.unGood(freeGoodRequestDto, getEmail(httpServletRequest));
         return ResponseEntity.status(baseResponseDto.getStatusCode())
                 .body(baseResponseDto);
     }

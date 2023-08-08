@@ -11,11 +11,9 @@ import lombok.NoArgsConstructor;
 public class TechGoodResponseDto {
 
     private TechPost tpId;
-    private TechPost writerId;
 
     @Builder
-    public TechGoodResponseDto(TechPost tpId, TechPost writerId) {
+    public TechGoodResponseDto(TechPost tpId) {
         this.tpId = tpId;
-        this.writerId = writerId;
     }
 }
