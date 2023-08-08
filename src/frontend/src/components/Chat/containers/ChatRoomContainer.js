@@ -6,6 +6,7 @@ import { fetchRoom } from '../../../api/nodeServer/Room';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatRoom from '../ChatRoom';
 import { requestGet, setToken } from '../../../lib/api/api';
+import Swal from 'sweetalert2';
 
 let socket;
 let inform = {};
@@ -17,8 +18,14 @@ const ChatRoomContainer = () => {
   const [message, setMessage] = useState('');
   const [memberId, setMemberId] = useState('');
   const [allMessages, setAllMessages] = useState([]);
+  const [productId, setProductId] = useState({
+    pp_id: '',
+    pr_id: '',
+  });
 
+  const inputRef = useRef();
   const onChangeMessage = (e) => {
+    inputRef.current = e.target.value;
     setMessage(e.target.value);
   };
 
@@ -42,6 +49,10 @@ const ChatRoomContainer = () => {
       const { data } = await fetchRoom.join({ roomName });
       inform = data;
       console.log('니먼데', inform);
+      if (inform.roomUser.room.pr_id)
+        setProductId(...productId, { pr_id: inform.roomUser.room.pr_id });
+      else if (inform.roomUser.room.pp_id)
+        setProductId(...productId, { pp_id: inform.roomUser.room.pp_id });
       setAllMessages((pre) => [...pre, ...chattingLogs]);
       // console.log("올 메시지",allMessages)
     });
@@ -92,7 +103,7 @@ const ChatRoomContainer = () => {
     });
   }
 
-  const onSubmitMessage = (e) => {
+  const onSubmitMessage = () => {
     if (!socket) {
       return;
     }
@@ -108,6 +119,22 @@ const ChatRoomContainer = () => {
     setMessage('');
   };
 
+  // 채팅방 나가기
+  const onClickExitBtn = () => {
+    Swal.fire({
+      title:
+        '<div style="font-size: 20px; font-weight: 700">채팅방 나가기</div>',
+      text: '정말 나가시겠습니까?',
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //나가기 호출
+        console.log('나가자~');
+        navigate('/chat/chat-list', { replace: true });
+      }
+    });
+  };
+
   useEffect(() => {
     // 현재는 양쪽 다 누구라도 채티을 치면 스크롤 밑으로 내려감
     // 자신이 보낸 채팅에 한해서만 스크롤 내리게 해야할 듯
@@ -116,6 +143,7 @@ const ChatRoomContainer = () => {
 
   return (
     <ChatRoom
+      inputRef={inputRef}
       message={message}
       onClickBackBtn={onClickBackBtn}
       onChangeMessage={onChangeMessage}
@@ -123,6 +151,8 @@ const ChatRoomContainer = () => {
       allMessages={allMessages}
       memberId={memberId}
       scrollRef={scrollRef}
+      productId={productId}
+      onClickExitBtn={onClickExitBtn}
     />
   );
 };

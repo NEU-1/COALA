@@ -23,7 +23,7 @@ const ChatListItem = ({ item, onClickListItem }) => {
       </SStart>
       <SEnd>
         <div className="time">10:45 AM</div>
-        <div className="alarm">123</div>
+        {/* <div className="alarm">123</div> */}
       </SEnd>
     </SLayout>
   );
