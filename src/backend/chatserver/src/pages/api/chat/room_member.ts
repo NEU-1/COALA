@@ -13,6 +13,7 @@ const receiveData = withCors(async (
   res: NextApiResponse
 ) => {
   
+  
   if (req.method === 'POST'){
     const inputData = req.body; // 이메일 넣어주세요
     // console.log("될걸",req.headers?.access_token);

@@ -20,7 +20,8 @@ const Create = async (inputData : any) =>{
       'room_id' : room['id'],
       'member_id' : usr['id']
     };
-  
+    
+    
     const [roomUserRelations] = await Read(room_user);
     if (roomUserRelations) {return data;} 
     // await createQuery('room_member', room_user);
