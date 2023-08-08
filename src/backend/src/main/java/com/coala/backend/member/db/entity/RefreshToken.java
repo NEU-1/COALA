@@ -22,10 +22,16 @@ public class RefreshToken {
     @Column(name = "refreshToken", nullable=false, columnDefinition = "varchar(255)")
     private String refreshToken;
 
-    @Column(name = "email", nullable=false, columnDefinition = "varchar(255)")
+    @Column(name = "email", nullable=false, columnDefinition = "varchar(255)", unique = true)
     private String email;
 
     public RefreshToken(String refreshToken, String email) {
+        this.refreshToken = refreshToken;
+        this.email = email;
+    }
+
+    public RefreshToken(Long id, String refreshToken, String email) {
+        this.id = id;
         this.refreshToken = refreshToken;
         this.email = email;
     }

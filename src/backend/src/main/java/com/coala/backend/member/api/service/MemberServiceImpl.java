@@ -1,8 +1,6 @@
 package com.coala.backend.member.api.service;
 
-import com.coala.backend.member.common.jwt.JwtAuthFilter;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
-import com.coala.backend.member.common.jwt.TokenDto;
 import com.coala.backend.member.db.dto.request.LoginRequestDto;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.member.db.dto.response.MemberInfoResponseDto;
@@ -22,10 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 
 @Service
@@ -84,36 +79,32 @@ public class MemberServiceImpl implements MemberService{
     @Override
     @Transactional
     public BaseResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
-        Optional<Member> temp = memberRepository.findByEmail(loginRequestDto.getEmail());
-
         // Email 검사
-        if(temp.isEmpty()){
-            return new BaseResponseDto("존재하지 않는 회원입니다.",404);
-        }
+        Member member = memberRepository.findByEmail(loginRequestDto.getEmail())
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
 
-        Member member = temp.get();
-
-        // Password Check
+        // 비밀번호 검사
         if(!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())){
             return new BaseResponseDto("비밀번호가 일치하지 않습니다.", 400);
         }
 
-        // Create Token
-        TokenDto tokenDto = jwtTokenProvider.createAllToken(loginRequestDto.getEmail());
+        // 로그인으로 인한 토큰 생성
+        String accessToken = jwtTokenProvider.createToken(member.getEmail(), "Access");
+        String refreshToken = jwtTokenProvider.createToken(member.getEmail(), "Refresh");
 
-        // Check Refresh Token
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(loginRequestDto.getEmail());
+        // header 반영
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
 
-        // refresh Token
-        if(refreshToken.isPresent()){
-            refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
-        }else{
-            RefreshToken newToken = new RefreshToken(tokenDto.getRefreshToken(), loginRequestDto.getEmail());
-            refreshTokenRepository.save(newToken);
+        Optional<RefreshToken> ref = refreshTokenRepository.findByEmail(member.getEmail());
+
+        // update
+        if(ref.isPresent()){
+            refreshTokenRepository.save(new RefreshToken(ref.get().getId(), refreshToken, member.getEmail()));
         }
-
-        // response header AccessToken / RefreshToken => redis 적용해야함
-        setHeader(response, tokenDto);
+        else{
+            refreshTokenRepository.save(new RefreshToken(refreshToken, member.getEmail()));
+        }
 
         logger.info("AccessToken : {}", response.getHeader(JwtTokenProvider.ACCESS_TOKEN));
         logger.info("RefreshToken : {}", response.getHeader(JwtTokenProvider.REFRESH_TOKEN));
@@ -122,50 +113,31 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public MemberInfoResponseDto loadInfo(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        accessToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Access");
-        refreshToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Refresh");
+    public MemberInfoResponseDto loadInfo(String email) {
+        // 유저 정보 조회
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("회원 정보가 존재하지 않습니다."));
 
-        String email = jwtTokenProvider.getEmailFromToken(accessToken);
-
-        Member member = memberRepository.findByEmail(email).get();
-
+        // Meber 정보와 응답 한번에 출력
         MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto();
-        memberInfoResponseDto.setEmail(member.getEmail());
-        memberInfoResponseDto.setName(member.getName());
-        memberInfoResponseDto.setNickname(member.getNickname());
-        memberInfoResponseDto.setStudentId(member.getStudentId());
-        memberInfoResponseDto.setDepart(member.getDepart());
-        memberInfoResponseDto.setOrdinal(member.getOrdinal());
-        memberInfoResponseDto.setPhoneNo(member.getPhoneNo());
-        memberInfoResponseDto.setMsg(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.");
-        memberInfoResponseDto.setStatusCode(HttpStatus.OK.value());
+        memberInfoResponseDto.setMember(member);
+        memberInfoResponseDto.setBaseResponseDto(new BaseResponseDto(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.", HttpStatus.OK.value()));
 
-        logger.info("user Info : {}", member);
+        logger.info("member Name : {}", member.getName());
         return memberInfoResponseDto;
     }
 
     @Override
-    public BaseResponseDto updateInfo(Map<String, String> info, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        accessToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Access");
-        refreshToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Refresh");
-
-        BaseResponseDto baseResponseDto = reissue(httpServletRequest, httpServletResponse);
-
-        if(baseResponseDto.getStatusCode() != 200){
-            return new BaseResponseDto("인증정보가 만료되었습니다. 재 로그인 해주세요.", 401);
-        }
-
-        String email = jwtTokenProvider.getEmailFromToken(accessToken);
-
-        Member member = memberRepository.findByEmail(email).get();
+    public BaseResponseDto updateInfo(Map<String, String> info, String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("회원정보가 존재하지 않습니다."));
 
         member.setNickname(info.get("nickname"));
         member.setPassword(passwordEncoder.encode(info.get("password")));
 
-        logger.info("user Info : {}", member);
+        logger.info("member : {}", member.getNickname());
 
-        memberRepository.save(member);
+//        memberRepository.save(member);
 
         return new BaseResponseDto("회원정보가 성공적으로 재설정 되었습니다.", 200);
     }
@@ -177,54 +149,6 @@ public class MemberServiceImpl implements MemberService{
         // refreshToken 제거
 
         return null;
-    }
-
-    // header 저장
-    public void setHeader(HttpServletResponse response, TokenDto tokenDto) {
-        response.addHeader(JwtTokenProvider.ACCESS_TOKEN, tokenDto.getAccessToken());
-        response.addHeader(JwtTokenProvider.REFRESH_TOKEN, tokenDto.getRefreshToken());
-    }
-
-    // Access Token 만료 시 재발급
-    public BaseResponseDto reissue(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
-        accessToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Access");
-        refreshToken = jwtTokenProvider.getHeaderToken(httpServletRequest, "Refresh");
-
-        // 토큰 검정
-        if(!jwtTokenProvider.tokenValidation(accessToken)){
-            if(jwtTokenProvider.refreshTokenValidation(refreshToken)){
-                logger.info("refreshToken : {}", refreshToken);
-                // access 토큰 재발급
-                // ID 정보
-                String loginEmail = jwtTokenProvider.getEmailFromToken(refreshToken);
-
-                // new AccessToken
-                String newAccessToken = jwtTokenProvider.createToken(loginEmail, "Access");
-
-                // AccessToken add to header
-                jwtTokenProvider.setHeaderAccessToken(httpServletResponse, newAccessToken);
-
-                JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(jwtTokenProvider);
-
-                // Security context add certification info
-                jwtAuthFilter.setAuthentication(loginEmail);
-
-                logger.info("accessToken : {}", newAccessToken);
-
-                accessToken = newAccessToken;
-
-                // 새로 생성된 토큰 적용
-                return new BaseResponseDto("Access Token의 재밝급이 완료되었습니다.", 200);
-            }else{
-                // token 둘다 무효
-                return new BaseResponseDto("인증정보가 만료되었습니다.", 401);
-            }
-        }else{
-            logger.info("email : {}", jwtTokenProvider.getEmailFromToken(accessToken));
-            logger.info("accessToken : {}", accessToken);
-            // 이미 유효한 토큰 적용
-            return new BaseResponseDto("아직 유효한 토큰입니다.", 200);
-        }
     }
 
     // 인증번호 인증
@@ -242,7 +166,7 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // otp가 일치하지 않음
-        if(!temp.get().getOtp().equals(info.get("otp"))){
+        if(temp.map(Certification::getOtp).orElse("").equals(info.get("otp"))){
             return new BaseResponseDto("인증번호가 일치하지 않습니다.", 200, 204);
         }
 
@@ -267,7 +191,8 @@ public class MemberServiceImpl implements MemberService{
     @Transactional
     public BaseResponseDto updatePassword(Map<String, String> info) {
         // 이메일 기준으로 데이터 접근 => 비 로그인 상태
-        Member member = memberRepository.findByEmail(info.get("email")).get();
+        Member member = memberRepository.findByEmail(info.get("email"))
+                .orElseThrow(() -> new NoSuchElementException("회원정보가 존재하지 않습니다."));
         member.setPassword(passwordEncoder.encode(info.get("password")));
 
         return new BaseResponseDto("비밀번호가 성공적으로 재설정 되었습니다.", 200);

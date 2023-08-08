@@ -1,6 +1,9 @@
 package com.coala.backend.member.db.entity;
 
 import com.coala.backend.member.db.dto.request.MemberRequestDto;
+import com.coala.backend.store.db.entity.StoreLike;
+import com.coala.backend.store.db.entity.StorePost;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +17,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -59,6 +61,7 @@ public class Member {
 
     // password 암호화 저장 필요
     @Column(name="password", nullable=false, columnDefinition = "varchar(255)")
+    @JsonIgnore
     private String password;
 
     // Role Table 생성
@@ -71,8 +74,19 @@ public class Member {
         this.password = memberRequestDto.getPassword();
     }
 
-
     public void setEncodePassword(String encodePassword){
         this.password = encodePassword;
     }
+
+
+    // 연결관계
+    // StorePost
+    @OneToMany(mappedBy = "member")
+    @JsonIgnore
+    private List<StorePost> storePost = new ArrayList<>();
+
+    // StoreLike
+    @OneToMany(mappedBy = "member")
+    @JsonIgnore
+    private List<StoreLike> storeLike = new ArrayList<>();
 }
