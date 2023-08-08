@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import ModifyUserinfo from '../ModifyUserinfo';
 import { useNavigate } from 'react-router-dom';
-import { requestGet, requestPut } from '../../../lib/api/api';
+import { requestGet, requestPut, setToken } from '../../../lib/api/api';
 import Swal from 'sweetalert2';
 
 const ModifyUserinfoContainer = () => {
   const navigate = useNavigate();
   // 더미 데이터
   const [form, setForm] = useState({
-    email: 'coala1080@gmail.com',
+    email: '',
     password: '',
-    name: '코알라',
-    nickname: '코딩장비 알아보고 나눠쓰고',
-    studentId: '1234567',
-    depart: '구미',
-    ordinal: 9,
-    phoneNo: '010-1234-5678',
+    name: '',
+    nickname: '',
+    studentId: '',
+    depart: '',
+    ordinal: '',
+    phoneNo: '',
   });
   const [passwordConfirm, setPasswordConfirm] = useState('');
-
   const [passwordConfirmMsg, setPasswordConfirmMsg] = useState('');
   const [isMatch, setIsMatch] = useState(false);
 
@@ -29,7 +28,7 @@ const ModifyUserinfoContainer = () => {
     setPasswordConfirm(e.target.value);
   };
   const onChangeNickname = (e) => {
-    setForm({ ...form, nickName: e.target.value });
+    setForm({ ...form, nickname: e.target.value });
   };
 
   const onClickModifyBtn = () => {
@@ -57,6 +56,18 @@ const ModifyUserinfoContainer = () => {
           });
         }
       });
+    } else {
+      if (!form.password || !form.nickname) {
+        Swal.fire({
+          title: `<div style="font-size: 20px; font-weight: 700">수정하기 위한 필수 입력 사항을 채워주세요.</div>`,
+          icon: 'warning',
+        });
+      } else if (!isMatch) {
+        Swal.fire({
+          title: `<div style="font-size: 20px; font-weight: 700">비밀 번호 확인해주세요.</div>`,
+          icon: 'warning',
+        });
+      }
     }
   };
 
@@ -82,16 +93,22 @@ const ModifyUserinfoContainer = () => {
 
   useEffect(() => {
     // 유저 정보를 가져와서 form에 저장
+    setToken();
     requestGet(`member/info`)
       .then((res) => {
+        console.log(res);
         if (res.data.statusCode === 200) {
           console.log(res.data);
-          setForm({ ...form, email: res.data.email });
-          setForm({ ...form, name: res.data.name });
-          setForm({ ...form, nickname: res.data.nickname });
-          setForm({ ...form, studentId: res.data.studentId });
-          setForm({ ...form, depart: res.data.depart });
-          setForm({ ...form, phoneNo: res.data.phoneNo });
+          setForm({
+            ...form,
+            email: res.data.email,
+            name: res.data.name,
+            nickname: res.data.nickname,
+            studentId: res.data.studentId,
+            depart: res.data.depart,
+            ordinal: res.data.ordinal,
+            phoneNo: res.data.phoneNo,
+          });
         } else if (res.data.statusCode === 401) {
           Swal.fire({
             title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
