@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom'
 import { styled } from 'styled-components'
 import Header from '../components/Common/Header'
 import ChatOpenContainer from '../components/Chat/containers/ChatOpenContainer'
-import ContractContainer from '../components/Contract/containers/ContractContainer'
 
 const Layout = () => {
   return (
@@ -11,7 +10,6 @@ const Layout = () => {
         <Header/>
         <Outlet/>
         <ChatOpenContainer/>
-        <ContractContainer/>
     </SLayout>
   )
 }

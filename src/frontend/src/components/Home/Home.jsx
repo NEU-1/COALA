@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from 'styled-components';
+import ContractContainer from '../Contract/containers/ContractContainer';
 
 const Home = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const onChangeModalFlag = () => {
+    setIsOpen(!isOpen);
+  }
   return(
     <SLayout>
       <div>Home</div>
+      <button onClick={onChangeModalFlag}>계약서(임의)</button>
+
+      {isOpen && <ContractContainer onChangeModalFlag={onChangeModalFlag}/>}
     </SLayout>
   )
 };
