@@ -18,9 +18,7 @@ import java.util.stream.Collectors;
     - 추천 수 미구현, 페이징 기능 개선 필요
 */
 
-@CrossOrigin(origins="*")
 @RestController
-@CrossOrigin(origins="*")
 @RequiredArgsConstructor
 @RequestMapping("/api/tech/")
 public class TechPostController {
