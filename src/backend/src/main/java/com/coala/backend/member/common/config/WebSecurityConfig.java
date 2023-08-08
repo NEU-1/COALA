@@ -50,7 +50,7 @@ public class WebSecurityConfig {
         http.httpBasic(withDefaults());
 
         // cors header access
-        http.cors().configurationSource(corsConfigurationSource());
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         // csrf disable
         http.csrf(csrf -> csrf.disable());
