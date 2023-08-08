@@ -44,8 +44,7 @@ const ChatRoomContainer = () => {
   };
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
-    requestGet(`member/info`).then((res) => {
-      const email = res.data.email;
+    requestGet(`member/info`).then(() => {
 
       socket.emit('joinRoom', { roomName }, async ({ isRoom, chattingLogs }) => {
         if (!isRoom) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}

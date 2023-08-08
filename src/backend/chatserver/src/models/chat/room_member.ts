@@ -15,6 +15,8 @@ const Create = async (inputData : any) =>{
     
     const [room]: room[] = await readRoom({name});
     const [usr] : member[] = await readUser({email});
+    
+    if (!room || !usr) {return; }
     const data =  {room: room, usr : usr};
     const room_user = {
       'room_id' : room['id'],
@@ -23,7 +25,6 @@ const Create = async (inputData : any) =>{
     
     
     const [roomUserRelations] = await Read(room_user);
-    console.log("흐음 중계테이블 확인",roomUserRelations)
     if (roomUserRelations) {return data;} 
     await createQuery('room_member', room_user);
     return data;

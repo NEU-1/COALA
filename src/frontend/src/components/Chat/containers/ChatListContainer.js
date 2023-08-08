@@ -34,7 +34,7 @@ const ChatListContainer = () => {
       email = res.data.email;
     }).then(() => {
       // const email = user.email;
-      fetchRoom.read({ email : "tncks097@gmail.com" })
+      fetchRoom.read({ email })
       .then(data => {
         console.log("데이터",data)  
       })
