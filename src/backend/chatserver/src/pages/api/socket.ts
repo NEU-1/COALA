@@ -39,7 +39,7 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
 
     socket.on('joinRoom', async ({roomName}, callback) => {
       const [room]: room[] = await readRoom({name : roomName});
-      if (room.id === undefined) {callback({ isRoom : false, chattingLogs : []})}
+      if (room?.id === undefined) {callback({ isRoom : false, chattingLogs : []})}
       const room_id = room.id;
 
       const chattingLogs = await readQuery('chat_content', {room_id});
