@@ -34,12 +34,11 @@ const ChatListContainer = () => {
       email = res.data.email;
     }).then(() => {
       // const email = user.email;
-      console.log(email)
       fetchRoom.read({ email })
-      .then(data => {
-        console.log("데이터",data)  
-      })
-      // .then(resJson => setData(resJson))
+      .then((res) => {
+        console.log("데이터",res)
+        setList(res.data.rooms);
+      })  
     });
   }, []);
 

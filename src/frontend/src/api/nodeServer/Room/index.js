@@ -25,7 +25,7 @@ const fetchRoom = {
     return await api({
       method: 'GET',
       url: `/api/chat/chat_room`,
-      data: {
+      params: {
         email,
       },
     }).catch((error) => {
@@ -41,12 +41,13 @@ const fetchRoom = {
     });
   },
 
-  join: async ({ roomName }) => {
+  join: async ({ roomName, email }) => {
     return await api({
       method: 'POST',
       url: `/api/chat/room_member`,
       data: {
         name: roomName,
+        email
         // 유저 정보 넣어야함...
       },
     }).catch((error) => {
