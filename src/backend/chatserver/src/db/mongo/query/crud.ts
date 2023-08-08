@@ -14,7 +14,7 @@ const createQuery = async (
 const readQuery = async (table : string, target : any, 
   joinTable?: string, joinCondition?: Array<any>) => {
   console.log("로그를 탐색합니다")
-  const chats = await chat_content.find(target);
+  const chats = await chat_content.find(target).sort({created_at: -1});;
   return chats
 }
 

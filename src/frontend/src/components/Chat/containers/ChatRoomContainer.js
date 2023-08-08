@@ -44,40 +44,43 @@ const ChatRoomContainer = () => {
   };
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
-    socket.emit('joinRoom', { roomName }, async ({ chattingLogs }) => {
-      console.log(`join room[${roomName}]  successfully`);
-      const { data } = await fetchRoom.join({ roomName });
-      inform = data;
-      console.log('니먼데', inform);
-      if (inform.roomUser.room.pr_id)
-        setProductId(...productId, { pr_id: inform.roomUser.room.pr_id });
-      else if (inform.roomUser.room.pp_id)
-        setProductId(...productId, { pp_id: inform.roomUser.room.pp_id });
-      setAllMessages((pre) => [...pre, ...chattingLogs]);
-      // console.log("올 메시지",allMessages)
+    requestGet(`member/info`).then((res) => {
+      const email = res.data.email;
+
+      socket.emit('joinRoom', { roomName }, async ({ chattingLogs }) => {
+        console.log(`join room[${roomName}]  successfully`);
+        const { data } = await fetchRoom.join({ roomName, email });
+        inform = data;
+        if (inform.roomUser.room.pr_id)
+          setProductId(...productId, { pr_id: inform.roomUser.room.pr_id });
+        else if (inform.roomUser.room.pp_id)
+          setProductId(...productId, { pp_id: inform.roomUser.room.pp_id });
+        setAllMessages((pre) => [...pre, ...chattingLogs]);
+        // console.log("올 메시지",allMessages)
+      });
     });
+
   };
 
   useEffect(() => {
-    setToken();
-
-    socketInitializer();
-
+    // setToken();
     requestGet(`member/info`).then((res) => {
+      socketInitializer();
       // 나중에 잘되었는지 아닌지 필터 필요
       setMemberId(res.data.id);
     });
+    const email = res.data.email;
     return () => {
       console.log('disconected');
       if (socket) {
         socket.disconnect();
-        fetchRoom.execute({ roomName });
+        fetchRoom.execute({ roomName, email });
       }
     };
   }, []);
 
   async function socketInitializer() {
-    await api.setToken();
+
     socketIO.fetchEnter(`/api/socket?name=${name}`);
 
     socket = socketIOClient('http://i9d108.p.ssafy.io:3030', {
@@ -110,13 +113,15 @@ const ChatRoomContainer = () => {
     if (!message) {
       return;
     }
-
-    console.log('message emitted');
-    socket.emit('send-message', {
-      roomUser: inform.roomUser,
-      message,
-    });
-    setMessage('');
+    requestGet(`member/info`).then((res) => {
+    
+      console.log('message emitted');
+      socket.emit('send-message', {
+        roomUser: inform.roomUser,
+        message,
+      });
+      setMessage('');
+    })
   };
 
   // 채팅방 나가기

@@ -42,16 +42,7 @@ const ChatListContainer = () => {
     // const user_number = Number(user_id);
     await fetchRoom.create({ roomName });
   };
-
-  useEffect(() => {
-    api.setToken();
-    setToken();
-    requestGet(`member/info`).then((res) => {
-      // 나중에 잘되었는지 아닌지 필터 필요
-      setUser(res.data);
-    });
-  }, []);
-
+  
   return (
     <ChatList
       onClickCloseChatBtn={onClickCloseChatBtn}

@@ -6,7 +6,7 @@ const fetchRoom = {
       method: 'POST',
       url: `/api/chat/chat_room`,
       data: {
-        name: roomName,
+        name: roomName
       },
     }).catch((error) => {
       if (error.response) {
@@ -21,10 +21,13 @@ const fetchRoom = {
     });
   },
 
-  read: async () => {
+  read: async ({ email }) => {
     return await api({
       method: 'GET',
       url: `/api/chat/chat_room`,
+      data: {
+        email,
+      },
     }).catch((error) => {
       if (error.response) {
         // console.log(error.response.data)
@@ -60,10 +63,15 @@ const fetchRoom = {
     });
   },
 
-  execute: async () => {
+  execute: async ({ roomName, email }) => {
     return await api({
       method: 'DELETE',
       url: `/api/chat/room_member`,
+      data: {
+        name: roomName,
+        email,
+        // 유저 정보 넣어야함...
+      },
     }).catch((error) => {
       if (error.response) {
         // console.log(error.response.data)
