@@ -25,7 +25,7 @@ const fetchRoom = {
     return await api({
       method: 'GET',
       url: `/api/chat/chat_room`,
-      data: {
+      params: {
         email,
       },
     }).catch((error) => {

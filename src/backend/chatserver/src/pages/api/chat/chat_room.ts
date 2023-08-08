@@ -20,8 +20,8 @@ const receiveData = withCors(async (
 
   if (req.method === 'GET'){ // read.chatroom
 
-    const {email} = req.body;
-    console.log("리퀘바디",req.body);
+    const {email} = req.query;
+    console.log("쿼리",req.query);
     console.log(`${email} 들어간 채팅방 탐색중입니다.`);
     const [usr] : member[] = await readUser({email});
     data = await searchRoom({member_id : usr['id']});
