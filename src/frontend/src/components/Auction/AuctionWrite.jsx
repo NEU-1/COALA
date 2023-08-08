@@ -4,12 +4,11 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
-import { images } from '../../assets/images';
+import { images } from "../../assets/images";
 import Swal from "sweetalert2";
 
-
 const AuctionWrite = () => {
-  console.log(images)
+  console.log(images);
 
   const product = ["키보드", "마우스", "헤드셋", "태블릿"];
   const day = ["1일", "7일", " 14일", "30일"];
@@ -21,11 +20,9 @@ const AuctionWrite = () => {
   const [rentalFee, setRentalFee] = useState("");
   const [deposit, setDeposit] = useState("");
   const [minRentalDay, setMinRentalDay] = useState("");
-  const [maxRentalDay, setMaxRentalDay] = useState("");
   const [content, setContent] = useState("");
   const [productSelect, setProductSelect] = useState("");
   const [mindaySelect, setMinDaySelect] = useState("");
-  const [maxdaySelect, setMaxDaySelect] = useState("");
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
   const [imageList, setImageList] = useState([]);
@@ -57,9 +54,6 @@ const AuctionWrite = () => {
   const minRentalDayHandler = (e) => {
     setMinRentalDay(e.target.value);
   };
-  const maxRentalDayHandler = (e) => {
-    setMaxRentalDay(e.target.value);
-  };
   const contentHandler = (e) => {
     setContent(e.target.value);
   };
@@ -73,14 +67,6 @@ const AuctionWrite = () => {
       minDayValue.substring(0, minDayValue.indexOf("일"))
     );
     setMinRentalDay(minDayNumber);
-  };
-  const maxDaySelectHandler = (index) => {
-    setMaxDaySelect(index);
-    const maxDayValue = day[index];
-    const maxDayNumber = parseInt(
-      maxDayValue.substring(0, maxDayValue.indexOf("일"))
-    );
-    setMaxRentalDay(maxDayNumber);
   };
   const calendarHandler = () => {
     setCalendar(!calendar);
@@ -115,83 +101,86 @@ const AuctionWrite = () => {
   };
   const validateForm = () => {
     return {
-      isValid: title !== "" &&
-               productSelect !== "" &&
-               productName !== "" &&
-               rentalFee !== "" &&
-               minRentalDay !== "" &&
-               maxRentalDay !== "" &&
-               content !== "" &&
-               maxRentalDay >= minRentalDay,
-      errorField: title === "" ? "제목" : 
-                  productSelect === "" ? "분류" : 
-                  productName === "" ? "제품명" : 
-                  rentalFee === "" ? "대여료" :
-                  minRentalDay === "" ? "최소 대여 기간" :
-                  maxRentalDay === "" ? "최대 대여 기간" :
-                  content === "" ? "내용" : "최대 기간 >= 최소 기간"
+      isValid:
+        title !== "" &&
+        productSelect !== "" &&
+        productName !== "" &&
+        rentalFee !== "" &&
+        minRentalDay !== "" &&
+        content !== "",
+      errorField:
+        title === ""
+          ? "제목"
+          : productSelect === ""
+          ? "분류"
+          : productName === ""
+          ? "제품명"
+          : rentalFee === ""
+          ? "대여료"
+          : minRentalDay === ""
+          ? "최소 대여 기간"
+          : content === ""
+          ? "내용"
+          : "최대 기간 >= 최소 기간",
+    };
   };
-};
 
-const displayMessage = (type, message) => {
+  const displayMessage = (type, message) => {
     Swal.fire({
-        icon: type,
-        title: message,
-        html: "",
-        timer: 1000,
-        showConfirmButton: false,
+      icon: type,
+      title: message,
+      html: "",
+      timer: 1000,
+      showConfirmButton: false,
     });
-};
+  };
 
-const goSellBtn = () => {
+  const goSellBtn = () => {
     console.log({
-        title,
-        productName,
-        rentalFee,
-        minRentalDay,
-        maxRentalDay,
-        content,
+      title,
+      productName,
+      rentalFee,
+      minRentalDay,
+      content,
     });
 
     const validation = validateForm();
 
     if (validation.isValid) {
       const formData = new FormData();
-    formData.append("title", title);
-    formData.append("productName", productName);
-    formData.append("rentalFee", rentalFee);
-    formData.append("minRentalDay", minRentalDay);
-    formData.append("maxRentalDay", maxRentalDay);
-    formData.append("content", content);
-    formData.append("upperLimitDate", `${year}-${month}-${date}`);
-    imageList.forEach((image, index) => {
-      formData.append("imageList", image, `image${index}.png`);
-    });
-
-    axios
-      .post("--서버 주소--", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        displayMessage("success", "게시글 등록됨");
-        console.log(response);
-        navigate("/store");
-      })
-      .catch((error) => {
-        displayMessage("error", "게시글 등록에 실패하였습니다.");
-        console.log(error);
+      formData.append("title", title);
+      formData.append("productName", productName);
+      formData.append("rentalFee", rentalFee);
+      formData.append("minRentalDay", minRentalDay);
+      formData.append("content", content);
+      formData.append("upperLimitDate", `${year}-${month}-${date}`);
+      imageList.forEach((image, index) => {
+        formData.append("imageList", image, `image${index}.png`);
       });
-    } else {
-        displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
-    }
-};
 
+      axios
+        .post("--서버 주소--", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          displayMessage("success", "게시글 등록됨");
+          console.log(response);
+          navigate("/store");
+        })
+        .catch((error) => {
+          displayMessage("error", "게시글 등록에 실패하였습니다.");
+          console.log(error);
+        });
+    } else {
+      displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
+    }
+  };
 
   useEffect(() => {
-    console.log(productSelect, mindaySelect, maxdaySelect, calendarDay);
-  }, [productSelect, mindaySelect, maxdaySelect, calendarDay]);
+    console.log(productSelect, mindaySelect, calendarDay);
+  }, [productSelect, mindaySelect, calendarDay]);
 
   return (
     <SMain>
@@ -240,7 +229,6 @@ const goSellBtn = () => {
               onChange={(e) => onUpload(e)}
             />
             <img src={images.plus} alt="Plus" />
-            
           </SLabel>
         </SPictureList>
       </SPicture>
@@ -341,32 +329,6 @@ const goSellBtn = () => {
               placeholder="숫자만 입력하세요."
               value={minRentalDay}
               onChange={minRentalDayHandler}
-
-            />
-          </SFilterBoxGap10>
-          <SFilterBoxGap10>
-            <SSubTitle>
-              최대 대여 기간<SImportantStar>*</SImportantStar>
-            </SSubTitle>
-            <SSelectProduct>
-              {day.map((day, index) => {
-                return (
-                  <SSelectDayBtn
-                    key={index}
-                    onClick={() => maxDaySelectHandler(index)}
-                    $activeDay={maxdaySelect === index}
-                  >
-                    {day}
-                  </SSelectDayBtn>
-                );
-              })}
-            </SSelectProduct>
-            <SFilterInputDay
-              className="maxRentalDay"
-              type="text"
-              placeholder="숫자만 입력하세요."
-              value={maxRentalDay}
-              onChange={maxRentalDayHandler}
             />
           </SFilterBoxGap10>
         </SFilterDoubleBox>
@@ -398,7 +360,7 @@ const goSellBtn = () => {
 export default AuctionWrite;
 
 const SMain = styled.div`
-margin-top: 170px;
+  margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -597,7 +559,7 @@ const SFilterInputCost = styled.input`
   border-radius: 10px;
   border: 1px solid var(--border, #d9d9d9);
   &::placeholder {
-    color:#d9d9d9;
+    color: #d9d9d9;
   }
 `;
 
@@ -610,7 +572,7 @@ const SFilterInputDay = styled.input`
   border-radius: 10px;
   border: 1px solid var(--border, #d9d9d9);
   &::placeholder {
-    color:#d9d9d9;
+    color: #d9d9d9;
   }
 `;
 

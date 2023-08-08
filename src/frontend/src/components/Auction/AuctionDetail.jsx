@@ -5,12 +5,14 @@ import styled from "styled-components";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import ImgMediaCard from "./components/Carditem";
+import TradeOfferForm from "./components/TradeOfferForm";
 
 const AuctionDetail = () => {
   const [postData, setPostData] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [currentProposalIndex, setCurrentProposalIndex] = useState(0);
+  const [showFormModal, setShowFormModal] = useState(false);
 
   const navigate = useNavigate();
   const { postId } = useParams();
@@ -198,9 +200,10 @@ const AuctionDetail = () => {
   const goProfile = () => {
     navigate("/profile");
   };
-  const goForm = () => {
-    if (isLogin) {
-      navigate("/제안서 주소");
+  const showForm = () => {
+    // 나중에 로그인 여부 반대로
+    if (!isLogin) {
+      setShowFormModal(!showFormModal);
     } else {
       alert("로그인하세요");
       navigate("/login");
@@ -265,9 +268,21 @@ const AuctionDetail = () => {
         <STextContent>{"content"} 진짜 없나?</STextContent>
       </SContentDetail>
       {isAuthor ? (
+        <div>
+        {showFormModal && (
+          <SModalBackdrop onClick={showForm}>
+            <SFormModal onClick={(e) => e.stopPropagation()}>
+              <TradeOfferForm
+                onClick={showForm}
+                onClose = {() => setShowFormModal(false)}
+              />
+            </SFormModal>
+          </SModalBackdrop>
+        )}
         <SButtons>
-          <SButtonWeekPurple onClick={goForm}>제안하기</SButtonWeekPurple>
+          <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
         </SButtons>
+        </div>
       ) : (
         <div>
           {showProposalModal && (
@@ -291,7 +306,24 @@ const AuctionDetail = () => {
               </SCardModal>
             </SModalBackdrop>
           )}
+          
+          {showFormModal && (
+          <SModalBackdrop onClick={showForm}>
+            <SFormModal onClick={(e) => e.stopPropagation()}>
+              <TradeOfferForm
+                onClick={showForm}
+                onClose = {() => setShowFormModal(false)}
+              />
+            </SFormModal>
+          </SModalBackdrop>
+        )}
+        <SButtons>
+          <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
+        </SButtons>
+          
           <SButtons>
+            {/* 나중에 제안버튼 제거 */}
+          <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
             <SButtonSeeProposal onClick={showProposalList}>
               제안 확인
             </SButtonSeeProposal>
@@ -508,7 +540,7 @@ const SModalBackdrop = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   z-index: 30;
   display: flex;
   justify-content: center;
@@ -572,4 +604,12 @@ const SCardModal = styled.div`
 const SButtonArea = styled.button`
   flex: 1;
   height: 100%;
+`;
+
+const SFormModal = styled.div`
+align-items: center;
+height: 100%;
+padding: 0 20px;
+position:fixed;
+top: 10%;
 `;

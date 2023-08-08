@@ -52,11 +52,9 @@ const AuctionUpdate = () => {
     rentalFee: "",
     deposit: "",
     minRentalDay: "",
-    maxRentalDay: "",
     content: "",
     productSelect: "",
     minDaySelect: "",
-    maxDaySelect: "",
   };
   const [state, setState] = useState(initialState);
 
@@ -73,7 +71,6 @@ const AuctionUpdate = () => {
         rentalFee,
         deposit,
         minRentalDay,
-        maxRentalDay,
         content,
       } = data;
       setState({
@@ -82,7 +79,6 @@ const AuctionUpdate = () => {
         rentalFee,
         deposit,
         minRentalDay,
-        maxRentalDay,
         content,
       });
     });
@@ -94,13 +90,6 @@ const AuctionUpdate = () => {
   };
   const selectHandler = (type, index) => {
     setState((prev) => ({ ...prev, [type]: index }));
-
-    if (type === "minDaySelect" || type === "maxDaySelect") {
-      const dayValue = day[index];
-      const dayNumber = parseInt(dayValue.substring(0, dayValue.indexOf("일")));
-      const dayType = type === "minDaySelect" ? "minRentalDay" : "maxRentalDay";
-      setState((prev) => ({ ...prev, [dayType]: dayNumber }));
-    }
   };
 
   const calendarHandler = () => {
@@ -113,11 +102,9 @@ const AuctionUpdate = () => {
     rentalFee,
     deposit,
     minRentalDay,
-    maxRentalDay,
     content,
     productSelect,
     minDaySelect,
-    maxDaySelect,
   } = state;
 
   const year = calendarDay.getFullYear();
@@ -147,7 +134,7 @@ const AuctionUpdate = () => {
     setImageList(newImages);
   };
   const goBackBtn = () => {
-    navigate("/store");
+    navigate("/auction");
   };
   const validateForm = () => {
     return {
@@ -157,9 +144,7 @@ const AuctionUpdate = () => {
         productName !== "" &&
         rentalFee !== "" &&
         minRentalDay !== "" &&
-        maxRentalDay !== "" &&
-        content !== "" &&
-        maxRentalDay >= minRentalDay,
+        content !== "" ,
       errorField:
         title === ""
           ? "제목"
@@ -171,8 +156,6 @@ const AuctionUpdate = () => {
           ? "대여료"
           : minRentalDay === ""
           ? "최소 대여 기간"
-          : maxRentalDay === ""
-          ? "최대 대여 기간"
           : content === ""
           ? "내용"
           : "",
@@ -195,7 +178,6 @@ const AuctionUpdate = () => {
       productName,
       rentalFee,
       minRentalDay,
-      maxRentalDay,
       content,
     });
 
@@ -207,7 +189,6 @@ const AuctionUpdate = () => {
       formData.append("productName", productName);
       formData.append("rentalFee", rentalFee);
       formData.append("minRentalDay", minRentalDay);
-      formData.append("maxRentalDay", maxRentalDay);
       formData.append("content", content);
       formData.append("upperLimitDate", `${year}-${month}-${date}`);
       imageList.forEach((image, index) => {
@@ -223,7 +204,7 @@ const AuctionUpdate = () => {
         .then((response) => {
           displayMessage("success", "게시글 등록됨");
           console.log(response);
-          navigate("/store");
+          navigate("/auction");
         })
         .catch((error) => {
           displayMessage("error", "게시글 등록에 실패하였습니다.");
@@ -241,11 +222,9 @@ const AuctionUpdate = () => {
       rentalFee,
       deposit,
       minRentalDay,
-      maxRentalDay,
       content,
       productSelect,
       minDaySelect,
-      maxDaySelect
     );
   }, [
     title,
@@ -253,11 +232,9 @@ const AuctionUpdate = () => {
     rentalFee,
     deposit,
     minRentalDay,
-    maxRentalDay,
     content,
     productSelect,
     minDaySelect,
-    maxDaySelect,
   ]);
 
   return (
@@ -396,25 +373,6 @@ const AuctionUpdate = () => {
               type="text"
               placeholder="숫자만 입력하세요."
               value={minRentalDay}
-              onChange={handleChange}
-            />
-          </SFilterBoxGap10>
-          <SFilterBoxGap10>
-            <SSubTitle>
-              최대 대여 기간<SImportantStar>*</SImportantStar>
-            </SSubTitle>
-            <SSelectProduct>
-              <SelectButton
-                itemList={day}
-                activeIndex={maxDaySelect}
-                onClickHandler={(index) => selectHandler("maxDaySelect", index)}
-              ></SelectButton>
-            </SSelectProduct>
-            <SFilterInputDay
-              name="maxRentalDay"
-              type="text"
-              placeholder="숫자만 입력하세요."
-              value={maxRentalDay}
               onChange={handleChange}
             />
           </SFilterBoxGap10>
