@@ -306,24 +306,7 @@ const AuctionDetail = () => {
               </SCardModal>
             </SModalBackdrop>
           )}
-          
-          {showFormModal && (
-          <SModalBackdrop onClick={showForm}>
-            <SFormModal onClick={(e) => e.stopPropagation()}>
-              <TradeOfferForm
-                onClick={showForm}
-                onClose = {() => setShowFormModal(false)}
-              />
-            </SFormModal>
-          </SModalBackdrop>
-        )}
-        <SButtons>
-          <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
-        </SButtons>
-          
           <SButtons>
-            {/* 나중에 제안버튼 제거 */}
-          <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
             <SButtonSeeProposal onClick={showProposalList}>
               제안 확인
             </SButtonSeeProposal>
