@@ -36,7 +36,7 @@ const receiveData = withCors(async (
       const latestLog = await searchLog( {room_id});
       // const latestLog = await searchLog(Number(id));
       console.log(`${room_id}의 마지막 로그는 ${latestLog}`);
-      return {...room, latestLog};
+      return {...room, latestLog : {latestLog}};
     }));
     
     // console.log(`채팅로그 포함한 데이터는 ${updatedData}`)
