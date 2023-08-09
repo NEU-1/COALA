@@ -1,145 +1,216 @@
 import * as React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 export default function ImgMediaCard({
   img,
-  writer,
-  writeDay,
+  title,
+  mainText,
   rentalFee,
   deposit,
+  endDay,
   bargaining,
   onClick,
 }) {
+  // const [currentImgIndex, setCurrentImgIndex] = React.useState(0);
+  // const handlePictureChange = (direction) => {
+  //   const totalPictures = img.length;
+  //   if (direction === "next") {
+  //     setCurrentImgIndex((currentImgIndex + 1) % totalPictures);
+  //   } else {
+  //     setCurrentImgIndex((currentImgIndex - 1 + totalPictures) % totalPictures);
+  //   }
+  // };
+  const navigate = useNavigate();
+  const goChat = () => {
+    navigate("/chat");
+  };
   return (
-    <SCard onClick={onClick}>
-      <SMaing>
+    <SCard>
+      <SImgDiv>
+        <SImg src={img} alt="" />
+        {/* <button onClick={() => handlePictureChange("previous")}>{"<"}</button>
+        <SImg src={img[currentImgIndex]} alt="" />
+        <button onClick={() => handlePictureChange("next")}>{">"}</button> */}
+      </SImgDiv>
+      <STitleDiv>
+        <STitleP>{title}title</STitleP>
+      </STitleDiv>
+      <SMainTextDiv>
+        <SMainTextP>
+          {mainText}다양한 중고 키보드를 경제적으로 경험하실 수 있는 우리의 대여
+          서비스를 이용해보세요. 모든 키보드는 철저한 점검 후 제공되며, 당신에게
+          최적의 키보드를 찾을 수 있는 기회를 제공합니다.
+        </SMainTextP>
+      </SMainTextDiv>
+      <SProduct>
+        <SProductTitle>제품 상세 정보</SProductTitle>
+      </SProduct>
+      <SProductDetail>
+        <SCostDiv>
+          <STextP>가격</STextP>
+          <STextP>
+            {rentalFee}rentalFee/{deposit}deposit
+          </STextP>
+        </SCostDiv>
+        <SDayDiv>
+          <STextP>기간</STextP>
+          <STextP>{endDay}endDay</STextP>
+        </SDayDiv>
+      </SProductDetail>
+      <SFooterDiv>
+        <SQuestionBtn>
+          <SOfferP offer={bargaining}>
+            {bargaining ? "가격 제안 가능" : "가격 제안 불가"}
+          </SOfferP>
+        </SQuestionBtn>
 
-      <SMainImg src={img} alt="" />
-      </SMaing>
-      <SWriterAndDay>
-        <SWriter>
-          <SWriterImg src="" alt="" />
-          <SWriterName>{writer}</SWriterName>
-        </SWriter>
-        <SDay>{writeDay}</SDay>
-      </SWriterAndDay>
-      <SRentalFeeAndDeposit>
-        <SRentalFee>{rentalFee}</SRentalFee>
-        <SDeposit>{deposit}</SDeposit>
-      </SRentalFeeAndDeposit>
-      <SBarganingAndChatting>
-      <SBarganing isBargainable={bargaining}>
-          {bargaining ? "흥정 가능" : "흥정 불가능"}
-        </SBarganing>        
-        <SChatting>채팅</SChatting>
-      </SBarganingAndChatting>
+        <SChat onClick={goChat}>chat icon</SChat>
+      </SFooterDiv>
     </SCard>
   );
 }
 
 const SCard = styled.div`
-display: flex;
-width: 360px;
-height: 509px;
-flex-direction: column;
-// justify-content: space-between;
-align-items: center;
-border-radius: 20px;
-background: var(--primary, #E9D5FF);
+  display: flex;
+  width: 550px;
+  height: 700px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: #f5f5f5;
 `;
 
-const SMaing = styled.div`
-display: flex;
-padding: 25px;
-flex-direction: column;
-align-items: flex-start;
-gap: 10px;
-align-self: stretch;
-`
+const SImgDiv = styled.div`
+  display: flex;
+  padding: 25px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+`;
 
-const SMainImg = styled.img`
-width: 310px;
-height: 269px;
-flex-shrink: 0;
-border-radius: 10px 10px 0px 0px;
-background: url(<path-to-image>), lightgray 50% / cover no-repeat;
-`
+const SImg = styled.img`
+  display: flex;
+  height: 269px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+  border-radius: 30px;
+  background: url(<path-to-image>), lightgray 50% / cover no-repeat;
+`;
 
-const SWriterAndDay = styled.div`
+const STitleDiv = styled.div`
+  display: flex;
+  width: 550px;
+  padding: 0px 20px;
+  align-items: center;
+`;
+
+const STitleP = styled.p`
+  color: #313737;
+  font-size: 16px;
+  font-weight: 700;
+`;
+
+const SMainTextDiv = styled.div`
+  display: flex;
+  width: 510px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+  align-self: stretch;
+  margin-left: 20px;
+`;
+
+const SMainTextP = styled.p`
+  color: #1a1c3d;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+`;
+
+const SProduct = styled.div`
+  display: flex;
+  height: 12.978px;
+  padding: 0px 20px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+  align-self: stretch;
+`;
+
+const SProductTitle = styled.p`
+  color: #1a1c3d;
+  font-size: 14px;
+  font-weight: 400;
+`;
+
+const SProductDetail = styled.div`
+  display: flex;
+  height: 49px;
+  align-items: center;
+  gap: 256px;
+  flex-shrink: 0;
+  align-self: stretch;
+`;
+
+const SCostDiv = styled.div`
+  display: flex;
+  width: 100px;
+  padding: 0px 20px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 13px;
+`;
+
+const SDayDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 13px;
+`;
+
+const STextP = styled.p`
+  color: #1a1c3d;
+  font-size: 12px;
+  font-weight: 400;
+`;
+
+const SOfferP = styled.p`
+  color: ${(props) => (props.offer ? "white" : "#1A1C3D")};
+  font-size: 12px;
+  font-weight: 400;
+  background-color: ${(props) => (props.offer ? "green" : "red")};
+  padding: 5px 10px;
+  border-radius: 5px;
+`;
+
+const SFooterDiv = styled.div`
 display: flex;
-height: 61px;
-padding: 0px 30px;
+height: 76px;
+padding: 0px 20px;
 justify-content: space-between;
 align-items: center;
 flex-shrink: 0;
 align-self: stretch;
-`
+`;
 
-const SWriter = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-`
+const SQuestionBtn = styled.div`
+  display: flex;
+  width: 153px;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+`;
 
-const SWriterImg = styled.img`
-width: 49px;
-height: 48px;
-border-radius: 49px;
-background: url(<path-to-image>), lightgray 0px -0.969px / 100% 142.969% no-repeat;
-`
-
-const SWriterName = styled.p`
-color: var(--white, #FFF);
-font-size: 16px;
-font-weight: 700;
-`
-
-const SDay = styled.p`
-color: var(--white, #FFF);
-font-size: 20px;
-font-weight: 300;
-`
-
-const SRentalFeeAndDeposit = styled.div`
-display: flex;
-padding: 10px 30px;
-justify-content: space-between;
-align-items: center;
-align-self: stretch;
-`
-
-const SRentalFee = styled.p`
-color: #FFF;
-font-size: 20px;
-font-weight: 700;
-`
-
-const SDeposit = styled.p`
-color: #FFF;
-font-size: 20px;
-font-weight: 500;
-`
-
-const SBarganingAndChatting = styled.div`
-display: flex;
-height: 76.251px;
-padding: 0px 30px;
-justify-content: space-between;
-align-items: center;
-flex-shrink: 0;
-align-self: stretch;
-`
-
-const SBarganing = styled.p`
-color: ${({ isBargainable }) => (isBargainable ? "#FFF" : "red")};
-font-size: 20px;
-font-weight: 400;
-line-height: 23px;
-letter-spacing: 0.5px;
-`
-
-const SChatting = styled.div`
-width: 51.077px;
-height: 51.001px;
-`
+const SChat = styled.div`
+  width: 51.077px;
+  height: 51.001px;
+`;

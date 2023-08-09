@@ -209,10 +209,6 @@ const AuctionDetail = () => {
       navigate("/login");
     }
   };
-  const handleCardClick = (id) => {
-    console.log(id);
-    navigate(`${id}`);
-  };
 
   const goUpdate = () => {
     if ("대기중") {
@@ -239,49 +235,52 @@ const AuctionDetail = () => {
 
   return (
     <SMain>
-      <SHeader>
-        <STitleAndProduct>
-          <SText>{"title"}삼성 민초 키보드 있으신분?</SText>
-          <STextSub>
-            ${"product"} / ${"day"}
-          </STextSub>
-        </STitleAndProduct>
-        <SDayAndCost>
-          <STextSmall>
-            최소 ${"min"}일 / 최대 ${"max"}일
-          </STextSmall>
-          <STextSmall>
-            ${"min"}원 / ${"max"}원
-          </STextSmall>
-        </SDayAndCost>
-      </SHeader>
       <SContent>
         <SProfile onClick={goProfile}>
           <SProfileImg src={images.plus} alt="" />
           <STextSmall>{"작성자"}작성자</STextSmall>
         </SProfile>
-        <STextSubSee>
-          조회수 ${"see"} 관심 ${"like"}
-        </STextSubSee>
+        <SDayAndCost>
+          <STextSub>
+            ${"product"} / ${"day"}
+          </STextSub>
+          <STextSub>
+            ${"min"}원 / ${"max"}원
+          </STextSub>
+          <STextSub>최소 ${"min"}일</STextSub>
+        </SDayAndCost>
       </SContent>
+      <SHeader>
+        <STitleAndProduct>
+          <SText>{"title"}삼성 민초 키보드 있으신분?</SText>
+        </STitleAndProduct>
+      </SHeader>
+
       <SContentDetail>
-        <STextContent>{"content"} 진짜 없나?</STextContent>
+        <STextMainContent>
+          {"content"} 민트초코색 키보드를 찾고 있습니다. 이 색상은 상쾌하면서도
+          아늑한 느낌을 동시에 가져, 많은 사람들이 사랑하는 컬러입니다. 일상의
+          지루함에서 벗어나 책상 위에 한 점 빛나는 포인트를 주고 싶을 때,
+          민트초코의 특별한 매력에 흠뻑 빠져보세요. 키보드는 우리의 작업과
+          놀이에 있어 필수적인 도구이니, 왜 자신만의 스타일로 만들어 보지
+          않을까요? 민트초코색 키보드로 나만의 특별한 공간을 연출해보세요.
+        </STextMainContent>
       </SContentDetail>
-      {isAuthor ? (
+      {!isAuthor ? (
         <div>
-        {showFormModal && (
-          <SModalBackdrop onClick={showForm}>
-            <SFormModal onClick={(e) => e.stopPropagation()}>
-              <TradeOfferForm
-                onClick={showForm}
-                onClose = {() => setShowFormModal(false)}
-              />
-            </SFormModal>
-          </SModalBackdrop>
-        )}
-        <SButtons>
-          <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
-        </SButtons>
+          {showFormModal && (
+            <SModalBackdrop onClick={showForm}>
+              <SFormModal onClick={(e) => e.stopPropagation()}>
+                <TradeOfferForm
+                  onClick={showForm}
+                  onClose={() => setShowFormModal(false)}
+                />
+              </SFormModal>
+            </SModalBackdrop>
+          )}
+          <SButtons>
+            <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
+          </SButtons>
         </div>
       ) : (
         <div>
@@ -293,12 +292,12 @@ const AuctionDetail = () => {
                 ></SButtonArea>
                 <ImgMediaCard
                   img={data[currentProposalIndex].img}
-                  writer={data[currentProposalIndex].writer}
-                  writeDay={data[currentProposalIndex].writeDay}
+                  title={data[currentProposalIndex].title}
+                  mainText={data[currentProposalIndex].mainText}
                   rentalFee={data[currentProposalIndex].rentalFee}
                   deposit={data[currentProposalIndex].deposit}
+                  endDay={data[currentProposalIndex].endDay}
                   bargaining={data[currentProposalIndex].bargaining}
-                  onClick={() => handleCardClick(data[currentProposalIndex].id)}
                 />
                 <SButtonArea
                   onClick={() => handlePictureChange("next")}
@@ -390,7 +389,7 @@ const SContent = styled.div`
   padding: 10px 20px;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--content-underline, #e9d5ff);
+  // border-bottom: 1px solid var(--content-underline, #e9d5ff);
 `;
 
 const STitleAndProduct = styled.div`
@@ -424,13 +423,10 @@ const STextContent = styled.p`
   font-weight: 700;
 `;
 
-const STextSubSee = styled.p`
-  color: #a4a4a4;
-  font-family: SF Pro Rounded;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
+const STextMainContent = styled.p`
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
 `;
 
 const SButtons = styled.div`
@@ -446,7 +442,6 @@ const SButtonWeekPurple = styled.button`
   display: flex;
   width: 106px;
   height: 40px;
-  padding: 10px 40px;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -590,9 +585,9 @@ const SButtonArea = styled.button`
 `;
 
 const SFormModal = styled.div`
-align-items: center;
-height: 100%;
-padding: 0 20px;
-position:fixed;
-top: 10%;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
+  position: fixed;
+  display: flex;
 `;
