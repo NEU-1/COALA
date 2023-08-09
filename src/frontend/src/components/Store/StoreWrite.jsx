@@ -115,22 +115,22 @@ const StoreWrite = () => {
   };
   const validateForm = () => {
     return {
-        isValid: title !== "" &&
-                 productSelect !== "" &&
-                 productName !== "" &&
-                 rentalFee !== "" &&
-                 minRentalDay !== "" &&
-                 maxRentalDay !== "" &&
-                 maxRentalDay >= minRentalDay &&
-                 content !== "",
-        errorField: title === "" ? "제목" : 
-                    productSelect === "" ? "분류" : 
-                    productName === "" ? "제품명" : 
-                    rentalFee === "" ? "대여료" :
-                    minRentalDay === "" ? "최소 대여 기간" :
-                    maxRentalDay === "" ? "최대 대여 기간" :
-                    content === "" ? "내용" : null
-    };
+      isValid: title !== "" &&
+               productSelect !== "" &&
+               productName !== "" &&
+               rentalFee !== "" &&
+               minRentalDay !== "" &&
+               maxRentalDay !== "" &&
+               content !== "" &&
+               maxRentalDay >= minRentalDay,
+      errorField: title === "" ? "제목" : 
+                  productSelect === "" ? "분류" : 
+                  productName === "" ? "제품명" : 
+                  rentalFee === "" ? "대여료" :
+                  minRentalDay === "" ? "최소 대여 기간" :
+                  maxRentalDay === "" ? "최대 대여 기간" :
+                  content === "" ? "내용" : "최대 기간 >= 최소 기간"
+  };
 };
 
 const displayMessage = (type, message) => {

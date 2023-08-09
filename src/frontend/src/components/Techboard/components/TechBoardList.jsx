@@ -10,16 +10,15 @@ import {requestGet} from "../../../lib/api/api"
 const TechBoardList = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
-  const limit = 8;
   const [page, setPage] = useState(0);
-  const offset = (page - 1) * limit;
 
-  const getBoardList = async () => {
+
+  const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
-    const resp = await requestGet(`tech/post/${page}`)
-    console.log("확인",resp.data)
-    setPosts(resp.data);
-    return resp.data
+    requestGet(`tech/post/${page}`)
+    .then(res=>{console.log(res.data);setPosts(res.data.list)})
+   
+
 
   }
   const goTowrite = () => {
@@ -57,21 +56,12 @@ const TechBoardList = () => {
               </Link>
               <p>{detail}</p>
             </div>
-            
             <img src="/assets/images/testimg.png" alt="사진" />
             
           </Contentbox>
         ))}
       </div>
-      <Button onClick={goTowrite}>게시글 등록하기</Button>
-      {/* <footer>
-        <Pagination
-          total={posts.length}
-          limit={limit}
-          page={page}
-          setPage={setPage}
-        />
-      // </footer> */}
+      <Button onClick={goTowrite}>게시글 등록하기</Button>  
     </Layout>
       
     </Slayout>

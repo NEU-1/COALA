@@ -26,15 +26,17 @@ import ChatContainer from '../components/Chat/containers/ChatContainer';
 
 import NotFound from '../pages/NotFound';
 // 제공자 페이지
-// import Store from "../components/SellBoard/Store";
-// import StoreDetail from "../components/SellBoard/StoreDetail";
-// import StoreWrite from "../components/SellBoard/StoreWrite";
+import Store from '../components/Store/Store';
+import StoreDetail from '../components/Store/StoreDetail';
+import StoreWrite from '../components/Store/StoreWrite';
+import StoreUpdate from '../components/Store/StoreUpdate';
 
 // 테크게시판
 import TechBoardDetail from "../components/Techboard/components/TechBoardDetail";
 import TechBoardWrite from "../components/Techboard/components/TechBoardWrite";
 import TechBoardList from "../components/Techboard/components/TechBoardList";
 import Commentapp from "../components/Techboard/components/Commentapp";
+import TechBoardUpdate from "../components/Techboard/components/TechBoardUpdate"
 
 const RootNavigation = () => {
   return (
@@ -49,6 +51,7 @@ const RootNavigation = () => {
           <Route path="/tech" element={<TechBoardList />} />
           <Route path="/tech/post/detail/:postid" element={<TechBoardDetail />} />
           <Route path="/tech/comment" element={<Commentapp />} />
+          <Route path="/tech/update/:postid" element={<TechBoardUpdate />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
@@ -61,10 +64,13 @@ const RootNavigation = () => {
           <Route index path="/chat/chat-list" element={<ChatListContainer />} />
           <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
         </Route>
+        <Route path="/store" element={<Store />} />
+        <Route path="/store/write" element={<StoreWrite />} />
+        <Route path="/store/:postId" element={<StoreDetail />} />
+        <Route path="/store/:postId/update" element={<StoreUpdate />} />
 
         <Route path="*" element={<NotFound />} />
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
-        {/* <Route path="/tech/:postId" element={<TechViewPage />} /> */}
         <Route path="/tech" element={<TechBoardList />} />
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
       </Routes>

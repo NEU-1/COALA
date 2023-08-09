@@ -1,24 +1,18 @@
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams,useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import TechBoardItem from './TechBoardItem';
 import Commentapp from './Commentapp';
-import { requestGet, setToken, requestPost } from '../../../lib/api/api';
-import React,{useState, useRef, useEffect} from 'react';
-import { useNavigate } from 'react-router-dom';
+import { requestGet, requestPost ,setToken } from '../../../lib/api/api';
+import styled from 'styled-components';
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
-import styled from 'styled-components'
 import { BiLike } from "react-icons/bi";
 
 
 
 const TechBoardDetail = () => {
   const { postid } = useParams(); // /board/:idx와 동일한 변수명으로 데이터를 꺼낼 수 있습니다.
-  const [board, setBoard] = useState(null);
-  const navigate = useNavigate();
-  const moveToUpdate = () => {
-    navigate('/tech/update/' + postid);
-  };
+  const [board, setBoard] = useState({});
   const [postData, setPostData] = useState(null);
   const [pictures, setPictures] = useState([]); 
   const [pictureNum, setPictureNum] = useState(0);
@@ -28,6 +22,29 @@ const TechBoardDetail = () => {
   const [postAuthor, setPostAuthor] = useState("게시글 작성자 정보");
   const isAuthor = currentUser === postAuthor;
   const [showModal, setShowModal] = useState(false);
+
+  const getBoard = () => {
+    // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
+    setToken()
+    const resp = requestGet(`tech/post/detail/${postid}`)
+    .then((res)=>{
+      console.log("skskskks",res)
+      setBoard(res.data)
+    })
+    console.log("확인",resp)
+    setBoard(resp.data);
+    return resp.data
+  }
+  useEffect(() => {
+    getBoard();
+  }, []);
+
+  const navigate = useNavigate();
+
+  const moveToUpdate = () => {
+    navigate('/tech/update/' + postid);
+  };
+  
   const picturePlusBtn = () => {
     setPictureNum((pictureNum + 1) % "사진수");
   };
@@ -52,53 +69,45 @@ const TechBoardDetail = () => {
     }
   };
 
-  const getBoard = () => {
-    setToken()
-    // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
-    requestGet(`tech/post/detail/${postid}`)
-    .then(res=>{console.log(res.data);setBoard(res.data)})
-  }
-  useEffect(() => {
-    getBoard();
-  }, []);
-
   const moveToList = () => {
     navigate('/tech');
   };
 
-  
-  return (
-      board && (<Slayout>
-      <div>
-      <Profiletext>작성자</Profiletext>
-        <Titlecontainer>
-       <div>
-       <Titletext>{board.title}</Titletext>
-        <Createat>{board.createAt && board.createAt.slice(0,10)}</Createat>
-       </div>
-       <BiLike onClick={likeBtn}/>
-       </Titlecontainer>
-      <hr />
-     <Detailconteiner>
-     {/* <button onClick={pictureMinusBtn}>{"<"}</button>
-        {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
-      <button onClick={picturePlusBtn}>{">"}</button> */}
-      <Viewer initialValue={board.detail} />
 
-      </Detailconteiner>
-      <LIkeconteiner>
-      <p>조회수{board.views}</p>
-       <p></p>
-        <p>좋아요{board.goodCount}</p>
-      </LIkeconteiner>
-     </div>
+  return (
+    <Slayout>
+      
+      <div>
+        <Profiletext>작성자</Profiletext>
+        <Titlecontainer>
+        <div>
+        <Titletext>{board.title}</Titletext>
+        <Createat>{board.createAt && board.createAt.slice(0,10)}</Createat>
+        </div>
+        <BiLike onClick={likeBtn}/>
+        </Titlecontainer>
+        <hr />
+        <Detailconteiner>
+        {/* <button onClick={pictureMinusBtn}>{"<"}</button>
+        {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
+        <button onClick={picturePlusBtn}>{">"}</button> */}
+        <Viewer initialValue={board.detail} />
+
+        </Detailconteiner>
+        <LIkeconteiner>
+        <p>조회수0</p>
+        <p></p>
+        <p>추천수0</p>
+        </LIkeconteiner>
+      </div>
       <SBtnContainer>
         <SBtn onClick={moveToUpdate}>수정</SBtn>
-       <SBtn onClick={deleteBoard}>삭제</SBtn>
-       <SBtn onClick={moveToList}>뒤로가기</SBtn>
-      </SBtnContainer>   
+        <SBtn onClick={deleteBoard}>삭제</SBtn>
+        <SBtn onClick={moveToList}>뒤로가기</SBtn>
+
+      </SBtnContainer>
       <Commentapp />
-      </Slayout>)
+    </Slayout>
   );
 };
 
@@ -170,5 +179,4 @@ const Titlecontainer = styled.div`
   justify-content: space-between;
 `
 const Createat = styled.div`
-  font-size: 10px;
-`
+  font-size: 10px;`

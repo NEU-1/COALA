@@ -4,7 +4,7 @@ import styled from "styled-components";
 // import axios from 'axios';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
-import { requestPost, requestGet } from "../../../lib/api/api";
+import { requestPost, requestGet, setToken } from "../../../lib/api/api";
 
 
 const SBtn = styled.div`
@@ -86,50 +86,31 @@ function TechBoardWrite() {
 
   const saveBoard = async () => {
     try {
-      
-
-    //   const params = {
-    //     "memberId": {
-    //         "id": 2,
-    //         "name": "테스터A",
-    //         "email": "tncks097@naver.com"
-    //     },
-    //     "title": "ㅎㅇ",
-    //     "detail": "This is an example detail.",
-    //     "imagePath": "/path/to/image.jpg",
-    //     "isAnonymous": false
-    // }
-    const params ={
-      memberId: {
-            "id": 2,
-            "name": "테스터A",
-            "email": "tncks097@naver.com"
-      }, // 이부분은 이후에 토큰으로 관리 예정
-      title : board.title,
-      detail: board.detail,
-      imagePath: board.imagePath,
-      isAnonymous: board.isAnonymous,
-    }
+      const editorContent = editorRef.current?.getInstance().getMarkdown();
+      const editorContent2 = editorRef.current?.getInstance().getHTML();
+  
+      // 저장하고자 하는 내용을 board 객체에 추가
+      setBoard({
+        ...board,
+        detail: editorContent,editorContent2
+      });
+  
+      const params = {
+        title: board.title,
+        detail: editorContent, // 수정된 부분: editorContent를 사용
+        imagePath: board.imagePath,
+        isAnonymous: board.isAnonymous,
+      }
+  
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-      const resoponse = await requestPost("tech/post/save", params)
+      const response = await requestPost("tech/post/save", params);
       
-      console.log(resoponse)
+      console.log(response);
       alert('등록되었습니다.');
       navigate(`/tech`);
     } catch (error) {
       console.error('게시글 등록 에러:', error);
-    }
-
-    const handleRegisterButton = () => {
-      // 에디터 내용을 얻어와서 변수에 저장
-      const editorContent = editorRef.current?.getInstance().getMarkdown();
-      console.log(editorContent)
-      // 저장하고자 하는 내용을 board 객체에 추가
-      setBoard({
-        ...board,
-        detail: editorContent,
-      });
-    }
+    } 
   };
 
   const backToList = () => {
