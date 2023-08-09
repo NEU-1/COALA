@@ -16,7 +16,7 @@ public class TechImage {
     private Long id;
 
     @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.LAZY)
-    @JoinColumn (name = "fp_id")
+    @JoinColumn (name = "tp_id")
     @NotNull
     private TechPost tpId;
 

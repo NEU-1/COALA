@@ -4,7 +4,6 @@ import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.api.service.FreeCommentServiceImpl;
 import com.coala.backend.community.freepost.db.dto.request.FreeCommentRequestDto;
 import com.coala.backend.community.freepost.db.entity.FreeComment;
-import com.coala.backend.community.freepost.db.repository.FreeCommentRepository;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
@@ -29,7 +28,6 @@ import java.util.Optional;
 @RequestMapping("/api/free/comment/")
 public class FreeCommentController {
     private final FreeCommentServiceImpl freeCommentService;
-    private final FreeCommentRepository freeCommentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
 

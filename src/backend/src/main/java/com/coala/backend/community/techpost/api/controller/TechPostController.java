@@ -91,7 +91,7 @@ public class TechPostController {
     
     // 게시물 삭제
     @DeleteMapping("delete/{id}")
-    public void techPostDelete(@PathVariable("id") Long id, @RequestBody @Valid HttpServletRequest httpServletRequest) {
+    public void techPostDelete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
         techPostService.deletePost(id, getEmail(httpServletRequest));
     }
 

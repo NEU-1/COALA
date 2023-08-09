@@ -6,8 +6,10 @@ import com.coala.backend.community.freepost.db.dto.response.FreePostResponseDto;
 import com.coala.backend.member.db.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface FreePostService {
-    public CommunityBaseResponseDto savePost (MultipartFile multipartFile, FreePostRequestDto PostDto, Member member);    // 요청 받은 Dto를 활용해서 post를 저장
+    public CommunityBaseResponseDto savePost (FreePostRequestDto PostDto, Member member);    // 요청 받은 Dto를 활용해서 post를 저장
     public CommunityBaseResponseDto getPostList(int page);    // Board 정보를 담기 위한 List
     public FreePostResponseDto getPost(Long id); // 요청 받은 게시판 id를 통해 Dto에서 정보 불러오기
     public void deletePost(Long id, Member member); // 게시글 삭제

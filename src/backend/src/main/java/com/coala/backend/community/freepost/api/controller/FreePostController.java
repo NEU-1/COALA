@@ -2,8 +2,6 @@ package com.coala.backend.community.freepost.api.controller;
 
 import com.coala.backend.community.freepost.api.service.FreePostService;
 import com.coala.backend.community.freepost.db.dto.request.FreePostRequestDto;
-import com.coala.backend.community.freepost.db.entity.FreePost;
-import com.coala.backend.community.freepost.db.repository.FreePostRepository;
 import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.db.dto.response.FreePostResponseDto;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
@@ -13,10 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -31,18 +27,19 @@ import java.io.IOException;
 @RequestMapping("/api/free/post/")
 public class FreePostController {
     private final FreePostService freePostService;
-    private final FreePostRepository freePostRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
 
     private static String accessToken = "";
+
     // 게시글 저장
-    @PostMapping(value = "save", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<CommunityBaseResponseDto> savePost(@RequestPart(name = "requestDto") @Valid FreePostRequestDto requestDto,
-                                   @RequestPart(name = "multipartFile") MultipartFile multipartFile,
+    @PostMapping("save")
+//    consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<CommunityBaseResponseDto> savePost(@RequestBody @Valid FreePostRequestDto requestDto,
+//                                   @RequestPart(name = "multipartFile") List<MultipartFile> multipartFile,
                                    HttpServletRequest httpServletRequest) throws IOException {
 
-        CommunityBaseResponseDto responseDto = freePostService.savePost(multipartFile, requestDto, getEmail(httpServletRequest));
+        CommunityBaseResponseDto responseDto = freePostService.savePost(requestDto, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);
@@ -89,7 +86,7 @@ public class FreePostController {
 
     // 게시물 삭제
     @DeleteMapping("delete/{id}")
-    public void freePostDelete(@PathVariable("id") Long id, @RequestBody @Valid HttpServletRequest httpServletRequest) {
+    public void freePostDelete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
         freePostService.deletePost(id, getEmail(httpServletRequest));
     }
 
@@ -99,7 +96,7 @@ public class FreePostController {
 
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> {
             return new IllegalArgumentException("작성자 ID가 존재하지 않습니다.");
-        });;
+        });
 
         return member;
     }

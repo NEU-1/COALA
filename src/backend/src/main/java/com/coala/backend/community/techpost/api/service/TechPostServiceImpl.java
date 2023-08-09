@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 /*
@@ -41,7 +42,7 @@ public class TechPostServiceImpl implements TechPostService{
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto savePost(List<MultipartFile> multipartFile, TechPostRequestDto postDto, Member member) throws IOException {
+    public CommunityBaseResponseDto savePost(List<MultipartFile> multipartFiles, TechPostRequestDto postDto, Member member) throws IOException {
         TechPost techPost = TechPost.builder()
                 .memberId(member)
                 .title(postDto.getTitle())
@@ -50,13 +51,15 @@ public class TechPostServiceImpl implements TechPostService{
                 .build();
 
         techPostRepository.saveAndFlush(techPost);
+        String str = "https://coala.s3.ap-northeast-2.amazonaws.com/Tech/";
 
-        if (!multipartFile.isEmpty()) {
-            for (int i = 0; i < multipartFile.size(); i++) {
-                String storedFileName = s3UploadService.S3Upload(multipartFile.get(i), "Tech");
+        if (!multipartFiles.isEmpty()) {
+            for (int i = 0; i < multipartFiles.size(); i++) {
+                String storedFileName = s3UploadService.S3Upload(multipartFiles.get(i), "Tech");
+
 
                 techImageRepository.save(TechImage.builder()
-                        .imagePath(storedFileName)
+                        .imagePath(storedFileName.substring(str.length()))
                         .tpId(techPost)
                         .build());
             }
@@ -67,7 +70,7 @@ public class TechPostServiceImpl implements TechPostService{
         List<TechImage> imageList = techImageRepository.findByTpId(techPost);
         for (int i = 0; i < imageList.size(); i++) {
             TechImage techImage = imageList.get(i);
-            uri.add(techImage.getImagePath());
+            uri.add(str + techImage.getImagePath());
         }
 
         return CommunityBaseResponseDto.builder()
@@ -81,7 +84,7 @@ public class TechPostServiceImpl implements TechPostService{
     @Transactional
     @Override
     public CommunityBaseResponseDto getPostList(int page) {
-        Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+        Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
         List <TechPostResponseDto> allList = techPostRepository.findAll(pageable).stream()
                 .map(techPost -> TechPostResponseDto.builder()
@@ -146,7 +149,8 @@ public class TechPostServiceImpl implements TechPostService{
     @Transactional
     @Override
     public CommunityBaseResponseDto searchPosts(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+        Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+
         List<TechPostResponseDto> searchList = techPostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(techPost -> TechPostResponseDto.builder()
                         .id(techPost.getId())
@@ -171,7 +175,7 @@ public class TechPostServiceImpl implements TechPostService{
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto updateTechPost(List<MultipartFile> multipartFile, Long id, TechPostRequestDto dto, Member member) {
+    public CommunityBaseResponseDto updateTechPost(List<MultipartFile> multipartFile, Long id, TechPostRequestDto dto, Member member) throws IOException {
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
             return  new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });

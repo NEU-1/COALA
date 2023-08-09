@@ -1,16 +1,14 @@
 package com.coala.backend.community.freepost.api.service;
 
 import com.coala.backend.community.freepost.db.dto.request.FreePostRequestDto;
-import com.coala.backend.community.freepost.db.entity.FreeComment;
+import com.coala.backend.community.freepost.db.entity.FreeImage;
 import com.coala.backend.community.freepost.db.entity.FreePost;
-import com.coala.backend.community.freepost.db.repository.FreeCommentRepository;
 import com.coala.backend.community.freepost.db.repository.FreeGoodRepository;
 import com.coala.backend.community.freepost.db.repository.FreeImageRepository;
 import com.coala.backend.community.freepost.db.repository.FreePostRepository;
 import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.db.dto.response.FreePostResponseDto;
 import com.coala.backend.member.db.entity.Member;
-import com.coala.backend.s3.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,22 +31,15 @@ public class FreePostServiceImpl implements FreePostService{
     private final FreePostRepository freePostRepository;
     private final FreeGoodRepository freeGoodRepository;
     private final FreeImageRepository freeImageRepository;
-    private final FreeCommentRepository freeCommentRepository;
 
-    private final S3UploadService s3UploadService;
+//    private final S3UploadService s3UploadService;
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto savePost(MultipartFile multipartFile, FreePostRequestDto postDto, Member member) {
+    public CommunityBaseResponseDto savePost(FreePostRequestDto postDto, Member member) {
 
-        /*      여러개를 받아야하기 때문에 잠시 휴업
 
-        if (!multipartFile.isEmpty()) {
-            String storedFileName = s3UploadService.S3Upload(multipartFile, "Free");
-            log.info("TechImage 업로드 성공");
-            postDto.imageUpload(storedFileName);
-        }
-*/      FreePost freePost = FreePost.builder()
+          FreePost freePost = FreePost.builder()
                 .memberId(member)
                 .title(postDto.getTitle())
                 .detail(postDto.getDetail())
@@ -57,6 +47,16 @@ public class FreePostServiceImpl implements FreePostService{
                 .build();
 
         freePostRepository.saveAndFlush(freePost);
+
+        if (!postDto.getImagePath().isEmpty()) {
+            for (int i = 0; i < postDto.getImagePath().size(); i++) {
+
+                freeImageRepository.save(FreeImage.builder()
+                        .fpId(freePost)
+                        .imagePath(postDto.getImagePath().get(i))
+                        .build());
+            }
+        }
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
@@ -68,7 +68,7 @@ public class FreePostServiceImpl implements FreePostService{
     @Transactional
     @Override
     public CommunityBaseResponseDto getPostList(int page) {
-        Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+        Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
         List<FreePostResponseDto> allList = freePostRepository.findAll(pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
@@ -99,6 +99,8 @@ public class FreePostServiceImpl implements FreePostService{
             return new IllegalArgumentException("없는 게시글 입니다.");
         });
 
+        List<FreeImage> freeImages = freeImageRepository.findByFpId(freePost);
+
         freePost.views();
 
         return FreePostResponseDto.builder()
@@ -108,6 +110,7 @@ public class FreePostServiceImpl implements FreePostService{
                 .createAt(freePost.getCreateAt())
                 .updateAt(freePost.getUpdateAt())
                 .isAnonymous(freePost.isAnonymous())
+                .imagePath(freeImages)
                 .views(freePost.getViews())
                 .commentCount(freePost.getComments().size())
                 .goodCount(freePost.getGoods().size())
@@ -133,7 +136,7 @@ public class FreePostServiceImpl implements FreePostService{
     @Transactional
     @Override
     public CommunityBaseResponseDto searchPosts(String keyword, int page) {
-        Pageable pageable = PageRequest.of(page,8, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+        Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
         List<FreePostResponseDto> searchList = freePostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
                         .memberId(freePost.getMemberId())
@@ -173,8 +176,17 @@ public class FreePostServiceImpl implements FreePostService{
                 dto.isAnonymous());
 
         freePostRepository.save(freePost);
+        freeImageRepository.deleteByFpId(freePost);
+
+        for (int i = 0; i < dto.getImagePath().size(); i++) {
+            freeImageRepository.save(FreeImage.builder()
+                            .fpId(freePost)
+                            .imagePath(dto.getImagePath().get(i))
+                    .build());
+        }
 
         return CommunityBaseResponseDto.builder()
+                .statusCode(200)
                 .msg("성공, 게시글 Id 반환")
                 .id(id)
                 .build();

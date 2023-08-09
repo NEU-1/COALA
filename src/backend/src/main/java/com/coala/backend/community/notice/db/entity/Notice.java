@@ -33,14 +33,10 @@ public class Notice {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @Column(name = "image_path")
-    private String imagePath;
-
     @Builder
-    public Notice(String title, String detail , String imagePath) {
+    public Notice(String title, String detail) {
         this.title = title;
         this.detail = detail;
-        this.imagePath = imagePath;
     }
 
     @PrePersist
@@ -48,10 +44,9 @@ public class Notice {
         createAt = LocalDateTime.now();
     }
 
-    public void updateFreePost(String title, String detail, String imagePath) {
+    public void updateFreePost(String title, String detail) {
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();
-        this.imagePath = imagePath;
     }
 }

@@ -15,18 +15,18 @@ public class NoticeImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = Notice.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn (name = "fp_id")
+    @ManyToOne(targetEntity = Notice.class, fetch = FetchType.LAZY)
+    @JoinColumn (name = "np_id")
     @NotNull
-    private Notice fpId;
+    private Notice npId;
 
     @NotNull
     @Column (name = "image_path")
     private String imagePath;
 
     @Builder
-    public NoticeImage(Notice fpId, String imagePath) {
-        this.fpId = fpId;
+    public NoticeImage(Notice npId, String imagePath) {
+        this.npId = npId;
         this.imagePath = imagePath;
     }
 }

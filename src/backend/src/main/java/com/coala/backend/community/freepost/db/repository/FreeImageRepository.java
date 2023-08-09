@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface FreeImageRepository extends JpaRepository<FreeImage, Long> {
     List<FreeImage> deleteByFpId(FreePost freePost);
+    List<FreeImage> findByFpId(FreePost freePost);
 }
