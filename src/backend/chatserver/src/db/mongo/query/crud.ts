@@ -18,7 +18,7 @@ const readQuery = async (table : string, target : any,
   return chats
 }
 
-const readQueryLatestLog = async (table : string, room_id: Number) => {
+const readQueryLatestLog = async (table : string, room_id: any) => {
   const chat = await chat_content.findOne({room_id: room_id}).sort({created_at: -1});
   return chat;
 }

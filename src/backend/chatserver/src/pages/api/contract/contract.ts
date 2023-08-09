@@ -10,63 +10,93 @@ import withCors from '../cors'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { buildConditionQuery } from '@/lib/queryBuilder';
+import multer from 'multer';
+import { useS3Upload } from "next-s3-upload";
 
-const receiveData = withCors(async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
 
-  let data : any;
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single('producer_sign');
 
-  if (req.method === 'GET'){
-    const {email} = req.query
-    const [usr] : member[] = await readUser({email});
-    console.log("HELLO_WORLD")
-    if (!usr){ res.status(500).json({message : 'cannot get user'}); }
+const multerMiddleware = (req: any, res: any, next: () => void) => {
+    upload(req, res, (err) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        next();
+    });
+};
 
-    const member_id =usr['id']
-    const produced = await readContract_P({member_id});
-    const consumed = await readContract_C({member_id});
-    res.status(200).json({ produced, consumed });
-    return
-  }
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
+
+const receiveData = withCors(async (req: any, res: NextApiResponse) => {
+  let { uploadToS3 } = useS3Upload();  
   
-  if (req.method === 'POST'){
-    const inputData = req.body;
-    const result = await createContract(inputData);
-    // 이미지 저장하는거 추가해야함
-    res.status(200).json({ result, message: 'send to consumer' })
-    return 
-  }
+  await multerMiddleware(req, res, async () => {
+        if (req.method === 'POST') {
+            const image = req.file;
+            const inputData = req.body;
 
-  if (req.method === 'PUT'){
-    const {consumer_sign, id} = req.body;
-    // 이미지 삭제하는거 추가해야함
-    const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
-    const contractData = await readQuery('history',{conditionQuery, values})
+            // SET 설정
+            const newInputData = {... inputData}
+            if (newInputData.producer_sign){
+              delete newInputData.producer_sign;
+            }
 
-    // 계약서 생성하기 
+            // 이미지 upload
+            let { url } = await uploadToS3(image);
+            Object.assign(newInputData, { producer_sign: url });
 
-    // 계약서 생성이 완료될 경우 sign이미지들 삭제
-    const target_images = {
-      consumer_sign : null,
-      producer_sign : null,
-      contract_path : 'example_contract_Path'
-    }
-    const result = await updateContract({target_images, id});
-    if (!result){
-      res.status(500).json({ message: 'contract failed cuz of server error' });
-      return;
-    }
-    // 이미지 저장하는거 추가해야함
-    res.status(200).json({ contract : result.contract_path, message: 'contract finished' })
-  }
+            // 이미지와 inputData 처리
+            const result = await createContract(inputData);
+            res.status(200).json({ result, message: 'send to consumer' });
+            return;
+        }
 
-  if (req.method === 'DELETE'){
+        if (req.method === 'PUT') {
+            const image = req.file;  // 여기에서도 이미지 처리를 해야 함
+            const inputData = req.body;
+            // 나머지 PUT 로직...
 
-  }
-  
-  
+            // SET 설정
+            const newInputData = {... inputData}
+            if (newInputData.consumer_sign){
+              delete newInputData.consumer_sign;
+            }
+
+            // 이미지 upload
+            let { url } = await uploadToS3(image);
+            const {consumer_sign, id} = inputData;
+            // 이미지 삭제하는거 추가해야함
+            const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
+            
+            // 계약서 생성하기 
+            
+            Object.assign(newInputData, { producer_sign: url, contract_path : 'example_contract_Path' });
+            // 계약서 생성이 완료될 경우 sign이미지들 삭제
+
+            const result = await updateContract({...newInputData, id});
+            const contractData = await readQuery('history',{conditionQuery, values})
+            if (!result){
+              res.status(500).json({ message: 'contract failed cuz of server error' });
+              return;
+            }
+            // 이미지 저장하는거 추가해야함
+            res.status(200).json({ contract : contractData.contract_path, message: 'contract finished' })
+        }
+
+        if (req.method === 'GET') {
+            // 나머지 GET 로직...
+            const inputData = req.query;
+        }
+
+        if (req.method === 'DELETE') {
+            // 나머지 DELETE 로직...
+        }
+    });
 });
 
 export default receiveData;

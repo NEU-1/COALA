@@ -32,7 +32,7 @@ const Read = async (chat_Log : object) => {
   }
 }
 
-const Search = async (room_id : Number) => {
+const Search = async (room_id : object) => {
   try{
     const result = await readQueryLatestLog('chat_content', room_id);
     return result;

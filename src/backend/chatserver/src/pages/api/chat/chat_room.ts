@@ -4,7 +4,10 @@ import {
   Search as searchRoom
 } from '@/models/chat/rooms'
 import { Read as readUser } from '@/models/user'
-import { Search as searchLog } from '@/models/chat/chats'
+import { 
+  Search as searchLog,
+  Read as readLog,
+} from '@/models/chat/chats'
 import withCors from '../cors'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -29,8 +32,9 @@ const receiveData = withCors(async (
     console.log("이 들어간 채팅방은 ",data);
 
     const updatedData = await Promise.all(data.map(async (room : room) => {
-      const id = room.id;
-      const latestLog = await searchLog(Number(id));
+      const room_id = room.id;
+      const latestLog = await searchLog( {room_id});
+      // const latestLog = await searchLog(Number(id));
       return {...room, latestLog};
     }));
     
