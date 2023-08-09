@@ -182,7 +182,7 @@ public class MemberServiceImpl implements MemberService{
             certificationRepository.save(certification);
         }
 
-        return new BaseResponseDto("인증이 완료되었습니다. 비밀번호를 변경해주세요.", 200, 201);
+        return new BaseResponseDto("인증이 완료되었습니다.", 200, 201);
     }
 
     // 비밀번호 찾기 후 수행.

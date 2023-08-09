@@ -182,6 +182,26 @@ public class StoreServiceImpl implements StoreService {
         return new BaseResponseDto("상태 변경에 실패했습니다.", 400);
     }
 
+    @Override
+    public PostResponseDto valid(Long id, String email) {
+        StorePost storePost = storePostRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
+
+        PostResponseDto postResponseDto = new PostResponseDto();
+
+        if(!storePost.getMember().getEmail().equals(email)){
+            postResponseDto.setBaseResponseDto(new BaseResponseDto("작성자가 아닙니다.", 403));
+            return postResponseDto;
+        }
+
+        Integer likes = storeLikeRepository.findByStorePost(storePost).size();
+        postResponseDto.setLike(likes);
+        postResponseDto.setStorePost(storePost);
+        postResponseDto.setCategory(storePost.getCategory());
+        postResponseDto.setBaseResponseDto(new BaseResponseDto( "성공적으로 정보를 불러왔습니다. 게시글을 수정해 주세요.", 200));
+        return postResponseDto;
+    }
+
 
     public static boolean filter(String postEmail, String email){
         if(email.equals(postEmail)){

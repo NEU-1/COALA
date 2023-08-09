@@ -86,4 +86,10 @@ public class StoreController {
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
     }
 
+    @GetMapping("/valid")
+    public ResponseEntity<? extends PostResponseDto> valid(@RequestParam(value = "id") Long id, HttpServletRequest request){
+        PostResponseDto postResponseDto = storeService.valid(id, jwtTokenProvider.getMail(request));
+        return ResponseEntity.status(postResponseDto.getBaseResponseDto().getStatusCode()).body(postResponseDto);
+    }
+
 }

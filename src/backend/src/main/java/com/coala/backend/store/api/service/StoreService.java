@@ -28,4 +28,6 @@ public interface StoreService {
     BaseResponseDto like(Long id, String email);
 
     BaseResponseDto status(Long id, String email);
+
+    PostResponseDto valid(Long id, String email);
 }
