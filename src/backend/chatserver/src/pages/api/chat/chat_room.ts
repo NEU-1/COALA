@@ -35,11 +35,11 @@ const receiveData = withCors(async (
       const room_id = room.id;
       const latestLog = await searchLog( {room_id});
       // const latestLog = await searchLog(Number(id));
-      console.log(latestLog)
+      console.log(`${room_id}의 마지막 로그는 ${latestLog}`);
       return {...room, latestLog};
     }));
     
-    console.log(`채팅로그 포함한 데이터는 ${updatedData}`)
+    // console.log(`채팅로그 포함한 데이터는 ${updatedData}`)
     res.status(200).json({ rooms: updatedData });
     
     return
