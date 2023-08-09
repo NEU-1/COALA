@@ -165,7 +165,7 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // otp가 일치하지 않음
-        if(temp.map(Certification::getOtp).orElse("").equals(info.get("otp"))){
+        if(!temp.get().getOtp().equals(info.get("otp"))){
             return new BaseResponseDto("인증번호가 일치하지 않습니다.", 200, 204);
         }
 
