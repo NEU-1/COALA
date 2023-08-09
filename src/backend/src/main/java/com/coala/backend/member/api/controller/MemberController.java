@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@CrossOrigin(value = "*")
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
