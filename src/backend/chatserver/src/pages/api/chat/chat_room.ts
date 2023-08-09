@@ -35,6 +35,7 @@ const receiveData = withCors(async (
       const room_id = room.id;
       const latestLog = await searchLog( {room_id});
       // const latestLog = await searchLog(Number(id));
+      console.log(latestLog)
       return {...room, latestLog};
     }));
     
