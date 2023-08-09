@@ -5,6 +5,7 @@ import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.store.api.service.StoreService;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
+import com.coala.backend.store.db.dto.response.StoreListDto;
 import com.coala.backend.store.db.entity.StorePost;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -45,14 +46,14 @@ public class StoreController {
     }
 
     @PostMapping("/list")
-    public List<StorePost> list (@RequestParam Integer page, @RequestBody Map<String, String> info){
-        return storeService.list(page, info);
+    public List<StoreListDto> list (@RequestParam Integer page, @RequestBody Map<String, String> info, HttpServletRequest request){
+        return storeService.list(page, info, jwtTokenProvider.getMail(request));
     }
 
     @GetMapping("/detail")
-    public PostResponseDto detail(@RequestParam(value = "id") Long id){
+    public PostResponseDto detail(@RequestParam(value = "id") Long id, HttpServletRequest request){
         storeService.views(id);
-        return storeService.detail(id);
+        return storeService.detail(id, jwtTokenProvider.getMail(request));
     }
 
     @PostMapping("/write")

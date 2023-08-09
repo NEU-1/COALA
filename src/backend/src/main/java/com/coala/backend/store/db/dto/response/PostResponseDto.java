@@ -16,9 +16,11 @@ public class PostResponseDto {
     // 게시글 정보
     private StorePost storePost;
 
-    private Integer like;
+    private Integer likes;
 
-    private Category category;
+    private boolean like;
     // 응답 정보
     private BaseResponseDto baseResponseDto;
+
+    private boolean mine;
 }

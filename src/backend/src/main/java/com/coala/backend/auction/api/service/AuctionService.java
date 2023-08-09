@@ -18,7 +18,7 @@ public interface AuctionService {
 
     void views(Long id);
 
-    PostResponseDto detail(Long id);
+    PostResponseDto detail(Long id, String email);
 
     BaseResponseDto update(Long id,Map<String, String> info, String email);
 

@@ -6,6 +6,7 @@ import com.coala.backend.member.db.repository.MemberRepository;
 import com.coala.backend.product.db.entity.Category;
 import com.coala.backend.product.db.repository.CategoryRepository;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
+import com.coala.backend.store.db.dto.response.StoreListDto;
 import com.coala.backend.store.db.entity.StoreLike;
 import com.coala.backend.store.db.entity.StorePost;
 import com.coala.backend.store.db.repository.CustomStorePostRepository;
@@ -15,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StoreServiceImpl implements StoreService {
@@ -40,8 +38,40 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StorePost> list(Integer page, Map<String, String> info) {
-        return customStorePostRepository.findAllFilter(info, page);
+    public List<StoreListDto> list(Integer page, Map<String, String> info, String email) {
+        // 리스트 정보 조회
+        List<StorePost> list = customStorePostRepository.findAllFilter(info, page);
+
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("유저정보가 일치하지 않습니다."));
+
+        // member ID
+        Long memberId = member.getId();
+
+        // 결과 리스트
+        List<StoreListDto> result = new ArrayList<>();
+
+        // 좋아요 정보 확인
+        for(StorePost store : list){
+            StoreListDto SLD = new StoreListDto();
+
+            // 게시글 정보
+            SLD.setStorePost(store);
+            SLD.setLike(false);
+
+            // 게시글 별로 좋아요 확인
+            List<StoreLike> likes = storeLikeRepository.findByStorePost(store);
+
+            for(StoreLike like : likes){
+                if(like.getMember().getId() == memberId){
+                    SLD.setLike(true);
+                    break;
+                }
+            }
+            result.add(SLD);
+        }
+
+        return result;
     }
 
     @Override
@@ -76,14 +106,29 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public PostResponseDto detail(Long id) {
+    public PostResponseDto detail(Long id, String email) {
         StorePost storePost = storePostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
-        Integer likes = storeLikeRepository.findByStorePost(storePost).size();
+
+
+        List<StoreLike> likes = storeLikeRepository.findByStorePost(storePost);
         PostResponseDto postResponseDto = new PostResponseDto();
-        postResponseDto.setLike(likes);
+        postResponseDto.setLikes(likes.size());
         postResponseDto.setStorePost(storePost);
-        postResponseDto.setCategory(storePost.getCategory());
+        postResponseDto.setLike(false);
+
+        for(StoreLike like : likes){
+            if(like.getMember().getEmail().equals(email)){
+                postResponseDto.setLike(true);
+            }
+        }
+
+        if(storePost.getMember().getEmail().equals(email)){
+            postResponseDto.setMine(true);
+        }else{
+            postResponseDto.setMine(false);
+        }
+
         postResponseDto.setBaseResponseDto(new BaseResponseDto( "성공적으로 정보를 불러왔습니다.", 200));
 
         return postResponseDto;
@@ -194,10 +239,22 @@ public class StoreServiceImpl implements StoreService {
             return postResponseDto;
         }
 
-        Integer likes = storeLikeRepository.findByStorePost(storePost).size();
-        postResponseDto.setLike(likes);
+        List<StoreLike> likes = storeLikeRepository.findByStorePost(storePost);
+        postResponseDto.setLikes(likes.size());
         postResponseDto.setStorePost(storePost);
-        postResponseDto.setCategory(storePost.getCategory());
+        postResponseDto.setLike(false);
+
+        for(StoreLike like : likes){
+            if(like.getMember().getEmail().equals(email)){
+                postResponseDto.setLike(true);
+            }
+        }
+
+        if(storePost.getMember().getEmail().equals(email)){
+            postResponseDto.setMine(true);
+        }else{
+            postResponseDto.setMine(false);
+        }
         postResponseDto.setBaseResponseDto(new BaseResponseDto( "성공적으로 정보를 불러왔습니다. 게시글을 수정해 주세요.", 200));
         return postResponseDto;
     }

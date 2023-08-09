@@ -35,9 +35,9 @@ public class AuctionController {
     }
 
     @GetMapping("/detail")
-    public PostResponseDto detail(@RequestParam(value = "id") Long id){
+    public PostResponseDto detail(@RequestParam(value = "id") Long id, HttpServletRequest request){
         auctionService.views(id);
-        return auctionService.detail(id);
+        return auctionService.detail(id, jwtTokenProvider.getMail(request));
     }
 
     @PostMapping("/write")

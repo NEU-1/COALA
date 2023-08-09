@@ -73,12 +73,19 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public PostResponseDto detail(Long id) {
+    public PostResponseDto detail(Long id, String email) {
         AuctionPost auctionPost = auctionPostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
 
         PostResponseDto postResponseDto = new PostResponseDto();
         postResponseDto.setAuctionPost(auctionPost);
+
+        if(auctionPost.getMember().getEmail().equals(email)){
+            postResponseDto.setMine(true);
+        }
+        else{
+            postResponseDto.setMine(false);
+        }
 
         List<AuctionApply> auctionApplies = auctionApplyRepository.findByAuctionPost(auctionPost);
 
@@ -201,6 +208,10 @@ public class AuctionServiceImpl implements AuctionService{
                 postResponseDto.setBaseResponseDto(new BaseResponseDto("작성자가 아닙니다.", 403));
                 return postResponseDto;
             }
+
+            List<AuctionApply> auctionApplies = auctionApplyRepository.findByAuctionPost(auctionPost);
+
+            postResponseDto.setAuctionApplies(auctionApplies);
 
             postResponseDto.setAuctionPost(auctionPost);
             postResponseDto.setCategory(auctionPost.getCategory());

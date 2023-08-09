@@ -4,6 +4,7 @@ import com.coala.backend.auction.db.entity.AuctionApply;
 import com.coala.backend.auction.db.entity.AuctionPost;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.product.db.entity.Category;
+import com.coala.backend.store.db.entity.StorePost;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,8 @@ public class PostResponseDto {
     private List<AuctionApply> auctionApplies;
 
     private Category category;
+
+    private boolean mine;
 
     // 응답 정보
     private BaseResponseDto baseResponseDto;
