@@ -70,4 +70,10 @@ public class AuctionController {
         BaseResponseDto responseDto = auctionService.status(id, jwtTokenProvider.getMail(request));
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
     }
+
+    @GetMapping("/valid")
+    public ResponseEntity<? extends PostResponseDto> valid(@RequestParam(value = "id") Long id, HttpServletRequest request){
+        PostResponseDto postResponseDto = auctionService.valid(id, jwtTokenProvider.getMail(request));
+        return ResponseEntity.status(postResponseDto.getBaseResponseDto().getStatusCode()).body(postResponseDto);
+    }
 }

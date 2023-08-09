@@ -27,4 +27,6 @@ public interface AuctionService {
     BaseResponseDto apply(Long id, Map<String, String> info, String email);
 
     BaseResponseDto status(Long id, String email);
+
+    PostResponseDto valid(Long id, String email);
 }
