@@ -116,7 +116,7 @@ const TradeOfferForm = ({ onClose }) => {
               type="file"
               onChange={(e) => onUpload(e)}
             />
-            <SImg src={images.plus} alt="Plus" />
+            <SImgS src={images.plus} alt="Plus" />
           </label>
         </SImgDiv>
         <SLRBtn>
@@ -264,7 +264,6 @@ const SMyProductListBtn = styled.button`
   text-align: center;
   text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
   font-size: 14px;
-  font-weight: 700;
   letter-spacing: -0.14px;
 `;
 
@@ -276,6 +275,15 @@ const SImg = styled.img`
   gap: 10px;
   align-self: stretch;
   border-radius: 30px;
+`;
+
+const SImgS = styled.img`
+  display: flex;
+  height: 170px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
 `;
 
 const STitleAndMainTextDiv = styled.div`
@@ -454,19 +462,24 @@ const SLRBtns = styled.button`
 
 const SDropdownMenu = styled.div`
   position: absolute;
-  background: var(--primary, #e9d5ff);
   z-index: 1;
   width: 106px;
-  padding: 11px 16px;
   border-radius: 10px;
-  top: 520px;
+  top: 346px;
 `;
 
-const SDropdownMenuItem = styled.div`
+const SDropdownMenuItem = styled.button`
   height: 41px;
   padding: 11px 16px;
   justify-content: center;
   align-items: center;
   gap: 10px;
   color: white;
+  display: flex;
+  width: 106px;
+  gap: 10px;
+  border-radius: 7px;
+  background: #e9d5ff;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border, #d9d9d9);
 `;
