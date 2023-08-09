@@ -24,8 +24,8 @@ const HeaderContainer = () => {
       requestGet(`member/info`)
         .then((res) => {
           console.log(res);
-          if (res.data.statusCode === 200) {
-            setNickname(res.data.nickname);
+          if (res.data.baseResponseDto.statusCode === 200) {
+            setNickname(res.data.member.nickname);
             dispatch(login());
           } else if (res.data.statusCode === 401) {
             Swal.fire({
