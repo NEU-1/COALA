@@ -24,9 +24,9 @@ const HeaderContainer = () => {
       setToken();
       requestGet(`member/info`)
         .then((res) => {
-          console.log(res, 'from HeaderContainer');
-          if (res.data.statusCode === 200) {
-            setNickname(res.data.nickname);
+          console.log(res);
+          if (res.data.baseResponseDto.statusCode === 200) {
+            setNickname(res.data.member.nickname);
             dispatch(login());
             setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
           } else if (res.data.statusCode === 401) {
