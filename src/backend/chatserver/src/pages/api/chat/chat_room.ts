@@ -31,8 +31,8 @@ const receiveData = withCors(async (
     data = await searchRoom({member_id : usr['id']});
     console.log("이 들어간 채팅방은 ",data);
 
-    const updatedData = await Promise.all(data.map(async (room : room) => {
-      const room_id = room.id;
+    const updatedData = await Promise.all(data.map(async (room : room & room_member) => {
+      const room_id = room.room_id;
       const latestLog = await searchLog( {room_id});
       // const latestLog = await searchLog(Number(id));
       console.log(`${room_id}의 마지막 로그는 ${latestLog}`);

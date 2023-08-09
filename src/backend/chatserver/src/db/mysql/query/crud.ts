@@ -23,7 +23,7 @@ const readQuery = async (table : string, target : any,
   }   
   else { // 조인 후 탐색해서 불러오기
     const {conditionQuery, values} = target;
-    const query = `SELECT jt.id as joinTable_id, t.*, jt.*  FROM ${table} t JOIN ${joinTable} jt ON ?? = ?? WHERE ${conditionQuery}`;
+    const query = `SELECT *  FROM ${table} t JOIN ${joinTable} jt ON ?? = ?? WHERE ${conditionQuery}`;
 
     if (joinCondition && joinTable) {
       values[0] = `${joinTable}.${values[0]}`
