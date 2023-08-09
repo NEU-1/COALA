@@ -1909,7 +1909,7 @@
 
 "@reduxjs/toolkit@^1.9.5":
   version "1.9.5"
-  resolved "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-1.9.5.tgz"
+  resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.9.5.tgz#d3987849c24189ca483baa7aa59386c8e52077c4"
   integrity sha512-Rt97jHmfTeaxL4swLRNPD/zV4OxTes4la07Xc4hetpUW/vc75t5m1ANyxG6ymnEQ2FsLQsoMlYB2vV1sO3m8tQ==
   dependencies:
     immer "^9.0.21"
@@ -8392,7 +8392,7 @@ redux-devtools-extension@^2.13.9:
 
 redux-thunk@^2.4.2:
   version "2.4.2"
-  resolved "https://registry.npmjs.org/redux-thunk/-/redux-thunk-2.4.2.tgz"
+  resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.4.2.tgz#b9d05d11994b99f7a91ea223e8b04cf0afa5ef3b"
   integrity sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q==
 
 redux@^4.2.1:
@@ -8492,7 +8492,7 @@ requires-port@^1.0.0:
 
 reselect@^4.1.8:
   version "4.1.8"
-  resolved "https://registry.npmjs.org/reselect/-/reselect-4.1.8.tgz"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.1.8.tgz#3f5dc671ea168dccdeb3e141236f69f02eaec524"
   integrity sha512-ab9EmR80F/zQTMNeneUr4cv+jSwPJgIlvEmVwLerwrWVbpLlBuls9XHzIeTFy4cegU2NHBp3va0LKOzU5qFEYQ==
 
 resolve-cwd@^3.0.0:
@@ -9270,7 +9270,7 @@ svgo@^2.7.0:
 
 sweetalert2@^11.7.20:
   version "11.7.20"
-  resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.7.20.tgz"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-11.7.20.tgz#1306f41a44e347093fc6f25ccf5ca4812951faff"
   integrity sha512-GdU1TkiLpGGC0mcPV8bKmS7G0MR7caxambPkEU8zyepRSNR9EaEvIjNhX5QNkL0VFVzHbI3l12NtuEklkJ0D4Q==
 
 symbol-tree@^3.2.4:

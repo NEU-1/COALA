@@ -1,13 +1,13 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { styled } from 'styled-components'
-import Header from '../components/Common/Header'
 import ChatOpenContainer from '../components/Chat/containers/ChatOpenContainer'
+import HeaderContainer from '../components/Common/containers/HeaderContainer'
 
 const Layout = () => {
   return (
     <SLayout>
-        <Header/>
+        <HeaderContainer/>
         <Outlet/>
         <ChatOpenContainer/>
     </SLayout>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import axios from 'axios';
 
+
 const SBtn = styled.div`
   display: flex;
   height: 50px;
@@ -20,8 +21,8 @@ const SBtn = styled.div`
 const Slayout = styled.div`
   margin-top: 170px;
   width: 800px;
-  z-index: 0;
 `
+
 const Textinput = styled.input`
   font-size: 20px;
 `
@@ -49,23 +50,31 @@ const Titletext = styled.div`
   margin-top: 10px;
   display: flex;
 `
+
 const Title = styled.div`
   margin-right: 10px;
   font-size: 30px;
 `
 
-function TechBoardWrite(props) {
+function TechBoardWrite() {
   const navigate = useNavigate();
 
   const [board, setBoard] = useState({
-    email:'',
+    memberId : '',
     title: '',
     detail: '',
     imagePath: 'String',
     isAnonymous: false,
   });
 
-  const { title, detail } = board;
+  const getMemberId = () => {
+    axios.get('http://i9d108.p.ssafy.io:9999/api/member/info')
+     .then((response) => {
+      const memberId = response.data
+     })
+  }
+
+  const { memberId, title, detail } = board;
 
   const onChange = (event) => {
     const { value, name } = event.target;
@@ -77,15 +86,17 @@ function TechBoardWrite(props) {
 
   const saveBoard = async () => {
     try {
+      
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
       const dataToSend = {
-        ...board,
-        email:'',
-        title: '',
-        detail: '',
-        imagePath: 'String',
-        isAnonymous: false,
+        memberId: board.memberId,
+        title: board.title,
+        detail: board.detail,
+        imagePath: board.imagePath,
+        isAnonymous: board.isAnonymous,
       };
+
+      console.log(dataToSend)
 
       await axios.post('http://i9d108.p.ssafy.io:9999/api/tech/post/save', dataToSend);
       alert('등록되었습니다.');
@@ -104,9 +115,13 @@ function TechBoardWrite(props) {
   const handleRegisterButton = () => {
     // 에디터 내용을 얻어와서 변수에 저장
     const editorContent = editorRef.current?.getInstance().getMarkdown();
-
-  };
-
+    console.log(editorContent)
+    // 저장하고자 하는 내용을 board 객체에 추가
+    setBoard({
+      ...board,
+      detail: editorContent,
+    });
+  }
   return (
     <Slayout>
       <div>
@@ -142,14 +157,9 @@ function TechBoardWrite(props) {
         <SBtn onClick={backToList}>취소</SBtn>
         <SBtn onClick={saveBoard}>등록</SBtn>
       </SBtnContainer>
+
     </Slayout>
   );
-};
+}
 
 export default TechBoardWrite;
-
-
-
-
-
-
