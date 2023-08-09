@@ -40,25 +40,13 @@ public class TechPost {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @Column(name = "image_path")
-    private String imagePath;
-
-     // 왜 참조가 안되지?
     @ManyToOne(targetEntity = Member.class)
-    @JoinColumn(name = "nickname")
+    @JoinColumn(name = "nickname", referencedColumnName = "nickname")
     private Member nickname;
 
     @Column(columnDefinition = "integer default 0")
     @NotNull
     private int views;
-
-    @Column
-    @NotNull
-    private int commentCount;
-
-    @Column
-    @NotNull
-    private int goodCount;
 
     @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<TechGood> goods = new ArrayList<>();
@@ -67,14 +55,11 @@ public class TechPost {
     private List<TechComment> comments = new ArrayList<>();
 
     @Builder
-    public TechPost(Member memberId, String title, String detail , String imagePath, Member nickname) {
+    public TechPost(Member memberId, String title, String detail , Member nickname) {
         this.memberId = memberId;
         this.title = title;
         this.detail = detail;
-        this.imagePath = imagePath;
         this.nickname = nickname;
-        this.commentCount = this.getComments().size();
-        this.goodCount = this.getGoods().size();
     }
 
     @PrePersist
@@ -82,11 +67,10 @@ public class TechPost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateTechPost(String title, String detail, String imagePath, Member nickname) {
+    public void updateTechPost(String title, String detail, Member nickname) {
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();
-        this.imagePath = imagePath;
         this.nickname = nickname;
     }
 

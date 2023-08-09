@@ -13,22 +13,18 @@ import lombok.NoArgsConstructor;
 public class NoticeRequestDto {
     private String title;
     private String detail;
-    private String imagePath;
 
     @Builder
-    public NoticeRequestDto(Long id, String title, String detail,
-                            String imagePath) {
+    public NoticeRequestDto(String title, String detail) {
 
         this.title = title;
         this.detail = detail;
-        this.imagePath = imagePath;
     }
 
     public Notice toEntity() {
         return Notice.builder()
                 .title(this.title)
                 .detail(this.detail)
-                .imagePath(this.imagePath)
                 .build();
     }
 }

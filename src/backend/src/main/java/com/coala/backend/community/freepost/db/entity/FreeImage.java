@@ -20,6 +20,7 @@ public class FreeImage {
     @NotNull
     private FreePost fpId;
 
+
     @NotNull
     @Column (name = "image_path")
     private String imagePath;

@@ -1,13 +1,12 @@
 package com.coala.backend.community.techpost.api.service;
 
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.techpost.db.dto.request.TechGoodRequestDto;
 import com.coala.backend.community.techpost.db.entity.TechGood;
 import com.coala.backend.community.techpost.db.entity.TechPost;
 import com.coala.backend.community.techpost.db.repository.TechGoodRepository;
 import com.coala.backend.community.techpost.db.repository.TechPostRepository;
 import com.coala.backend.member.db.entity.Member;
-import com.coala.backend.member.db.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,12 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TechGoodServiceImpl implements TechGoodService {
     private final TechGoodRepository techGoodRepository;
-    private final MemberRepository memberRepository;
     private final TechPostRepository techPostRepository;
 
     @Transactional
     @Override
-    public BasePostResponseDto good(TechGoodRequestDto techGoodRequestDto, Member member) {
+    public CommunityBaseResponseDto good(TechGoodRequestDto techGoodRequestDto, Member member) {
         TechPost techPost = techPostRepository.findById(techGoodRequestDto.getTpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
@@ -45,7 +43,7 @@ public class TechGoodServiceImpl implements TechGoodService {
         techGoodRepository.saveAndFlush(techGood);
         techPost.getGoods().add(techGood);
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("좋아요")
                 .detail(allGood.size())
@@ -54,7 +52,7 @@ public class TechGoodServiceImpl implements TechGoodService {
 
     @Transactional
     @Override
-    public BasePostResponseDto unGood(TechGoodRequestDto techGoodRequestDto, Member member) {
+    public CommunityBaseResponseDto unGood(TechGoodRequestDto techGoodRequestDto, Member member) {
         TechPost techPost = techPostRepository.findById(techGoodRequestDto.getTpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
@@ -68,7 +66,7 @@ public class TechGoodServiceImpl implements TechGoodService {
         techGoodRepository.deleteById(techGood.getId());
         techPost.getGoods().remove(techGood);
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("좋아요 취소")
                 .detail(allGood.size())

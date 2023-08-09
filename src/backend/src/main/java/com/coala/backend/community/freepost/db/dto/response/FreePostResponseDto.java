@@ -1,5 +1,6 @@
 package com.coala.backend.community.freepost.db.dto.response;
 
+import com.coala.backend.community.freepost.db.entity.FreeImage;
 import com.coala.backend.member.db.entity.Member;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
     자유게시판 응답 DTO 입니다.
@@ -21,7 +23,7 @@ public class FreePostResponseDto {
     private String detail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private String imagePath;
+    private List<FreeImage> imagePath;
     private boolean isAnonymous;
     private int views;
     private int commentCount;
@@ -29,7 +31,7 @@ public class FreePostResponseDto {
 
     @Builder
     public FreePostResponseDto(Long id, Member memberId, String title, String detail,
-                               LocalDateTime createAt, LocalDateTime updateAt, String imagePath,
+                               LocalDateTime createAt, LocalDateTime updateAt, List<FreeImage> imagePath,
                                boolean isAnonymous, int views, int commentCount, int goodCount) {
 
         this.id = id;

@@ -16,12 +16,12 @@ public class TechImage {
     private Long id;
 
     @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.LAZY)
-    @JoinColumn (name = "fp_id")
+    @JoinColumn (name = "tp_id")
     @NotNull
     private TechPost tpId;
 
     @NotNull
-    @Column (name = "image_path")
+    @Column
     private String imagePath;
 
     @Builder

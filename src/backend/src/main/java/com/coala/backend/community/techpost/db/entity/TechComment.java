@@ -1,5 +1,6 @@
 package com.coala.backend.community.techpost.db.entity;
 
+import com.coala.backend.member.db.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,6 +24,9 @@ public class TechComment {
     private TechPost tpId;
 
     @NotNull
+    private String memberId;
+
+    @NotNull
     private String author;
 
     @NotNull
@@ -39,9 +43,10 @@ public class TechComment {
     }
 
     @Builder
-    public TechComment(TechPost tpId, String author, String content) {
+    public TechComment(TechPost tpId, String author, String content, Member memberId) {
         this.tpId = tpId;
         this.author = author;
+        this.memberId = memberId.getEmail();
         this.content = content;
     }
 

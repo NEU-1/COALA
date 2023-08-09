@@ -1,5 +1,6 @@
 package com.coala.backend.community.freepost.db.dto.request;
 
+import com.coala.backend.community.freepost.db.entity.FreeImage;
 import com.coala.backend.community.freepost.db.entity.FreePost;
 import com.coala.backend.member.db.entity.Member;
 import lombok.Builder;
@@ -7,26 +8,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
     자유 게시판 요청 Dto 입니다.
 * */
+
 @Getter
 @NoArgsConstructor
 public class FreePostRequestDto {
     private String title;
     private String detail;
-    private String imagePath;
     private boolean isAnonymous;
+    private List<String> imagePath;
 
     @Builder
-    public FreePostRequestDto(String title, String detail, String imagePath,
-                              boolean isAnonymous) {
+    public FreePostRequestDto(String title, String detail, boolean isAnonymous, List<String> imagePath) {
 
         this.title = title;
         this.detail = detail;
-        this.imagePath = imagePath;
         this.isAnonymous = isAnonymous;
+        this.imagePath = imagePath;
     }
 
     public FreePost toEntity(Member member) {
@@ -34,7 +36,6 @@ public class FreePostRequestDto {
                 .memberId(member)
                 .title(this.title)
                 .detail(this.detail)
-                .imagePath(this.imagePath)
                 .isAnonymous(this.isAnonymous)
                 .build();
     }
