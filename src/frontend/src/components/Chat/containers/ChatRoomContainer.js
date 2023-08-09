@@ -49,6 +49,7 @@ const ChatRoomContainer = () => {
       socket.emit('joinRoom', { roomName }, async ({ isRoom, chattingLogs }) => {
         if (!isRoom) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}
         console.log(`join room[${roomName}]  successfully`);
+        console.log("dldlapdlf",email)
         const { data } = await fetchRoom.join({ roomName, email });
         inform = data;
         if (inform.roomUser.room.pr_id)
@@ -66,8 +67,10 @@ const ChatRoomContainer = () => {
     requestGet(`member/info`).then((res) => {
       socketInitializer();
       // 나중에 잘되었는지 아닌지 필터 필요
+      console.log("으아아악", res);
       setMemberId(res.data.id);
       email = res.data.email;
+      console.log("으아아아",email);
     });
     return () => {
       console.log('disconected');
