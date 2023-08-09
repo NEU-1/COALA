@@ -9,12 +9,14 @@ const ChatOpen = ({ isChatOpen, onClickChatBtn }) => {
       <SLayout isChatOpen={isChatOpen} onClick={onClickChatBtn}>
         <img src={`${images.message}`} alt="" />
       </SLayout>
-      <SModalLayout
-        key={'chatModal'}
-        id="chatModal"
-        isChatOpen={isChatOpen}
-        src="/chat/chat-list"
-      />
+      {isChatOpen && (
+        <SModalLayout
+          key={'chatModal'}
+          id="chatModal"
+          isChatOpen={isChatOpen}
+          src="/chat/chat-list"
+        />
+      )}
     </>
   );
 };

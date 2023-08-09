@@ -71,14 +71,13 @@ const ChatRoomContainer = () => {
     requestGet(`member/info`).then((res) => {
       socketInitializer();
       // 나중에 잘되었는지 아닌지 필터 필요
-      setMemberId(res.data.id);
-      email = res.data.email;
+      setMemberId(res.data.member.id);
+      email = res.data.member.email;
     });
     return () => {
       console.log('disconected');
       if (socket) {
         socket.disconnect();
-        fetchRoom.execute({ roomName, email });
       }
     };
   }, []);
@@ -137,6 +136,7 @@ const ChatRoomContainer = () => {
       if (result.isConfirmed) {
         //나가기 호출
         console.log('나가자~');
+        fetchRoom.execute({ roomName, email });
         navigate('/chat/chat-list', { replace: true });
       }
     });

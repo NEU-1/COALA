@@ -4,6 +4,26 @@ import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
 
 const ChatListItem = ({ item, onClickListItem }) => {
+  let printDate;
+  const itemDate = new Date(item.latestLog.latestLog.created_at);
+  const today = new Date();
+
+  itemDate.setHours(itemDate.getHours() - 9);
+  const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+  if (
+    itemDate.getFullYear() === today.getFullYear() &&
+    itemDate.getMonth() === today.getMonth() &&
+    itemDate.getDate() === today.getDate()
+  ) {
+    printDate = itemDate.toLocaleTimeString('ko-KR', options);
+  } else {
+    printDate =
+      itemDate.getFullYear() +
+      '-' +
+      String(itemDate.getMonth()).padStart(2, '0') +
+      '-' +
+      String(itemDate.getDate()).padStart(2, '0');
+  }
   return (
     <SLayout
       onClick={() => {
@@ -18,11 +38,13 @@ const ChatListItem = ({ item, onClickListItem }) => {
         />
         <SPartnerInfo>
           <div className="partner">{item.name}</div>
-          <div className="cur-chat">가장 최근 채팅</div>
+          <div className="cur-chat">
+            {item.latestLog.latestLog.text_content}
+          </div>
         </SPartnerInfo>
       </SStart>
       <SEnd>
-        <div className="time">10:45 AM</div>
+        <div className="time">{printDate}</div>
         {/* <div className="alarm">123</div> */}
       </SEnd>
     </SLayout>
@@ -67,6 +89,7 @@ const SPartnerInfo = styled.div`
     font-size: 9px;
     font-weight: 400;
     line-height: normal;
+    text-align: left;
   }
 `;
 
