@@ -45,7 +45,6 @@ const receiveData = withCors(async (
     const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
     const contractData = await readQuery('history',{conditionQuery, values})
 
-
     // 계약서 생성하기 
 
     // 계약서 생성이 완료될 경우 sign이미지들 삭제

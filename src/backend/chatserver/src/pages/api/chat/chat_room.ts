@@ -24,7 +24,9 @@ const receiveData = withCors(async (
     console.log("쿼리",req.query);
     console.log(`${email} 들어간 채팅방 탐색중입니다.`);
     const [usr] : member[] = await readUser({email});
+    console.log(`Member ${usr.email}`,usr)
     data = await searchRoom({member_id : usr['id']});
+    console.log("이 들어간 채팅방은 ",data);
 
     const updatedData = await Promise.all(data.map(async (room : room) => {
       const id = room.id;
@@ -32,7 +34,7 @@ const receiveData = withCors(async (
       return {...room, latestLog};
     }));
     
-
+    console.log(`채팅로그 포함한 데이터는 ${updatedData}`)
     res.status(200).json({ rooms: updatedData });
     
     return

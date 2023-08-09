@@ -14,10 +14,18 @@ interface room {
 
 interface member {
     id :  BigInt,
-    member_id : BigInt, 
-    pr_id : BigInt, 
-    pp_id : BigInt, 
+    email : string, 
+    password : string, 
     name : string, 
+    nickname : string, 
+    student_id : stirng,
+    depart : string,
+    ordinal : string
+    phone_no : Number,
+    image_path : {
+        type : String,
+        default : null
+    },
     created_at : string,
 }
 
