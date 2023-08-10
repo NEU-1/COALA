@@ -1,6 +1,7 @@
 package com.coala.backend.community.freepost.db.dto.response;
 
 import com.coala.backend.community.freepost.db.entity.FreePost;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class FreeCommentResponseDto {
+    @JsonIgnore
     private FreePost fpId;
     private String author;
     private String content;

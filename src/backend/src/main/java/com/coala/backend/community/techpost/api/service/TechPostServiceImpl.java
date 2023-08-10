@@ -40,6 +40,8 @@ public class TechPostServiceImpl implements TechPostService{
 
     private final S3UploadService s3UploadService;
 
+    static String str = "https://coala.s3.ap-northeast-2.amazonaws.com/Tech/";
+
     @Transactional
     @Override
     public CommunityBaseResponseDto savePost(List<MultipartFile> multipartFiles, TechPostRequestDto postDto, Member member) throws IOException {
@@ -51,12 +53,11 @@ public class TechPostServiceImpl implements TechPostService{
                 .build();
 
         techPostRepository.saveAndFlush(techPost);
-        String str = "https://coala.s3.ap-northeast-2.amazonaws.com/Tech/";
 
         if (!multipartFiles.isEmpty()) {
             for (int i = 0; i < multipartFiles.size(); i++) {
                 String storedFileName = s3UploadService.S3Upload(multipartFiles.get(i), "Tech");
-
+                if (storedFileName.equals("사진없음")) break;
 
                 techImageRepository.save(TechImage.builder()
                         .imagePath(storedFileName.substring(str.length()))
@@ -66,18 +67,10 @@ public class TechPostServiceImpl implements TechPostService{
             log.info("TechImage 업로드 성공");
         }
 
-        List<String> uri = new ArrayList<>();
-        List<TechImage> imageList = techImageRepository.findByTpId(techPost);
-        for (int i = 0; i < imageList.size(); i++) {
-            TechImage techImage = imageList.get(i);
-            uri.add(str + techImage.getImagePath());
-        }
-
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
-                .msg("성공, 게시글 Id 반환, image 주소 반환")
+                .msg("성공, 게시글 Id 반환")
                 .id(techPost.getId())
-                .list(uri)
                 .build();
     }
 
@@ -117,6 +110,13 @@ public class TechPostServiceImpl implements TechPostService{
 
         techPost.views();
 
+        List<String> uri = new ArrayList<>();
+        List<TechImage> imageList = techImageRepository.findByTpId(techPost);
+        for (int i = 0; i < imageList.size(); i++) {
+            TechImage techImage = imageList.get(i);
+            uri.add(str + techImage.getImagePath());
+        }
+
         return TechPostResponseDto.builder()
                 .id(techPost.getId())
                 .memberId(techPost.getMemberId())
@@ -124,6 +124,7 @@ public class TechPostServiceImpl implements TechPostService{
                 .detail(techPost.getDetail())
                 .createAt(techPost.getCreateAt())
                 .updateAt(techPost.getUpdateAt())
+                .imagePath(uri)
                 .views(techPost.getViews())
                 .commentCount(techPost.getComments().size())
                 .goodCount(techPost.getGoods().size())

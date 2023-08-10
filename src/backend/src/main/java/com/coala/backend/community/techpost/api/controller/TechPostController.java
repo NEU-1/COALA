@@ -1,6 +1,7 @@
 package com.coala.backend.community.techpost.api.controller;
 
 import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
+import com.coala.backend.community.techpost.api.service.TechPostService;
 import com.coala.backend.community.techpost.api.service.TechPostServiceImpl;
 import com.coala.backend.community.techpost.db.dto.request.TechPostRequestDto;
 import com.coala.backend.community.techpost.db.dto.response.TechPostResponseDto;
@@ -29,7 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/tech/post/")
 public class TechPostController {
-    private final TechPostServiceImpl techPostService;
+    private final TechPostService techPostService;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
 

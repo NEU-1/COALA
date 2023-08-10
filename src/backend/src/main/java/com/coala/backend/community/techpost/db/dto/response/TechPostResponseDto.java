@@ -2,6 +2,7 @@ package com.coala.backend.community.techpost.db.dto.response;
 
 import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.member.db.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,19 +18,20 @@ import java.util.List;
 @NoArgsConstructor
 public class TechPostResponseDto {
     private Long id;
+    @JsonIgnore
     private Member memberId;
     private String title;
     private String detail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private List<TechImage> imagePath;
+    private List<String> imagePath;
     private int views;
     private int commentCount;
     private int goodCount;
 
     @Builder
     public TechPostResponseDto(Long id, Member memberId, String title, String detail, LocalDateTime createAt, LocalDateTime updateAt,
-                               List<TechImage> imagePath, int views, int commentCount, int goodCount) {
+                               List<String> imagePath, int views, int commentCount, int goodCount) {
         this.id = id;
         this.memberId = memberId;
         this.title = title;
