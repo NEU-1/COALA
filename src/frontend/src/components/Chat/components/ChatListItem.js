@@ -20,7 +20,7 @@ const ChatListItem = ({ item, onClickListItem }) => {
     printDate =
       itemDate.getFullYear() +
       '-' +
-      String(itemDate.getMonth()).padStart(2, '0') +
+      String(itemDate.getMonth() + 1).padStart(2, '0') +
       '-' +
       String(itemDate.getDate()).padStart(2, '0');
   }
