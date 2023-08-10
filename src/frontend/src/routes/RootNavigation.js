@@ -68,11 +68,7 @@ const RootNavigation = () => {
 
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
         {/* <Route path="/tech/:postId" element={<TechViewPage />} /> */}
-<<<<<<< HEAD
-        <Route path="/tech" element={<TechBoardList />} />
-=======
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
->>>>>>> c33e26a0b908dfe32970c763a0773523400a90b8
         <Route path="/store" element={<Store />} />
         <Route path="/store/write" element={<StoreWrite />} />
         <Route path="/store/:postId" element={<StoreDetail />} />

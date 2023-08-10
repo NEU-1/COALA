@@ -95,7 +95,7 @@ const SignatureContainer = forwardRef(({ name, who }, ref) => {
       const fileName = 'sign_img_' + name + '_' + new Date().getTime() + '.png';
       let formData = new FormData();
       formData.append('file', file, fileName);
-      console.log(formData.get('file'));
+      // console.log("dd",formData.get('file'));
       return formData;
     }
   };

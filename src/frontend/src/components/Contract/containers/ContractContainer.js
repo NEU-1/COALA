@@ -55,13 +55,15 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     setContractForm({ ...contractForm, period: e.target.value });
   };
 
-  useEffect(() => {
-    if (contractForm.rental_at) {
-      let returnDate = new Date(contractForm.rental_at);
-      returnDate.setDate(returnDate.getDate() + Number(contractForm.period));
-      setContractForm({ ...contractForm, return_at: returnDate.toISOString() });
+useEffect(() => {
+    if (contractForm.producer_sign) {
+        setToken();
+        requestPostNode(`contract/contract`, contractForm)
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
     }
-  }, [contractForm.rental_at, contractForm.period]);
+}, [contractForm.producer_sign]);
+
 
   const onChangeRentalDate = (e) => {
     const date = new Date(e.target.value);
@@ -75,6 +77,7 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     if (isAgree1 && isAgree2) {
       const image = producerSignRef.current.saveSign();
       console.log(contractForm);
+      console.log(image)
       if (!image) {
         Swal.fire({
           title:

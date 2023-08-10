@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 const baseUrl = 'http://i9d108.p.ssafy.io:9999/api/';
-const baseNodeUrl = 'http://i9d108.p.ssafy.io:3030/api/';
+const baseNodeUrl = 'http://localhost:3030/api/';
+// const baseNodeUrl = 'http://i9d108.p.ssafy.io:3030/api/';
+
 
 const headers = {
   'Content-Type': 'application/json;charset=UTF-8',
