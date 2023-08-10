@@ -55,23 +55,15 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     setContractForm({ ...contractForm, period: e.target.value });
   };
 
-useEffect(() => {
-    if (contractForm.producer_sign) {
-        setToken();
-        requestPostNode(`contract/contract`, contractForm)
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err));
-    }
-}, [contractForm.producer_sign]);
-
 
   useEffect(() => {
     if (contractForm.producer_sign) {
       console.log(contractForm);
+      console.log(contractForm.producer_sign.get('file'));
       setToken();
       requestPostNode(`contract/contract`, contractForm)
-        .then((res) => console.log(res)) // 하고 모달 닫기
-        .catch((err) => console.log(err));
+        .then((res) => console.log("res",res)) // 하고 모달 닫기
+        .catch((err) => console.log("err",err));
     }
   }, [contractForm.producer_sign]);
 
