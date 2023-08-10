@@ -20,9 +20,9 @@ const readQuery = async (table : string, target : any,
 
 const readQueryLatestLog = async (table : string, target: any) => {
   const chat = await chat_content.findOne(target).sort({created_at: -1});
-  console.log("이거 먼저 탐색해보자1 -소트x", await chat_content.findOne(target));
-  console.log("이거 먼저 탐색해보자2 -소트o", await chat_content.findOne(target).sort({created_at: -1}));
-  console.log("이거 먼저 탐색해보자3 -ALL", await chat_content.find(target));
+  // console.log("이거 먼저 탐색해보자1 -소트x", await chat_content.findOne(target));
+  // console.log("이거 먼저 탐색해보자2 -소트o", await chat_content.findOne(target).sort({created_at: -1}));
+  // console.log("이거 먼저 탐색해보자3 -ALL", await chat_content.find(target));
   return chat;
 }
 

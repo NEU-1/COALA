@@ -35,6 +35,9 @@ export const config = {
 const receiveData = withCors(async (req: any, res: NextApiResponse) => {
   let { uploadToS3 } = useS3Upload();  
   
+  console.log(req.body);
+
+
   await multerMiddleware(req, res, async () => {
         if (req.method === 'POST') {
             const image = req.file;

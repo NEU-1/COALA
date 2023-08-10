@@ -5,6 +5,7 @@ export default function UploadPage() {
 
   let handleFileChange = async (event : any) => {
     let file = event.target.files[0];
+    console.log("이미지", file)
     let { url } = await uploadToS3(file);
 
     console.log("Successfully uploaded to S3!", url);
