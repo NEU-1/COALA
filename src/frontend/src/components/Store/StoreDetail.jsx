@@ -9,6 +9,9 @@ import {
   requestGet,
   setToken,
 } from "../../lib/api/api";
+import { fetchRoom } from "../../api/nodeServer/Room";
+import { useDispatch } from "react-redux";
+import {openChatModal} from '../../store/chatModalSlice'
 
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
@@ -41,6 +44,7 @@ const StoreDetail = () => {
   }, []);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const isLogin = login;
 
@@ -104,10 +108,29 @@ const StoreDetail = () => {
   const goProfile = () => {
     navigate("/profile");
   };
+
+  const generateRoomId = () => {
+    let text = "";
+    let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(let i = 0;i < 5;i++) {
+      text += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    }
+
+    return text;
+  }
+
   const goChat = () => {
     if (isLogin) {
-      const chatId = `unique_chat_identifier`;
-      navigate(`/chat/${chatId}`);
+      const name = generateRoomId();
+      fetchRoom.create({roomName: name, pp_id: postData.storePost.id})
+      .then((res)=> {
+        dispatch(openChatModal());
+        setTimeout(()=>{
+          const chatModal = document.getElementById("chatModal");
+          // chatModal.src=`/chat/${res.data}`; // roomID 받아오기
+          chatModal.src='/chat/테스트룸1';
+        }, 100)
+      })
     } else {
       alert("로그인하세요");
       navigate("/login");

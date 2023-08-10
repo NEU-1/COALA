@@ -1,12 +1,15 @@
 import api from '../base';
 
 const fetchRoom = {
-  create: async ({ roomName }) => {
+  create: async ({ roomName, pp_id, pr_id, other }) => {
     return await api({
       method: 'POST',
       url: `/api/chat/chat_room`,
       data: {
-        name: roomName
+        name: roomName,
+        pp_id: pp_id,
+        pr_id: pr_id,
+        member_id: other,
       },
     }).catch((error) => {
       if (error.response) {
@@ -47,7 +50,7 @@ const fetchRoom = {
       url: `/api/chat/room_member`,
       data: {
         name: roomName,
-        email
+        email,
         // 유저 정보 넣어야함...
       },
     }).catch((error) => {
