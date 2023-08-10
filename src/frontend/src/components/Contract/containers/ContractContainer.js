@@ -65,6 +65,16 @@ useEffect(() => {
 }, [contractForm.producer_sign]);
 
 
+  useEffect(() => {
+    if (contractForm.producer_sign) {
+      console.log(contractForm);
+      setToken();
+      requestPostNode(`contract/contract`, contractForm)
+        .then((res) => console.log(res)) // 하고 모달 닫기
+        .catch((err) => console.log(err));
+    }
+  }, [contractForm.producer_sign]);
+
   const onChangeRentalDate = (e) => {
     const date = new Date(e.target.value);
     setContractForm({
@@ -87,12 +97,7 @@ useEffect(() => {
           return;
         });
       } else {
-        setToken();
-        setContractForm({ ...contractForm, producer_sign: image }, () => {
-          requestPostNode(`contract/contract`, contractForm)
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err));
-        });
+        setContractForm({ ...contractForm, producer_sign: image });
       }
     } else {
       Swal.fire({

@@ -89,13 +89,17 @@ const SignatureContainer = forwardRef(({ name, who }, ref) => {
 
       let array = [];
       for (let i = 0; i < decoding.length; i++)
-        array.push(decoding.charCodeAt(i));
+      { array.push(decoding.charCodeAt(i));}
 
-      const file = new Blob([new Uint8Array(array)]);
+      
+      const blob = dataURLtoBlob(imgBase64);
+      const file = new File([blob], fileName, {type: 'image/png'});
       const fileName = 'sign_img_' + name + '_' + new Date().getTime() + '.png';
+
       let formData = new FormData();
+
       formData.append('file', file, fileName);
-      // console.log("dd",formData.get('file'));
+      console.log(formData, file, fileName);
       return formData;
     }
   };
@@ -114,5 +118,16 @@ const SignatureContainer = forwardRef(({ name, who }, ref) => {
     />
   );
 });
+
+const dataURLtoBlob = (dataurl) => {
+  let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
+  let byteString = atob(arr[1]);
+  let n = byteString.length;
+  let u8arr = new Uint8Array(n);
+  while(n--){
+      u8arr[n] = byteString.charCodeAt(n);
+  }
+  return new Blob([u8arr], {type:mime});
+}
 
 export default SignatureContainer;
