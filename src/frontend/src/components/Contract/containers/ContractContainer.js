@@ -63,6 +63,16 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     }
   }, [contractForm.rental_at, contractForm.period]);
 
+  useEffect(() => {
+    if (contractForm.producer_sign) {
+      console.log(contractForm);
+      setToken();
+      requestPostNode(`contract/contract`, contractForm)
+        .then((res) => console.log(res)) // 하고 모달 닫기
+        .catch((err) => console.log(err));
+    }
+  }, [contractForm.producer_sign]);
+
   const onChangeRentalDate = (e) => {
     const date = new Date(e.target.value);
     setContractForm({
@@ -74,7 +84,6 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
   const onClickSendBtn = () => {
     if (isAgree1 && isAgree2) {
       const image = producerSignRef.current.saveSign();
-      console.log(contractForm);
       if (!image) {
         Swal.fire({
           title:
@@ -84,12 +93,7 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
           return;
         });
       } else {
-        setToken();
-        setContractForm({ ...contractForm, producer_sign: image }, () => {
-          requestPostNode(`contract/contract`, contractForm)
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err));
-        });
+        setContractForm({ ...contractForm, producer_sign: image });
       }
     } else {
       Swal.fire({

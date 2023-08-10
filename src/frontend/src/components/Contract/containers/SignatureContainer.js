@@ -91,11 +91,10 @@ const SignatureContainer = forwardRef(({ name, who }, ref) => {
       for (let i = 0; i < decoding.length; i++)
         array.push(decoding.charCodeAt(i));
 
-      const file = new Blob([new Uint8Array(array)]);
+      const file = new Blob([new Uint8Array(array)], { type: 'image/png' });
       const fileName = 'sign_img_' + name + '_' + new Date().getTime() + '.png';
       let formData = new FormData();
       formData.append('file', file, fileName);
-      console.log(formData.get('file'));
       return formData;
     }
   };
