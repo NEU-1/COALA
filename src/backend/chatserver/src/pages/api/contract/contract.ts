@@ -36,7 +36,8 @@ const receiveData = withCors(async (req: any, res: NextApiResponse) => {
   let { uploadToS3 } = useS3Upload();  
   
   console.log(req.body);
-
+  return res.status(500).json({ error: 'just checking logs' });
+//   return
 
   await multerMiddleware(req, res, async () => {
         if (req.method === 'POST') {
