@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import Contract from '../Contract';
 import Swal from 'sweetalert2';
 import { requestPostNode, setToken } from '../../../lib/api/api';
@@ -19,8 +19,9 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     rental_cost: 5000,
     deposit: 20000,
     created_at: today,
-    rental_at: today,
-    return_at: today,
+    rental_at: '',
+    return_at: '',
+    period: 0,
     status: 0,
     producer_sign: null,
     account: '신한 110-111-222222',
@@ -50,9 +51,30 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     setContractForm({ ...contractForm, deposit: e.target.value });
   };
 
+  const onChangePeriod = (e) => {
+    setContractForm({ ...contractForm, period: e.target.value });
+  };
+
+  useEffect(() => {
+    if (contractForm.rental_at) {
+      let returnDate = new Date(contractForm.rental_at);
+      returnDate.setDate(returnDate.getDate() + Number(contractForm.period));
+      setContractForm({ ...contractForm, return_at: returnDate.toISOString() });
+    }
+  }, [contractForm.rental_at, contractForm.period]);
+
+  const onChangeRentalDate = (e) => {
+    const date = new Date(e.target.value);
+    setContractForm({
+      ...contractForm,
+      rental_at: date.toISOString(),
+    });
+  };
+
   const onClickSendBtn = () => {
     if (isAgree1 && isAgree2) {
       const image = producerSignRef.current.saveSign();
+      console.log(contractForm);
       if (!image) {
         Swal.fire({
           title:
@@ -62,11 +84,12 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
           return;
         });
       } else {
-        setContractForm({ ...contractForm, producer_sign: image });
         setToken();
-        requestPostNode(`contract/contract`, contractForm)
-          .then((res) => console.log(res))
-          .catch((err) => console.log(err));
+        setContractForm({ ...contractForm, producer_sign: image }, () => {
+          requestPostNode(`contract/contract`, contractForm)
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+        });
       }
     } else {
       Swal.fire({
@@ -81,6 +104,17 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
+  const dateFormat = (date) => {
+    const day = new Date(date);
+    return (
+      day.getFullYear() +
+      '-' +
+      String(day.getMonth() + 1).padStart(2, '0') +
+      '-' +
+      String(day.getDate()).padStart(2, '0')
+    );
+  };
+
   return (
     <Contract
       contractForm={contractForm}
@@ -90,6 +124,7 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
       producerSignRef={producerSignRef}
       consumerSignRef={consumerSignRef}
       priceFormat={priceFormat}
+      dateFormat={dateFormat}
       isAgree1={isAgree1}
       isAgree2={isAgree2}
       onChangeAgree1={onChangeAgree1}
@@ -98,6 +133,8 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
       onChangeModalFlag={onChangeModalFlag}
       onChangeRentalCost={onChangeRentalCost}
       onChangeDeposit={onChangeDeposit}
+      onChangeRentalDate={onChangeRentalDate}
+      onChangePeriod={onChangePeriod}
     />
   );
 };

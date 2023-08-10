@@ -10,6 +10,8 @@ const Contract = ({
   producer,
   consumer,
   post,
+  priceFormat,
+  dateFormat,
   producerSignRef,
   consumerSignRef,
   isAgree1,
@@ -20,6 +22,8 @@ const Contract = ({
   onChangeModalFlag,
   onChangeRentalCost,
   onChangeDeposit,
+  onChangeRentalDate,
+  onChangePeriod,
 }) => {
   return (
     <>
@@ -63,8 +67,16 @@ const Contract = ({
               <tr>
                 <td className="tableHead">계약기간</td>
                 <td className="tableData">
-                  <input type="date" value={contractForm.rental_at} /> ~
-                  2023.08.08(1일)
+                  <input type="date" onChange={onChangeRentalDate} /> ~ &nbsp;
+                  {contractForm.return_at && dateFormat(contractForm.return_at)}
+                  (
+                  <input
+                    type="number"
+                    className="period"
+                    value={contractForm.period}
+                    onChange={onChangePeriod}
+                  />
+                  일)
                 </td>
               </tr>
               <tr>
@@ -100,7 +112,14 @@ const Contract = ({
               </tr>
               <tr>
                 <td className="tableHead">납부금액</td>
-                <td className="tableData"></td>
+                <td className="tableData">
+                  {contractForm.period &&
+                    priceFormat(
+                      contractForm.deposit +
+                        contractForm.rental_cost * contractForm.period
+                    )}
+                  &nbsp;원
+                </td>
               </tr>
             </STable2>
           </SSubContent>
@@ -261,7 +280,7 @@ const STable2 = styled.div`
 
     input[type='number'] {
       font-size: 16px;
-      width: 100px;
+      width: 70px;
       text-align: center;
     }
 
