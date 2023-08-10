@@ -1,25 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { images } from "../../assets/images";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
-import { useSelector } from "react-redux";
+import { login } from "../../store/LoginSlice";
+import {
+  requestDel,
+  requestPost,
+  requestGet,
+  setToken,
+} from "../../lib/api/api";
 
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
+  const { postId } = useParams();
+
+  setToken();
+  useEffect(() => {
+    requestGet(`store/detail?id=${postId}`)
+      .then((res) => {
+        setPostData(res.data);
+        setLike(res.data.like);
+        setIsAuthor(res.data.mine);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  console.log(postData);
+
   const [pictures, setPictures] = useState([]);
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setLike] = useState(false);
+  const [isAuthor, setIsAuthor] = useState(false);
+  useEffect(() => {
+    if (postData) {
+      setLike(postData.like);
+      setIsAuthor(postData.mine);
+    }
+  }, []);
 
   const navigate = useNavigate();
-  const { postId } = useParams();
 
-  const isLogin = useSelector((state) => state.login.isLogin);
-  const currentUser = "현재 로그인한 사용자 정보";
-  const postAuthor = "게시글 작성자 정보";
-  const isAuthor = currentUser === postAuthor;
+  const isLogin = login;
 
   const [showModal, setShowModal] = useState(false);
+
+  const formattedDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+  const displayDate = postData
+    ? formattedDate(postData.storePost.createdAt)
+    : "";
 
   const handlePictureChange = (direction) => {
     const totalPictures = pictures.length;
@@ -30,36 +66,35 @@ const StoreDetail = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [picturesResponse, postResponse] = await Promise.all([
-          axios.get(`https://my-api.com/posts/${postId}/pictures`),
-          axios.get(`your-server-url/posts/${postId}`),
-        ]);
-        setPictures(picturesResponse.data);
-        setPostData(postResponse.data);
-      } catch (error) {
-        console.error("데이터를 가져오는데 실패:", error);
-      }
-    };
-    fetchData();
-  }, [postId]);
-
   const toggleLike = () => {
-    setLike(!like);
+    setLike((prevLike) => !prevLike);
+
+    setToken();
+    requestPost(`store/like?id=${postId}`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("자기가 쓴 글은 추천 못함");
+      });
   };
+
   const showDeleteModal = () => {
     setShowModal(true);
   };
   const handleDelete = async () => {
-    try {
-      await axios.delete(`your-server-url/posts/${postId}`);
-      navigate("/store");
-    } catch (error) {
-      console.error("포스트 삭제 오류:", error);
-      alert("포스트 삭제에 실패했습니다.");
-    }
+    setToken();
+    requestDel(`store/delete?id=${postId}`)
+      .then((res) => {
+        console.log(res);
+        console.log("삭제됨");
+        navigate("/store");
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("본인 글만 삭제 가능");
+      });
   };
 
   const handleCancel = () => {
@@ -79,9 +114,16 @@ const StoreDetail = () => {
     }
   };
   const goUpdate = () => {
-    if ("대기중") {
-      navigate(`update`);
-    }
+    requestGet(`store/valid?id=${postId}`)
+      .then((res) => {
+        if (res.status === 200) {
+          navigate(`update`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("본인글만 수정 가능");
+      });
   };
   const handleBackdropClick = (event) => {
     setShowModal(false);
@@ -90,29 +132,7 @@ const StoreDetail = () => {
     event.stopPropagation();
   };
 
-  useEffect(() => {
-    const updateFavouritePosts = async () => {
-      try {
-        if (like) {
-          await axios.post(`your-server-url/favourites/${currentUser}`, {
-            postId,
-          });
-        } else {
-          await axios.delete(
-            `your-server-url/favourites/${currentUser}/${postId}`
-          );
-        }
-      } catch (error) {
-        console.error("Error updating favourite posts:", error);
-      }
-    };
-
-    if (currentUser) {
-      updateFavouritePosts();
-    }
-  }, [like, currentUser, postId]);
-
-  return (
+  return postData ? (
     <SMain>
       <SImgs>
         <button onClick={handlePictureChange}>{"<"}</button>
@@ -122,22 +142,23 @@ const StoreDetail = () => {
       <SHeader>
         <SProfile onClick={goProfile}>
           <SProfileImg src={images.plus} alt="" />
-          <SText>{"작성자"}작성자</SText>
+          <SText>{postData.storePost.author}</SText>
         </SProfile>
         <SDayAndCost>
           <SText>
-            최소 ${"min"}일 / 최대 ${"max"}일
+            최소 {postData.storePost.minRentalPeriod}일 / 최대{" "}
+            {postData.storePost.maxRentalPeriod}일
           </SText>
           <SText>
-            ${"min"}원 / ${"max"}원
+            {postData.storePost.rentalCost}원 / {postData.storePost.deposit}원
           </SText>
         </SDayAndCost>
       </SHeader>
       <SContent>
         <STitleAndProduct>
-          <SText>{"title"}한성 무접점 키보드 대여합니다!~!</SText>
+          <SText>{postData.storePost.title}</SText>
           <STextSub>
-            ${"product"} / ${"day"}
+            {postData.storePost.category.name} / {displayDate}
           </STextSub>
         </STitleAndProduct>
         {!isAuthor &&
@@ -148,25 +169,21 @@ const StoreDetail = () => {
           ))}
       </SContent>
       <SContentDetail>
-        <STextContent>
-          {"content"} 이걸 안씀? 길이 테스트 길이 테스트 길이 테스트 길이 테스트
-          길이 테스트 길이 테스트 길이 테스트 길이 테스트 길이 테스트 길이
-          테스트
-        </STextContent>
+        <STextContent>{postData.storePost.detail}</STextContent>
       </SContentDetail>
       <SFooter>
         <STextSubSee>
-          조회수 ${"see"} 관심 ${"like"}
+          조회수 {postData.storePost.views} 관심 {postData.likes}
         </STextSubSee>
       </SFooter>
       {isAuthor ? (
         <SButtons>
-          <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
+          <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
+          <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
         </SButtons>
       ) : (
         <SButtons>
-          <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
-          <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
+          <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
         </SButtons>
       )}
       {showModal && (
@@ -184,7 +201,7 @@ const StoreDetail = () => {
         </>
       )}
     </SMain>
-  );
+  ) : null;
 };
 
 export default StoreDetail;
@@ -197,6 +214,7 @@ const SMain = styled.div`
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
+  margin-top: 170px;
 `;
 
 const SImgs = styled.div`
@@ -321,7 +339,6 @@ const SButtonWeekPurple = styled.button`
   display: flex;
   width: 106px;
   height: 40px;
-  padding: 10px 40px;
   justify-content: center;
   align-items: center;
   gap: 10px;

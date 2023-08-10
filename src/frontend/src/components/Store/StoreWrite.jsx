@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from "../../assets/images";
 import Swal from "sweetalert2";
+import { requestPost, setToken } from "../../lib/api/api";
+
+
 
 const StoreWrite = () => {
   console.log(images);
@@ -28,9 +31,11 @@ const StoreWrite = () => {
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
   const [imageList, setImageList] = useState([]);
+  
 
   const mySellHandler = () => {
     setshowDropdown(!showDropdown);
+    setToken()
     axios
       .get("--서버 주소--")
       .then((response) => {
@@ -138,7 +143,7 @@ const StoreWrite = () => {
           ? "최대 대여 기간"
           : content === ""
           ? "내용"
-          : "최대 기간 >= 최소 기간",
+          : "no error",
     };
   };
 
@@ -155,34 +160,30 @@ const StoreWrite = () => {
   const goSellBtn = () => {
     console.log({
       title,
-      productName,
-      rentalFee,
+      content,
       minRentalDay,
       maxRentalDay,
-      content,
+      rentalFee,
+      deposit,
+      productSelect
     });
 
     const validation = validateForm();
+    console.log(validation)
 
     if (validation.isValid) {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("productName", productName);
-      formData.append("rentalFee", rentalFee);
-      formData.append("minRentalDay", minRentalDay);
-      formData.append("maxRentalDay", maxRentalDay);
-      formData.append("content", content);
-      formData.append("upperLimitDate", `${year}-${month}-${date}`);
-      imageList.forEach((image, index) => {
-        formData.append("imageList", image, `image${index}.png`);
-      });
-
-      axios
-        .post("--서버 주소--", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+      setToken()
+      requestPost("store/write", {
+        "title": title,
+        "detail": content,
+        "minRentalPeriod": minRentalDay,
+        "maxRentalPeriod": maxRentalDay,
+        "limitDate": `${year}-${month}-${date}`,
+        "rentalCost": rentalFee,
+        "deposit": deposit,
+        "category": productSelect+1,
+        // "image": imageList,
+      })
         .then((response) => {
           displayMessage("success", "게시글 등록됨");
           console.log(response);
@@ -190,7 +191,6 @@ const StoreWrite = () => {
         })
         .catch((error) => {
           displayMessage("error", "게시글 등록에 실패하였습니다.");
-          console.log(error);
         });
     } else {
       displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
@@ -408,7 +408,7 @@ const SMain = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  //   gap: 30px;
+  margin-top: 170px;
 `;
 
 const SHeader = styled.div`
