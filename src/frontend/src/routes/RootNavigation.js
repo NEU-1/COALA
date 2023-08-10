@@ -44,6 +44,11 @@ const RootNavigation = () => {
           <Route path="/tech" element={<TechBoardList />} />
           <Route path="/tech/:postId" element={<TechBoardDetail />} />
           <Route path="/tech/comment" element={<Commentapp />} />
+          
+          <Route path="/store" element={<Store />} />
+          <Route path="/store/write" element={<StoreWrite />} />
+          <Route path="/store/:postId" element={<StoreDetail />} />
+          <Route path="/store/:postId/update" element={<StoreUpdate />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
@@ -52,10 +57,6 @@ const RootNavigation = () => {
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
 
-        <Route path="/store" element={<Store />} />
-        <Route path="/store/write" element={<StoreWrite />} />
-        <Route path="/store/:postId" element={<StoreDetail />} />
-        <Route path="/store/:postId/update" element={<StoreUpdate />} />
 
       </Routes>
     </BrowserRouter>
