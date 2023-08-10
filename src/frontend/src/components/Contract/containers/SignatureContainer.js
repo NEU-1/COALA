@@ -1,7 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { Signature } from '../components/Signature';
 
-const SignatureContainer = ({ name, who }) => {
+const SignatureContainer = forwardRef(({ name, who }, ref) => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
 
@@ -25,7 +31,6 @@ const SignatureContainer = ({ name, who }) => {
   }, []);
 
   const onStartDrawing = (e) => {
-    console.log(e);
     if (e.button === 2) {
       resetCanvas();
     }
@@ -65,6 +70,39 @@ const SignatureContainer = ({ name, who }) => {
     }
   };
 
+  const saveSign = () => {
+    const blank = document.createElement('canvas');
+    const canvas = canvasRef.current;
+    blank.width = canvas.width;
+    blank.height = canvas.height;
+    const blankContext = blank.getContext('2d');
+    blankContext.font = '14px Varela Round';
+    blankContext.textAlign = 'center';
+    blankContext.fillText(who, 60, 35);
+
+    // 서명이 비어있는지 확인
+    if (canvas.toDataURL() === blank.toDataURL()) {
+      return null;
+    } else {
+      const imgBase64 = canvas.toDataURL();
+      const decoding = atob(imgBase64.split(',')[1]);
+
+      let array = [];
+      for (let i = 0; i < decoding.length; i++)
+        array.push(decoding.charCodeAt(i));
+
+      const file = new Blob([new Uint8Array(array)]);
+      const fileName = 'sign_img_' + name + '_' + new Date().getTime() + '.png';
+      let formData = new FormData();
+      formData.append('file', file, fileName);
+      return formData;
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    saveSign,
+  }));
+
   return (
     <Signature
       name={name}
@@ -74,6 +112,6 @@ const SignatureContainer = ({ name, who }) => {
       onDrawing={onDrawing}
     />
   );
-};
+});
 
 export default SignatureContainer;

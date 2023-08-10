@@ -6,12 +6,20 @@ import SignatureContainer from './containers/SignatureContainer';
 import CButton from '../Common/CButton';
 
 const Contract = ({
+  contractForm,
+  producer,
+  consumer,
+  post,
+  producerSignRef,
+  consumerSignRef,
   isAgree1,
   isAgree2,
   onChangeAgree1,
   onChangeAgree2,
   onClickSendBtn,
   onChangeModalFlag,
+  onChangeRentalCost,
+  onChangeDeposit,
 }) => {
   return (
     <>
@@ -39,9 +47,9 @@ const Contract = ({
             <STable1>
               <tr>
                 <td className="tableHead">제공자</td>
-                <td className="tableData">강승현</td>
+                <td className="tableData">{producer}</td>
                 <td className="tableHead">대여자</td>
-                <td className="tableData">심은진</td>
+                <td className="tableData">{consumer}</td>
               </tr>
             </STable1>
           </SSubContent>
@@ -50,19 +58,36 @@ const Contract = ({
             <STable2>
               <tr>
                 <td className="tableHead">제품명</td>
-                <td className="tableData">한성 키보드</td>
+                <td className="tableData">{post.productName}</td>
               </tr>
               <tr>
                 <td className="tableHead">계약기간</td>
-                <td className="tableData">2023.08.07 ~ 2023.08.08(1일)</td>
+                <td className="tableData">
+                  <input type="date" value={contractForm.rental_at} /> ~
+                  2023.08.08(1일)
+                </td>
               </tr>
               <tr>
                 <td className="tableHead">대여료</td>
-                <td className="tableData">5,000원</td>
+                <td className="tableData">
+                  <input
+                    type="number"
+                    value={contractForm.rental_cost}
+                    onChange={onChangeRentalCost}
+                  />
+                  원
+                </td>
               </tr>
               <tr>
                 <td className="tableHead">보증금</td>
-                <td className="tableData">20,000원</td>
+                <td className="tableData">
+                  <input
+                    type="number"
+                    value={contractForm.deposit}
+                    onChange={onChangeDeposit}
+                  />
+                  원
+                </td>
               </tr>
             </STable2>
           </SSubContent>
@@ -71,19 +96,35 @@ const Contract = ({
             <STable2>
               <tr>
                 <td className="tableHead">계좌</td>
-                <td className="tableData">신한 110-111-222222</td>
+                <td className="tableData">{contractForm.account}</td>
+              </tr>
+              <tr>
+                <td className="tableHead">납부금액</td>
+                <td className="tableData"></td>
               </tr>
             </STable2>
           </SSubContent>
         </SContractContent>
         <div className="agreement">위 계약에 동의합니다.</div>
         <SContractSign>
-          <SignatureContainer name="강승현" who="제공자(인)" />
-          <SignatureContainer name="심은진" who="대여자(인)" />
+          <SignatureContainer
+            name={`${producer}`}
+            who="제공자(인)"
+            ref={producerSignRef}
+          />
+          <SignatureContainer
+            name={`${consumer}`}
+            who="대여자(인)"
+            ref={consumerSignRef}
+          />
         </SContractSign>
         <SContractDate>2023.08.06</SContractDate>
         <SBtnContainer>
-          <CButton text={'취소'} bgColor={'#d9d9d9'} />
+          <CButton
+            text={'취소'}
+            bgColor={'#d9d9d9'}
+            onClick={onChangeModalFlag}
+          />
           <CButton text={'전송'} onClick={onClickSendBtn} />
         </SBtnContainer>
       </SLayout>
@@ -217,6 +258,17 @@ const STable2 = styled.div`
     width: 495px;
     padding: 10px 0px;
     gap: 10px;
+
+    input[type='number'] {
+      font-size: 16px;
+      width: 100px;
+      text-align: center;
+    }
+
+    input[type='date'] {
+      font-size: 16px;
+      text-align: center;
+    }
   }
 `;
 
