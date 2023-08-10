@@ -53,6 +53,11 @@ const RootNavigation = () => {
           <Route path="/tech" element={<TechBoardList />} />
           <Route path="/tech/:postId" element={<TechBoardDetail />} />
           <Route path="/tech/comment" element={<Commentapp />} />
+
+          <Route path="/store" element={<Store />} />
+          <Route path="/store/write" element={<StoreWrite />} />
+          <Route path="/store/:postId" element={<StoreDetail />} />
+          <Route path="/store/:postId/update" element={<StoreUpdate />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
@@ -65,14 +70,6 @@ const RootNavigation = () => {
           <Route index path="/chat/chat-list" element={<ChatListContainer />} />
           <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
         </Route>
-
-        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
-        {/* <Route path="/tech/:postId" element={<TechViewPage />} /> */}
-        <Route path="/tech" element={<TechBoardList />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/store/write" element={<StoreWrite />} />
-        <Route path="/store/:postId" element={<StoreDetail />} />
-        <Route path="/store/:postId/update" element={<StoreUpdate />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

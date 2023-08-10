@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 */
 
 @RestController
-@CrossOrigin(origins="*")
 @RequiredArgsConstructor
 @RequestMapping("/api/tech/")
 public class TechPostController {
