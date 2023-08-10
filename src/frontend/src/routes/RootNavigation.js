@@ -38,6 +38,13 @@ import TechBoardList from "../components/Techboard/components/TechBoardList";
 import Commentapp from "../components/Techboard/components/Commentapp";
 import TechBoardUpdate from "../components/Techboard/components/TechBoardUpdate"
 
+//자유게시판
+import FreeBoardDetail from "../components/Freeboard/components/FreeBoardDetail";
+import FreeBoardWrite from "../components/Freeboard/components/FreeBoardWrite";
+import FreeBoardList from "../components/Freeboard/components/FreeBoardList";
+import FreeCommentapp from "../components/Freeboard/components/FreeCommentapp";
+import FreeBoardUpdate from "../components/Freeboard/components/FreeBoardUpdate"
+
 const RootNavigation = () => {
   return (
     <BrowserRouter>
@@ -52,6 +59,12 @@ const RootNavigation = () => {
           <Route path="/tech/post/detail/:postid" element={<TechBoardDetail />} />
           <Route path="/tech/comment" element={<Commentapp />} />
           <Route path="/tech/update/:postid" element={<TechBoardUpdate />} />
+          <Route path="/free/update/:postid" element={<FreeBoardUpdate />} />
+          <Route path="/free/post/detail" element={<FreeBoardDetail />} />
+          <Route path="/free/write" element={<FreeBoardWrite />} />
+          <Route path="/free" element={<FreeBoardList />} />
+          {/* <Route path="/free/update/:postid" element={<FreeCommentapp />} /> */}
+          
         </Route>
 
         <Route path="/login" element={<Login />} />

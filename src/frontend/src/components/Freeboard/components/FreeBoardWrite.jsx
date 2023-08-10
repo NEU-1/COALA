@@ -60,7 +60,7 @@ const Title = styled.div`
 `
 
 
-function TechBoardWrite() {
+function FreeBoardWrite() {
   const navigate = useNavigate();
   
 
@@ -68,7 +68,7 @@ function TechBoardWrite() {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-    imagePath: 'String',
+    imagePath: 'string',
     isAnonymous: false,
   });
 
@@ -97,9 +97,9 @@ function TechBoardWrite() {
   
       const params = {
         title: board.title,
-        detail: board.detail, // 수정된 부분: editorContent를 사용
-        imagePath: board.imagePath,
+        detail: editorContent,
         isAnonymous: board.isAnonymous,
+        imagePath: board.imagePath
       }
   
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
@@ -159,4 +159,4 @@ function TechBoardWrite() {
   );
 }
 
-export default TechBoardWrite;
+export default FreeBoardWrite;

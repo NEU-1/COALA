@@ -2,12 +2,11 @@ import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import styled from "styled-components"
 import { useNavigate, Link } from 'react-router-dom';
-import Pagination from "./Pagination";
 import {requestGet} from "../../../lib/api/api"
 
 
 
-const TechBoardList = () => {
+const FreeBoardList = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
@@ -15,14 +14,14 @@ const TechBoardList = () => {
 
   const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
-    requestGet(`tech/post/${page}`)
+    requestGet(`free/post/${page}`)
     .then(res=>{console.log(res.data);setPosts(res.data.list)})
    
 
 
   }
   const goTowrite = () => {
-    navigate('/tech/write');
+    navigate('/free/write');
   };
 
   useEffect(() => {
@@ -68,7 +67,7 @@ const TechBoardList = () => {
   );
 };
 
-export default TechBoardList;
+export default FreeBoardList;
 
 const Slayout = styled.div`
   margin-top: 170px;

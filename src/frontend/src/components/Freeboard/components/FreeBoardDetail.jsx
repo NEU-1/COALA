@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import Commentapp from './Commentapp';
+import Commentapp from './FreeCommentapp';
 import { requestGet, setToken, requestPost, requestDelete } from '../../../lib/api/api';
 import React,{useState, useRef, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,12 +11,12 @@ import { BiLike } from "react-icons/bi";
 
 
 
-const TechBoardDetail = () => {
+const FreeBoardDetail = () => {
   const { postid } = useParams(); // /board/:idx와 동일한 변수명으로 데이터를 꺼낼 수 있습니다.
   const [board, setBoard] = useState(null);
   const navigate = useNavigate();
   const moveToUpdate = () => {
-    navigate('/tech/update/' + postid);
+    navigate('/free/update/' + postid);
   };
   const [postData, setPostData] = useState(null);
   const [pictures, setPictures] = useState([]); 
@@ -40,10 +40,10 @@ const TechBoardDetail = () => {
   const deleteBoard = async () => {
     if (window.confirm('게시글을 삭제하시겠습니까?')) {
       try {
-        const resp = await axios.delete(`http://i9d108.p.ssafy.io:9999/api/tech/post/delete/${postid}`);
+        const resp = await axios.delete(`http://i9d108.p.ssafy.io:9999/api/free/post/delete/${postid}`);
         if (resp.status === 200) {
           alert('삭제되었습니다.');
-          navigate('/tech');
+          navigate('/free');
         }
       } catch (error) {
         console.error("Error deleting board:", error);
@@ -54,7 +54,7 @@ const TechBoardDetail = () => {
   const getBoard = () => {
     setToken()
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
-    requestGet(`tech/post/detail/${postid}`)
+    requestGet(`tech/free/detail/${postid}`)
     .then(res=>{console.log(res.data);setBoard(res.data)})
   }
   useEffect(() => {
@@ -102,7 +102,7 @@ const TechBoardDetail = () => {
 };
 
 
-export default TechBoardDetail;
+export default FreeBoardDetail;
 
 const Slayout = styled.div`
   margin-top: 170px;
