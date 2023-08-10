@@ -55,15 +55,23 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     setContractForm({ ...contractForm, period: e.target.value });
   };
 
+  useEffect(() => {
+    if (contractForm.rental_at) {
+      let returnDate = new Date(contractForm.rental_at);
+      returnDate.setDate(returnDate.getDate() + Number(contractForm.period));
+      setContractForm({ ...contractForm, return_at: returnDate.toISOString() });
+    }
+  }, [contractForm.rental_at, contractForm.period]);
 
   useEffect(() => {
     if (contractForm.producer_sign) {
-      console.log(contractForm);
       console.log(contractForm.producer_sign.get('file'));
+      const file_image = contractForm.producer_sign.get('file');
+      console.log(file_image)
       setToken();
-      requestPostNode(`contract/contract`, contractForm)
-        .then((res) => console.log("res",res)) // 하고 모달 닫기
-        .catch((err) => console.log("err",err));
+      requestPostNode(`contract/contract`, file_image)
+        .then((res) => console.log(res)) // 하고 모달 닫기
+        .catch((err) => console.log(err));
     }
   }, [contractForm.producer_sign]);
 
@@ -78,8 +86,6 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
   const onClickSendBtn = () => {
     if (isAgree1 && isAgree2) {
       const image = producerSignRef.current.saveSign();
-      console.log(contractForm);
-      console.log(image)
       if (!image) {
         Swal.fire({
           title:

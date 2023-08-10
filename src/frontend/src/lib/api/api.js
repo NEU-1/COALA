@@ -47,6 +47,7 @@ export const requestGet = async (url, params) => {
 
 export const requestPost = async (url, body) => {
   try {
+
     const data = await axios.post(baseUrl + url, body, headers);
     return data;
   } catch (error) {
@@ -57,6 +58,9 @@ export const requestPost = async (url, body) => {
 
 export const requestPostNode = async (url, body) => {
   try {
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+    };
     const data = await axios.post(baseNodeUrl + url, body, headers);
     return data;
   } catch (error) {
