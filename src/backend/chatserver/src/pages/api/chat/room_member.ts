@@ -3,7 +3,6 @@ import {
   Delete as DeleteRoomMember
 } from '@/models/chat/room_member'
 
-import jwtVerify from '@/lib/jwtVerify';
 import withCors from '../cors'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
