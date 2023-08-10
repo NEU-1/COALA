@@ -137,7 +137,7 @@ const Contract = ({
             ref={consumerSignRef}
           />
         </SContractSign>
-        <SContractDate>2023.08.06</SContractDate>
+        <SContractDate>{dateFormat(contractForm.created_at)}</SContractDate>
         <SBtnContainer>
           <CButton
             text={'취소'}

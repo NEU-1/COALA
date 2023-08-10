@@ -8,9 +8,6 @@ import { requestPostNode, setToken } from '../../../lib/api/api';
 // 제공자는 모든 정보를 수정 가능하고 제공자 서명란 활성화
 // 이용자는 정보 수정 불가능하고 이용자 서명란만 활성화
 const ContractContainer = ({ info, onChangeModalFlag }) => {
-  let today = new Date();
-  today.setHours(today.getHours() + 9);
-  today = today.toISOString();
   const [isAgree1, setIsAgree1] = useState(false);
   const [isAgree2, setIsAgree2] = useState(false);
   const [contractForm, setContractForm] = useState({
@@ -18,14 +15,14 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     consumer_id: 2,
     rental_cost: 5000,
     deposit: 20000,
-    created_at: today,
+    created_at: '',
     rental_at: '',
     return_at: '',
     period: 0,
     status: 0,
-    producer_sign: null,
     account: '신한 110-111-222222',
   });
+  let formData = new FormData();
   const [producer, setProducer] = useState('강승현');
   const [consumer, setConsumer] = useState('심은진');
   const [post, setPost] = useState({
@@ -56,22 +53,18 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
   };
 
   useEffect(() => {
+    let today = new Date();
+    today = today.toISOString();
+    setContractForm({ ...contractForm, created_at: today });
+  }, []);
+
+  useEffect(() => {
     if (contractForm.rental_at) {
       let returnDate = new Date(contractForm.rental_at);
       returnDate.setDate(returnDate.getDate() + Number(contractForm.period));
       setContractForm({ ...contractForm, return_at: returnDate.toISOString() });
     }
   }, [contractForm.rental_at, contractForm.period]);
-
-  useEffect(() => {
-    if (contractForm.producer_sign) {
-      console.log(contractForm);
-      setToken();
-      requestPostNode(`contract/contract`, contractForm)
-        .then((res) => console.log(res)) // 하고 모달 닫기
-        .catch((err) => console.log(err));
-    }
-  }, [contractForm.producer_sign]);
 
   const onChangeRentalDate = (e) => {
     const date = new Date(e.target.value);
@@ -83,8 +76,8 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
 
   const onClickSendBtn = () => {
     if (isAgree1 && isAgree2) {
-      const image = producerSignRef.current.saveSign();
-      if (!image) {
+      formData = producerSignRef.current.saveSign();
+      if (!formData) {
         Swal.fire({
           title:
             '<div style="font-size: 16px; font-weight: 700">서명을 해주세요.</div>',
@@ -93,7 +86,19 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
           return;
         });
       } else {
-        setContractForm({ ...contractForm, producer_sign: image });
+        formData.append(
+          'contractForm',
+          new Blob([JSON.stringify(contractForm)], {
+            type: 'applications/json',
+          })
+        );
+        console.log(formData.get('contractForm'));
+        setToken();
+        requestPostNode(`contract/contract`, formData, {
+          'Content-Type': 'multipart/form-data',
+        })
+          .then((res) => console.log(res)) // 하고 모달 닫기
+          .catch((err) => console.log(err));
       }
     } else {
       Swal.fire({

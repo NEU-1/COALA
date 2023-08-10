@@ -62,7 +62,7 @@ export const requestPostNode = async (url, body) => {
   }
 };
 
-export const requestPut = async (url, body) => {
+export const requestPut = async (url, body, headers) => {
   try {
     const data = await axios.put(baseUrl + url, body, headers);
     return data;
