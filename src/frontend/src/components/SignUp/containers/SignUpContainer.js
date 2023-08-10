@@ -177,7 +177,7 @@ const SignUpContainer = () => {
       requestPost(`member/signup`, form)
         .then((res) => {
           console.log('success', res);
-          if (res.data.statusCode === 201) {
+          if (res.data.statusCode === 200) {
             Swal.fire({
               title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
             }).then(() => {
