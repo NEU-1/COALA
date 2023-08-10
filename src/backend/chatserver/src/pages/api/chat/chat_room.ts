@@ -11,7 +11,6 @@ import {
 import withCors from '../cors'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import jwtVerify from '@/lib/jwtVerify';
 
 const receiveData = withCors(async (
   req: NextApiRequest,
