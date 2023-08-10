@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,8 @@ public class FreePostServiceImpl implements FreePostService{
 
 //    private final S3UploadService s3UploadService;
 
+    // S3 주소
+    static String str = "https://coala.s3.ap-northeast-2.amazonaws.com/Free/";
     @Transactional
     @Override
     public CommunityBaseResponseDto savePost(FreePostRequestDto postDto, Member member) {
@@ -103,6 +106,13 @@ public class FreePostServiceImpl implements FreePostService{
 
         freePost.views();
 
+        List<String> uri = new ArrayList<>();
+        List<FreeImage> imageList = freeImageRepository.findByFpId(freePost);
+        for (int i = 0; i < imageList.size(); i++) {
+            FreeImage freeImage = imageList.get(i);
+            uri.add(str + freeImage.getImagePath());
+        }
+
         return FreePostResponseDto.builder()
                 .memberId(freePost.getMemberId())
                 .title(freePost.getTitle())
@@ -110,7 +120,7 @@ public class FreePostServiceImpl implements FreePostService{
                 .createAt(freePost.getCreateAt())
                 .updateAt(freePost.getUpdateAt())
                 .isAnonymous(freePost.isAnonymous())
-                .imagePath(freeImages)
+                .imagePath(uri)
                 .views(freePost.getViews())
                 .commentCount(freePost.getComments().size())
                 .goodCount(freePost.getGoods().size())

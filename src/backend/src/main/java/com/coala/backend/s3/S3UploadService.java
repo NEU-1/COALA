@@ -28,11 +28,12 @@ public class S3UploadService{
 
     // MultipartFile 전달 받아 File 로 전환. S3에 업로드
     public String S3Upload(MultipartFile multipartFile, String postCategory) throws IOException {
-        File uploadFile = convert(multipartFile).orElseThrow(() -> {
-            return new IllegalArgumentException("파일 전환에 실패했습니다.");
-        });
+        Optional<File> uploadFile = convert(multipartFile);
+        if (!uploadFile.isPresent()) {
+            return "사진없음";
+        }
 
-        return pathUpload(uploadFile, postCategory);
+        return pathUpload(uploadFile.get(), postCategory);
     }
 
     // S3에 파일 저장
@@ -70,14 +71,19 @@ public class S3UploadService{
     // MultipartFile -> File 로 전환
     private Optional<File> convert(MultipartFile file) throws IOException {
         File converFile = new File(file.getOriginalFilename());
-
         // 객체 -> 실제 파일화
-        if (converFile.createNewFile()) {
-            // 내부 내용 작성
-            try (FileOutputStream fos  = new FileOutputStream(converFile)) {
-                fos.write(file.getBytes());
+
+        try {
+            if (converFile.createNewFile()) {
+                // 내부 내용 작성
+                try (FileOutputStream fos = new FileOutputStream(converFile)) {
+
+                    fos.write(file.getBytes());
+                }
+                return Optional.of(converFile);
             }
-            return Optional.of(converFile);
+        } catch (IOException e) {
+
         }
         return Optional.empty();
     }

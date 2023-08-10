@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /*
     공지게시판 응답 DTO 입니다.
@@ -19,11 +20,11 @@ public class NoticeResponseDto {
     private String detail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private String imagePath;
+    private List<String> imagePath;
 
     @Builder
     public NoticeResponseDto(Long id, String title, String detail,
-                             LocalDateTime createAt, LocalDateTime updateAt, String imagePath) {
+                             LocalDateTime createAt, LocalDateTime updateAt, List<String> imagePath) {
         this.id = id;
         this.title = title;
         this.detail = detail;
