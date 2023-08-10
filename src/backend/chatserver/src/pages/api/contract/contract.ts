@@ -11,33 +11,21 @@ import withCors from '../cors'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { buildConditionQuery } from '@/lib/queryBuilder';
 
-import {upload} from '@/pages/api/upload'
-
+import {uploadToS3, getData} from '@/pages/api/upload'
+import { IncomingForm } from "formidable";
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: storage }).single('producer_sign');
-const producer_sign = upload.single('file');
-const consumer_sign = upload.single('consumer_sign');
-const contract_inform = upload.single('contract_path')
 
-// const multerMiddleware = (req: any, res: any, next: () => void) => {
-//     upload(req, res, (err) => {
-//         if (err) {
-//             return res.status(500).json({ error: err.message });
-//         }
-//         next();
-//     });
-// };
-
-// export const config = {
-//     api: {
-//         bodyParser: false,
-//     },
-// };
+export const config = {
+  api: {
+      bodyParser: false,
+  },
+};
 
 const receiveData = withCors(async (req: any, res: any) => {
   // let { uploadToS3 } = useS3Upload();  
   // console.log(req);
-  console.log(req.body);
+  // console.log(req.body);
   // console.log( req.body.producer_sign.get('file'));
 //   for (let [key, value] of req.body.producer_sign.entries()) {
 //     console.log("ㅎㅇ",key, value);
@@ -46,61 +34,76 @@ const receiveData = withCors(async (req: any, res: any) => {
 
 if (req.method === 'POST') {
 
-    await new Promise<void>((resolve, reject) => {
-      producer_sign(req, res, err => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve();
+  await new Promise<void>((resolve, reject) => {
+      getData.fields([
+        { name: 'file', maxCount: 1 },
+        { name: 'contractForm', maxCount: 1 }
+      ])(req, res, (err: any) => {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve();
       });
     });
-
-    const image = req.file;
-    const inputData = req.body;
-    console.log(image);
+    const {file, contractForm} = req.files;
+    // const inputData = req.contractForm;
     
-    // SET 설정
-    const newInputData = {... inputData}
-    if (newInputData.producer_sign){
-      delete newInputData.producer_sign;
-    }
+    const image = file[0]
+    let imageUrl = await uploadToS3('signature', image.originalname, image.buffer);
+
+    const contractFormData = contractForm[0].buffer.toString('utf8');  // buffer를 문자열로 변환
+    const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
+
+    console.log(contractFormJSON);
+    console.log(imageUrl)
+    // // SET 설정
+    const constractFrom = { ...contractFormJSON, producer_sign : imageUrl}
     
     // 이미지 upload
-    // let { url } = await uploadToS3(image);
     // Object.assign(newInputData, { producer_sign: url });
     
     // 이미지와 inputData 처리
     // const result = await createContract(inputData);
-    res.status(200).json({  message: 'send to consumer' });
+    res.status(200).json({ constractFrom, message: 'send to consumer' });
     return;
   }
     
-    return res.status(500).json({ error: 'just checking logs' });
-    //   return
-    if (req.method === 'PUT') {
-      const image = req.file;  // 여기에서도 이미지 처리를 해야 함
-      const inputData = req.body;
-      // 나머지 PUT 로직...
-      
-      // SET 설정
-      const newInputData = {... inputData}
-      if (newInputData.consumer_sign){
-        delete newInputData.consumer_sign;
-      }
-      
+  //   return
+  if (req.method === 'PUT') {
+    await new Promise<void>((resolve, reject) => {
+      getData.fields([
+        { name: 'file', maxCount: 2 },
+        { name: 'contractForm', maxCount: 1 }
+      ])(req, res, (err: any) => {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve();
+      });
+    });
+      const {file, contractForm} = req.files;
+    
+      const image_consumer = file[0]
+      const image_contract = file[1]
       // 이미지 upload
-      let { url } = await uploadToS3(image);
-      const {consumer_sign, id} = inputData;
+      const consumer_sign = await uploadToS3('signature', image_consumer.originalname, image_consumer.buffer);
+      const contract = await uploadToS3('contract', image_consumer.originalname, image_consumer.buffer);
+
+
+      const contractFormData = contractForm[0].buffer.toString('utf8');  // buffer를 문자열로 변환
+      const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
+      const id = contractFormJSON.id
       // 이미지 삭제하는거 추가해야함
       const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
-      // 계약서 생성하기 
+      const NewConstractData = { consumer_sign, contract_path : contract}
       
-      Object.assign(newInputData, { producer_sign: url, contract_path : 'example_contract_Path' });
+      // Object.assign(newInputData, { producer_sign: url, contract_path : 'example_contract_Path' });
       // 계약서 생성이 완료될 경우 sign이미지들 삭제
       
-      const result = await updateContract({...newInputData, id});
+      const result = await updateContract({...NewConstractData, id});
       const contractData = await readQuery('history',{conditionQuery, values})
       if (!result){
         res.status(500).json({ message: 'contract failed cuz of server error' });
@@ -119,6 +122,7 @@ if (req.method === 'POST') {
       // 나머지 DELETE 로직...
     }
     
+    return res.status(500).json({ error: 'just checking logs' });
   });
-
-export default receiveData;
+  
+  export default receiveData;
