@@ -21,6 +21,15 @@ import withCors from '../cors'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+
+type DataType = {
+  name: any;
+  pp_id: any;
+  pr_id: any;
+};
+
+
+
 const receiveData = withCors(async (
   req: NextApiRequest,
   res: NextApiResponse
@@ -56,11 +65,18 @@ const receiveData = withCors(async (
   
   if (req.method === 'POST'){
     const { name, pp_id, pr_id, ur_id } = req.body;
-    const data = {
+    let data : Partial<DataType> = {
       name,
-      pp_id : pp_id || null,
-      pr_id : pr_id || null,
+    };
+    
+    if (pp_id !== undefined) {
+      data.pp_id = pp_id;
     }
+    
+    if (pr_id !== undefined) {
+      data.pr_id = pr_id;
+    }
+    
     console.log(`방을 생성 중입니다.`, data);
     let [result] : room[] = await readRoom(data);
     console.log("result_first",result)
