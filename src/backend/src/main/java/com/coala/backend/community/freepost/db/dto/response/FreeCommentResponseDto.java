@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class FreeCommentResponseDto {
+    private Long id;
     @JsonIgnore
     private FreePost fpId;
     private String author;
@@ -19,7 +20,7 @@ public class FreeCommentResponseDto {
     private LocalDateTime updateAt;
 
     @Builder
-    public FreeCommentResponseDto(FreePost fpId, String author, String content, LocalDateTime createAt, LocalDateTime updateAt) {
+    public FreeCommentResponseDto(Long id, FreePost fpId, String author, String content, LocalDateTime createAt, LocalDateTime updateAt) {
         this.fpId = fpId;
         this.author = author;
         this.content = content;

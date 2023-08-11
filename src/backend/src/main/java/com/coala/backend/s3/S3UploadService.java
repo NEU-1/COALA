@@ -72,7 +72,6 @@ public class S3UploadService{
     private Optional<File> convert(MultipartFile file) throws IOException {
         File converFile = new File(file.getOriginalFilename());
         // 객체 -> 실제 파일화
-
         try {
             if (converFile.createNewFile()) {
                 // 내부 내용 작성

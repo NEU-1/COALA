@@ -34,9 +34,9 @@ public class FreeCommentController {
     private static String accessToken = "";
 
     // 댓글 저장
-    @PostMapping("save")
-    public ResponseEntity<FreeComment> saveComment(@RequestBody @Valid FreeCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
-        freeCommentService.saveComment(requestDto, getEmail(httpServletRequest));
+    @PostMapping("save/{id}")
+    public ResponseEntity<FreeComment> saveComment(@PathVariable("id") Long id, @RequestBody @Valid FreeCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
+        freeCommentService.saveComment(id, requestDto, getEmail(httpServletRequest));
 
         return ResponseEntity.ok()
                 .body(requestDto.toEntity());

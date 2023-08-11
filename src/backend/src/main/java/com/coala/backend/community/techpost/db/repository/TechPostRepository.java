@@ -11,4 +11,5 @@ import java.util.List;
 * */
 public interface TechPostRepository extends JpaRepository<TechPost, Long> {
     List<TechPost> findByTitleContaining(String keyword, Pageable pageable);
+    List<TechPost> findByTitleContaining(String keyword);
 }

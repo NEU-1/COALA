@@ -28,8 +28,8 @@ public class FreeCommentServiceImpl implements FreeCommentService{
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto saveComment(FreeCommentRequestDto commentDto, Member member) {
-        FreePost freePost = freePostRepository.findById(commentDto.getFpId().getId()).orElseThrow(()-> {
+    public CommunityBaseResponseDto saveComment(Long id, FreeCommentRequestDto commentDto, Member member) {
+        FreePost freePost = freePostRepository.findById(id).orElseThrow(()-> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
@@ -61,6 +61,7 @@ public class FreeCommentServiceImpl implements FreeCommentService{
 
         List<FreeCommentResponseDto> postComments = freeCommentRepository.findByFpId(freePost, pageable).stream()
                 .map(freeComment -> FreeCommentResponseDto.builder()
+
                         .fpId(freeComment.getFpId())
                         .author(freeComment.getAuthor())
                         .content(freeComment.getContent())
