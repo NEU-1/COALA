@@ -58,8 +58,8 @@ const receiveData = withCors(async (
     const { name, pp_id, pr_id, ur_id } = req.body;
     const data = {
       name,
-      pp_id,
-      pr_id
+      pp_id : pp_id || null,
+      pr_id : pr_id || null,
     }
     console.log(`방을 생성 중입니다.`, data);
     let [result] : room[] = await readRoom(data);
