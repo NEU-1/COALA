@@ -23,9 +23,6 @@ const receiveData = withCors(async (
     console.log(`${email}님이 ${name} 방으로 입장했습니다.`)
     res.status(200).json({ roomUser });
     return 
-
-
-
   }
 
   if (req.method === 'DELETE'){

@@ -41,13 +41,22 @@ const Create = async (inputData : any) =>{
       }
     }
 
-    let other : member | undefined;
+    let other : Partial<member> | undefined;
     for (let other_members_id of others){
       const [member] : member[] = await readUser({id : other_members_id});
-      other = member;
+      const {id, image_path, name, nickname} = member;
+      other = {id, image_path, name, nickname};
     }
     
-    const data =  {room: room, user : usr, other : other};
+    const send_usr = {
+      id : usr.id,
+      image_path : usr.image_path,
+      name : usr.name,
+      nickname : usr.nickname
+    }
+    
+    const data =  {room: room, user : send_usr, other : other};
+    
     console.log(data);
     if (flag) {return data;} 
     await createQuery('room_member', room_user);
