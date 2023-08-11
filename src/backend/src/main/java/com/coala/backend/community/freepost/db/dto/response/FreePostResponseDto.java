@@ -27,6 +27,7 @@ public class FreePostResponseDto {
     private LocalDateTime updateAt;
     private List<String> imagePath;
     private boolean isAnonymous;
+    private boolean good;
     private int views;
     private int commentCount;
     private int goodCount;
@@ -34,7 +35,7 @@ public class FreePostResponseDto {
     @Builder
     public FreePostResponseDto(Long id, Member memberId, String title, String detail,
                                LocalDateTime createAt, LocalDateTime updateAt, List<String> imagePath,
-                               boolean isAnonymous, int views, int commentCount, int goodCount) {
+                               boolean isAnonymous, int views, boolean good, int commentCount, int goodCount) {
 
         this.id = id;
         this.memberId = memberId;
@@ -43,6 +44,7 @@ public class FreePostResponseDto {
         this.createAt = createAt;
         this.updateAt = updateAt;
         this.imagePath = imagePath;
+        this.good = good;
         this.isAnonymous = isAnonymous;
         this.views = views;
         this.commentCount = commentCount;

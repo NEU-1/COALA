@@ -67,9 +67,10 @@ public class TechPost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateTechPost(String title, String detail) {
+    public void updateTechPost(String title, String detail, Member nickname) {
         this.title = title;
         this.detail = detail;
+        this.nickname = nickname;
         this.updateAt = LocalDateTime.now();
     }
 

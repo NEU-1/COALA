@@ -1,5 +1,6 @@
 package com.coala.backend.community.techpost.api.service;
 
+import com.coala.backend.community.freepost.db.entity.FreeImage;
 import com.coala.backend.community.techpost.db.entity.TechComment;
 import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.community.techpost.db.repository.TechImageRepository;
@@ -43,7 +44,7 @@ public class TechPostServiceImpl implements TechPostService{
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto savePost(List<MultipartFile> multipartFiles, TechPostRequestDto postDto, Member member) throws IOException {
+    public CommunityBaseResponseDto savePost(TechPostRequestDto postDto, Member member) {
         TechPost techPost = TechPost.builder()
                 .memberId(member)
                 .title(postDto.getTitle())
@@ -53,17 +54,13 @@ public class TechPostServiceImpl implements TechPostService{
 
         techPostRepository.saveAndFlush(techPost);
 
-        if (!multipartFiles.isEmpty()) {
-            for (int i = 0; i < multipartFiles.size(); i++) {
-                String storedFileName = s3UploadService.S3Upload(multipartFiles.get(i), "Tech");
-                if (storedFileName.equals("사진없음")) break;
-
+        if (!postDto.getImagePath().isEmpty()) {
+            for (int i = 0; i < postDto.getImagePath().size(); i++) {
                 techImageRepository.save(TechImage.builder()
-                        .imagePath(storedFileName.substring(str.length()))
                         .tpId(techPost)
+                        .imagePath(postDto.getImagePath().get(i))
                         .build());
             }
-            log.info("TechImage 업로드 성공");
         }
 
         return CommunityBaseResponseDto.builder()
@@ -188,7 +185,7 @@ public class TechPostServiceImpl implements TechPostService{
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto updateTechPost(List<MultipartFile> multipartFile, Long id, TechPostRequestDto dto, Member member) throws IOException {
+    public CommunityBaseResponseDto updateTechPost(Long id, TechPostRequestDto dto, Member member) {
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
             return  new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
@@ -199,9 +196,18 @@ public class TechPostServiceImpl implements TechPostService{
 
         techPost.updateTechPost(
                 dto.getTitle(),
-                dto.getDetail());
+                dto.getDetail(),
+                dto.getNickname());
 
         techPostRepository.save(techPost);
+        techImageRepository.deleteByTpId(techPost);
+
+        for (int i = 0; i < dto.getImagePath().size(); i++) {
+            techImageRepository.save(TechImage.builder()
+                    .tpId(techPost)
+                    .imagePath(dto.getImagePath().get(i))
+                    .build());
+        }
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)

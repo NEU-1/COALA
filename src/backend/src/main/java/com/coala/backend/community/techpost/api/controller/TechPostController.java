@@ -37,25 +37,23 @@ public class TechPostController {
     private static String accessToken = "";
 
     // 게시글 저장
-    @PostMapping(value = "save", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping("save")
     public ResponseEntity<CommunityBaseResponseDto> saveTechPost(@RequestPart(name = "requestDto") @Valid TechPostRequestDto requestDto,
-                                                                 @RequestPart(name = "multipartFile") List<MultipartFile> multipartFile,
-                                                                 HttpServletRequest httpServletRequest) throws IOException {
+                                                                 HttpServletRequest httpServletRequest) {
 
-        CommunityBaseResponseDto responseDto = techPostService.savePost(multipartFile, requestDto, getEmail(httpServletRequest));
+        CommunityBaseResponseDto responseDto = techPostService.savePost(requestDto, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);
     }
 
     // 게시글 수정
-    @PutMapping(value = "update/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping("update/{id}")
     public ResponseEntity<CommunityBaseResponseDto> updateTechPost(@PathVariable("id") Long id,
                                                                    @RequestPart(name = "requestDto") @Valid TechPostRequestDto requestDto,
-                                                                   @RequestPart(name = "multipartFile") @Valid List<MultipartFile> multipartFile,
                                                                    HttpServletRequest httpServletRequest) throws IOException {
 
-        CommunityBaseResponseDto responseDto = techPostService.updateTechPost(multipartFile, id, requestDto, getEmail(httpServletRequest));
+        CommunityBaseResponseDto responseDto = techPostService.updateTechPost(id, requestDto, getEmail(httpServletRequest));
 
 
         return ResponseEntity.status(responseDto.getStatusCode())
@@ -82,7 +80,7 @@ public class TechPostController {
     }
 
     // 게시물 상세화면
-    @GetMapping(value = "detail/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @GetMapping("detail/{id}")
     public ResponseEntity<TechPostResponseDto> detailTechPost(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
         TechPostResponseDto techPostDto = techPostService.getPost(id, getEmail(httpServletRequest));
 

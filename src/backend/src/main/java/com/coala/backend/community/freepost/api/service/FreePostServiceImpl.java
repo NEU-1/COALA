@@ -89,19 +89,24 @@ public class FreePostServiceImpl implements FreePostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + allList.size() / 8)
+                .detail(1 + allList.size() / 7)
                 .list(allList)
                 .build();
     }
 
     @Transactional
     @Override
-    public FreePostResponseDto getPost(Long id) {
+    public FreePostResponseDto getPost(Long id, Member member) {
         FreePost freePost = freePostRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("없는 게시글 입니다.");
         });
 
         freePost.views();
+
+        boolean good = false;
+        if (freePost.getGoods().contains(member)) {
+            good = true;
+        }
 
         List<String> uri = new ArrayList<>();
         List<FreeImage> imageList = freeImageRepository.findByFpId(freePost);
@@ -117,6 +122,7 @@ public class FreePostServiceImpl implements FreePostService{
                 .detail(freePost.getDetail())
                 .createAt(freePost.getCreateAt())
                 .updateAt(freePost.getUpdateAt())
+                .good(good)
                 .isAnonymous(freePost.isAnonymous())
                 .imagePath(uri)
                 .views(freePost.getViews())
@@ -163,7 +169,7 @@ public class FreePostServiceImpl implements FreePostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + searchList.size() / 8)
+                .detail(1 + searchList.size() / 7)
                 .list(searchList)
                 .build();
     }
