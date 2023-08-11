@@ -9,7 +9,7 @@ import { buildSchema, buildConditionQuery } from '@/lib/queryBuilder'
 
 
 const Create = async (inputData : any) =>{
-  let flag = true;
+  let flag = false;
   try{
     const {name, email} = inputData;
     console.log(`${email}이 ${name}으로 입장합니다.`);
@@ -18,10 +18,10 @@ const Create = async (inputData : any) =>{
     const [usr] : member[] = await readUser({email});
     
     if (!room) {return; }
-    const data =  {room: room, user : usr, other : null};
+    
     const room_user = {
       'room_id' : room['id'],
-      'member_id' : usr['id']
+      // 'member_id' : usr['id']
     };
     
     // const room_user = {
@@ -30,13 +30,26 @@ const Create = async (inputData : any) =>{
     
     const roomUserRelations = await Read(room_user);
 
-    console.log(roomUserRelations)
-    // for ( let member_id of roomUserRelations ){
-    //   if (member_id === usr['id'])
-    //   console.log(member_id);
-    // }
+    // console.log(roomUserRelations)
+    let others: any[] = [];
+    for ( let roomUserRelation of roomUserRelations ){
+      const member_id = roomUserRelation?.member_id;
+      if (member_id === usr['id']){
+        flag = true;
+      }else{
+        others = [...others, roomUserRelation.member_id]
+      }
+    }
 
-    if (roomUserRelations) {return data;} 
+    let other : member | undefined;
+    for (let other_members_id of others){
+      const [member] : member[] = await readUser({id : other_members_id});
+      other = member;
+    }
+    
+    const data =  {room: room, user : usr, other : other};
+    console.log(data);
+    if (flag) {return data;} 
     await createQuery('room_member', room_user);
     return data;
 
