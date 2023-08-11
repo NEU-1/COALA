@@ -42,8 +42,9 @@ import TechBoardUpdate from "../components/Techboard/components/TechBoardUpdate"
 import FreeBoardDetail from "../components/Freeboard/components/FreeBoardDetail";
 import FreeBoardWrite from "../components/Freeboard/components/FreeBoardWrite";
 import FreeBoardList from "../components/Freeboard/components/FreeBoardList";
-import FreeCommentapp from "../components/Freeboard/components/FreeCommentapp";
 import FreeBoardUpdate from "../components/Freeboard/components/FreeBoardUpdate"
+import FreeCommentForm from "../components/Freeboard/components/FreeCommentForm";
+import FreeCommentList from "../components/Freeboard/components/FreeCommentList";
 
 const RootNavigation = () => {
   return (
@@ -60,9 +61,10 @@ const RootNavigation = () => {
           <Route path="/tech/comment" element={<Commentapp />} />
           <Route path="/tech/update/:postid" element={<TechBoardUpdate />} />
           <Route path="/free/update/:postid" element={<FreeBoardUpdate />} />
-          <Route path="/free/post/detail" element={<FreeBoardDetail />} />
+          <Route path="/free/post/detail/:postid" element={<FreeBoardDetail />} />
           <Route path="/free/write" element={<FreeBoardWrite />} />
           <Route path="/free" element={<FreeBoardList />} />
+          <Route path="/free/comment/:postid" element={<FreeCommentList />} />
           {/* <Route path="/free/update/:postid" element={<FreeCommentapp />} /> */}
           
         </Route>

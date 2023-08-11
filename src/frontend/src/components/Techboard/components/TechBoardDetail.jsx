@@ -13,7 +13,7 @@ import { BiLike } from "react-icons/bi";
 
 const TechBoardDetail = () => {
   const { postid } = useParams(); // /board/:idx와 동일한 변수명으로 데이터를 꺼낼 수 있습니다.
-  const [board, setBoard] = useState(null);
+  const [board, setBoard] = useState({});
   const navigate = useNavigate();
   const moveToUpdate = () => {
     navigate('/tech/update/' + postid);
@@ -33,6 +33,7 @@ const TechBoardDetail = () => {
   const pictureMinusBtn = () => {
     setPictureNum((pictureNum + "사진수" - 1) % "사진수");
   };
+  
   const likeBtn = () => {
     setlike(!like);
   };

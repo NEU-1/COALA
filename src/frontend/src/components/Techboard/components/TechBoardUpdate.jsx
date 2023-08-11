@@ -12,7 +12,7 @@ const TechBoardUpdate = () => {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-    imagePath: 'String',
+    imagePath: ['String'],
     isAnonymous: false,
   });
   const editorRef = useRef();
@@ -57,12 +57,12 @@ const TechBoardUpdate = () => {
         const params = {
           title: board.title,
           detail: editorContent, // 수정된 부분: editorContent를 사용
-          imagePath: board.imagePath,
+          imagePath: [board.imagePath],
           isAnonymous: board.isAnonymous,
         }
     
         // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-        const response = await requestPost(`tech/post/update/${postid}`, params);
+        const response = await requestPost(`tech/update/${postid}`, params);
         
         console.log(response);
         alert('등록되었습니다.');

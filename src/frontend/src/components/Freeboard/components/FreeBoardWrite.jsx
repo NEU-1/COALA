@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { requestPost, requestGet, setToken } from "../../../lib/api/api";
+import {uploadToS3} from "../../../lib/api/upload"
 
 
 const SBtn = styled.div`
@@ -68,11 +69,11 @@ function FreeBoardWrite() {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-    imagePath: 'string',
+    imagePath: ['string'],
     isAnonymous: false,
   });
 
-  const { memberId, title, detail } = board;
+  const { title, detail } = board;
 
   const onChange = (event) => {
     const { value, name } = event.target;
@@ -86,6 +87,7 @@ function FreeBoardWrite() {
 
   const saveBoard = async () => {
     try {
+      setToken()
       const editorContent = editorRef.current?.getInstance().getMarkdown();
       const editorContent2 = editorRef.current?.getInstance().getHTML();
   
@@ -103,18 +105,18 @@ function FreeBoardWrite() {
       }
   
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-      const response = await requestPost("tech/post/save", params);
+      const response = await requestPost("free/post/save", params);
       
       console.log(response);
       alert('등록되었습니다.');
-      navigate(`/tech`);
+      navigate(`/free`);
     } catch (error) {
       console.error('게시글 등록 에러:', error);
     } 
   };
 
   const backToList = () => {
-    navigate('/tech');
+    navigate('/free');
   };
 
   const editorRef = useRef();
@@ -146,6 +148,30 @@ function FreeBoardWrite() {
             ['code', 'codeblock']
           ]}
           useCommandShortcut={false}
+          hooks={{
+            addImageBlobHook: async (blob, callback) => {
+              let imgURL;
+              console.log(blob);  // File {name: '카레유.png', ... }
+              console.log(blob.name)
+              const reader = new FileReader();
+              
+              
+              reader.onload = async function(event) {
+                const buffer = event.target.result;
+                console.log(buffer);
+                imgURL = await uploadToS3("Tech", blob.name, buffer);
+                
+                console.log("함수안",imgURL)
+                callback(imgURL, blob.name);
+                
+              };
+
+
+              reader.readAsArrayBuffer(blob);
+              // 2. 첨부된 이미지를 화면에 표시(경로는 임의로 넣었다.)
+              console.log("함수밖",imgURL);
+            }
+          }}
         />
 }
       </div>

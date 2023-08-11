@@ -37,7 +37,7 @@ const TechBoardList = () => {
       <div>
         
         {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-        {posts.map(({ id, title, detail, views, createAt,imagePath,memberId }) => (
+        {posts.map(({ id, title, detail, views, createAt,imagePath, }) => (
           <Contentbox key={id}>
             <div>
             <Link to={`/tech/post/detail/${id}`}>
@@ -46,7 +46,7 @@ const TechBoardList = () => {
                 {title}
               </Titletext>
               <Userbox>
-                <Usertext>{memberId.nickname}</Usertext>
+                {/* <Usertext>{memberId.nickname}</Usertext> */}
                 <Numbertext>|</Numbertext>
                 <Numbertext>{createAt.slice(0,10)}</Numbertext>
                 <Numbertext>|</Numbertext>

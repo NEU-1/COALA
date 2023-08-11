@@ -5,17 +5,17 @@ import { useNavigate, Link } from 'react-router-dom';
 import {requestGet} from "../../../lib/api/api"
 
 
-
 const FreeBoardList = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
+  
 
 
   const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`free/post/${page}`)
-    .then(res=>{console.log(res.data);setPosts(res.data.list)})
+    .then(res=>{console.log(res.data.list);setPosts(res.data.list)})
    
 
 
@@ -33,19 +33,17 @@ const FreeBoardList = () => {
     <Slayout>
       <Layout>
 
-      <div>
-        
+      <div>     
         {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
         {posts.map(({ id, title, detail, views, createAt,imagePath,memberId }) => (
           <Contentbox key={id}>
             <div>
-            <Link to={`/tech/post/detail/${id}`}>
-
+              
+            <Link to={`/free/post/detail/${id}`}>
               <Titletext>
                 {title}
               </Titletext>
               <Userbox>
-                <Usertext>{memberId.nickname}</Usertext>
                 <Numbertext>|</Numbertext>
                 <Numbertext>{createAt.slice(0,10)}</Numbertext>
                 <Numbertext>|</Numbertext>
@@ -53,7 +51,6 @@ const FreeBoardList = () => {
                 <Numbertext>{views}</Numbertext>
               </Userbox>
               </Link>
-              {detail}
             </div>
             <img src="/assets/images/testimg.png" alt="사진" />
             
@@ -101,7 +98,7 @@ const Contentbox = styled.div`
   border-top: 1px solid #f5a4a4;
   border-bottom: 1px solid #f5a4a4;
   margin-bottom: 20px;
-  border-radius: 3%;
+
   width: 800px;
 `
 

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import styled from 'styled-components';
-import { requestPost, requestGet, setToken } from "../../../lib/api/api";
+import { requestPost, requestGet, setToken, requestPut } from "../../../lib/api/api";
 
 const TechBoardUpdate = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const TechBoardUpdate = () => {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-    imagePath: 'String',
+    imagePath: ['string'],
     isAnonymous: false,
   });
   const editorRef = useRef();
@@ -26,54 +26,55 @@ const TechBoardUpdate = () => {
     });
   };
 
-    const getBoard = () => {
-      // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
-      setToken()
-      const resp = requestGet(`tech/post/detail/${postid}`)
-      .then((res)=>{
-        console.log("skskskks",res)
-        setBoard(res.data)
-      })
-      console.log("확인",resp)
-      setBoard(resp.data);
-      return resp.data
-    }
-    useEffect(() => {
-      getBoard();
-    }, []);
+  const getBoard = () => {
+    setToken()
+    // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
+    requestGet(`free/post/detail/${postid}`)
+    .then(res=>{
+      console.log(res.data);
+      setBoard(res.data);
+      editorRef.current?.getInstance().setHTML(res.data.detail);
+    })
+  }
   
+useEffect(() => {
+  getBoard();
+}, []);
 
-    const updateBoard = async () => {
-      try {
-        const editorContent = editorRef.current?.getInstance().getMarkdown();
-        const editorContent2 = editorRef.current?.getInstance().getHTML();
-    
-        // 저장하고자 하는 내용을 board 객체에 추가
-        setBoard({
-          ...board,
-          detail: editorContent,editorContent2
-        });
-    
-        const params = {
-          title: board.title,
-          detail: editorContent, // 수정된 부분: editorContent를 사용
-          imagePath: board.imagePath,
-          isAnonymous: board.isAnonymous,
-        }
-    
-        // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-        const response = await requestPost(`tech/post/update/${postid}`, params);
-        
-        console.log(response);
-        alert('등록되었습니다.');
-        navigate(`/tech`);
-      } catch (error) {
-        console.error('게시글 등록 에러:', error);
-      } 
-    };
+
+
+  const updateBoard = async () => {
+    try {
+      setToken()
+      const editorContent = editorRef.current?.getInstance().getMarkdown();
+      const editorContent2 = editorRef.current?.getInstance().getHTML();
+
+      // 저장하고자 하는 내용을 board 객체에 추가
+      setBoard({
+        ...board,
+        detail: editorContent,editorContent2
+      });
+
+      const params = {
+        title: board.title,
+        detail: editorContent, // 수정된 부분: editorContent를 사용
+        imagePath: board.imagePath,
+        isAnonymous: board.isAnonymous,
+      }
+
+      // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
+      const response = await requestPut(`free/post/update/${postid}`, params);
+      
+      console.log(response);
+      alert('등록되었습니다.');
+      navigate(`/free`);
+    } catch (error) {
+      console.error('게시글 등록 에러:', error);
+    } 
+  };
 
   const backToDetail = () => {
-    navigate('/tech/detail' + postid);
+    navigate('/free/post/detail/' + postid);
   };
 
   
@@ -90,7 +91,6 @@ const TechBoardUpdate = () => {
       <div>
         <Editor
           ref={editorRef}
-          placeholder="내용을 입력해주세요."
           previewStyle="vertical"
           height="500px"
           width="100%"
@@ -103,7 +103,6 @@ const TechBoardUpdate = () => {
             ['table', 'image', 'link'],
             ['code', 'codeblock']
           ]}
-          useCommandShortcut={false}
         />
       </div>
       <br />

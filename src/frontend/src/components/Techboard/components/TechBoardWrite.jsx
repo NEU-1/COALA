@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { requestPost, requestGet, setToken } from "../../../lib/api/api";
+import {uploadToS3} from "../../../lib/api/upload"
 
 
 const SBtn = styled.div`
@@ -63,16 +64,16 @@ const Title = styled.div`
 function TechBoardWrite() {
   const navigate = useNavigate();
   
-
+  
 
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-    imagePath: 'String',
+    imagePath: [''],
     isAnonymous: false,
   });
 
-  const { memberId, title, detail } = board;
+  const { title, detail } = board;
 
   const onChange = (event) => {
     const { value, name } = event.target;
@@ -92,16 +93,15 @@ function TechBoardWrite() {
       // 저장하고자 하는 내용을 board 객체에 추가
       setBoard({
         ...board,
-        detail: editorContent,editorContent2
+        detail: editorContent, editorContent2
       });
   
       const params = {
         title: board.title,
-        detail: board.detail, // 수정된 부분: editorContent를 사용
-        imagePath: board.imagePath,
+        detail: editorContent2, // 수정된 부분: editorContent를 사용
         isAnonymous: board.isAnonymous,
       }
-  
+      setToken()
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
       const response = await requestPost("tech/post/save", params);
       
@@ -146,8 +146,32 @@ function TechBoardWrite() {
             ['code', 'codeblock']
           ]}
           useCommandShortcut={false}
+          hooks={{
+            addImageBlobHook: async (blob, callback) => {
+              let imgURL;
+              console.log(blob);  // File {name: '카레유.png', ... }
+              console.log(blob.name)
+              const reader = new FileReader();
+              
+              
+              reader.onload = async function(event) {
+                const buffer = event.target.result;
+                console.log(buffer);
+                imgURL = await uploadToS3("Tech", blob.name, buffer);
+                
+                console.log("함수안",imgURL)
+                callback(imgURL, blob.name);
+                
+              };
+
+
+              reader.readAsArrayBuffer(blob);
+              // 2. 첨부된 이미지를 화면에 표시(경로는 임의로 넣었다.)
+              console.log("함수밖",imgURL);
+            }
+          }}
         />
-}
+      }
       </div>
       <br />
       <SBtnContainer>
