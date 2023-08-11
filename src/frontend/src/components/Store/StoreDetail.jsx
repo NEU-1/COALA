@@ -122,7 +122,7 @@ const StoreDetail = () => {
   const goChat = () => {
     if (isLogin) {
       const name = generateRoomId();
-      fetchRoom.create({roomName: name, pp_id: postData.storePost.id})
+      fetchRoom.create({roomName: name, pp_id: postData.storePost.id, ur_id: postData.memberId})
       .then((res)=> {
         dispatch(openChatModal());
         setTimeout(()=>{

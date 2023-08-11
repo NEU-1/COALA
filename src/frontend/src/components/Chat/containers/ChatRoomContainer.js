@@ -156,7 +156,7 @@ const ChatRoomContainer = () => {
       onChangeMessage={onChangeMessage}
       onSubmitMessage={onSubmitMessage}
       allMessages={allMessages}
-      memberId={memberId}
+      myId={memberId}
       scrollRef={scrollRef}
       productId={productId}
       onClickExitBtn={onClickExitBtn}

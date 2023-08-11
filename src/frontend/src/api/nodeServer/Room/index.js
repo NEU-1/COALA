@@ -1,15 +1,15 @@
 import api from '../base';
 
 const fetchRoom = {
-  create: async ({ roomName, pp_id, pr_id, other }) => {
+  create: async ({ roomName, pp_id, pr_id, ur_id }) => {
     return await api({
       method: 'POST',
       url: `/api/chat/chat_room`,
       data: {
         name: roomName,
-        pp_id: pp_id,
-        pr_id: pr_id,
-        member_id: other,
+        pp_id,
+        pr_id,
+        ur_id,
       },
     }).catch((error) => {
       if (error.response) {
