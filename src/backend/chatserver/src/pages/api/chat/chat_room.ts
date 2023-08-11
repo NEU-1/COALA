@@ -62,12 +62,16 @@ const receiveData = withCors(async (
       pr_id
     }
     console.log(`방을 생성 중입니다.`, data);
-    const result = await createRoom(data);
+    let result = await readRoom(data);
+    if (!result){
+      await createRoom(data);
+    }
+    result = await readRoom(data);
     const room_user = {
       'room_id' : result['id'],
       'member_id' : ur_id
     };
-    console.log(room_user)
+    // console.log(room_user)
     // 방에 제공자 먼저 넣는중...
     const [roomUserRelations] = await readRoomMember(room_user);
     if (!roomUserRelations) {

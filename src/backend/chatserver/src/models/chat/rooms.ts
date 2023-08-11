@@ -27,7 +27,7 @@ const Create = async (inputData : any) =>{
   }
 }
 
-const Read = async (target : object) => {
+const Read = async (target : object) : Promise<any> => {
   try{
     const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
     const result = await readQuery('chat_room', {conditionQuery, values});
