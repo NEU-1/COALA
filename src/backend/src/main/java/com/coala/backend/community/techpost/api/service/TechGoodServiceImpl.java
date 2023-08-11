@@ -30,9 +30,7 @@ public class TechGoodServiceImpl implements TechGoodService {
 
         if (techGoodRepository.findByMemberIdAndTpId(member, techPost).isPresent()) {
             throw new IllegalArgumentException("이미 추천되어 있습니다.");
-        };
-
-        List<TechGood> allGood = techGoodRepository.findByTpId(techPost);
+        }
 
         TechGood techGood = TechGood.builder()
                 .tpId(techPost)
@@ -46,7 +44,7 @@ public class TechGoodServiceImpl implements TechGoodService {
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("좋아요")
-                .detail(allGood.size())
+                .detail(techPost.getGoods().size())
                 .build();
     }
 
@@ -61,15 +59,13 @@ public class TechGoodServiceImpl implements TechGoodService {
             return new IllegalArgumentException("없는 추천 입니다.");
         });
 
-        List<TechGood> allGood = techGoodRepository.findByTpId(techPost);
-
         techGoodRepository.deleteById(techGood.getId());
         techPost.getGoods().remove(techGood);
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("좋아요 취소")
-                .detail(allGood.size())
+                .detail(techPost.getGoods().size())
                 .build();
     }
 }
