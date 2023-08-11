@@ -15,4 +15,6 @@ export const images = {
   plus: '/assets/images/plus.png',
   like: '/assets/images/like.png',
   notlike: '/assets/images/notlike.png',
+  up: '/assets/images/⌃.png',
+  down: '/assets/images/⌄.png',
 };

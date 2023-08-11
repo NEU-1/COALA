@@ -12,7 +12,7 @@ const ChatRoom = ({
   onChangeMessage,
   onSubmitMessage,
   allMessages,
-  memberId,
+  myId,
   scrollRef,
   productId,
   onClickExitBtn,
@@ -42,7 +42,7 @@ const ChatRoom = ({
 
       {/* 게시글이 있는 경우에만 랜더링 */}
       {(productId.pr_id || productId.pp_id) && (
-        <ChatBoardPreviewContainer productId={productId} />
+        <ChatBoardPreviewContainer productId={productId} myId={myId} />
       )}
 
       <SChatBubbleList>
@@ -97,7 +97,7 @@ const ChatRoom = ({
               <ChatBubble
                 key={message._id}
                 message={message}
-                memberId={memberId}
+                memberId={myId}
                 displayDate={displayDate}
                 today={today}
               />

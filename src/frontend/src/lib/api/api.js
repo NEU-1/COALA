@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// const baseUrl = 'https://i9d108.p.ssafy.io/api/';
 const baseUrl = 'http://i9d108.p.ssafy.io:9999/api/';
 const baseNodeUrl = 'http://localhost:3030/api/';
 // const baseNodeUrl = 'http://i9d108.p.ssafy.io:3030/api/';
@@ -72,6 +73,16 @@ export const requestPostNode = async (url, body) => {
 export const requestPut = async (url, body, headers) => {
   try {
     const data = await axios.put(baseUrl + url, body, headers);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const requestDel = async (url) => {
+  try {
+    const data = await axios.delete(baseUrl + url, headers);
     return data;
   } catch (error) {
     console.log(error);

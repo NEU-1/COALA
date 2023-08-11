@@ -11,7 +11,11 @@ import Swal from 'sweetalert2';
 let socket;
 let inform = {};
 const name = 'chats';
+<<<<<<< HEAD
 let email; 
+=======
+let email;
+>>>>>>> cddb0ffae319ef1248e2998fc5c4993a837f8644
 const ChatRoomContainer = () => {
   const { roomName } = useParams();
   const [socket_state, setSocket_state] = useState('try connecting...');
@@ -45,6 +49,7 @@ const ChatRoomContainer = () => {
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
     requestGet(`member/info`).then(() => {
+<<<<<<< HEAD
 
       socket.emit('joinRoom', { roomName }, async ({ isRoom, chattingLogs }) => {
         if (!isRoom) { navigate('/chat-list/there-is-no-chat-room', { replace: true })}
@@ -58,28 +63,51 @@ const ChatRoomContainer = () => {
         setAllMessages((pre) => [...pre, ...chattingLogs]);
         // console.log("올 메시지",allMessages)
       });
+=======
+      socket.emit(
+        'joinRoom',
+        { roomName },
+        async ({ isRoom, chattingLogs }) => {
+          if (!isRoom) {
+            navigate('/chat-list/there-is-no-chat-room', { replace: true });
+          }
+          console.log(`join room[${roomName}]  successfully`);
+          const { data } = await fetchRoom.join({ roomName, email });
+          inform = data;
+          if (inform.roomUser.room.pr_id)
+            setProductId(...productId, { pr_id: inform.roomUser.room.pr_id });
+          else if (inform.roomUser.room.pp_id)
+            setProductId(...productId, { pp_id: inform.roomUser.room.pp_id });
+          setAllMessages((pre) => [...pre, ...chattingLogs]);
+          // console.log("올 메시지",allMessages)
+        }
+      );
+>>>>>>> cddb0ffae319ef1248e2998fc5c4993a837f8644
     });
   };
 
   useEffect(() => {
-    // setToken();
+    setToken();
     requestGet(`member/info`).then((res) => {
       socketInitializer();
       // 나중에 잘되었는지 아닌지 필터 필요
+<<<<<<< HEAD
       setMemberId(res.data.id);
       email = res.data.email;
+=======
+      setMemberId(res.data.member.id);
+      email = res.data.member.email;
+>>>>>>> cddb0ffae319ef1248e2998fc5c4993a837f8644
     });
     return () => {
       console.log('disconected');
       if (socket) {
         socket.disconnect();
-        fetchRoom.execute({ roomName, email });
       }
     };
   }, []);
 
   async function socketInitializer() {
-
     socketIO.fetchEnter(`/api/socket?name=${name}`);
 
     socket = socketIOClient('http://i9d108.p.ssafy.io:3030', {
@@ -113,14 +141,13 @@ const ChatRoomContainer = () => {
       return;
     }
     requestGet(`member/info`).then((res) => {
-    
       console.log('message emitted');
       socket.emit('send-message', {
         roomUser: inform.roomUser,
         message,
       });
       setMessage('');
-    })
+    });
   };
 
   // 채팅방 나가기
@@ -134,6 +161,7 @@ const ChatRoomContainer = () => {
       if (result.isConfirmed) {
         //나가기 호출
         console.log('나가자~');
+        fetchRoom.execute({ roomName, email });
         navigate('/chat/chat-list', { replace: true });
       }
     });
@@ -153,7 +181,7 @@ const ChatRoomContainer = () => {
       onChangeMessage={onChangeMessage}
       onSubmitMessage={onSubmitMessage}
       allMessages={allMessages}
-      memberId={memberId}
+      myId={memberId}
       scrollRef={scrollRef}
       productId={productId}
       onClickExitBtn={onClickExitBtn}

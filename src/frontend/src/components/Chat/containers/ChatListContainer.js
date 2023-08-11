@@ -28,6 +28,7 @@ const ChatListContainer = () => {
   useEffect(() => {
     // api.setToken();
     setToken();
+<<<<<<< HEAD
     requestGet(`member/info`).then((res) => {
       // 나중에 잘되었는지 아닌지 필터 필요
       setUser(res.data);
@@ -41,6 +42,22 @@ const ChatListContainer = () => {
       })  
       // .then(resJson => setData(resJson))
     });
+=======
+    requestGet(`member/info`)
+      .then((res) => {
+        // 나중에 잘되었는지 아닌지 필터 필요
+        setUser(res.data.member);
+        email = res.data.member.email;
+      })
+      .then(() => {
+        // const email = user.email;
+        console.log(email);
+        fetchRoom.read({ email }).then((res) => {
+          console.log('데이터', res);
+          setList(res.data.rooms);
+        });
+      });
+>>>>>>> cddb0ffae319ef1248e2998fc5c4993a837f8644
   }, []);
 
   // let Lists = [];
@@ -54,7 +71,7 @@ const ChatListContainer = () => {
     // const user_number = Number(user_id);
     await fetchRoom.create({ roomName });
   };
-  
+
   return (
     <ChatList
       onClickCloseChatBtn={onClickCloseChatBtn}
