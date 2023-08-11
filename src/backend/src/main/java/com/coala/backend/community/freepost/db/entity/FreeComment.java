@@ -43,10 +43,10 @@ public class FreeComment {
     }
 
     @Builder
-    public FreeComment(FreePost fpId, String author, String content, Member memberId) {
+    public FreeComment(FreePost fpId, String author, String content, String memberId) {
         this.fpId = fpId;
         this.author = author;
-        this.memberId = memberId.getEmail();
+        this.memberId = memberId;
         this.content = content;
     }
 
