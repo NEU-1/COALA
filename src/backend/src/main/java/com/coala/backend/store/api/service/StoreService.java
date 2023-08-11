@@ -2,6 +2,7 @@ package com.coala.backend.store.api.service;
 
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.member.db.entity.Member;
+import com.coala.backend.store.db.dto.response.ListResponseDto;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
 import com.coala.backend.store.db.dto.response.StoreListDto;
 import com.coala.backend.store.db.entity.StorePost;
@@ -14,7 +15,7 @@ import java.util.Map;
 public interface StoreService {
 
 
-    List<StoreListDto> list(Integer page, Map<String, String> info, String email);
+    ListResponseDto list(Integer page, Map<String, String> info, String email);
 
     BaseResponseDto write(Map<String, String> info, Member member);
 

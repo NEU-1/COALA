@@ -1,5 +1,6 @@
 package com.coala.backend.auction.api.service;
 
+import com.coala.backend.auction.db.dto.response.ApplyResponseDto;
 import com.coala.backend.auction.db.dto.response.PostResponseDto;
 import com.coala.backend.auction.db.entity.AuctionApply;
 import com.coala.backend.auction.db.entity.AuctionPost;
@@ -11,12 +12,12 @@ import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
 import com.coala.backend.product.db.entity.Category;
 import com.coala.backend.product.db.repository.CategoryRepository;
+import com.coala.backend.store.db.dto.response.ListResponseDto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class AuctionServiceImpl implements AuctionService{
@@ -41,8 +42,14 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public List<AuctionPost> list(Integer page, Map<String, String> info) {
-        return customAuctionPostRepository.findAllFilter(info, page);
+    public ListResponseDto list(Integer page, Map<String, String> info) {
+        ListResponseDto listResponseDto = new ListResponseDto();
+
+        List<AuctionPost> list = customAuctionPostRepository.findAllFilter(info, page);
+        listResponseDto.setList(list);
+        listResponseDto.setSize(auctionPostRepository.findAll().size());
+
+        return listResponseDto;
     }
 
     @Override
@@ -89,10 +96,15 @@ public class AuctionServiceImpl implements AuctionService{
 
         List<AuctionApply> auctionApplies = auctionApplyRepository.findByAuctionPost(auctionPost);
 
-        postResponseDto.setAuctionApplies(auctionApplies);
+        List<ApplyResponseDto> applyResponseDtoList = new ArrayList<>();
+
+        for(AuctionApply apply : auctionApplies){
+            applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId()));
+        }
+
+        postResponseDto.setAuctionApplies(applyResponseDtoList);
         postResponseDto.setCategory(auctionPost.getCategory());
         postResponseDto.setBaseResponseDto(new BaseResponseDto( "성공적으로 정보를 불러왔습니다.", 200));
-
 
         return postResponseDto;
     }
@@ -108,6 +120,9 @@ public class AuctionServiceImpl implements AuctionService{
             auctionPost.setTitle(info.get("title"));
             auctionPost.setDetail(info.get("detail"));
             auctionPost.setMinRentalPeriod(Integer.parseInt(info.get("minRentalPeriod")));
+            Category category = categoryRepository.findById(Long.parseLong(info.get("category")))
+                    .orElseThrow(() -> new NoSuchElementException("카테고리가 입력되지 않았습니다."));
+            auctionPost.setCategory(category);
             auctionPost.setUpdatedAt(LocalDateTime.now());
             auctionPostRepository.save(auctionPost);
             return new BaseResponseDto("게시글이 정상적으로 수정되었습니다.", 200);
@@ -211,7 +226,13 @@ public class AuctionServiceImpl implements AuctionService{
 
             List<AuctionApply> auctionApplies = auctionApplyRepository.findByAuctionPost(auctionPost);
 
-            postResponseDto.setAuctionApplies(auctionApplies);
+            List<ApplyResponseDto> applyResponseDtoList = new ArrayList<>();
+
+            for(AuctionApply apply : auctionApplies){
+                applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId()));
+            }
+
+            postResponseDto.setAuctionApplies(applyResponseDtoList);
 
             postResponseDto.setAuctionPost(auctionPost);
             postResponseDto.setCategory(auctionPost.getCategory());

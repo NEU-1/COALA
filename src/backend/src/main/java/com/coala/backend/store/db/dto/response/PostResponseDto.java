@@ -19,8 +19,12 @@ public class PostResponseDto {
     private Integer likes;
 
     private boolean like;
+
     // 응답 정보
     private BaseResponseDto baseResponseDto;
+
+    // id
+    private Long memberId;
 
     private boolean mine;
 }

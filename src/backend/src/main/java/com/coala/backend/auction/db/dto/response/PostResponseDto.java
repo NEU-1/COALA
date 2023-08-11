@@ -19,7 +19,7 @@ public class PostResponseDto {
     // 게시글 정보
     private AuctionPost auctionPost;
 
-    private List<AuctionApply> auctionApplies;
+    private List<ApplyResponseDto> auctionApplies;
 
     private Category category;
 

@@ -4,6 +4,7 @@ import com.coala.backend.member.api.service.MemberService;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.store.api.service.StoreService;
+import com.coala.backend.store.db.dto.response.ListResponseDto;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
 import com.coala.backend.store.db.dto.response.StoreListDto;
 import com.coala.backend.store.db.entity.StorePost;
@@ -46,7 +47,7 @@ public class StoreController {
     }
 
     @PostMapping("/list")
-    public List<StoreListDto> list (@RequestParam Integer page, @RequestBody Map<String, String> info, HttpServletRequest request){
+    public ListResponseDto list (@RequestParam Integer page, @RequestBody Map<String, String> info, HttpServletRequest request){
         return storeService.list(page, info, jwtTokenProvider.getMail(request));
     }
 

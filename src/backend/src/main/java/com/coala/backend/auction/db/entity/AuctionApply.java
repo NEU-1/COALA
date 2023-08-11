@@ -2,6 +2,7 @@ package com.coala.backend.auction.db.entity;
 
 import com.coala.backend.member.db.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,6 @@ public class AuctionApply {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    @JsonIgnore
     private Member member;
 
     @ManyToOne

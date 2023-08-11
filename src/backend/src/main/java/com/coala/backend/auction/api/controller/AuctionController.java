@@ -6,6 +6,7 @@ import com.coala.backend.member.api.service.MemberService;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.auction.db.dto.response.PostResponseDto;
+import com.coala.backend.store.db.dto.response.ListResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class AuctionController {
     }
 
     @PostMapping("/list")
-    public List<AuctionPost> list (@RequestParam Integer page, @RequestBody Map<String, String> info){
+    public ListResponseDto list (@RequestParam Integer page, @RequestBody Map<String, String> info){
         return auctionService.list(page, info);
     }
 

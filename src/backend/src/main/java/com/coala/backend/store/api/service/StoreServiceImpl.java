@@ -5,6 +5,7 @@ import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
 import com.coala.backend.product.db.entity.Category;
 import com.coala.backend.product.db.repository.CategoryRepository;
+import com.coala.backend.store.db.dto.response.ListResponseDto;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
 import com.coala.backend.store.db.dto.response.StoreListDto;
 import com.coala.backend.store.db.entity.StoreLike;
@@ -38,7 +39,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreListDto> list(Integer page, Map<String, String> info, String email) {
+    public ListResponseDto list(Integer page, Map<String, String> info, String email) {
         // 리스트 정보 조회
         List<StorePost> list = customStorePostRepository.findAllFilter(info, page);
 
@@ -71,7 +72,14 @@ public class StoreServiceImpl implements StoreService {
             result.add(SLD);
         }
 
-        return result;
+        ListResponseDto listResponseDto = new ListResponseDto();
+
+        listResponseDto.setList(result);
+
+        Integer size = storePostRepository.findAll().size();
+        listResponseDto.setSize(size);
+
+        return listResponseDto;
     }
 
     @Override
@@ -115,6 +123,7 @@ public class StoreServiceImpl implements StoreService {
         PostResponseDto postResponseDto = new PostResponseDto();
         postResponseDto.setLikes(likes.size());
         postResponseDto.setStorePost(storePost);
+        postResponseDto.setMemberId(storePost.getMember().getId());
         postResponseDto.setLike(false);
 
         for(StoreLike like : likes){
