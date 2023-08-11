@@ -62,13 +62,14 @@ const receiveData = withCors(async (
       pr_id
     }
     console.log(`방을 생성 중입니다.`, data);
-    let result = await readRoom(data);
+    let [result] : room[] = await readRoom(data);
+    console.log("result_first",result)
     if (!result){
       await createRoom(data);
     }
-    console.log("data", data);
+    // console.log("data", data);
     result = await readRoom(data);
-    console.log("result",result)
+    console.log("result_secod",result)
     const room_user = {
       'room_id' : result['id'],
       'member_id' : ur_id
