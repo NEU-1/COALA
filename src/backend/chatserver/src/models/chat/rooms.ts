@@ -18,7 +18,7 @@ const Create = async (inputData : any) =>{
   try{
     // const {keys, placeholders, values} = buildSchema(inputData)
     // const result = await createQuery('chat_room', keys, placeholders, values);
-
+  
     const values = {...inputData, created_at : timestamp() };
     const result = await createQuery('chat_room', values);
     return result;

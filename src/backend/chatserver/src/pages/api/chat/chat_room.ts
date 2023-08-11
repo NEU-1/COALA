@@ -50,7 +50,7 @@ const receiveData = withCors(async (
     console.log(`방을 생성 중입니다.`, inputData);
     const result = await createRoom(inputData);
     if (result){
-      res.status(200).json({ message: 'Room is Created!' })
+      res.status(200).json({ result, message: 'Room is Created!' })
     }else{
       res.status(200).json({ message: 'Fail to create room...' })
     }
