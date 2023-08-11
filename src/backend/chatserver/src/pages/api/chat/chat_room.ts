@@ -67,7 +67,7 @@ const receiveData = withCors(async (
   if (req.method === 'POST'){
     const { name, pp_id, pr_id, ur_id } = req.body;
     let data : Partial<DataType> = {
-      name : name + timestamp(),
+      name : name,
     };
     
     if (pp_id !== undefined) {
