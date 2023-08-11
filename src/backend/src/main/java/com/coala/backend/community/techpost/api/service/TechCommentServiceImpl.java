@@ -26,8 +26,8 @@ public class TechCommentServiceImpl implements TechCommentService {
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto saveComment(TechCommentRequestDto commentDto, Member member) {
-        TechPost techPost = techPostRepository.findById(commentDto.getTpId().getId()).orElseThrow(() -> {
+    public CommunityBaseResponseDto saveComment(Long postId, TechCommentRequestDto commentDto, Member member) {
+        TechPost techPost = techPostRepository.findById(postId).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
@@ -44,7 +44,7 @@ public class TechCommentServiceImpl implements TechCommentService {
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 게시글 Id 반환")
-                .id(techPost.getId())
+                .id(postId)
                 .build();
     }
 
@@ -59,7 +59,8 @@ public class TechCommentServiceImpl implements TechCommentService {
 
         List<TechCommentResponseDto> postComments = techCommentRepository.findByTpId(techPost, pageable).stream()
                 .map(techComment -> TechCommentResponseDto.builder()
-                        .tpId(techComment.getTpId())
+                        .id(techComment.getId())
+                        .tpId(id)
                         .author(techComment.getAuthor())
                         .content(techComment.getContent())
                         .createAt(techComment.getCreateAt())

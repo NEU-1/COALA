@@ -82,7 +82,7 @@ public class TechPostController {
     }
 
     // 게시물 상세화면
-    @GetMapping("detail/{id}")
+    @GetMapping(value = "detail/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<TechPostResponseDto> detailTechPost(@PathVariable("id") Long id) {
         TechPostResponseDto techPostDto = techPostService.getPost(id);
 

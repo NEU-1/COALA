@@ -41,7 +41,6 @@ public class FreePostServiceImpl implements FreePostService{
     @Override
     public CommunityBaseResponseDto savePost(FreePostRequestDto postDto, Member member) {
 
-
           FreePost freePost = FreePost.builder()
                 .memberId(member)
                 .title(postDto.getTitle())
@@ -53,7 +52,6 @@ public class FreePostServiceImpl implements FreePostService{
 
         if (!postDto.getImagePath().isEmpty()) {
             for (int i = 0; i < postDto.getImagePath().size(); i++) {
-
                 freeImageRepository.save(FreeImage.builder()
                         .fpId(freePost)
                         .imagePath(postDto.getImagePath().get(i))
@@ -75,6 +73,7 @@ public class FreePostServiceImpl implements FreePostService{
 
         List<FreePostResponseDto> allList = freePostRepository.findAll(pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
+                        .id(freePost.getId())
                         .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())
@@ -102,8 +101,6 @@ public class FreePostServiceImpl implements FreePostService{
             return new IllegalArgumentException("없는 게시글 입니다.");
         });
 
-        List<FreeImage> freeImages = freeImageRepository.findByFpId(freePost);
-
         freePost.views();
 
         List<String> uri = new ArrayList<>();
@@ -114,6 +111,7 @@ public class FreePostServiceImpl implements FreePostService{
         }
 
         return FreePostResponseDto.builder()
+                .id(freePost.getId())
                 .memberId(freePost.getMemberId())
                 .title(freePost.getTitle())
                 .detail(freePost.getDetail())
@@ -149,6 +147,7 @@ public class FreePostServiceImpl implements FreePostService{
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
         List<FreePostResponseDto> searchList = freePostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
+                        .id(freePost.getId())
                         .memberId(freePost.getMemberId())
                         .title(freePost.getTitle())
                         .detail(freePost.getDetail())

@@ -28,10 +28,11 @@ public class TechCommentController {
     private static String accessToken = "";
 
     // 댓글 저장
-    @PostMapping("save")
-    public ResponseEntity<CommunityBaseResponseDto> saveComment(@RequestBody @Valid TechCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
+    @PostMapping("{id}/save")
+    public ResponseEntity<CommunityBaseResponseDto> saveComment(@PathVariable("id") Long postId,
+            @RequestBody @Valid TechCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
 
-        CommunityBaseResponseDto responseDto = techCommentService.saveComment(requestDto, getEmail(httpServletRequest));
+        CommunityBaseResponseDto responseDto = techCommentService.saveComment(postId, requestDto, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);

@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 /*
@@ -85,6 +84,7 @@ public class TechPostServiceImpl implements TechPostService{
                         .memberId(techPost.getMemberId())
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
+                        .nickname(techPost.getMemberId().getNickname())
                         .createAt(techPost.getCreateAt())
                         .updateAt(techPost.getUpdateAt())
                         .views(techPost.getViews())
@@ -122,6 +122,7 @@ public class TechPostServiceImpl implements TechPostService{
                 .memberId(techPost.getMemberId())
                 .title(techPost.getTitle())
                 .detail(techPost.getDetail())
+                .nickname(techPost.getMemberId().getNickname())
                 .createAt(techPost.getCreateAt())
                 .updateAt(techPost.getUpdateAt())
                 .imagePath(uri)
@@ -142,6 +143,8 @@ public class TechPostServiceImpl implements TechPostService{
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
 
+        // 이미지 삭제 = 필드 전부 삭제
+
         techImageRepository.findByTpId(techPost);
         techGoodRepository.deleteByTpId(techPost);
         techPostRepository.deleteById(id);
@@ -158,6 +161,7 @@ public class TechPostServiceImpl implements TechPostService{
                         .memberId(techPost.getMemberId())
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
+                        .nickname(techPost.getMemberId().getNickname())
                         .createAt(techPost.getCreateAt())
                         .updateAt(techPost.getUpdateAt())
                         .views(techPost.getViews())
@@ -187,8 +191,8 @@ public class TechPostServiceImpl implements TechPostService{
 
         techPost.updateTechPost(
                 dto.getTitle(),
-                dto.getDetail(),
-                dto.getNickname());
+                dto.getDetail());
+
         techPostRepository.save(techPost);
 
         return CommunityBaseResponseDto.builder()
