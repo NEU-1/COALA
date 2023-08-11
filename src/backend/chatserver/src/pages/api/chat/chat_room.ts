@@ -67,6 +67,7 @@ const receiveData = withCors(async (
       'room_id' : result['id'],
       'member_id' : ur_id
     };
+    console.log(room_user)
     // 방에 제공자 먼저 넣는중...
     const [roomUserRelations] = await readRoomMember(room_user);
     if (!roomUserRelations) {
