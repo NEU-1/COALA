@@ -9,6 +9,7 @@ import { buildSchema, buildConditionQuery } from '@/lib/queryBuilder'
 
 
 const Create = async (inputData : any) =>{
+  let flag = true;
   try{
     const {name, email} = inputData;
     console.log(`${email}이 ${name}으로 입장합니다.`);
@@ -16,15 +17,24 @@ const Create = async (inputData : any) =>{
     const [room]: room[] = await readRoom({name});
     const [usr] : member[] = await readUser({email});
     
-    if (!room || !usr) {return; }
-    const data =  {room: room, usr : usr};
+    if (!room) {return; }
+    const data =  {room: room, user : usr, other : null};
+    // const room_user = {
+    //   'room_id' : room['id'],
+    //   'member_id' : usr['id']
+    // };
+    
     const room_user = {
-      'room_id' : room['id'],
-      'member_id' : usr['id']
+      'room_id' : room['id']
     };
     
-    
-    const [roomUserRelations] = await Read(room_user);
+    const roomUserRelations = await Read(room_user);
+
+    for ( let member_id in roomUserRelations ){
+      // if (member_id === usr['id'])
+      console.log(member_id);
+    }
+
     if (roomUserRelations) {return data;} 
     await createQuery('room_member', room_user);
     return data;
@@ -34,7 +44,7 @@ const Create = async (inputData : any) =>{
   }
 }
 
-const Read = async (target : object) =>{
+const Read = async (target: object): Promise<any> => {
   /* 
   제공 받는 정보는 
         const room_user = {
@@ -84,5 +94,5 @@ const Delete = async (inputData : any) => {
 export { 
   Create,
   Delete,
-  
+  Read
 }

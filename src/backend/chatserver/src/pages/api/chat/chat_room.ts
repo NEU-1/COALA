@@ -3,6 +3,15 @@ import {
   Read as readRoom,
   Search as searchRoom
 } from '@/models/chat/rooms'
+
+import { 
+  Read as readRoomMember
+} from '@/models/chat/room_member'
+
+import {
+  createQuery,
+} from '@/db/mysql/query/crud'
+
 import { Read as readUser } from '@/models/user'
 import { 
   Search as searchLog,
@@ -46,9 +55,24 @@ const receiveData = withCors(async (
   }
   
   if (req.method === 'POST'){
-    const inputData = req.body;
-    console.log(`방을 생성 중입니다.`, inputData);
-    const result = await createRoom(inputData);
+    const { name, pp_id, pr_id, ur_id } = req.body;
+    const data = {
+      name,
+      pp_id,
+      pr_id
+    }
+    console.log(`방을 생성 중입니다.`, data);
+    const result = await createRoom(data);
+    const room_user = {
+      'room_id' : result['id'],
+      'member_id' : ur_id
+    };
+    // 방에 제공자 먼저 넣는중...
+    const [roomUserRelations] = await readRoomMember(room_user);
+    if (!roomUserRelations) {
+      await createQuery('room_member', room_user);
+    } 
+    
     if (result){
       res.status(200).json({ result, message: 'Room is Created!' })
     }else{
