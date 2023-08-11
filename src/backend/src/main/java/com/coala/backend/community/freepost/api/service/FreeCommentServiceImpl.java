@@ -33,11 +33,13 @@ public class FreeCommentServiceImpl implements FreeCommentService{
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
+        System.out.println(member.getEmail());
+
         FreeComment freeComment = FreeComment.builder()
                 .fpId(commentDto.getFpId())
                 .author(commentDto.getAuthor())
                 .content(commentDto.getContent())
-                .memberId(member)
+                .memberId(member.getEmail())
                 .build();
 
         freeCommentRepository.saveAndFlush(freeComment);

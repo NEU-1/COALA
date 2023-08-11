@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class FreeCommentRequestDto {
-    @JsonIgnore
     private FreePost fpId;
     private String author;
     private String content;

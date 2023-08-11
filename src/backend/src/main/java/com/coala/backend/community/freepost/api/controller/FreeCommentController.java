@@ -5,6 +5,7 @@ import com.coala.backend.community.freepost.api.service.FreeCommentServiceImpl;
 import com.coala.backend.community.freepost.db.dto.request.FreeCommentRequestDto;
 import com.coala.backend.community.freepost.db.entity.FreeComment;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
+import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,11 +36,12 @@ public class FreeCommentController {
 
     // 댓글 저장
     @PostMapping("save/{id}")
-    public ResponseEntity<FreeComment> saveComment(@PathVariable("id") Long id, @RequestBody @Valid FreeCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
-        freeCommentService.saveComment(id, requestDto, getEmail(httpServletRequest));
+    public ResponseEntity<CommunityBaseResponseDto> saveComment(@PathVariable("id") Long id, @RequestBody @Valid FreeCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
 
-        return ResponseEntity.ok()
-                .body(requestDto.toEntity());
+        CommunityBaseResponseDto responseDto = freeCommentService.saveComment(id, requestDto, getEmail(httpServletRequest));
+
+        return ResponseEntity.status(responseDto.getStatusCode())
+                .body(responseDto);
     }
 
     // 댓글 수정
@@ -50,7 +52,7 @@ public class FreeCommentController {
 
         CommunityBaseResponseDto responseDto = freeCommentService.updateFreeComment(id, requestDto, getEmail(httpServletRequest));
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);
     }
 

@@ -104,12 +104,17 @@ public class TechPostServiceImpl implements TechPostService{
 
     @Transactional
     @Override
-    public TechPostResponseDto getPost(Long id) {
+    public TechPostResponseDto getPost(Long id, Member member) {
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("없는 게시글 입니다.");
         });
 
         techPost.views();
+
+        boolean good = false;
+        if (techPost.getGoods().contains(member.getEmail())) {
+            good = true;
+        }
 
         List<String> uri = new ArrayList<>();
         List<TechImage> imageList = techImageRepository.findByTpId(techPost);
@@ -126,6 +131,7 @@ public class TechPostServiceImpl implements TechPostService{
                 .nickname(techPost.getMemberId())
                 .createAt(techPost.getCreateAt())
                 .updateAt(techPost.getUpdateAt())
+                .good(good)
                 .imagePath(uri)
                 .views(techPost.getViews())
                 .commentCount(techPost.getComments().size())

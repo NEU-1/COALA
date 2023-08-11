@@ -26,7 +26,6 @@ public class TechPostRequestDto {
     @Builder
     public TechPostRequestDto(Long id, String title, String detail,
                               Member nickname) {
-
         this.id = id;
         this.title = title;
         this.detail = detail;
