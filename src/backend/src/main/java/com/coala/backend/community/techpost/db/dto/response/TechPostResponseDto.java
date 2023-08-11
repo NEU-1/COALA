@@ -25,14 +25,14 @@ public class TechPostResponseDto {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private List<String> imagePath;
-    private String nickname;
+    private Member nickname;
     private int views;
     private int commentCount;
     private int goodCount;
 
     @Builder
     public TechPostResponseDto(Long id, Member memberId, String title, String detail, LocalDateTime createAt, LocalDateTime updateAt,
-                               List<String> imagePath, String nickname, int views, int commentCount, int goodCount) {
+                               List<String> imagePath, Member nickname, int views, int commentCount, int goodCount) {
         this.id = id;
         this.memberId = memberId;
         this.title = title;

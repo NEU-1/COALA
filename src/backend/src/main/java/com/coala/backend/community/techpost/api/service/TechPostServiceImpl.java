@@ -1,5 +1,6 @@
 package com.coala.backend.community.techpost.api.service;
 
+import com.coala.backend.community.techpost.db.entity.TechComment;
 import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.community.techpost.db.repository.TechImageRepository;
 import com.coala.backend.s3.S3UploadService;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
 
 /*
  자유게시판 기능 구현 Impl 입니다.
-
 * */
 
 @Slf4j
@@ -78,13 +78,14 @@ public class TechPostServiceImpl implements TechPostService{
     public CommunityBaseResponseDto getPostList(int page) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
+        List <TechPost> allPost = techPostRepository.findAll();
         List <TechPostResponseDto> allList = techPostRepository.findAll(pageable).stream()
                 .map(techPost -> TechPostResponseDto.builder()
                         .id(techPost.getId())
                         .memberId(techPost.getMemberId())
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
-                        .nickname(techPost.getMemberId().getNickname())
+                        .nickname(techPost.getMemberId())
                         .createAt(techPost.getCreateAt())
                         .updateAt(techPost.getUpdateAt())
                         .views(techPost.getViews())
@@ -96,7 +97,7 @@ public class TechPostServiceImpl implements TechPostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + (allList.size() / 8))
+                .detail(1 + (allPost.size() / 7))
                 .list(allList)
                 .build();
     }
@@ -122,7 +123,7 @@ public class TechPostServiceImpl implements TechPostService{
                 .memberId(techPost.getMemberId())
                 .title(techPost.getTitle())
                 .detail(techPost.getDetail())
-                .nickname(techPost.getMemberId().getNickname())
+                .nickname(techPost.getMemberId())
                 .createAt(techPost.getCreateAt())
                 .updateAt(techPost.getUpdateAt())
                 .imagePath(uri)
@@ -155,13 +156,14 @@ public class TechPostServiceImpl implements TechPostService{
     public CommunityBaseResponseDto searchPosts(String keyword, int page) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
+        List<TechPost> allPost = techPostRepository.findByTitleContaining(keyword);
         List<TechPostResponseDto> searchList = techPostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(techPost -> TechPostResponseDto.builder()
                         .id(techPost.getId())
                         .memberId(techPost.getMemberId())
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
-                        .nickname(techPost.getMemberId().getNickname())
+                        .nickname(techPost.getMemberId())
                         .createAt(techPost.getCreateAt())
                         .updateAt(techPost.getUpdateAt())
                         .views(techPost.getViews())
@@ -173,7 +175,7 @@ public class TechPostServiceImpl implements TechPostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + searchList.size() / 8)
+                .detail(1 + allPost.size() / 7)
                 .list(searchList)
                 .build();
     }

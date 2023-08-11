@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins="*")
-@RequestMapping("/api/tech/comment/")
+@RequestMapping("/api/tech/comment")
 public class TechCommentController {
     private final TechCommentServiceImpl techCommentService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -28,18 +28,18 @@ public class TechCommentController {
     private static String accessToken = "";
 
     // 댓글 저장
-    @PostMapping("{id}/save")
-    public ResponseEntity<CommunityBaseResponseDto> saveComment(@PathVariable("id") Long postId,
+    @PostMapping("/save/{id}")
+    public ResponseEntity<CommunityBaseResponseDto> saveComment(@PathVariable("id") Long id,
             @RequestBody @Valid TechCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
 
-        CommunityBaseResponseDto responseDto = techCommentService.saveComment(postId, requestDto, getEmail(httpServletRequest));
+        CommunityBaseResponseDto responseDto = techCommentService.saveComment(id, requestDto, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);
     }
 
     // 댓글 수정
-    @PutMapping("update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<CommunityBaseResponseDto> updateTechComment(@PathVariable("id") Long id,
                                                                       @RequestBody @Valid TechCommentRequestDto requestDto, HttpServletRequest httpServletRequest) {
 
@@ -50,7 +50,7 @@ public class TechCommentController {
     }
 
     // 댓글 목록
-    @GetMapping("{id}/{page}")
+    @GetMapping("/{id}/{page}")
     public ResponseEntity<CommunityBaseResponseDto> techCommentList(@PathVariable("id") Long id, @PathVariable("page") int page) {
         CommunityBaseResponseDto responseDto = techCommentService.getCommentList(id, page);
 
@@ -59,7 +59,7 @@ public class TechCommentController {
     }
 
     // 댓글 삭제
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void techCommentDelete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
         techCommentService.deleteComment(id, getEmail(httpServletRequest));
     }
