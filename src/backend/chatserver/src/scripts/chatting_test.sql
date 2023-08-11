@@ -59,6 +59,37 @@ CREATE TABLE `Posts_Provider` (
 	`status`	int(2)	NOT NULL
 );
 
+
+CREATE TABLE `history` (
+	`id`	bigint	NOT NULL,
+	`producer_id`	bigint	NOT NULL,
+	`consumer_id`	bigint	NOT NULL,
+	`deposit`	int	NOT NULL,
+	`rental_cost`	int	NOT NULL,
+	`created_at`	datetime	NOT NULL,
+	`rental_at`	datetime	NOT NULL,
+	`return_at`	datetime	NOT NULL,
+	`status`	int	NOT NULL,
+	`contract_path`	varchar(255)	NULL,
+	`producer_sign`	varchar(255)	NULL,
+	`consumer_sign`	varchar(255)	NULL,
+	`account`	varchar(255)	NOT NULL
+);
+ALTER TABLE `history` ADD CONSTRAINT `PK_HISTORY` PRIMARY KEY (
+	`id`
+);
+ALTER TABLE `history` MODIFY `id` bigint AUTO_INCREMENT;
+
+ALTER TABLE `history` ADD CONSTRAINT `FK_Member_TO_history_1` FOREIGN KEY (
+	`producer_id`
+)
+REFERENCES `Member` (
+	`id`
+);
+
+
+
+
 ALTER TABLE `category` ADD CONSTRAINT `PK_CATEGORY` PRIMARY KEY (
 	`id`
 );
