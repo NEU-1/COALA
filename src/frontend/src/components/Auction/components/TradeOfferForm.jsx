@@ -2,21 +2,24 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { images } from "../../../assets/images";
 import CCheckBox from "../../Common/CCheckBox";
-import Calendar from "react-calendar";
+// import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
+import { requestPost, setToken } from "../../../lib/api/api";
+import { useParams } from "react-router-dom";
 
 const SERVER_URL = "--서버 주소--";
 
 const TradeOfferForm = ({ onClose }) => {
   const [imageList, setImageList] = useState([]);
-  const [bargain, setBargain] = useState(false);
-  const [calendarDay, setCalendarDay] = useState(new Date());
-  const [calendar, setCalendar] = useState(false);
+  const [bargain, setBargain] = useState(0);
+  // const [calendarDay, setCalendarDay] = useState(new Date());
+  // const [calendar, setCalendar] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
-
+  const { postId } = useParams();
+  
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % imageList.length);
   };
@@ -35,14 +38,14 @@ const TradeOfferForm = ({ onClose }) => {
     day: "",
   };
   const [state, setState] = useState(initialState);
-  const { title, mainText, deposit, rentalFee, day } = state;
+  const { title, mainText, deposit, rentalFee } = state;
 
-  const calendarHandler = () => {
-    setCalendar(!calendar);
-  };
-  const year = calendarDay.getFullYear();
-  const month = calendarDay.getMonth() + 1;
-  const date = calendarDay.getDate();
+  // const calendarHandler = () => {
+  //   setCalendar(!calendar);
+  // };
+  // const year = calendarDay.getFullYear();
+  // const month = calendarDay.getMonth() + 1;
+  // const date = calendarDay.getDate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,26 +68,41 @@ const TradeOfferForm = ({ onClose }) => {
   };
 
   const setBargainStatus = (e) => {
-    setBargain(e.target.checked);
+    setBargain(e.target.checked ? 1: 0);
   };
   const goServer = async () => {
-    try {
-      const formData = new FormData();
-      imageList.forEach((image, index) => {
-        formData.append(`image${index}`);
-      });
-      formData.append("title", title);
-      formData.append("mainText", mainText);
-      formData.append("deposit", deposit);
-      formData.append("rentalFee", rentalFee);
-      formData.append("day", day);
-      formData.append("bargain", bargain);
-      const response = await axios.post("서버의 URL", formData);
+    setToken();
+    requestPost(`auction/apply?id=${postId}`, {
+      title : title,
+      detail : mainText,
+      deposit: deposit,
+      rentalCost : rentalFee,
+      negotiation : bargain
+    })
+    .then((res) => {
+      console.log(res)
+      // console.log(title, mainText, deposit, rentalFee, bargain)
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+    // try {
+    //   const formData = new FormData();
+    //   imageList.forEach((image, index) => {
+    //     formData.append(`image${index}`);
+    //   });
+    //   formData.append("title", title);
+    //   formData.append("mainText", mainText);
+    //   formData.append("deposit", deposit);
+    //   formData.append("rentalFee", rentalFee);
+    //   formData.append("day", day);
+    //   formData.append("bargain", bargain);
+    //   const response = await axios.post("서버의 URL", formData);
 
-      alert(response.status === 200 ? "성공" : "실패");
-    } catch (err) {
-      console.error("통신 오류", err);
-    }
+    //   alert(response.status === 200 ? "성공" : "실패");
+    // } catch (err) {
+    //   console.error("통신 오류", err);
+    // }
   };
   const fetchMySellData = (setMySell) => {
     axios
@@ -183,7 +201,7 @@ const TradeOfferForm = ({ onClose }) => {
         </SCDDiv>
         <SDCDiv>
           <SMainP>기간</SMainP>
-          <SDayDiv>
+          {/* <SDayDiv>
             <SCalendarDate>
               <SSubP>상한 날짜</SSubP>
               <SSubP
@@ -195,7 +213,7 @@ const TradeOfferForm = ({ onClose }) => {
             ) : (
               ""
             )}
-          </SDayDiv>
+          </SDayDiv> */}
           <CCheckBox
             name="bargain"
             text={"가격 제안 여부"}
@@ -375,14 +393,14 @@ const SDCDiv = styled.div`
   gap: 18px;
 `;
 
-const SDayDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  flex-shrink: 0;
-  align-self: stretch;
-`;
+// const SDayDiv = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: flex-start;
+//   gap: 10px;
+//   flex-shrink: 0;
+//   align-self: stretch;
+// `;
 
 const SButtons = styled.div`
   display: flex;
@@ -430,10 +448,10 @@ const SNoBtn = styled.button`
   letter-spacing: -0.14px;
 `;
 
-const SCalendarDate = styled.div`
-  display: flex;
-  gap: 30px;
-`;
+// const SCalendarDate = styled.div`
+//   display: flex;
+//   gap: 30px;
+// `;
 
 const SLRBtn = styled.div`
   display: flex;

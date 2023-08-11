@@ -2,181 +2,52 @@ import React, { useEffect, useState } from "react";
 import { images } from "../../assets/images";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
-import { useSelector } from "react-redux";
 import ImgMediaCard from "./components/Carditem";
 import TradeOfferForm from "./components/TradeOfferForm";
+import { requestGet, requestDel, setToken } from "../../lib/api/api";
+import { login } from "../../store/LoginSlice";
 
 const AuctionDetail = () => {
-  const [postData, setPostData] = useState(null);
+  console.log("렌더링");
   const [showModal, setShowModal] = useState(false);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [currentProposalIndex, setCurrentProposalIndex] = useState(0);
   const [showFormModal, setShowFormModal] = useState(false);
+  const [postData, setPostData] = useState(null);
+  const [isAuthor, setIsAuthor] = useState(false);
 
   const navigate = useNavigate();
   const { postId } = useParams();
-  const [data, setData] = useState(initialData());
-
-  function initialData() {
-    return [
-      {
-        id: 1,
-        img: undefined,
-        writer: "wilson",
-        writeDay: "8/5",
-        rentalFee: "80000",
-        deposit: "3000",
-        bargaining: false,
-      },
-      {
-        id: 2,
-        img: undefined,
-        writer: "alice",
-        writeDay: "8/4",
-        rentalFee: "75000",
-        deposit: "3500",
-        bargaining: true,
-      },
-      {
-        id: 3,
-        img: undefined,
-        writer: "bob",
-        writeDay: "8/3",
-        rentalFee: "81000",
-        deposit: "2800",
-        bargaining: false,
-      },
-      {
-        id: 4,
-        img: undefined,
-        writer: "charlie",
-        writeDay: "8/2",
-        rentalFee: "83000",
-        deposit: "3200",
-        bargaining: true,
-      },
-      {
-        id: 5,
-        img: undefined,
-        writer: "david",
-        writeDay: "8/1",
-        rentalFee: "85000",
-        deposit: "3100",
-        bargaining: false,
-      },
-      {
-        id: 6,
-        img: undefined,
-        writer: "ella",
-        writeDay: "7/31",
-        rentalFee: "82000",
-        deposit: "3300",
-        bargaining: true,
-      },
-      {
-        id: 7,
-        img: undefined,
-        writer: "frank",
-        writeDay: "7/30",
-        rentalFee: "84000",
-        deposit: "2900",
-        bargaining: false,
-      },
-      {
-        id: 8,
-        img: undefined,
-        writer: "grace",
-        writeDay: "7/29",
-        rentalFee: "79000",
-        deposit: "3400",
-        bargaining: true,
-      },
-      {
-        id: 9,
-        img: undefined,
-        writer: "harry",
-        writeDay: "7/28",
-        rentalFee: "77000",
-        deposit: "3000",
-        bargaining: false,
-      },
-      {
-        id: 10,
-        img: undefined,
-        writer: "irene",
-        writeDay: "7/27",
-        rentalFee: "76000",
-        deposit: "3050",
-        bargaining: true,
-      },
-      {
-        id: 11,
-        img: undefined,
-        writer: "jack",
-        writeDay: "7/26",
-        rentalFee: "78000",
-        deposit: "3150",
-        bargaining: false,
-      },
-      {
-        id: 12,
-        img: undefined,
-        writer: "kelly",
-        writeDay: "7/25",
-        rentalFee: "80000",
-        deposit: "3100",
-        bargaining: true,
-      },
-      {
-        id: 13,
-        img: undefined,
-        writer: "leo",
-        writeDay: "7/24",
-        rentalFee: "79000",
-        deposit: "3200",
-        bargaining: false,
-      },
-      {
-        id: 14,
-        img: undefined,
-        writer: "mia",
-        writeDay: "7/23",
-        rentalFee: "77000",
-        deposit: "3300",
-        bargaining: true,
-      },
-      {
-        id: 15,
-        img: undefined,
-        writer: "nick",
-        writeDay: "7/22",
-        rentalFee: "76000",
-        deposit: "3400",
-        bargaining: false,
-      },
-    ];
-  }
-
-  const isLogin = useSelector((state) => state.login.isLogin);
-  const currentUser = "현재 로그인한 사용자 정보";
-  const postAuthor = "게시글 작성자 정보";
-  const isAuthor = currentUser === postAuthor;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [postResponse] = await Promise.all([
-          axios.get(`your-server-url/posts/${postId}`),
-        ]);
-        setPostData(postResponse.data);
-      } catch (error) {
-        console.error("데이터를 가져오는데 실패:", error);
-      }
-    };
-    fetchData();
-  }, [postId]);
+    setToken();
+    console.log("렌더링2");
+    requestGet(`auction/detail?id=${postId}`)
+      .then((res) => {
+        setPostData(res.data);
+        setIsAuthor(res.data.mine);
+        console.log(res);
+        // console.log(res.data, ":res.data");
+        // console.log(postData, ":postData");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (postData) {
+      setIsAuthor(postData.mine);
+    }
+  }, []);
+
+  const isLogin = login;
+
   const showProposalList = () => {
+    if (postData.auctionApplies.length === 0) {
+      alert("제안이 없습니다.");
+      return;
+    }
     setShowProposalModal(!showProposalModal);
   };
 
@@ -184,13 +55,17 @@ const AuctionDetail = () => {
     setShowModal(true);
   };
   const handleDelete = async () => {
-    try {
-      await axios.delete(`your-server-url/posts/${postId}`);
-      navigate("/auction");
-    } catch (error) {
-      console.error("포스트 삭제 오류:", error);
-      alert("포스트 삭제에 실패했습니다.");
-    }
+    setToken();
+    requestDel(`auction/delete?id=${postId}`)
+      .then((res) => {
+        console.log(res);
+        console.log("삭제됨");
+        navigate("/auction");
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("본인 글만 삭제 가능");
+      });
   };
 
   const handleCancel = () => {
@@ -201,8 +76,7 @@ const AuctionDetail = () => {
     navigate("/profile");
   };
   const showForm = () => {
-    // 나중에 로그인 여부 반대로
-    if (!isLogin) {
+    if (isLogin) {
       setShowFormModal(!showFormModal);
     } else {
       alert("로그인하세요");
@@ -211,9 +85,16 @@ const AuctionDetail = () => {
   };
 
   const goUpdate = () => {
-    if ("대기중") {
-      navigate(`update`);
-    }
+    requestGet(`auction/valid?id=${postId}`)
+      .then((res) => {
+        if (res.status === 200) {
+          navigate(`update`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("본인글만 수정 가능");
+      });
   };
   const handleBackdropClick = () => {
     setShowModal(false);
@@ -221,9 +102,19 @@ const AuctionDetail = () => {
   const handleModalContentClick = (event) => {
     event.stopPropagation();
   };
+  const formattedDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+  const displayDate = postData
+    ? formattedDate(postData.auctionPost.createdAt)
+    : "";
 
   const handlePictureChange = (direction) => {
-    const totalProposal = data.length;
+    const totalProposal = postData.auctionApplies.length;
     if (direction === "next") {
       setCurrentProposalIndex((currentProposalIndex + 1) % totalProposal);
     } else {
@@ -232,104 +123,114 @@ const AuctionDetail = () => {
       );
     }
   };
+  console.log(isAuthor);
 
   return (
     <SMain>
-      <SContent>
-        <SProfile onClick={goProfile}>
-          <SProfileImg src={images.plus} alt="" />
-          <STextSmall>{"작성자"}작성자</STextSmall>
-        </SProfile>
-        <SDayAndCost>
-          <STextSub>
-            ${"product"} / ${"day"}
-          </STextSub>
-          <STextSub>
-            ${"min"}원 / ${"max"}원
-          </STextSub>
-          <STextSub>최소 ${"min"}일</STextSub>
-        </SDayAndCost>
-      </SContent>
-      <SHeader>
-        <STitleAndProduct>
-          <SText>{"title"}삼성 민초 키보드 있으신분?</SText>
-        </STitleAndProduct>
-      </SHeader>
-
-      <SContentDetail>
-        <STextMainContent>
-          {"content"} 민트초코색 키보드를 찾고 있습니다. 이 색상은 상쾌하면서도
-          아늑한 느낌을 동시에 가져, 많은 사람들이 사랑하는 컬러입니다. 일상의
-          지루함에서 벗어나 책상 위에 한 점 빛나는 포인트를 주고 싶을 때,
-          민트초코의 특별한 매력에 흠뻑 빠져보세요. 키보드는 우리의 작업과
-          놀이에 있어 필수적인 도구이니, 왜 자신만의 스타일로 만들어 보지
-          않을까요? 민트초코색 키보드로 나만의 특별한 공간을 연출해보세요.
-        </STextMainContent>
-      </SContentDetail>
-      {!isAuthor ? (
-        <div>
-          {showFormModal && (
-            <SModalBackdrop onClick={showForm}>
-              <SFormModal onClick={(e) => e.stopPropagation()}>
-                <TradeOfferForm
-                  onClick={showForm}
-                  onClose={() => setShowFormModal(false)}
-                />
-              </SFormModal>
-            </SModalBackdrop>
-          )}
-          <SButtons>
-            <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
-          </SButtons>
-        </div>
-      ) : (
-        <div>
-          {showProposalModal && (
-            <SModalBackdrop onClick={showProposalList}>
-              <SCardModal onClick={(e) => e.stopPropagation()}>
-                <SButtonArea
-                  onClick={() => handlePictureChange("previous")}
-                ></SButtonArea>
-                <ImgMediaCard
-                  img={data[currentProposalIndex].img}
-                  title={data[currentProposalIndex].title}
-                  mainText={data[currentProposalIndex].mainText}
-                  rentalFee={data[currentProposalIndex].rentalFee}
-                  deposit={data[currentProposalIndex].deposit}
-                  endDay={data[currentProposalIndex].endDay}
-                  bargaining={data[currentProposalIndex].bargaining}
-                />
-                <SButtonArea
-                  onClick={() => handlePictureChange("next")}
-                ></SButtonArea>
-              </SCardModal>
-            </SModalBackdrop>
-          )}
-          <SButtons>
-            <SButtonSeeProposal onClick={showProposalList}>
-              제안 확인
-            </SButtonSeeProposal>
-            <SButtonWeekPurple onClick={showDeleteModal}>
-              삭제
-            </SButtonWeekPurple>
-            <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
-          </SButtons>
-        </div>
-      )}
-      {showModal && (
+      {postData ? (
         <>
-          <SModalBackdrop onClick={handleBackdropClick}>
-            <SModal onClick={handleModalContentClick}>
-              <STextContent>삭제</STextContent>
-              <STextDelete>정말 삭제하시겠습니까?</STextDelete>
-              <SButtonsDelete>
-                <SButtonDelete onClick={handleDelete}>삭제</SButtonDelete>
-                <SButtonBack onClick={handleCancel}>취소</SButtonBack>
-              </SButtonsDelete>
-            </SModal>
-          </SModalBackdrop>
+          <SContent>
+            <SProfile onClick={goProfile}>
+              <SProfileImg src={images.plus} alt="" />
+              <STextSmall>{postData.auctionPost.author}</STextSmall>
+            </SProfile>
+            <SDayAndCost>
+              <STextSub>{displayDate}</STextSub>
+              <STextSub>조회수 {postData.auctionPost.views}</STextSub>
+              <STextSub>
+                {postData.auctionPost.category.name} / 최소{" "}
+                {postData.auctionPost.minRentalPeriod}일
+              </STextSub>
+            </SDayAndCost>
+          </SContent>
+          <SHeader>
+            <STitleAndProduct>
+              <SText>{postData.auctionPost.title}</SText>
+            </STitleAndProduct>
+          </SHeader>
+
+          <SContentDetail>
+            <STextMainContent>{postData.auctionPost.detail}</STextMainContent>
+          </SContentDetail>
+          {!isAuthor ? (
+            <div>
+              {showFormModal && (
+                <SModalBackdrop onClick={showForm}>
+                  <SFormModal onClick={(e) => e.stopPropagation()}>
+                    <TradeOfferForm
+                      onClick={showForm}
+                      onClose={() => setShowFormModal(false)}
+                    />
+                  </SFormModal>
+                </SModalBackdrop>
+              )}
+              <SButtons>
+                <SButtonWeekPurple onClick={showForm}>
+                  제안하기
+                </SButtonWeekPurple>
+              </SButtons>
+            </div>
+          ) : (
+            <div>
+              {showProposalModal && (
+                <SModalBackdrop onClick={showProposalList}>
+                  <SCardModal onClick={(e) => e.stopPropagation()}>
+                    <SButtonArea
+                      onClick={() => handlePictureChange("previous")}
+                    ></SButtonArea>
+                    <ImgMediaCard
+                      // img={postData.auctionApplies[currentProposalIndex].img}
+                      title={
+                        postData.auctionApplies[currentProposalIndex].title
+                      }
+                      mainText={
+                        postData.auctionApplies[currentProposalIndex].detail
+                      }
+                      rentalFee={
+                        postData.auctionApplies[currentProposalIndex].rentalCost
+                      }
+                      deposit={
+                        postData.auctionApplies[currentProposalIndex].deposit
+                      }
+                      // endDay={postData.auctionApplies[currentProposalIndex].endDay}
+                      bargaining={
+                        postData.auctionApplies[currentProposalIndex]
+                          .negotiation
+                      }
+                    />
+                    <SButtonArea
+                      onClick={() => handlePictureChange("next")}
+                    ></SButtonArea>
+                  </SCardModal>
+                </SModalBackdrop>
+              )}
+              <SButtons>
+                <SButtonSeeProposal onClick={showProposalList}>
+                  제안 확인
+                </SButtonSeeProposal>
+                <SButtonWeekPurple onClick={showDeleteModal}>
+                  삭제
+                </SButtonWeekPurple>
+                <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
+              </SButtons>
+            </div>
+          )}
+          {showModal && (
+            <>
+              <SModalBackdrop onClick={handleBackdropClick}>
+                <SModal onClick={handleModalContentClick}>
+                  <STextContent>삭제</STextContent>
+                  <STextDelete>정말 삭제하시겠습니까?</STextDelete>
+                  <SButtonsDelete>
+                    <SButtonDelete onClick={handleDelete}>삭제</SButtonDelete>
+                    <SButtonBack onClick={handleCancel}>취소</SButtonBack>
+                  </SButtonsDelete>
+                </SModal>
+              </SModalBackdrop>
+            </>
+          )}
         </>
-      )}
+      ) : null}
     </SMain>
   );
 };
@@ -389,7 +290,7 @@ const SContent = styled.div`
   padding: 10px 20px;
   justify-content: space-between;
   align-items: center;
-  // border-bottom: 1px solid var(--content-underline, #e9d5ff);
+  border-bottom: 1px solid silver;
 `;
 
 const STitleAndProduct = styled.div`
@@ -427,6 +328,7 @@ const STextMainContent = styled.p`
   color: #000;
   font-size: 20px;
   font-weight: 500;
+  white-space: pre-wrap;
 `;
 
 const SButtons = styled.div`

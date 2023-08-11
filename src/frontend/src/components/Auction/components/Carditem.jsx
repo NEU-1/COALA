@@ -8,9 +8,7 @@ export default function ImgMediaCard({
   mainText,
   rentalFee,
   deposit,
-  endDay,
   bargaining,
-  onClick,
 }) {
   // const [currentImgIndex, setCurrentImgIndex] = React.useState(0);
   // const handlePictureChange = (direction) => {
@@ -27,20 +25,18 @@ export default function ImgMediaCard({
   };
   return (
     <SCard>
-      <SImgDiv>
+      {/* <SImgDiv>
         <SImg src={img} alt="" />
-        {/* <button onClick={() => handlePictureChange("previous")}>{"<"}</button>
+        <button onClick={() => handlePictureChange("previous")}>{"<"}</button>
         <SImg src={img[currentImgIndex]} alt="" />
-        <button onClick={() => handlePictureChange("next")}>{">"}</button> */}
-      </SImgDiv>
+        <button onClick={() => handlePictureChange("next")}>{">"}</button>
+      </SImgDiv> */}
       <STitleDiv>
-        <STitleP>{title}title</STitleP>
+        <STitleP>{title}</STitleP>
       </STitleDiv>
       <SMainTextDiv>
         <SMainTextP>
-          {mainText}다양한 중고 키보드를 경제적으로 경험하실 수 있는 우리의 대여
-          서비스를 이용해보세요. 모든 키보드는 철저한 점검 후 제공되며, 당신에게
-          최적의 키보드를 찾을 수 있는 기회를 제공합니다.
+          {mainText}
         </SMainTextP>
       </SMainTextDiv>
       <SProduct>
@@ -50,13 +46,9 @@ export default function ImgMediaCard({
         <SCostDiv>
           <STextP>가격</STextP>
           <STextP>
-            {rentalFee}rentalFee/{deposit}deposit
+            {rentalFee}/{deposit}
           </STextP>
         </SCostDiv>
-        <SDayDiv>
-          <STextP>기간</STextP>
-          <STextP>{endDay}endDay</STextP>
-        </SDayDiv>
       </SProductDetail>
       <SFooterDiv>
         <SQuestionBtn>
@@ -83,25 +75,25 @@ const SCard = styled.div`
   background: #f5f5f5;
 `;
 
-const SImgDiv = styled.div`
-  display: flex;
-  padding: 25px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  align-self: stretch;
-`;
+// const SImgDiv = styled.div`
+//   display: flex;
+//   padding: 25px;
+//   flex-direction: column;
+//   align-items: flex-start;
+//   gap: 10px;
+//   align-self: stretch;
+// `;
 
-const SImg = styled.img`
-  display: flex;
-  height: 269px;
-  justify-content: flex-end;
-  align-items: flex-start;
-  gap: 10px;
-  align-self: stretch;
-  border-radius: 30px;
-  background: url(<path-to-image>), lightgray 50% / cover no-repeat;
-`;
+// const SImg = styled.img`
+//   display: flex;
+//   height: 269px;
+//   justify-content: flex-end;
+//   align-items: flex-start;
+//   gap: 10px;
+//   align-self: stretch;
+//   border-radius: 30px;
+//   background: url(<path-to-image>), lightgray 50% / cover no-repeat;
+// `;
 
 const STitleDiv = styled.div`
   display: flex;
@@ -163,14 +155,6 @@ const SCostDiv = styled.div`
   display: flex;
   width: 100px;
   padding: 0px 20px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 13px;
-`;
-
-const SDayDiv = styled.div`
-  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;

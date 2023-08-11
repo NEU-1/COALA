@@ -61,3 +61,13 @@ export const requestPut = async (url, body) => {
     throw error;
   }
 };
+
+export const requestDel = async (url) => {
+  try {
+    const data = await axios.delete(baseUrl + url, headers);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
