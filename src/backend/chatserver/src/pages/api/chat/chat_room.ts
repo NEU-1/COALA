@@ -66,7 +66,9 @@ const receiveData = withCors(async (
     if (!result){
       await createRoom(data);
     }
+    console.log("data", data);
     result = await readRoom(data);
+    console.log("result",result)
     const room_user = {
       'room_id' : result['id'],
       'member_id' : ur_id
