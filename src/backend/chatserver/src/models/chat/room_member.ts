@@ -19,21 +19,22 @@ const Create = async (inputData : any) =>{
     
     if (!room) {return; }
     const data =  {room: room, user : usr, other : null};
-    // const room_user = {
-    //   'room_id' : room['id'],
-    //   'member_id' : usr['id']
-    // };
-    
     const room_user = {
-      'room_id' : room['id']
+      'room_id' : room['id'],
+      'member_id' : usr['id']
     };
+    
+    // const room_user = {
+    //   'room_id' : room['id']
+    // };
     
     const roomUserRelations = await Read(room_user);
 
-    for ( let member_id in roomUserRelations ){
-      // if (member_id === usr['id'])
-      console.log(member_id);
-    }
+    console.log(roomUserRelations)
+    // for ( let member_id of roomUserRelations ){
+    //   if (member_id === usr['id'])
+    //   console.log(member_id);
+    // }
 
     if (roomUserRelations) {return data;} 
     await createQuery('room_member', room_user);
