@@ -7,6 +7,7 @@ import { requestGet, setToken } from '../../../lib/api/api';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { getAccessToken, ACCESS_TOKEN_EXPIRE_TIME } from '../../../lib/api/api';
 
 const HeaderContainer = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const HeaderContainer = () => {
           if (res.data.baseResponseDto.statusCode === 200) {
             setNickname(res.data.member.nickname);
             dispatch(login());
+            setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
           } else if (res.data.statusCode === 401) {
             Swal.fire({
               title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,

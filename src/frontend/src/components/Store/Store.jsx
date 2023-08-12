@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
 import CCheckBox from "../Common/CCheckBox";
 import ImgMediaCard from "./components/Carditem";
 import styled from "styled-components";
@@ -7,110 +6,97 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { images } from "../../assets/images";
+import { login } from "../../store/LoginSlice";
+import { requestPost, setToken } from "../../lib/api/api";
 
+const product = ["키보드", "마우스", "헤드셋", "태블릿"];
+const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
 
 const Store = () => {
-  const product = ["키보드", "마우스", "헤드셋", "태블릿"];
-  const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
-
   const [filter, setFilter] = useState(false);
-  const [productType, setproductType] = useState("");
+  const [productType, setProductType] = useState("");
   const [dayType, setDayType] = useState("");
   const [seeProductCheck, setseeProductCheck] = useState(false);
-  const [data, setData] = useState([
-    { id: 1, isRented: false, isReservation: false },
-    { id: 2, isRented: true, isReservation: false },
-    { id: 3, isRented: false, isReservation: true },
-    { id: 4, isRented: false, isReservation: false },
-    { id: 5, isRented: false, isReservation: false },
-    { id: 6, isRented: false, isReservation: true },
-    { id: 7, isRented: false, isReservation: false },
-    { id: 8, isRented: false, isReservation: false },
-    { id: 9, isRented: true, isReservation: true },
-  ]);
-  const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [likedItems, setLikedItems] = useState([]);
-  const [isLogin, setIsLogin] = useState(
-    sessionStorage.getItem("user_id") !== null
-  );
-  const [priceRange, setPriceRange] = useState([25000, 75000]);
-
-  const onFilterHandler = () => {
+  const [data, setData] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 100000]);
+  const pageRef = useRef(-1);
+  const isLogin = login;
+  const navigate = useNavigate();
+  const handleFilterToggle = () => {
     setFilter(!filter);
-    console.log(filter);
   };
-  const onproductTypeHandler = (index) => {
-    setproductType(index);
+
+  const handleProductTypeChange = (index) => {
+    setProductType(index);
   };
-  const ondayTypeHandler = (index) => {
+
+  const handleDayTypeChange = (index) => {
     setDayType(index);
   };
   const resetDayAndProduct = () => {
-    setproductType("");
+    setProductType("");
     setDayType("");
+    setPriceRange([0, 100000]);
   };
+  const applyFilter = () => {
+    pageRef.current = -1; 
+    setData([]); 
+    loadMoreData();
+};
+
   const seeProductCheckHandler = (e) => {
     setseeProductCheck(e.target.checked);
   };
   const loadMoreData = () => {
-    if (data.length === 0 || loading) return;
+    const nextPage = pageRef.current + 1;
+    pageRef.current = nextPage;
 
-    setLoading(true);
+    const params = {
+      category: productType,
+      minRentalPeriod: dayType,
+      minRentalCost: priceRange[0],
+      maxRentalCost: priceRange[1],
+      status: seeProductCheck,
+    };
 
-    const params = {};
-    if (productType !== "") params.productType = productType;
-    if (dayType !== "") params.dayType = dayType;
-
-    // axios
-    // .get(`/api/data`, { params: { page: page + 1, ...params } })
-    // .then((response) => {
-    //   setData(data.concat(response.data));
-    //   setPage(page + 1);
-    // })
-    // .catch((err) => {
-    //   console.error(err);
-    // })
-    // .finally(() => {
-    //   setLoading(false);
-    // });
+    requestPost(`store/list?page=${nextPage}`, params)
+      .then((response) => {
+        setData((prevData) => [...prevData, ...response.data.list]);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
   };
+
   const handleScroll = () => {
     const scrollTTop = document.documentElement.scrollTop;
-    const clientHeight = document.documentElement.scrollHeight;
     const scrollHeight = document.documentElement.scrollHeight;
-    if (scrollTTop + clientHeight >= scrollHeight) {
+    const clientHeight = document.documentElement.clientHeight;
+    const scrollBottom = Math.ceil(scrollTTop + clientHeight);
+
+    if (scrollBottom >= scrollHeight) {
       loadMoreData();
     }
   };
-  const handleLike = (item) => {
-    console.log(likedItems, item, "test");
-    if (likedItems.includes(item)) {
-      setLikedItems((prevLikedItems) =>
-        prevLikedItems.filter((likedItem) => likedItem !== item)
-      );
-    } else {
-      setLikedItems((prevLikedItems) => [...prevLikedItems, item]);
-    }
-  };
-  const navigate = useNavigate();
+
   const onClickHandler = () => {
     console.log(isLogin);
     if (!isLogin) {
+      // if (isLogin) {
       Swal.fire({
         icon: "warning",
         title: "게시글 작성은 로그인 후 가능합니다.",
         html: "",
         timer: 1000,
         showConfirmButton: false,
-      })
+      });
       navigate("/login");
     } else {
       navigate("/store/write");
     }
   };
   const handleCardClick = (id) => {
-    console.log(id)
     navigate(`${id}`);
   };
 
@@ -121,22 +107,9 @@ const Store = () => {
     };
   }, []);
   useEffect(() => {
+    setToken(); 
     loadMoreData();
   }, []);
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setIsLogin(sessionStorage.getItem("user_id") !== null);
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log(productType, dayType, likedItems);
-  }, [productType, dayType, likedItems]);
 
   return (
     <Smain>
@@ -145,18 +118,19 @@ const Store = () => {
           <SOpenFilter>
             <SFilterHeader>
               <SPageText>상세검색</SPageText>
-              <button onClick={onFilterHandler}>⌃</button>
+              <img src={images.up} alt="React" onClick={handleFilterToggle} />
             </SFilterHeader>
             <SFilterProductType>
               <SFilterProduct>
                 <SPageText>분류</SPageText>
                 <SSelectProduct>
                   {product.map((product, index) => {
+                    const Nindex = index + 1;
                     return (
                       <SSelectProductBtn
                         key={index}
-                        onClick={() => onproductTypeHandler(index)}
-                        $activeProduct={productType === index}
+                        onClick={() => handleProductTypeChange(Nindex)}
+                        $activeProduct={productType === Nindex}
                       >
                         {product}
                       </SSelectProductBtn>
@@ -171,7 +145,7 @@ const Store = () => {
                     return (
                       <SSelectDayBtn
                         key={index}
-                        onClick={() => ondayTypeHandler(index)}
+                        onClick={() => handleDayTypeChange(index)}
                         $activeDay={dayType === index}
                       >
                         {day}
@@ -190,20 +164,20 @@ const Store = () => {
                 range
                 min={0}
                 max={100000}
-                defaultValue={[25000, 75000]}
+                defaultValue={[0, 100000]}
                 step={1000}
                 onChange={(value) => setPriceRange(value)}
               />
             </SFilterGageBar>
             <SFilterFooter>
               <SResetBtn onClick={resetDayAndProduct}>초기화</SResetBtn>
-              <SOKBtn>적용</SOKBtn>
+              <SOKBtn onClick={applyFilter}>적용</SOKBtn>
             </SFilterFooter>
           </SOpenFilter>
         ) : (
           <SNotOpenFilter>
             <SPageText>상세검색</SPageText>
-            <button onClick={onFilterHandler}>⌄</button>
+            <img src={images.down} alt="React" onClick={handleFilterToggle} />
           </SNotOpenFilter>
         )}
       </div>
@@ -226,8 +200,7 @@ const Store = () => {
                 <ImgMediaCard
                   key={index}
                   item={item}
-                  onLike={handleLike}
-                  onClick={() => handleCardClick(item.id)}
+                  onClick={() => handleCardClick(item.storePost.id)}
                 />
               ))}
         </SCardList>
@@ -242,6 +215,7 @@ const Smain = styled.div`
   justify-content: center;
   align-items: center;
   gap: 30px;
+  margin-top: 170px;
 `;
 
 const SNotOpenFilter = styled.div`
@@ -384,9 +358,8 @@ const SCheckboxAndCreateBtn = styled.div`
 const SCardList = styled.div`
   display: flex;
   width: 800px;
-  gap: 20px;
+  gap: 17px;
   flex-wrap: wrap;
-  justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
 `;

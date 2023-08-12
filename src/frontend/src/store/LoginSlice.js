@@ -11,7 +11,6 @@ const loginSlice = createSlice({
   reducers: {
     login: (state) => {
       state.isLogin = true;
-      console.log(state.isLogin);
     },
     logout: (state) => {
       state.isLogin = false;

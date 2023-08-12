@@ -20,10 +20,12 @@ const Create = async (inputData : any) =>{
       'room_id' : room['id'],
       'member_id' : usr['id']
     };
-  
+    
+    
     const [roomUserRelations] = await Read(room_user);
+    console.log("흐음 중계테이블 확인",roomUserRelations)
     if (roomUserRelations) {return data;} 
-    // await createQuery('room_member', room_user);
+    await createQuery('room_member', room_user);
     return data;
 
   }catch(error){
@@ -56,15 +58,22 @@ const Delete = async (inputData : any) => {
     console.log("룸",room, name)
     const [usr] : member[] = await readUser({email});
     console.log("유저",usr, email)
+    
+    if (!room || !usr) {return; }
 
     const room_user = {
-      'room_id' : room.id,
-      'member_id' : usr.id
+      'room_id' : room['id'],
+      'member_id' : usr['id']
     };
-
+    
+    const [roomUserRelations] = await Read(room_user);
     const { conditionQuery, values} = buildConditionQuery(room_user, ' AND ');
+    if (! roomUserRelations) {return {message : 'deleted'};} 
     const result = await deleteQuery('room_member', conditionQuery, values);
-    return result;
+    return {
+      message : 'deleted',
+      result
+    };
   }catch(error){
     console.log(error)
   }

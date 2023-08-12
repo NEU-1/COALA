@@ -4,13 +4,13 @@ import { images } from '../../../assets/images';
 import { colors } from '../../../assets/colors';
 import { Link } from 'react-router-dom';
 
-const ChatBoardPreview = () => {
+const ChatBoardPreview = ({ post, producer_id, consumer_id, myId }) => {
   return (
     <SLayout>
       <SStart
         onClick={() => {
           // 외부 페이지 이동
-          window.top.location.href = '/board';
+          window.top.location.href = `/store/${post.id}`;
         }}
       >
         <img
@@ -19,12 +19,19 @@ const ChatBoardPreview = () => {
           className="photo"
         />
         <SDescription>
-          <div>한성 무접점 키보드 대여합니다!-!</div>
-          <div>5,000원 / 20,000원</div>
+          <div>{post.title}</div>
+          <div>
+            {post.rentalCost}원 / {post.deposit}원
+          </div>
         </SDescription>
       </SStart>
       {/* 제공자와 이용자에 따라 활성화 / 비활성화 + 거래하기 / 수락하기 */}
-      <STradeBtn>거래하기</STradeBtn>
+      {myId === producer_id && post.status === 1 && (
+        <STradeBtn>거래하기</STradeBtn>
+      )}
+      {myId === consumer_id && post.status === 2 && (
+        <STradeBtn>수락하기</STradeBtn>
+      )}
     </SLayout>
   );
 };

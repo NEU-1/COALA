@@ -17,10 +17,8 @@ import java.util.stream.Collectors;
     자유게시판 controller 입니다.
     - 업데이트 시 추천수미구현, 페이징 기능 개선 필요
 */
-
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="*")
 @RequestMapping("/api/free/")
 public class FreePostController {
     private final FreePostServiceImpl freePostService;
