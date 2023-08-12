@@ -158,6 +158,13 @@ public class StoreServiceImpl implements StoreService {
             storePost.setRentalCost(Integer.parseInt(info.get("rentalCost")));
             storePost.setDeposit(Integer.parseInt(info.get("deposit")));
             storePost.setUpdatedAt(LocalDateTime.now());
+
+            Category category = categoryRepository.findById(Long.parseLong(info.get("category")))
+                    .orElseThrow(() -> new NoSuchElementException("제품분류가 없습니다."));
+
+            storePost.setCategory(category);
+
+
             storePostRepository.save(storePost);
             return new BaseResponseDto("게시글이 정상적으로 수정되었습니다.", 200);
 
