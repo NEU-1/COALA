@@ -4,9 +4,6 @@ import com.coala.backend.community.freepost.db.dto.request.FreePostRequestDto;
 import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.db.dto.response.FreePostResponseDto;
 import com.coala.backend.member.db.entity.Member;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface FreePostService {
     public CommunityBaseResponseDto savePost (FreePostRequestDto PostDto, Member member);    // 요청 받은 Dto를 활용해서 post를 저장

@@ -12,13 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 /*
     테크게시판 controller 입니다.
@@ -38,7 +35,7 @@ public class TechPostController {
 
     // 게시글 저장
     @PostMapping("save")
-    public ResponseEntity<CommunityBaseResponseDto> saveTechPost(@RequestPart(name = "requestDto") @Valid TechPostRequestDto requestDto,
+    public ResponseEntity<CommunityBaseResponseDto> saveTechPost(@RequestBody @Valid TechPostRequestDto requestDto,
                                                                  HttpServletRequest httpServletRequest) {
 
         CommunityBaseResponseDto responseDto = techPostService.savePost(requestDto, getEmail(httpServletRequest));
@@ -50,8 +47,8 @@ public class TechPostController {
     // 게시글 수정
     @PutMapping("update/{id}")
     public ResponseEntity<CommunityBaseResponseDto> updateTechPost(@PathVariable("id") Long id,
-                                                                   @RequestPart(name = "requestDto") @Valid TechPostRequestDto requestDto,
-                                                                   HttpServletRequest httpServletRequest) throws IOException {
+                                                                   @RequestBody @Valid TechPostRequestDto requestDto,
+                                                                   HttpServletRequest httpServletRequest) {
 
         CommunityBaseResponseDto responseDto = techPostService.updateTechPost(id, requestDto, getEmail(httpServletRequest));
 

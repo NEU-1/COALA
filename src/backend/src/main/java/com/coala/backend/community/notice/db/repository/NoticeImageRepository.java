@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface NoticeImageRepository extends JpaRepository<NoticeImage, Long> {
     List<NoticeImage> findByNpId(Notice notice);
+    List<NoticeImage> deleteByNpId(Notice notice);
 }

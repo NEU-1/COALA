@@ -1,5 +1,6 @@
 package com.coala.backend.community.freepost.db.entity;
 
+import com.coala.backend.community.notice.db.entity.NoticeImage;
 import com.coala.backend.member.db.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -51,11 +52,14 @@ public class FreePost {
     @NotNull
     private int views;
 
-    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE)
     private List<FreeGood> goods = new ArrayList<>();
 
-    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE)
     private List<FreeComment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE)
+    private List<FreeImage> images = new ArrayList<>();
 
     @Builder
     public FreePost(Member memberId, String title, String detail , boolean isAnonymous) {

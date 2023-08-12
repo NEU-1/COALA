@@ -1,7 +1,5 @@
 package com.coala.backend.community.techpost.api.service;
 
-import com.coala.backend.community.freepost.db.entity.FreeImage;
-import com.coala.backend.community.techpost.db.entity.TechComment;
 import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.community.techpost.db.repository.TechImageRepository;
 import com.coala.backend.s3.S3UploadService;
@@ -19,9 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +34,7 @@ public class TechPostServiceImpl implements TechPostService{
     private final TechGoodRepository techGoodRepository;
     private final TechImageRepository techImageRepository;
 
-    private final S3UploadService s3UploadService;
+//    private final S3UploadService s3UploadService;
 
     static String str = "https://coala.s3.ap-northeast-2.amazonaws.com/Tech/";
 
@@ -49,7 +45,7 @@ public class TechPostServiceImpl implements TechPostService{
                 .memberId(member)
                 .title(postDto.getTitle())
                 .detail(postDto.getDetail())
-                .nickname(postDto.getNickname())
+                .nickname(member)
                 .build();
 
         techPostRepository.saveAndFlush(techPost);
@@ -197,10 +193,9 @@ public class TechPostServiceImpl implements TechPostService{
         techPost.updateTechPost(
                 dto.getTitle(),
                 dto.getDetail(),
-                dto.getNickname());
+                member);
 
         techPostRepository.save(techPost);
-        techImageRepository.deleteByTpId(techPost);
 
         for (int i = 0; i < dto.getImagePath().size(); i++) {
             techImageRepository.save(TechImage.builder()
