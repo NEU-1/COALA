@@ -21,7 +21,7 @@ const Create = async (inputData : any) =>{
     
     const room_user = {
       'room_id' : room['id'],
-      // 'member_id' : usr['id']
+      'member_id' : usr['id']
     };
     
     // const room_user = {

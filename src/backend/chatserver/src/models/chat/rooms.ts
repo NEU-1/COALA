@@ -1,9 +1,12 @@
+import dbQuery from '@/db/mysql/database';
 import {
   createQuery,
   readQuery,
   updateQuery,
   deleteQuery
 } from '@/db/mysql/query/crud'
+
+
 
 import { buildConditionQuery } from '@/lib/queryBuilder'
 import timestamp from '@/lib/timestamp'
@@ -42,6 +45,7 @@ const Search = async (target : object) => {
   try{
     const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
     // const result = await readQuery('chat_room', {conditionQuery, values});
+    // const rlt = await dbQuery(`SELECT * FROM chat_room as cr JOIN room_member rm ON chat_room.id = room_member.room_id`,[]);
     const result = await readQuery('chat_room', {conditionQuery, values}, 'room_member', ['chat_room.id', 'room_member.room_id']);
     return result;
   }catch(error){
