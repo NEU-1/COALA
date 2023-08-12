@@ -72,7 +72,7 @@ public class TechPostServiceImpl implements TechPostService{
     public CommunityBaseResponseDto getPostList(int page) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
-        List <TechPost> allPost = techPostRepository.findAll();
+        int allPost = techPostRepository.findAll().size();
         List <TechPostResponseDto> allList = techPostRepository.findAll(pageable).stream()
                 .map(techPost -> TechPostResponseDto.builder()
                         .id(techPost.getId())
@@ -91,7 +91,7 @@ public class TechPostServiceImpl implements TechPostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + (allPost.size() / 7))
+                .detail(1 + (allPost / 7))
                 .list(allList)
                 .build();
     }

@@ -41,7 +41,7 @@ public class TechPost {
     private LocalDateTime updateAt;
 
     @ManyToOne(targetEntity = Member.class)
-    @JoinColumn(name = "nickname", referencedColumnName = "nickname")
+    @JoinColumn(name = "nickname")
     private Member nickname;
 
     @Column(columnDefinition = "integer default 0")
