@@ -64,7 +64,7 @@ if (req.method === 'POST') {
     // Object.assign(newInputData, { producer_sign: url });
     
     // 이미지와 inputData 처리
-    // const result = await createContract(inputData);
+    const result = await createContract(constractFrom);
     res.status(200).json({ constractFrom, message: 'send to consumer' });
     return;
   }
@@ -104,13 +104,13 @@ if (req.method === 'POST') {
       // 계약서 생성이 완료될 경우 sign이미지들 삭제
       
       const result = await updateContract({...NewConstractData, id});
-      const contractData = await readQuery('history',{conditionQuery, values})
+      // const contractData = await readQuery('history',{conditionQuery, values})
       if (!result){
         res.status(500).json({ message: 'contract failed cuz of server error' });
         return;
       }
       // 이미지 저장하는거 추가해야함
-      res.status(200).json({ contract : contractData.contract_path, message: 'contract finished' })
+      res.status(200).json({ contract : contract, message: 'contract finished' })
     }
     
     if (req.method === 'GET') {
