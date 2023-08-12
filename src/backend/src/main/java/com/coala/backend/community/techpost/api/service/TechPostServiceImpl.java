@@ -1,5 +1,6 @@
 package com.coala.backend.community.techpost.api.service;
 
+import com.coala.backend.community.techpost.db.entity.TechGood;
 import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.community.techpost.db.repository.TechImageRepository;
 import com.coala.backend.s3.S3UploadService;
@@ -105,9 +106,14 @@ public class TechPostServiceImpl implements TechPostService{
         techPost.views();
 
         boolean good = false;
-        if (techPost.getGoods().contains(member.getEmail())) {
-            good = true;
+        for (int i = 0; i < techPost.getGoods().size(); i++) {
+            if (techPost.getGoods().get(i).getMemberId().getEmail().equals(member.getEmail())) {
+                good = true;
+                break;
+            }
         }
+
+        System.out.println(good);
 
         List<String> uri = new ArrayList<>();
         List<TechImage> imageList = techImageRepository.findByTpId(techPost);

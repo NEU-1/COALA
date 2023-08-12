@@ -104,8 +104,11 @@ public class FreePostServiceImpl implements FreePostService{
         freePost.views();
 
         boolean good = false;
-        if (freePost.getGoods().contains(member)) {
-            good = true;
+        for (int i = 0; i < freePost.getGoods().size(); i++) {
+            if (freePost.getGoods().get(i).getMemberId().getEmail().equals(member.getEmail())) {
+                good = true;
+                break;
+            }
         }
 
         List<String> uri = new ArrayList<>();
