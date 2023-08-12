@@ -51,7 +51,7 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
     })
     
     socket.on("send-message", async ({roomUser, message}) => {
-      const {room, user: user} = roomUser;
+      const {room, user} = roomUser;
       console.log(roomUser);
       const roomName = room.name;
       const username = user.email;
