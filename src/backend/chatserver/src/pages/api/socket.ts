@@ -51,13 +51,13 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
     })
     
     socket.on("send-message", async ({roomUser, message}) => {
-      const {room, usr} = roomUser;
+      const {room, user: user} = roomUser;
       console.log(roomUser);
       const roomName = room.name;
-      const username = usr.email;
+      const username = user.email;
       const chatting_data : chatting_data = {
         room_id : room.id,
-        member_id : usr.id,
+        member_id : user.id,
         text_content : message,
       }
       try{
