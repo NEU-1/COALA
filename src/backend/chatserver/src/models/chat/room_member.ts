@@ -7,6 +7,10 @@ import { Read as readUser } from '@/models/user'
 import { Read as readRoom } from '@/models/chat/rooms'
 import { buildSchema, buildConditionQuery } from '@/lib/queryBuilder'
 
+type room_user = {
+  room_id : BigInt,
+  member_id : BigInt
+}
 
 const Create = async (inputData : any) =>{
   let flag = false;
@@ -19,9 +23,9 @@ const Create = async (inputData : any) =>{
     
     if (!room) {return; }
     
-    const room_user = {
+    let room_user : Partial<room_user>= {
       'room_id' : room['id'],
-      'member_id' : usr['id']
+      // 'member_id' : usr['id']
     };
     
     // const room_user = {
@@ -32,6 +36,7 @@ const Create = async (inputData : any) =>{
 
     // console.log(roomUserRelations)
     let others: any[] = [];
+    
     for ( let roomUserRelation of roomUserRelations ){
       const member_id = roomUserRelation?.member_id;
       if (member_id === usr['id']){
@@ -59,7 +64,11 @@ const Create = async (inputData : any) =>{
     const data =  {room: room, user : send_usr, other : other};
     
     console.log(data);
-    if (flag) {return data;} 
+    if (flag) {return data;}
+    room_user = {
+      ...room_user,
+      'member_id' : usr['id']
+    };
     await createQuery('room_member', room_user);
     return data;
 
