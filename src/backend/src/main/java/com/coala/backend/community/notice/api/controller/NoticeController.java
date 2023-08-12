@@ -5,17 +5,11 @@ import com.coala.backend.community.notice.api.service.NoticeService;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.community.notice.db.dto.request.NoticeRequestDto;
 import com.coala.backend.community.notice.db.dto.response.NoticeResponseDto;
-import com.coala.backend.community.notice.db.repository.NoticeRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 
 /*
     공지 게시판 controller 입니다.
@@ -27,18 +21,16 @@ import java.util.List;
 @RequestMapping("/api/notice/post/")
 public class NoticeController {
     private final NoticeService noticeService;
-    private final NoticeRepository noticeRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     private static String accessToken = "";
 
     // 게시글 저장
-    @PostMapping(value = "save", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<CommunityBaseResponseDto> saveNoticePost(@RequestPart(name = "requestDto") @Valid NoticeRequestDto requestDto,
-                                                                   @RequestPart(name = "multipartFile") List<MultipartFile> multipartFile,
-                                                                   HttpServletRequest httpServletRequest) throws IOException {
+    @PostMapping("save")
+    public ResponseEntity<CommunityBaseResponseDto> saveNoticePost(@RequestBody @Valid NoticeRequestDto requestDto,
+                                                                   HttpServletRequest httpServletRequest) {
         adminAccess(httpServletRequest);
-        CommunityBaseResponseDto responseDto = noticeService.savePost(multipartFile, requestDto);
+        CommunityBaseResponseDto responseDto = noticeService.savePost(requestDto);
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);
@@ -47,10 +39,9 @@ public class NoticeController {
     // 게시글 수정
     @PutMapping("update/{id}")
     public ResponseEntity<CommunityBaseResponseDto> updateNotice(@PathVariable("id") Long id, HttpServletRequest httpServletRequest,
-                                                          @RequestPart(name = "requestDto") @Valid NoticeRequestDto requestDto,
-                                                          @RequestPart(name = "multipartFile") List<MultipartFile> multipartFile) {
+                                                          @RequestBody @Valid NoticeRequestDto requestDto) {
         adminAccess(httpServletRequest);
-        CommunityBaseResponseDto responseDto = noticeService.updateNotice(multipartFile, id, requestDto);
+        CommunityBaseResponseDto responseDto = noticeService.updateNotice(id, requestDto);
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);

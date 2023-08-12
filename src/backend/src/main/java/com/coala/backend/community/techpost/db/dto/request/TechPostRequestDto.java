@@ -20,17 +20,13 @@ public class TechPostRequestDto {
     private Long id;
     private String title;
     private String detail;
-    @JsonIgnore
-    private Member nickname;
     private List<String> imagePath;
 
     @Builder
-    public TechPostRequestDto(Long id, String title, String detail,
-                              Member nickname, List<String> imagePath) {
+    public TechPostRequestDto(Long id, String title, String detail, List<String> imagePath) {
         this.id = id;
         this.title = title;
         this.detail = detail;
-        this.nickname = nickname;
         this.imagePath = imagePath;
     }
 
@@ -39,7 +35,6 @@ public class TechPostRequestDto {
                 .memberId(member)
                 .title(this.title)
                 .detail(this.detail)
-                .nickname(this.nickname)
                 .build();
     }
 }

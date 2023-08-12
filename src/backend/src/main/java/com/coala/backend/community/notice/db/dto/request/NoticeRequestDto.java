@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /*
     공지게시판 요청 Dto 입니다.
 * */
@@ -13,12 +15,14 @@ import lombok.NoArgsConstructor;
 public class NoticeRequestDto {
     private String title;
     private String detail;
+    private List<String> imagePath;
 
     @Builder
-    public NoticeRequestDto(String title, String detail) {
+    public NoticeRequestDto(String title, String detail, List<String> imagePath) {
 
         this.title = title;
         this.detail = detail;
+        this.imagePath = imagePath;
     }
 
     public Notice toEntity() {

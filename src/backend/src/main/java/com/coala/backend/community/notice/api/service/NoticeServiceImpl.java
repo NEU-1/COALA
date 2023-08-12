@@ -7,6 +7,7 @@ import com.coala.backend.community.notice.db.dto.request.NoticeRequestDto;
 import com.coala.backend.community.notice.db.entity.NoticeImage;
 import com.coala.backend.community.notice.db.repository.NoticeImageRepository;
 import com.coala.backend.community.notice.db.repository.NoticeRepository;
+import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.s3.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +40,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto savePost(List<MultipartFile> multipartFiles, NoticeRequestDto postDto) throws IOException {
+    public CommunityBaseResponseDto savePost(NoticeRequestDto postDto) {
         Notice notice = Notice.builder()
                 .title(postDto.getTitle())
                 .detail(postDto.getDetail())
@@ -50,19 +48,16 @@ public class NoticeServiceImpl implements NoticeService {
 
         noticeRepository.saveAndFlush(postDto.toEntity());
 
-        if (!multipartFiles.isEmpty()) {
-            for (int i = 0; i < multipartFiles.size(); i++) {
-                String storedFileName = s3UploadService.S3Upload(multipartFiles.get(i), "Notice");
-                if (storedFileName.equals("사진없음")) break;
-
-                // S3주소 빼고 넣기
+        // S3주소 빼고 넣기
+        if (!postDto.getImagePath().isEmpty()) {
+            for (int i = 0; i < postDto.getImagePath().size(); i++) {
                 noticeImageRepository.save(NoticeImage.builder()
-                        .imagePath(storedFileName.substring(str.length()))
                         .npId(notice)
+                        .imagePath(postDto.getImagePath().get(i))
                         .build());
             }
-            log.info("NoticeImage 업로드 성공");
         }
+
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
@@ -127,7 +122,7 @@ public class NoticeServiceImpl implements NoticeService {
             return new IllegalArgumentException("게시판이 존재하지 않습니다.");
         });
 
-        noticeImageRepository.findByNpId(notice);
+        noticeImageRepository.deleteByNpId(notice);
         noticeRepository.deleteById(id);
     }
 
@@ -155,7 +150,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto updateNotice(List<MultipartFile> multipartFiles, Long id, NoticeRequestDto dto) {
+    public CommunityBaseResponseDto updateNotice(Long id, NoticeRequestDto dto) {
         Notice notice = noticeRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("없는 게시판 입니다.");
         });
@@ -163,7 +158,16 @@ public class NoticeServiceImpl implements NoticeService {
         notice.updateFreePost(
                 dto.getTitle(),
                 dto.getDetail());
+
         noticeRepository.save(notice);
+        noticeImageRepository.deleteByNpId(notice);
+
+        for (int i = 0; i < dto.getImagePath().size(); i++) {
+            noticeImageRepository.save(NoticeImage.builder()
+                    .npId(notice)
+                    .imagePath(dto.getImagePath().get(i))
+                    .build());
+        }
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)

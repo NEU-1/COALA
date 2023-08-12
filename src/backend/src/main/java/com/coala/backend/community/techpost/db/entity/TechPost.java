@@ -48,11 +48,14 @@ public class TechPost {
     @NotNull
     private int views;
 
-    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE)
     private List<TechGood> goods = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE)
     private List<TechComment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE)
+    private List<TechImage> techImages = new ArrayList<>();
 
     @Builder
     public TechPost(Member memberId, String title, String detail , Member nickname) {

@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 - 공지 게시판
@@ -32,6 +34,9 @@ public class Notice {
     private LocalDateTime createAt;
     @Column(name = "update_at")
     private LocalDateTime updateAt;
+
+    @OneToMany(mappedBy = "npId", cascade = CascadeType.REMOVE)
+    private List<NoticeImage> images = new ArrayList<>();
 
     @Builder
     public Notice(String title, String detail) {
