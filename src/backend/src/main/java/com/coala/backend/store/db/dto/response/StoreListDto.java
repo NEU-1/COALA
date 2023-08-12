@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class StoreListDto {
     private StorePost storePost;
-
+    private boolean mine;
     private boolean like;
 }

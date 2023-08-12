@@ -60,6 +60,10 @@ public class StoreServiceImpl implements StoreService {
             SLD.setStorePost(store);
             SLD.setLike(false);
 
+            if(store.getMember().getId() == memberId){
+                SLD.setMine(true);
+            }
+
             // 게시글 별로 좋아요 확인
             List<StoreLike> likes = storeLikeRepository.findByStorePost(store);
 
