@@ -62,7 +62,7 @@ const Store = () => {
 
     requestPost(`store/list?page=${nextPage}`, params)
       .then((response) => {
-        setData((prevData) => [...prevData, ...response.data]);
+        setData((prevData) => [...prevData, ...response.data.list]);
       })
       .catch((err) => {
         console.error(err);

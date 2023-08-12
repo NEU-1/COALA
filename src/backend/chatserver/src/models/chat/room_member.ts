@@ -44,13 +44,14 @@ const Create = async (inputData : any) =>{
     let other : Partial<member> | undefined;
     for (let other_members_id of others){
       const [member] : member[] = await readUser({id : other_members_id});
-      const {id, image_path, name, nickname} = member;
-      other = {id, image_path, name, nickname};
+      const {id, image_path, email, name, nickname} = member;
+      other = {id, image_path, email, name, nickname};
     }
     
     const send_usr = {
       id : usr.id,
       image_path : usr.image_path,
+      email : usr.email,
       name : usr.name,
       nickname : usr.nickname
     }

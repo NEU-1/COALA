@@ -52,7 +52,7 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
     
     socket.on("send-message", async ({roomUser, message}) => {
       const {room, usr} = roomUser;
-
+      console.log(roomUser);
       const roomName = room.name;
       const username = usr.email;
       const chatting_data : chatting_data = {
