@@ -34,10 +34,8 @@ public class FreePostController {
 
     // 게시글 저장
     @PostMapping("save")
-//    consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<CommunityBaseResponseDto> savePost(@RequestBody @Valid FreePostRequestDto requestDto,
-//                                   @RequestPart(name = "multipartFile") List<MultipartFile> multipartFile,
-                                   HttpServletRequest httpServletRequest) throws IOException {
+                                   HttpServletRequest httpServletRequest) {
 
         CommunityBaseResponseDto responseDto = freePostService.savePost(requestDto, getEmail(httpServletRequest));
 
@@ -77,8 +75,8 @@ public class FreePostController {
 
     // 게시물 상세화면
     @GetMapping("detail/{id}")
-    public ResponseEntity<FreePostResponseDto> detailFreePost(@PathVariable("id") Long id) {
-        FreePostResponseDto freePostDto = freePostService.getPost(id);
+    public ResponseEntity<FreePostResponseDto> detailFreePost(@PathVariable("id") Long id, HttpServletRequest httpServletRequest) {
+        FreePostResponseDto freePostDto = freePostService.getPost(id, getEmail(httpServletRequest));
 
         return ResponseEntity.ok()
                 .body(freePostDto);

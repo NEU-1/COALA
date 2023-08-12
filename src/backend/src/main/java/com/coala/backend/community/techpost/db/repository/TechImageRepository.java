@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface TechImageRepository extends JpaRepository<TechImage, Long> {
     List<TechImage> findByTpId(TechPost techPost);
+    List<TechImage> deleteByTpId(TechPost techPost);
 }

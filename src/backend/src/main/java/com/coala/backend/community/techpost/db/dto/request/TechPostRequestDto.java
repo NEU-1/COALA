@@ -22,14 +22,16 @@ public class TechPostRequestDto {
     private String detail;
     @JsonIgnore
     private Member nickname;
+    private List<String> imagePath;
 
     @Builder
     public TechPostRequestDto(Long id, String title, String detail,
-                              Member nickname) {
+                              Member nickname, List<String> imagePath) {
         this.id = id;
         this.title = title;
         this.detail = detail;
         this.nickname = nickname;
+        this.imagePath = imagePath;
     }
 
     public TechPost toEntity(Member member) {

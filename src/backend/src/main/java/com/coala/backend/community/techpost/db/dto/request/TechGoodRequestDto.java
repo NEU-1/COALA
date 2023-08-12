@@ -14,13 +14,10 @@ import lombok.NoArgsConstructor;
 public class TechGoodRequestDto {
 
     private TechPost tpId;
-    @JsonIgnore
-    private Member memberId;
 
     @Builder
-    public TechGoodRequestDto(TechPost tpId, Member memberId) {
+    public TechGoodRequestDto(TechPost tpId) {
         this.tpId = tpId;
-        this.memberId = memberId;
     }
 
     public TechGood toEntity(Member member) {
