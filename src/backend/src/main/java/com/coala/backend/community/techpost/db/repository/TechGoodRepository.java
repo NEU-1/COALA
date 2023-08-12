@@ -14,5 +14,6 @@ public interface TechGoodRepository extends JpaRepository<TechGood, Long> {
     Optional<TechGood> findByMemberIdAndTpId(Member member, TechPost techPost);
     void deleteByTpId(TechPost techPost);
     List<TechGood> findByTpId(TechPost techPost);
+    List<TechGood> findByMemberId(Member member);
 
 }

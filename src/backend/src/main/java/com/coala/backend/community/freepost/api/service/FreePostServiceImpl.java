@@ -8,6 +8,7 @@ import com.coala.backend.community.freepost.db.repository.FreeImageRepository;
 import com.coala.backend.community.freepost.db.repository.FreePostRepository;
 import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.db.dto.response.FreePostResponseDto;
+import com.coala.backend.community.techpost.db.entity.TechPost;
 import com.coala.backend.member.db.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +72,7 @@ public class FreePostServiceImpl implements FreePostService{
     public CommunityBaseResponseDto getPostList(int page) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
+        int allPost = freePostRepository.findAll().size();
         List<FreePostResponseDto> allList = freePostRepository.findAll(pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
                         .id(freePost.getId())
@@ -88,8 +90,8 @@ public class FreePostServiceImpl implements FreePostService{
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
-                .msg("성공, 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + allList.size() / 7)
+                .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
+                .detail(1 + (allPost / 7))
                 .list(allList)
                 .build();
     }
@@ -104,8 +106,11 @@ public class FreePostServiceImpl implements FreePostService{
         freePost.views();
 
         boolean good = false;
-        if (freePost.getGoods().contains(member)) {
-            good = true;
+        for (int i = 0; i < freePost.getGoods().size(); i++) {
+            if (freePost.getGoods().get(i).getMemberId().getEmail().equals(member.getEmail())) {
+                good = true;
+                break;
+            }
         }
 
         List<String> uri = new ArrayList<>();
@@ -151,6 +156,8 @@ public class FreePostServiceImpl implements FreePostService{
     @Override
     public CommunityBaseResponseDto searchPosts(String keyword, int page) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+
+        List<FreePost> allPost = freePostRepository.findByTitleContaining(keyword);
         List<FreePostResponseDto> searchList = freePostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
                         .id(freePost.getId())
@@ -169,7 +176,7 @@ public class FreePostServiceImpl implements FreePostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + searchList.size() / 7)
+                .detail(1 + allPost.size() / 7)
                 .list(searchList)
                 .build();
     }

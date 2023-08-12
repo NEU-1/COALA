@@ -1,5 +1,6 @@
 package com.coala.backend.community.techpost.api.service;
 
+import com.coala.backend.community.techpost.db.entity.TechGood;
 import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.community.techpost.db.repository.TechImageRepository;
 import com.coala.backend.s3.S3UploadService;
@@ -71,7 +72,7 @@ public class TechPostServiceImpl implements TechPostService{
     public CommunityBaseResponseDto getPostList(int page) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
-        List <TechPost> allPost = techPostRepository.findAll();
+        int allPost = techPostRepository.findAll().size();
         List <TechPostResponseDto> allList = techPostRepository.findAll(pageable).stream()
                 .map(techPost -> TechPostResponseDto.builder()
                         .id(techPost.getId())
@@ -90,7 +91,7 @@ public class TechPostServiceImpl implements TechPostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + (allPost.size() / 7))
+                .detail(1 + (allPost / 7))
                 .list(allList)
                 .build();
     }
@@ -105,9 +106,14 @@ public class TechPostServiceImpl implements TechPostService{
         techPost.views();
 
         boolean good = false;
-        if (techPost.getGoods().contains(member.getEmail())) {
-            good = true;
+        for (int i = 0; i < techPost.getGoods().size(); i++) {
+            if (techPost.getGoods().get(i).getMemberId().getEmail().equals(member.getEmail())) {
+                good = true;
+                break;
+            }
         }
+
+        System.out.println(good);
 
         List<String> uri = new ArrayList<>();
         List<TechImage> imageList = techImageRepository.findByTpId(techPost);
