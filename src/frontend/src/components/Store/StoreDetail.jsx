@@ -134,11 +134,13 @@ const StoreDetail = () => {
 
   return postData ? (
     <SMain>
-      <SImgs>
-        <button onClick={handlePictureChange}>{"<"}</button>
-        {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
-        <button onClick={handlePictureChange}>{">"}</button>
-      </SImgs>
+      {pictures.length ? (
+        <SImgs>
+          <button onClick={handlePictureChange}>{"<"}</button>
+          {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
+          <button onClick={handlePictureChange}>{">"}</button>
+        </SImgs>
+      ) : null}
       <SHeader>
         <SProfile onClick={goProfile}>
           <SProfileImg src={images.plus} alt="" />
@@ -157,15 +159,15 @@ const StoreDetail = () => {
       <SContent>
         <STitleAndProduct>
           <SText>{postData.storePost.title}</SText>
-          <STextSub>
+          <STextSubProductAndDay>
             {postData.storePost.category.name} / {displayDate}
-          </STextSub>
+          </STextSubProductAndDay>
         </STitleAndProduct>
         {!isAuthor &&
           (like ? (
-            <img src={images.like} alt="React" onClick={toggleLike} />
+            <SStarimg src={images.like} alt="React" onClick={toggleLike} />
           ) : (
-            <img src={images.notlike} alt="React" onClick={toggleLike} />
+            <SStarimg src={images.notlike} alt="React" onClick={toggleLike} />
           ))}
       </SContent>
       <SContentDetail>
@@ -285,13 +287,16 @@ const STitleAndProduct = styled.div`
   gap: 8px;
 `;
 
-const STextSub = styled.p`
+// const STextSub = styled.p`
+//   color: #a4a4a4;
+//   font-size: 16px;
+//   font-weight: 700;
+// `;
+
+const STextSubProductAndDay = styled.p`
   color: #a4a4a4;
-  font-family: SF Pro Rounded;
-  font-size: 16px;
-  font-style: normal;
+  font-size: 12px;
   font-weight: 700;
-  line-height: normal;
 `;
 
 const SContentDetail = styled.div`
@@ -305,7 +310,8 @@ const SContentDetail = styled.div`
 const STextContent = styled.p`
   color: #000;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 500;
+  white-space: pre-wrap;
 `;
 
 const SFooter = styled.div`
@@ -319,11 +325,8 @@ const SFooter = styled.div`
 
 const STextSubSee = styled.p`
   color: #a4a4a4;
-  font-family: SF Pro Rounded;
   font-size: 12px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
 `;
 
 const SButtons = styled.div`
@@ -442,4 +445,8 @@ const SButtonBack = styled.button`
   color: var(--white, #fff);
   font-size: 12px;
   font-weight: 700;
+`;
+
+const SStarimg = styled.img`
+  height: 25px;
 `;
