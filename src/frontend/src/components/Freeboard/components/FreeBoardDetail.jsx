@@ -131,7 +131,9 @@ const saveCommentBoard = async () => {
     navigate(`/free/post/detail/${postid}`);
   } catch (error) {
     console.error('댓글 등록 에러:', error);
-  } 
+    navigate(`/free/post/detail/${postid}`)
+  }
+  
 };
 
 

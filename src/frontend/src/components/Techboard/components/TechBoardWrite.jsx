@@ -98,7 +98,8 @@ function TechBoardWrite() {
   
       const params = {
         title: board.title,
-        detail: editorContent2, // 수정된 부분: editorContent를 사용
+        detail: board.detail,// 수정된 부분: editorContent를 사용
+        imagePath: board.imagePath,
         isAnonymous: board.isAnonymous,
       }
       setToken()

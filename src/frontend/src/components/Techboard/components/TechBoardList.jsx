@@ -37,7 +37,7 @@ const TechBoardList = () => {
       <div>
         
         {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-        {posts.map(({ id, title, detail, views, createAt,imagePath, }) => (
+        {posts.map(({ id, title, views, createAt,imagePath, }) => (
           <Contentbox key={id}>
             <div>
             <Link to={`/tech/post/detail/${id}`}>
@@ -54,7 +54,6 @@ const TechBoardList = () => {
                 <Numbertext>{views}</Numbertext>
               </Userbox>
               </Link>
-              {detail}
             </div>
             <img src="/assets/images/testimg.png" alt="사진" />
             
