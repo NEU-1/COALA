@@ -28,6 +28,13 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
     }
   }, []);
 
+  const onClickPost = () => {
+    window.parent.postMessage(
+      { msg: 'movePage', id: post.id },
+      'http://localhost:3000'
+    );
+  };
+
   return (
     post && (
       <ChatBoardPreview
@@ -35,6 +42,7 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
         producer_id={producer_id}
         consumer_id={consumer_id}
         myId={myId}
+        onClickPost={onClickPost}
       />
     )
   );
