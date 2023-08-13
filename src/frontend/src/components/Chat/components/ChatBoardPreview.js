@@ -4,13 +4,7 @@ import { images } from '../../../assets/images';
 import { colors } from '../../../assets/colors';
 import { Link } from 'react-router-dom';
 
-const ChatBoardPreview = ({
-  post,
-  producer_id,
-  consumer_id,
-  myId,
-  onClickPost,
-}) => {
+const ChatBoardPreview = ({ post, producer, consumer, myId, onClickPost }) => {
   return (
     <SLayout>
       <SStart
@@ -33,10 +27,10 @@ const ChatBoardPreview = ({
         </SDescription>
       </SStart>
       {/* 제공자와 이용자에 따라 활성화 / 비활성화 + 거래하기 / 수락하기 */}
-      {myId === producer_id && post.status === 1 && (
+      {myId === producer.id && post.status === 1 && (
         <STradeBtn>거래하기</STradeBtn>
       )}
-      {myId === consumer_id && post.status === 0 && (
+      {myId === consumer.id && post.status === 0 && (
         <STradeBtn>수락하기</STradeBtn>
       )}
     </SLayout>
