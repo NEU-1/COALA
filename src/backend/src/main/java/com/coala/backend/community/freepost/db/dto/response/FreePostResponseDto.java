@@ -1,8 +1,7 @@
 package com.coala.backend.community.freepost.db.dto.response;
 
-import com.coala.backend.community.freepost.db.entity.FreeImage;
 import com.coala.backend.member.db.entity.Member;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,18 +13,19 @@ import java.util.List;
 /*
     자유게시판 응답 DTO 입니다.
 */
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FreePostResponseDto {
     private Long id;
-    @JsonIgnore
     private Member memberId;
     private String title;
     private String detail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private List<String> imagePath;
+    private String nickname;
+    private boolean mine;
     private boolean isAnonymous;
     private boolean good;
     private int views;
@@ -35,7 +35,7 @@ public class FreePostResponseDto {
     @Builder
     public FreePostResponseDto(Long id, Member memberId, String title, String detail,
                                LocalDateTime createAt, LocalDateTime updateAt, List<String> imagePath,
-                               boolean isAnonymous, int views, boolean good, int commentCount, int goodCount) {
+                               boolean isAnonymous, boolean mine, int views, boolean good, String nickname, int commentCount, int goodCount) {
 
         this.id = id;
         this.memberId = memberId;
@@ -45,7 +45,9 @@ public class FreePostResponseDto {
         this.updateAt = updateAt;
         this.imagePath = imagePath;
         this.good = good;
+        this.mine = mine;
         this.isAnonymous = isAnonymous;
+        this.nickname = nickname;
         this.views = views;
         this.commentCount = commentCount;
         this.goodCount = goodCount;

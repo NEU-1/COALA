@@ -1,9 +1,7 @@
 package com.coala.backend.community.techpost.db.dto.request;
 
-import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.community.techpost.db.entity.TechPost;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

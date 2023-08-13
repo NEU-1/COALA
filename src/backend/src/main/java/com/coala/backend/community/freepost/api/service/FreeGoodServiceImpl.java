@@ -25,7 +25,6 @@ public class FreeGoodServiceImpl implements FreeGoodService{
     @Override
     public CommunityBaseResponseDto good(FreeGoodRequestDto freeGoodRequestDto, Member member) {
 
-        System.out.println(freeGoodRequestDto.getFpId().getId());
         FreePost freePost = freePostRepository.findById(freeGoodRequestDto.getFpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });

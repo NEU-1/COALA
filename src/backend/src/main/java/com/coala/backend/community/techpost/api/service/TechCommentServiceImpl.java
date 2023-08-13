@@ -50,7 +50,7 @@ public class TechCommentServiceImpl implements TechCommentService {
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto getCommentList(Long id, int page) {
+    public CommunityBaseResponseDto getCommentList(Long id, int page, Member member) {
         Pageable pageable = PageRequest.of(page, 5, Sort.by("createAt").descending());
 
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
@@ -63,6 +63,7 @@ public class TechCommentServiceImpl implements TechCommentService {
                         .tpId(id)
                         .author(techComment.getAuthor())
                         .content(techComment.getContent())
+                        .mine(techComment.getMemberId().equals(member.getEmail()))
                         .createAt(techComment.getCreateAt())
                         .updateAt(techComment.getUpdateAt())
                         .build())

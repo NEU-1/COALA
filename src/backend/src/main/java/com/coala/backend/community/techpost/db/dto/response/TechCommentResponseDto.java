@@ -14,15 +14,17 @@ public class TechCommentResponseDto {
     private Long tpId;
     private String author;
     private String content;
+    private boolean mine;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
     @Builder
-    public TechCommentResponseDto(Long id, Long tpId, String author, String content, LocalDateTime createAt, LocalDateTime updateAt) {
+    public TechCommentResponseDto(Long id, Long tpId, String author, String content, boolean mine, LocalDateTime createAt, LocalDateTime updateAt) {
         this.id = id;
         this.tpId = tpId;
         this.author = author;
         this.content = content;
+        this.mine = mine;
         this.createAt = createAt;
         this.updateAt = updateAt;
     }

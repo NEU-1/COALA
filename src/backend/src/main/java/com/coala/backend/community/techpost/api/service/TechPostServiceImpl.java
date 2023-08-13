@@ -113,8 +113,6 @@ public class TechPostServiceImpl implements TechPostService{
             }
         }
 
-        System.out.println(good);
-
         List<String> uri = new ArrayList<>();
         List<TechImage> imageList = techImageRepository.findByTpId(techPost);
         for (int i = 0; i < imageList.size(); i++) {
@@ -131,6 +129,7 @@ public class TechPostServiceImpl implements TechPostService{
                 .createAt(techPost.getCreateAt())
                 .updateAt(techPost.getUpdateAt())
                 .good(good)
+                .mine(techPost.getMemberId().getEmail().equals(member.getEmail()))
                 .imagePath(uri)
                 .views(techPost.getViews())
                 .commentCount(techPost.getComments().size())

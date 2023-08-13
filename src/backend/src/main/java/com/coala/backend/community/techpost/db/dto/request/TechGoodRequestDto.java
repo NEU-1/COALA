@@ -3,7 +3,6 @@ package com.coala.backend.community.techpost.db.dto.request;
 import com.coala.backend.community.techpost.db.entity.TechGood;
 import com.coala.backend.community.techpost.db.entity.TechPost;
 import com.coala.backend.member.db.entity.Member;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

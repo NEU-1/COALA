@@ -1,6 +1,5 @@
 package com.coala.backend.community.freepost.db.entity;
 
-import com.coala.backend.community.notice.db.entity.NoticeImage;
 import com.coala.backend.member.db.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

@@ -33,8 +33,6 @@ public class FreeCommentServiceImpl implements FreeCommentService{
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
-        System.out.println(member.getEmail());
-
         FreeComment freeComment = FreeComment.builder()
                 .fpId(commentDto.getFpId())
                 .author(commentDto.getAuthor())
@@ -54,7 +52,7 @@ public class FreeCommentServiceImpl implements FreeCommentService{
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto getCommentList(Long id, int page) {
+    public CommunityBaseResponseDto getCommentList(Long id, int page, Member member) {
         Pageable pageable = PageRequest.of(page, 5, Sort.by("createAt").descending());
 
         FreePost freePost = freePostRepository.findById(id).orElseThrow(() -> {
@@ -63,10 +61,11 @@ public class FreeCommentServiceImpl implements FreeCommentService{
 
         List<FreeCommentResponseDto> postComments = freeCommentRepository.findByFpId(freePost, pageable).stream()
                 .map(freeComment -> FreeCommentResponseDto.builder()
-
+                        .id(freeComment.getId())
                         .fpId(freeComment.getFpId())
                         .author(freeComment.getAuthor())
                         .content(freeComment.getContent())
+                        .mine(freeComment.getMemberId().equals(member.getEmail()))
                         .createAt(freeComment.getCreateAt())
                         .updateAt(freeComment.getUpdateAt())
                         .build())

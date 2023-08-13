@@ -3,7 +3,6 @@ package com.coala.backend.community.freepost.db.dto.request;
 import com.coala.backend.community.freepost.db.entity.FreePost;
 import com.coala.backend.community.freepost.db.entity.FreeGood;
 import com.coala.backend.member.db.entity.Member;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
