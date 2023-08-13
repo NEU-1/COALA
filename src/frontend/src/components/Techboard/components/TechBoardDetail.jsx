@@ -12,7 +12,7 @@ import { BiSolidLike } from "react-icons/bi";
 
 
 
-const FreeBoardDetail = () => {
+const TechBoardDetail = () => {
   const { postid } = useParams(); // /board/:idx와 동일한 변수명으로 데이터를 꺼낼 수 있습니다.
   const [board, setBoard] = useState();
   const navigate = useNavigate();
@@ -240,7 +240,7 @@ const saveCommentBoard = async () => {
 };
 
 
-export default FreeBoardDetail;
+export default TechBoardDetail;
 
 const Slayout = styled.div`
   margin-top: 170px;

@@ -13,7 +13,7 @@ const TechBoardUpdate = () => {
     title: '',
     detail: '',
     imagePath: ['string'],
-    isAnonymous: false,
+    isAnonymous: true,
   });
   const editorRef = useRef();
   const { title, detail } = board; //비구조화 할당
@@ -67,7 +67,7 @@ useEffect(() => {
       
       console.log(response);
       alert('등록되었습니다.');
-      navigate(`/free`);
+      navigate('/free/post/detail/' + postid);
     } catch (error) {
       console.error('게시글 등록 에러:', error);
     } 

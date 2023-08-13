@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import styled from 'styled-components'
-import { BiLike } from "react-icons/bi"; 
+import { BiLike } from "react-icons/bi";
+import { BiSolidLike } from "react-icons/bi";
 
 
 
@@ -33,21 +34,7 @@ const FreeBoardDetail = () => {
   const pictureMinusBtn = () => {
     setPictureNum((pictureNum + "사진수" - 1) % "사진수");
   };
-  const likeBtn = () => {
-    setlike(!like);
-  };
-  // useEffect(async () => {
-  //   const fetchData = async () => {
-  //     const res = await axios.get(...)
-  //     if (res.data.type === 'liked') setLike(true)
-  //   }
-  //   fetchData()
-  // }, []);
   
-  // const toggleLike = async (e) => {
-  //   const res = await axios.post(...) // [POST] 사용자가 좋아요를 누름 -> DB 갱신
-  //   setLike(!like)
-  // }
   const deleteBoard = async () => {
     if (window.confirm('게시글을 삭제하시겠습니까?')) {
       try {
@@ -93,6 +80,7 @@ const FreeBoardDetail = () => {
   useEffect(() => {
     getBoardList() // 1) 게시글 목록 조회 함수 호출
     getBoard();
+    setlike();
   }, []);
 
 // 코멘트 작성 폼
@@ -135,7 +123,39 @@ const saveCommentBoard = async () => {
   }
   
 };
+const likeBtn = async() => {
+  const param = {
+    fpId: {
+      "id": Number(postid)     
+  },
+} 
+try {
+  console.log(param)
+    const likeres = await axios.post('http://i9d108.p.ssafy.io:9999/api/free/post/is/good', { data: param });
+    setlike(true);
+    console.log(like)
+    console.log('성공')
+  
+} catch (error) {
+  console.error('에러:', error);
+}
+};
+const unlikeBtn = async() => {
+  const param2 = {
+    fpId: {
+      "id": Number(postid)     
+    },
+  };
 
+  try {
+    const unlikeres = await axios.delete('http://i9d108.p.ssafy.io:9999/api/free/post/un/good', { data: param2 });
+    setlike(false);
+    console.log(like);
+    console.log('실패');
+  } catch (error) {
+    console.error('에러:', error);
+  }
+};
 
   
   return (
@@ -147,13 +167,14 @@ const saveCommentBoard = async () => {
        <Titletext>{board.title}</Titletext>
         <Createat>{board.createAt && board.createAt.slice(0,10)}</Createat>
        </div>
-       <BiLike size={40} onClick={likeBtn}/>
+       {(like ? (
+            <BiSolidLike size={40} onClick={unlikeBtn}/>
+          ) : (
+            <BiLike size={40} onClick={likeBtn}/>
+          ))}
        </Titlecontainer>
       <hr />
      <Detailconteiner>
-     {/* <button onClick={pictureMinusBtn}>{"<"}</button>
-        {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
-      <button onClick={picturePlusBtn}>{">"}</button> */}
       <Viewer initialValue={board.detail} />
 
       </Detailconteiner>
