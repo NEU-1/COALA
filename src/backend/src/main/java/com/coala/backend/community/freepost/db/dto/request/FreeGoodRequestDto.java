@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FreeGoodRequestDto {
 
-    @JsonIgnore
     private FreePost fpId;
 
     @Builder
