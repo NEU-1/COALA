@@ -2,32 +2,43 @@ import React, { useCallback, useState, useRef, useEffect } from 'react';
 import Contract from '../Contract';
 import Swal from 'sweetalert2';
 import { requestPostNode, setToken } from '../../../lib/api/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { closeContractModal } from '../../../store/contractSlice';
 
 // info를 통해 계약서에 관한 내용을 전달받고 모달을 연다.
 // 서명은 이미지로 저장.
 // 제공자는 모든 정보를 수정 가능하고 제공자 서명란 활성화
 // 이용자는 정보 수정 불가능하고 이용자 서명란만 활성화
-const ContractContainer = ({ info, onChangeModalFlag }) => {
+const ContractContainer = () => {
+  const dispatch = useDispatch();
+  const info = useSelector((state) => {
+    return state.contract.post;
+  });
+  const producer = useSelector((state) => {
+    return state.contract.producer;
+  });
+  const consumer = useSelector((state) => {
+    return state.contract.consumer;
+  });
+  const myId = useSelector((state) => {
+    return state.contract.myId;
+  });
+  console.log(info);
   const [isAgree1, setIsAgree1] = useState(false);
   const [isAgree2, setIsAgree2] = useState(false);
   const [contractForm, setContractForm] = useState({
-    producer_id: 1,
-    consumer_id: 2,
-    rental_cost: 5000,
-    deposit: 20000,
+    producer_id: producer.id,
+    consumer_id: consumer.id,
+    productName: '',
+    rental_cost: info.rentalCost,
+    deposit: info.deposit,
     created_at: '',
     rental_at: '',
     return_at: '',
     period: 0,
-    status: 0,
-    account: '신한 110-111-222222',
+    account: '',
   });
   let formData = new FormData();
-  const [producer, setProducer] = useState('강승현');
-  const [consumer, setConsumer] = useState('심은진');
-  const [post, setPost] = useState({
-    productName: '한성 키보드',
-  });
 
   const producerSignRef = useRef(null);
   const consumerSignRef = useRef(null);
@@ -50,6 +61,14 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
 
   const onChangePeriod = (e) => {
     setContractForm({ ...contractForm, period: e.target.value });
+  };
+
+  const onChangeProductName = (e) => {
+    setContractForm({ ...contractForm, productName: e.target.value });
+  };
+
+  const onChangeAccount = (e) => {
+    setContractForm({ ...contractForm, account: e.target.value });
   };
 
   useEffect(() => {
@@ -124,12 +143,16 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
     );
   };
 
+  const onClickClose = () => {
+    dispatch(closeContractModal());
+  };
+
   return (
     <Contract
       contractForm={contractForm}
       producer={producer}
       consumer={consumer}
-      post={post}
+      myId={myId}
       producerSignRef={producerSignRef}
       consumerSignRef={consumerSignRef}
       priceFormat={priceFormat}
@@ -139,11 +162,13 @@ const ContractContainer = ({ info, onChangeModalFlag }) => {
       onChangeAgree1={onChangeAgree1}
       onChangeAgree2={onChangeAgree2}
       onClickSendBtn={onClickSendBtn}
-      onChangeModalFlag={onChangeModalFlag}
       onChangeRentalCost={onChangeRentalCost}
       onChangeDeposit={onChangeDeposit}
       onChangeRentalDate={onChangeRentalDate}
       onChangePeriod={onChangePeriod}
+      onChangeProductName={onChangeProductName}
+      onChangeAccount={onChangeAccount}
+      onClickClose={onClickClose}
     />
   );
 };

@@ -35,6 +35,19 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
     );
   };
 
+  const onClickContractBtn = () => {
+    window.parent.postMessage(
+      {
+        msg: 'openContract',
+        post: post,
+        producer: producer,
+        consumer: consumer,
+        myId: myId,
+      },
+      'http://localhost:3000'
+    );
+  };
+
   return (
     post && (
       <ChatBoardPreview
@@ -43,6 +56,7 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
         consumer={consumer}
         myId={myId}
         onClickPost={onClickPost}
+        onClickContractBtn={onClickContractBtn}
       />
     )
   );
