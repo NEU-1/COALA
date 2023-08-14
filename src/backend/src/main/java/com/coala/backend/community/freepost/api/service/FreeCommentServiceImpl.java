@@ -35,9 +35,9 @@ public class FreeCommentServiceImpl implements FreeCommentService{
 
         FreeComment freeComment = FreeComment.builder()
                 .fpId(commentDto.getFpId())
-                .author(commentDto.getAuthor())
+                .isAnonymous(commentDto.isAnonymous())
                 .content(commentDto.getContent())
-                .memberId(member.getEmail())
+                .memberId(member)
                 .build();
 
         freeCommentRepository.saveAndFlush(freeComment);
@@ -62,10 +62,11 @@ public class FreeCommentServiceImpl implements FreeCommentService{
         List<FreeCommentResponseDto> postComments = freeCommentRepository.findByFpId(freePost, pageable).stream()
                 .map(freeComment -> FreeCommentResponseDto.builder()
                         .id(freeComment.getId())
-                        .fpId(freeComment.getFpId())
-                        .author(freeComment.getAuthor())
+                        .fpId(id)
+                        .isAnonymous(freeComment.isAnonymous())
+                        .nickname(member.getNickname())
                         .content(freeComment.getContent())
-                        .mine(freeComment.getMemberId().equals(member.getEmail()))
+                        .mine(freeComment.getMemberId().getEmail().equals(member.getEmail()))
                         .createAt(freeComment.getCreateAt())
                         .updateAt(freeComment.getUpdateAt())
                         .build())
@@ -89,7 +90,7 @@ public class FreeCommentServiceImpl implements FreeCommentService{
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
-        if (!freeComment.getMemberId().equals(member.getEmail())) {
+        if (!freeComment.getMemberId().getEmail().equals(member.getEmail())) {
             throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다!!!");
         } else if (!freeComment.getFpId().getId().equals(freePost.getId())) {
             throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다!!!");
@@ -110,7 +111,7 @@ public class FreeCommentServiceImpl implements FreeCommentService{
             throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다!!!");
         }
 
-        freeComment.updateFreeComment(dto.getAuthor(), dto.getContent());
+        freeComment.updateFreeComment(dto.isAnonymous(), dto.getContent());
         freeCommentRepository.save(freeComment);
 
         return CommunityBaseResponseDto.builder()
