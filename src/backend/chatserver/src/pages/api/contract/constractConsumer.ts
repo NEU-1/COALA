@@ -54,14 +54,14 @@ const receiveData = withCors(async (req: any, res: any) => {
       const contractFormData = id[0].buffer.toString('utf8');  // buffer를 문자열로 변환
       const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
       console.log(contractFormJSON);
-      const _id = contractFormJSON.id || contractFormJSON.contract_id;
+      const {contract_id} = contractFormJSON;
 
     //   const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
       const NewConstractData = { consumer_sign, contract_path : "example_Path"}
       
       
-      const result = await updateContract({...NewConstractData, _id});
+      const result = await updateContract({...NewConstractData, contract_id});
       console.log(result);
       // const contractData = await readQuery('history',{conditionQuery, values})
       if (!result){
