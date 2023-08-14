@@ -55,8 +55,13 @@ const Update = async (target : any, id : any) => {
         const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
         const placeholders = [...values, id]
         // const result = await readQuery('history', {conditionQuery, values});
-        
-        const result = await updateQuery('History', conditionQuery, placeholders);
+        console.log(target, id)
+        console.log({conditionQuery, values})
+        console.log(`UPDATE History SET ${conditionQuery} WHERE id = ?`, placeholders);
+        //
+
+        const {consumer_sign} = target; 
+        const result = await updateQuery('History', `consumer_sign = ${consumer_sign}`, id);
         return result;
     }catch(error){
         console.log(error)
