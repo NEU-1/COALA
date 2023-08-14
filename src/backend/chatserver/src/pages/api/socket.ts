@@ -70,6 +70,9 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
       }
     });
 
+    // socket.on("")
+
+
     socket.on("disconnect", () => {
       console.log("disconnected"); // the Set contains at least the socket ID
     });

@@ -54,8 +54,20 @@ const Search = async (target : object) => {
   }
 }
 
+const Update = async (target : object, id : any) : Promise<any> => {
+  try{
+    const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
+    const result = await updateQuery('chat_room', {conditionQuery, values}, id);
+    // const result = await readQuery('chat_room', {conditionQuery, values}, 'room_member', ['chat_room.id', 'room_member.room_id']);
+    return result;
+  }catch(error){
+    console.log(error)
+  }
+}
+
 export { 
   Create,
   Read,
+  Update,
   Search,
 }

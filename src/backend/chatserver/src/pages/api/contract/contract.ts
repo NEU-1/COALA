@@ -6,6 +6,8 @@ import {
 } from '@/models/contract/contract'
 import { readQuery } from '@/db/mysql/query/crud'
 import { Read as readUser } from '@/models/user';
+import { Update as updateRoom } from '@/models/chat/rooms'
+import dbQuery from '@/db/mysql/database';
 import withCors from '../cors'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -56,16 +58,26 @@ if (req.method === 'POST') {
     const contractFormData = contractForm[0].buffer.toString('utf8');  // buffer를 문자열로 변환
     const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
 
+    const {room_id} = contractFormJSON;
+    delete contractFormJSON.room_id;
+
     console.log(contractFormJSON);
     console.log(imageUrl)
+    
     // // SET 설정
     const constractFrom = { ...contractFormJSON, producer_sign : imageUrl}
     
     // 이미지 upload
     // Object.assign(newInputData, { producer_sign: url });
     
-    // 이미지와 inputData 처리
+    // 이미지 inputData 처리
     const result = await createContract(constractFrom);
+    const Latest_History = await dbQuery(`SELECT * FROM HISTORY id = LAST_INSERT_ID()`,[]);
+    const {id} = Latest_History;
+
+    await updateRoom({room_id}, id);
+    
+
     res.status(200).json({ constractFrom, message: 'send to consumer' });
     return;
   }
@@ -101,8 +113,6 @@ if (req.method === 'POST') {
       
       const NewConstractData = { consumer_sign, contract_path : contract}
       
-      // Object.assign(newInputData, { producer_sign: url, contract_path : 'example_contract_Path' });
-      // 계약서 생성이 완료될 경우 sign이미지들 삭제
       
       const result = await updateContract({...NewConstractData, id});
       // const contractData = await readQuery('history',{conditionQuery, values})
