@@ -44,7 +44,7 @@ const SLayout = styled.div`
   padding: 10px;
   position: fixed;
   top: 0;
-  left: 0;
+  left: 30px;
   gap: 10px;
 `;
 
