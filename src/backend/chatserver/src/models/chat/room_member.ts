@@ -31,7 +31,7 @@ const Create = async (inputData : any) =>{
     // const room_user = {
     //   'room_id' : room['id']
     // };
-    
+    // 우선적으로 방 탐색 및 상대방 정보 조회;
     const roomUserRelations = await Read(room_user);
 
     // console.log(roomUserRelations)

@@ -13,6 +13,7 @@ import { buildConditionQuery } from '@/lib/queryBuilder';
 
 import {uploadToS3, getData} from '@/pages/api/upload'
 import { IncomingForm } from "formidable";
+import { User } from 'aws-cdk-lib/aws-iam';
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: storage }).single('producer_sign');
 
@@ -94,7 +95,7 @@ if (req.method === 'POST') {
 
       const contractFormData = contractForm[0].buffer.toString('utf8');  // buffer를 문자열로 변환
       const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
-      const id = contractFormJSON.id
+      const id = contractFormJSON.id;
       // 이미지 삭제하는거 추가해야함
       const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
@@ -115,8 +116,20 @@ if (req.method === 'POST') {
     
     if (req.method === 'GET') {
       // 나머지 GET 로직...
-      const inputData = req.query;
+      const {email} = req.query;
+      const [usr] : member[] = await readUser({email});
+      console.log("유저",usr, email)
+    
+      if (!usr) {
+        return res.status(500).json({ error: 'No Member found' });
+      }
+      const id = usr['id'];
+      const producer = readContract_P({producer_id : id});
+      const consumer = readContract_C({consumer_id : id});
+      res.status(200).json({producer, consumer});
+      return;
     }
+
     
     if (req.method === 'DELETE') {
       // 나머지 DELETE 로직...

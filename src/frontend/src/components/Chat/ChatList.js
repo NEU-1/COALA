@@ -5,7 +5,11 @@ import { images } from '../../assets/images';
 import ChatListItem from './components/ChatListItem';
 
 const ChatList = ({ onClickCloseChatBtn, list, onClickListItem, user }) => {
+  
+  
+
   return (
+    <>
     <SLayout>
       <SChatHeader>
         <SMyProfile>
@@ -32,6 +36,8 @@ const ChatList = ({ onClickCloseChatBtn, list, onClickListItem, user }) => {
         })}
       </SChatList>
     </SLayout>
+
+    </>
   );
 };
 

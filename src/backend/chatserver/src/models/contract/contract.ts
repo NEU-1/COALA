@@ -30,7 +30,7 @@ const Read_Producer = async (target : object) => {
     try{
         const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
         // const result = await readQuery('history', {conditionQuery, values});
-        const result = await readQuery('History', {conditionQuery, values}, 'Member', ['member.id', 'history.producer_id']);
+        const result = await readQuery('History', {conditionQuery, values});
         return result;
     }catch(error){
         console.log(error);
@@ -42,7 +42,7 @@ const Read_Consumer = async (target : object) => {
     try{
         const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
         // const result = await readQuery('history', {conditionQuery, values});
-        const result = await readQuery('History', {conditionQuery, values}, 'Member', ['member.id', 'history.consumer_id']);
+        const result = await readQuery('History', {conditionQuery, values});
         return result;
     }catch(error){
         console.log(error);
