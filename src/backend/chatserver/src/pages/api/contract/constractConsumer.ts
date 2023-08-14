@@ -69,7 +69,8 @@ const receiveData = withCors(async (req: any, res: any) => {
         return;
       }
       // 이미지 저장하는거 추가해야함
-      res.status(200).json({ contract : "example_Path", message: 'contract finished' })
+      res.status(200).json({ contract : "example_Path", message: 'contract finished' });
+      return
     }
     
     if (req.method === 'GET') {
