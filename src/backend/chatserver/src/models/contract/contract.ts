@@ -55,6 +55,7 @@ const Update = async (target : any) => {
         const {consumer_sign, contract_id} = target;
         const {conditionQuery, values} = buildConditionQuery(consumer_sign, ' AND ');
         // const result = await readQuery('history', {conditionQuery, values});
+        
         const result = await updateQuery('History', consumer_sign, [contract_id]);
         return result;
     }catch(error){
