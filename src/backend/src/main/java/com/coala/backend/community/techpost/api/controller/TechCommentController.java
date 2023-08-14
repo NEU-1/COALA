@@ -51,8 +51,9 @@ public class TechCommentController {
 
     // 댓글 목록
     @GetMapping("/{id}/{page}")
-    public ResponseEntity<CommunityBaseResponseDto> techCommentList(@PathVariable("id") Long id, @PathVariable("page") int page) {
-        CommunityBaseResponseDto responseDto = techCommentService.getCommentList(id, page);
+    public ResponseEntity<CommunityBaseResponseDto> techCommentList(@PathVariable("id") Long id, @PathVariable("page") int page,
+                                                                    HttpServletRequest httpServletRequest) {
+        CommunityBaseResponseDto responseDto = techCommentService.getCommentList(id, page, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);

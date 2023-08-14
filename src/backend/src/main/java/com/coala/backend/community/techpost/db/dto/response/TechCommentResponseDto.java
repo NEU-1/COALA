@@ -12,17 +12,22 @@ import java.time.LocalDateTime;
 public class TechCommentResponseDto {
     private Long id;
     private Long tpId;
-    private String author;
     private String content;
+    private String nickname;
+    private boolean isAnonymous;
+    private boolean mine;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
     @Builder
-    public TechCommentResponseDto(Long id, Long tpId, String author, String content, LocalDateTime createAt, LocalDateTime updateAt) {
+    public TechCommentResponseDto(Long id, Long tpId, boolean isAnonymous, String content, boolean mine,
+                                  String nickname, LocalDateTime createAt, LocalDateTime updateAt) {
         this.id = id;
         this.tpId = tpId;
-        this.author = author;
+        this.isAnonymous = isAnonymous;
         this.content = content;
+        this.nickname = nickname;
+        this.mine = mine;
         this.createAt = createAt;
         this.updateAt = updateAt;
     }

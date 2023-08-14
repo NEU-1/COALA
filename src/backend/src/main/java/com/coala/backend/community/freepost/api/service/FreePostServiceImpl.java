@@ -1,14 +1,11 @@
 package com.coala.backend.community.freepost.api.service;
 
 import com.coala.backend.community.freepost.db.dto.request.FreePostRequestDto;
-import com.coala.backend.community.freepost.db.entity.FreeImage;
 import com.coala.backend.community.freepost.db.entity.FreePost;
 import com.coala.backend.community.freepost.db.repository.FreeGoodRepository;
-import com.coala.backend.community.freepost.db.repository.FreeImageRepository;
 import com.coala.backend.community.freepost.db.repository.FreePostRepository;
 import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.db.dto.response.FreePostResponseDto;
-import com.coala.backend.community.techpost.db.entity.TechPost;
 import com.coala.backend.member.db.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +28,6 @@ import java.util.stream.Collectors;
 public class FreePostServiceImpl implements FreePostService{
     private final FreePostRepository freePostRepository;
     private final FreeGoodRepository freeGoodRepository;
-    private final FreeImageRepository freeImageRepository;
 
 //    private final S3UploadService s3UploadService;
 
@@ -46,19 +41,11 @@ public class FreePostServiceImpl implements FreePostService{
                 .memberId(member)
                 .title(postDto.getTitle())
                 .detail(postDto.getDetail())
+                .images(postDto.getImagePath())
                 .isAnonymous(postDto.isAnonymous())
                 .build();
 
         freePostRepository.saveAndFlush(freePost);
-
-        if (!postDto.getImagePath().isEmpty()) {
-            for (int i = 0; i < postDto.getImagePath().size(); i++) {
-                freeImageRepository.save(FreeImage.builder()
-                        .fpId(freePost)
-                        .imagePath(postDto.getImagePath().get(i))
-                        .build());
-            }
-        }
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
@@ -69,8 +56,10 @@ public class FreePostServiceImpl implements FreePostService{
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto getPostList(int page) {
+    public CommunityBaseResponseDto getPostList(int page, Member member) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
+
+
 
         int allPost = freePostRepository.findAll().size();
         List<FreePostResponseDto> allList = freePostRepository.findAll(pageable).stream()
@@ -81,6 +70,8 @@ public class FreePostServiceImpl implements FreePostService{
                         .detail(freePost.getDetail())
                         .createAt(freePost.getCreateAt())
                         .updateAt(freePost.getUpdateAt())
+                        .imagePath(str + freePost.getImages())
+                        .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
                         .isAnonymous(freePost.isAnonymous())
                         .views(freePost.getViews())
                         .commentCount(freePost.getComments().size())
@@ -113,13 +104,6 @@ public class FreePostServiceImpl implements FreePostService{
             }
         }
 
-        List<String> uri = new ArrayList<>();
-        List<FreeImage> imageList = freeImageRepository.findByFpId(freePost);
-        for (int i = 0; i < imageList.size(); i++) {
-            FreeImage freeImage = imageList.get(i);
-            uri.add(str + freeImage.getImagePath());
-        }
-
         return FreePostResponseDto.builder()
                 .id(freePost.getId())
                 .memberId(freePost.getMemberId())
@@ -128,8 +112,8 @@ public class FreePostServiceImpl implements FreePostService{
                 .createAt(freePost.getCreateAt())
                 .updateAt(freePost.getUpdateAt())
                 .good(good)
+                .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
                 .isAnonymous(freePost.isAnonymous())
-                .imagePath(uri)
                 .views(freePost.getViews())
                 .commentCount(freePost.getComments().size())
                 .goodCount(freePost.getGoods().size())
@@ -147,14 +131,13 @@ public class FreePostServiceImpl implements FreePostService{
             throw new IllegalArgumentException("작성자가 아닙니다.");
         }
 
-        freeImageRepository.deleteByFpId(freePost);
         freeGoodRepository.deleteByFpId(freePost);
         freePostRepository.deleteById(id);
     }
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto searchPosts(String keyword, int page) {
+    public CommunityBaseResponseDto searchPosts(String keyword, int page, Member member) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
         List<FreePost> allPost = freePostRepository.findByTitleContaining(keyword);
@@ -167,6 +150,8 @@ public class FreePostServiceImpl implements FreePostService{
                         .createAt(freePost.getCreateAt())
                         .updateAt(freePost.getUpdateAt())
                         .isAnonymous(freePost.isAnonymous())
+                        .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
+                        .imagePath(str + freePost.getImages())
                         .views(freePost.getViews())
                         .commentCount(freePost.getComments().size())
                         .goodCount(freePost.getGoods().size())
@@ -195,17 +180,10 @@ public class FreePostServiceImpl implements FreePostService{
         freePost.updateFreePost(
                 dto.getTitle(),
                 dto.getDetail(),
-                dto.isAnonymous());
+                dto.isAnonymous(),
+                dto.getImagePath());
 
         freePostRepository.save(freePost);
-        freeImageRepository.deleteByFpId(freePost);
-
-        for (int i = 0; i < dto.getImagePath().size(); i++) {
-            freeImageRepository.save(FreeImage.builder()
-                            .fpId(freePost)
-                            .imagePath(dto.getImagePath().get(i))
-                    .build());
-        }
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)

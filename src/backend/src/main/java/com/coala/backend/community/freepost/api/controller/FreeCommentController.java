@@ -59,8 +59,9 @@ public class FreeCommentController {
     // 댓글 목록
     @GetMapping("{id}/{page}")
     public ResponseEntity<CommunityBaseResponseDto> freeCommentList(@PathVariable("page") int page,
-                                                                    @PathVariable Long id) {
-        CommunityBaseResponseDto responseDto = freeCommentService.getCommentList(id, page);
+                                                                    @PathVariable Long id,
+                                                                    HttpServletRequest httpServletRequest) {
+        CommunityBaseResponseDto responseDto = freeCommentService.getCommentList(id, page, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);

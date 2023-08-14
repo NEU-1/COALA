@@ -35,13 +35,14 @@ public class Notice {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @OneToMany(mappedBy = "npId", cascade = CascadeType.REMOVE)
-    private List<NoticeImage> images = new ArrayList<>();
+    @Column
+    private String images;
 
     @Builder
-    public Notice(String title, String detail) {
+    public Notice(String title, String detail, String images) {
         this.title = title;
         this.detail = detail;
+        this.images = images;
     }
 
     @PrePersist
@@ -49,9 +50,10 @@ public class Notice {
         createAt = LocalDateTime.now();
     }
 
-    public void updateFreePost(String title, String detail) {
+    public void updateFreePost(String title, String detail, String images) {
         this.title = title;
         this.detail = detail;
+        this.images = images;
         this.updateAt = LocalDateTime.now();
     }
 }

@@ -24,10 +24,12 @@ public class FreeComment {
     private FreePost fpId;
 
     @NotNull
-    private String memberId;
+    @ManyToOne(targetEntity = Member.class)
+    @JoinColumn(name = "member_id")
+    private Member memberId;
 
     @NotNull
-    private String author;
+    private boolean isAnonymous;
 
     @NotNull
     private String content;
@@ -43,15 +45,15 @@ public class FreeComment {
     }
 
     @Builder
-    public FreeComment(FreePost fpId, String author, String content, String memberId) {
+    public FreeComment(FreePost fpId, String author, boolean isAnonymous, Member memberId, String content) {
         this.fpId = fpId;
-        this.author = author;
+        this.isAnonymous = isAnonymous;
         this.memberId = memberId;
         this.content = content;
     }
 
-    public void updateFreeComment(String author, String content) {
-        this.author = author;
+    public void updateFreeComment(boolean isAnonymous, String content) {
+        this.isAnonymous = isAnonymous;
         this.content = content;
         this.updateAt = LocalDateTime.now();
     }

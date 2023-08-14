@@ -24,10 +24,13 @@ public class TechComment {
     private TechPost tpId;
 
     @NotNull
-    private String memberId;
+    @ManyToOne(targetEntity = Member.class)
+    @JoinColumn(name = "member_id")
+    private Member memberId;
 
     @NotNull
-    private String author;
+    @Column(name = "is_anonymous")
+    private boolean isAnonymous;
 
     @NotNull
     private String content;
@@ -43,15 +46,15 @@ public class TechComment {
     }
 
     @Builder
-    public TechComment(TechPost tpId, String author, String content, Member memberId) {
+    public TechComment(TechPost tpId, boolean isAnonymous, String content, Member memberId) {
         this.tpId = tpId;
-        this.author = author;
-        this.memberId = memberId.getEmail();
+        this.isAnonymous = isAnonymous;
+        this.memberId = memberId;
         this.content = content;
     }
 
-    public void updateTechComment(String author, String content) {
-        this.author = author;
+    public void updateTechComment(boolean isAnonymous, String content) {
+        this.isAnonymous = isAnonymous;
         this.content = content;
         this.updateAt = LocalDateTime.now();
     }

@@ -1,9 +1,7 @@
 package com.coala.backend.community.techpost.db.dto.request;
 
-import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.community.techpost.db.entity.TechPost;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,10 +18,10 @@ public class TechPostRequestDto {
     private Long id;
     private String title;
     private String detail;
-    private List<String> imagePath;
+    private String imagePath;
 
     @Builder
-    public TechPostRequestDto(Long id, String title, String detail, List<String> imagePath) {
+    public TechPostRequestDto(Long id, String title, String detail, String imagePath) {
         this.id = id;
         this.title = title;
         this.detail = detail;

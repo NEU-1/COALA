@@ -1,7 +1,6 @@
 package com.coala.backend.community.freepost.db.dto.response;
 
 import com.coala.backend.community.freepost.db.entity.FreePost;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FreeGoodResponseDto {
 
-    @JsonIgnore
     private FreePost fpId;
 
     @Builder

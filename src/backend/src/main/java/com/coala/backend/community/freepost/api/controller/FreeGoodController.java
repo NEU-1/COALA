@@ -27,6 +27,7 @@ public class FreeGoodController {
 
     @PostMapping("is/good")
     public ResponseEntity good(@RequestBody @Valid FreeGoodRequestDto freegoodRequestDto, HttpServletRequest httpServletRequest) {
+
         CommunityBaseResponseDto baseResponseDto = freeGoodService.good(freegoodRequestDto, getEmail(httpServletRequest));
         return ResponseEntity.status(baseResponseDto.getStatusCode())
                 .body(baseResponseDto);

@@ -57,9 +57,9 @@ public class FreePostController {
 
     // 모든 게시물 불러오기, page 는 page 번호
     @GetMapping("{page}")
-    public ResponseEntity<CommunityBaseResponseDto> freePostList(@PathVariable("page") Integer page) {
+    public ResponseEntity<CommunityBaseResponseDto> freePostList(@PathVariable("page") Integer page, HttpServletRequest httpServletRequest) {
 
-        CommunityBaseResponseDto responseDto = freePostService.getPostList(page);
+        CommunityBaseResponseDto responseDto = freePostService.getPostList(page, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
     }
@@ -67,8 +67,9 @@ public class FreePostController {
     // 검색어 관련 게시물 불러오기
     @GetMapping("search/{keyword}/{page}")
     public ResponseEntity<CommunityBaseResponseDto> findFreePosts(@PathVariable("keyword") String keyword,
-                                                                  @PathVariable("page") Integer page) {
-        CommunityBaseResponseDto responseDto = freePostService.searchPosts(keyword, page);
+                                                                  @PathVariable("page") Integer page,
+                                                                  HttpServletRequest httpServletRequest) {
+        CommunityBaseResponseDto responseDto = freePostService.searchPosts(keyword, page, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
     }

@@ -33,7 +33,7 @@ public class TechCommentServiceImpl implements TechCommentService {
 
         TechComment techComment = TechComment.builder()
                 .tpId(commentDto.getTpId())
-                .author(commentDto.getAuthor())
+                .isAnonymous(commentDto.isAnonymous())
                 .content(commentDto.getContent())
                 .memberId(member)
                 .build();
@@ -50,7 +50,7 @@ public class TechCommentServiceImpl implements TechCommentService {
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto getCommentList(Long id, int page) {
+    public CommunityBaseResponseDto getCommentList(Long id, int page, Member member) {
         Pageable pageable = PageRequest.of(page, 5, Sort.by("createAt").descending());
 
         TechPost techPost = techPostRepository.findById(id).orElseThrow(() -> {
@@ -61,8 +61,10 @@ public class TechCommentServiceImpl implements TechCommentService {
                 .map(techComment -> TechCommentResponseDto.builder()
                         .id(techComment.getId())
                         .tpId(id)
-                        .author(techComment.getAuthor())
+                        .isAnonymous(techComment.isAnonymous())
+                        .nickname(member.getNickname())
                         .content(techComment.getContent())
+                        .mine(techComment.getMemberId().getEmail().equals(member.getEmail()))
                         .createAt(techComment.getCreateAt())
                         .updateAt(techComment.getUpdateAt())
                         .build())
@@ -83,13 +85,13 @@ public class TechCommentServiceImpl implements TechCommentService {
             return new IllegalArgumentException("댓글이 존재하지 않습니다.");
         });
 
-        TechPost techPost = techPostRepository.findById(techComment.getId()).orElseThrow(() -> {
+        TechPost techPost = techPostRepository.findById(techComment.getTpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
-        if (!techComment.getMemberId().equals(member.getEmail())) {
+        if (!techComment.getMemberId().getEmail().equals(member.getEmail())) {
             throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다!!!");
-        } else if (techComment.getTpId().equals(techPost.getId())) {
+        } else if (!techComment.getTpId().getId().equals(techPost.getId())) {
             throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다!!!");
         }
 
@@ -108,7 +110,7 @@ public class TechCommentServiceImpl implements TechCommentService {
             throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다!!!");
         }
 
-        techComment.updateTechComment(dto.getAuthor(), dto.getContent());
+        techComment.updateTechComment(dto.isAnonymous(), dto.getContent());
         techCommentRepository.save(techComment);
 
         return CommunityBaseResponseDto.builder()

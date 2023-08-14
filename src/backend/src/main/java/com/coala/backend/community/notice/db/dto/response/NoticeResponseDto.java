@@ -20,11 +20,11 @@ public class NoticeResponseDto {
     private String detail;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
-    private List<String> imagePath;
+    private String imagePath;
 
     @Builder
     public NoticeResponseDto(Long id, String title, String detail,
-                             LocalDateTime createAt, LocalDateTime updateAt, List<String> imagePath) {
+                             LocalDateTime createAt, LocalDateTime updateAt, String imagePath) {
         this.id = id;
         this.title = title;
         this.detail = detail;
