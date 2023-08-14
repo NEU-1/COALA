@@ -73,11 +73,12 @@ if (req.method === 'POST') {
     // 이미지 inputData 처리
     await createContract(constractFrom);
     let table = 'History'
-    const Latest_History = await dbQuery(`SELECT * FROM ${table} WHERE id = LAST_INSERT_ID()`, []);
-    const {id : contract_id} = Latest_History;
+    const Latest_History = await dbQuery(`SELECT * FROM ?? WHERE id = LAST_INSERT_ID()`, [table]);
+    const {id} = Latest_History;
 
-    await updateRoom({contract_id}, room_id);
-    
+    // await updateRoom({contract_id}, room_id);
+    table = 'chat_room';
+    await dbQuery(`UPDATE ?? SET contract_id = ? WHERE id = ?`,[table, id, room_id])
 
     res.status(200).json({ constractFrom : Latest_History, message: 'send to consumer' });
     return;
