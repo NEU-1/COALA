@@ -28,7 +28,7 @@ public class CustomStorePostRepositoryImpl implements CustomStorePostRepository{
         if(info.get("category").equals("") &&  info.get("Period").equals("") &&  info.get("minRentalCost").equals("") &&  info.get("maxRentalCost").equals("") && !info.get("status").equals("1") ){
             sb.append(" order by s.id desc");
             System.out.println(sb);
-            return entityManager.createQuery(sb.toString(), StorePost.class).setFirstResult(page * 10).setMaxResults(10).getResultList();
+            return entityManager.createQuery(sb.toString(), StorePost.class).setFirstResult(page * 12).setMaxResults(12).getResultList();
         }
 
         sb.append(" where ");
