@@ -42,7 +42,7 @@ const receiveData = withCors(async (req: any, res: any) => {
       });
     });
       const {file, contractForm} = req.files;   
-      console.log(file, contractForm)
+      console.log(file, contractForm);
       const image_consumer = file[0]
       // const image_contract = file[1]
       // 이미지 upload
