@@ -164,7 +164,6 @@ const goSellBtn = () => {
     formData.append("maxRentalDay", maxRentalDay);
     formData.append("content", content);
     formData.append("upperLimitDate", `${year}-${month}-${date}`);
-
     imageList.forEach((image, index) => {
       formData.append("imageList", image, `image${index}.png`);
     });
@@ -399,6 +398,7 @@ const goSellBtn = () => {
 export default StoreWrite;
 
 const SMain = styled.div`
+margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;

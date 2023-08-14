@@ -64,8 +64,6 @@ const Title = styled.div`
 function FreeBoardWrite() {
   const navigate = useNavigate();
   
-
-
   const [board, setBoard] = useState({
     title: '',
     detail: '',
@@ -83,7 +81,7 @@ function FreeBoardWrite() {
     });
   };
   
-
+  const [Imagepath,setPath] = useState()
 
   const saveBoard = async () => {
     try {
@@ -92,6 +90,7 @@ function FreeBoardWrite() {
       const editorContent2 = editorRef.current?.getInstance().getHTML();
   
       // 저장하고자 하는 내용을 board 객체에 추가
+      
       setBoard({
         ...board,
         detail: editorContent,editorContent2
@@ -101,9 +100,9 @@ function FreeBoardWrite() {
         title: board.title,
         detail: editorContent,
         isAnonymous: board.isAnonymous,
-        imagePath: board.imagePath
+        imagePath: [Imagepath],
       }
-  
+      console.log(Imagepath)
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
       const response = await requestPost("free/post/save", params);
       
@@ -163,7 +162,7 @@ function FreeBoardWrite() {
                 
                 console.log("함수안",imgURL)
                 callback(imgURL, blob.name);
-                
+                setPath(blob.name)
               };
 
 

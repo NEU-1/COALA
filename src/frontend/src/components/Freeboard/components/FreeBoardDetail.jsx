@@ -8,6 +8,7 @@ import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import styled from 'styled-components'
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
+// import CCheckBox from '../Common/CCheckBox';
 
 
 
@@ -67,7 +68,6 @@ const FreeBoardDetail = () => {
 
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
-  
 
 
   const getBoardList = () => {
@@ -123,6 +123,21 @@ const saveCommentBoard = async () => {
   }
   
 };
+
+const commentDelete = async (commentId) => {
+  if (window.confirm('게시글을 삭제하시겠습니까?')) {
+    try {
+      const resp = await axios.delete(`http://i9d108.p.ssafy.io:9999/api/free/comment/delete/${commentId}`);
+      if (resp.status === 200) {
+        alert('삭제되었습니다.');
+        navigate(`/free/post/detail/${postid}`);
+      }
+    } catch (error) {
+      console.error("Error deleting board:", error);
+    } 
+  }
+};
+
 const likeBtn = async() => {
   const param = {
     fpId: {
@@ -200,20 +215,28 @@ const unlikeBtn = async() => {
       {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
       {posts && posts.map(({ id, author , content, createAt,}) => (
         <Contentbox key={id}>
-          <div>
-            
+          <Commenttitlebox>
+          {/* <CCheckBox
+              text={'동의'}
+              checked={isAgree1}
+              onChange={onChangeAgree1}
+            /> */}
             <Titletext2>
               {author}
             </Titletext2>
             <Userbox>
-              <Numbertext>|</Numbertext>
               <Numbertext>{createAt.slice(0,10)}</Numbertext>
-              <Numbertext>|</Numbertext>
             </Userbox>
+          </Commenttitlebox>
             {content}
-          </div>
-
-          
+            <Subcommentupdatebox>
+            <SBtn>
+              수정
+            </SBtn>
+            <SBtn onClick={() => commentDelete(id)}>삭제</SBtn>
+            
+            </Subcommentupdatebox>
+        
         </Contentbox>
       ))}
       <SBtnContainer>
@@ -299,6 +322,7 @@ const Profiletext = styled.div`
 const LIkeconteiner = styled.div`
   display: flex;
   font-size: 10px;
+  margin-bottom: 10px;
 `
 
 const Detailconteiner = styled.div`
@@ -414,3 +438,13 @@ const SBtn = styled.div`
     font-size: 12px;
     border: 1px black;
 `
+
+const Commenttitlebox = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  `
+  const Subcommentupdatebox = styled.div`
+    display: flex;
+  `

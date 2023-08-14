@@ -7,48 +7,55 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
 
+
+const product = ["키보드", "마우스", "헤드셋", "태블릿"];
+const day = ["1일", "7일", " 14일", "30일"];
 
 const Store = () => {
-  const product = ["키보드", "마우스", "헤드셋", "태블릿"];
-  const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
 
   const [filter, setFilter] = useState(false);
-  const [productType, setproductType] = useState("");
+  const [productType, setProductType] = useState("");
   const [dayType, setDayType] = useState("");
   const [seeProductCheck, setseeProductCheck] = useState(false);
-  const [data, setData] = useState([
-    { id: 1, isRented: false, isReservation: false },
-    { id: 2, isRented: true, isReservation: false },
-    { id: 3, isRented: false, isReservation: true },
-    { id: 4, isRented: false, isReservation: false },
-    { id: 5, isRented: false, isReservation: false },
-    { id: 6, isRented: false, isReservation: true },
-    { id: 7, isRented: false, isReservation: false },
-    { id: 8, isRented: false, isReservation: false },
-    { id: 9, isRented: true, isReservation: true },
-  ]);
+  const [data, setData] = useState(initialData());
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [likedItems, setLikedItems] = useState([]);
-  const [isLogin, setIsLogin] = useState(
-    sessionStorage.getItem("user_id") !== null
-  );
   const [priceRange, setPriceRange] = useState([25000, 75000]);
+  const isLogin = useSelector(state => state.login.isLogin);
+  const navigate = useNavigate();
 
-  const onFilterHandler = () => {
+  function initialData() {
+    return [
+      { id: 1, isRented: false, isReservation: false },
+      { id: 2, isRented: true, isReservation: false },
+      { id: 3, isRented: false, isReservation: true },
+      { id: 4, isRented: false, isReservation: false },
+      { id: 5, isRented: false, isReservation: false },
+      { id: 6, isRented: false, isReservation: true },
+      { id: 7, isRented: false, isReservation: false },
+      { id: 8, isRented: false, isReservation: false },
+      { id: 9, isRented: true, isReservation: true },
+    ];
+  }
+
+  const handleFilterToggle = () => {
     setFilter(!filter);
-    console.log(filter);
   };
-  const onproductTypeHandler = (index) => {
-    setproductType(index);
+
+  const handleProductTypeChange = (index) => {
+    setProductType(index);
   };
-  const ondayTypeHandler = (index) => {
+
+  const handleDayTypeChange = (index) => {
     setDayType(index);
   };
   const resetDayAndProduct = () => {
-    setproductType("");
+    setProductType("");
     setDayType("");
+    setPriceRange([25000, 75000]);
   };
   const seeProductCheckHandler = (e) => {
     setseeProductCheck(e.target.checked);
@@ -93,7 +100,6 @@ const Store = () => {
       setLikedItems((prevLikedItems) => [...prevLikedItems, item]);
     }
   };
-  const navigate = useNavigate();
   const onClickHandler = () => {
     console.log(isLogin);
     if (!isLogin) {
@@ -123,16 +129,6 @@ const Store = () => {
   useEffect(() => {
     loadMoreData();
   }, []);
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setIsLogin(sessionStorage.getItem("user_id") !== null);
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
 
   useEffect(() => {
     console.log(productType, dayType, likedItems);
@@ -145,7 +141,7 @@ const Store = () => {
           <SOpenFilter>
             <SFilterHeader>
               <SPageText>상세검색</SPageText>
-              <button onClick={onFilterHandler}>⌃</button>
+              <button onClick={handleFilterToggle}>⌃</button>
             </SFilterHeader>
             <SFilterProductType>
               <SFilterProduct>
@@ -155,7 +151,7 @@ const Store = () => {
                     return (
                       <SSelectProductBtn
                         key={index}
-                        onClick={() => onproductTypeHandler(index)}
+                        onClick={() => handleProductTypeChange(index)}
                         $activeProduct={productType === index}
                       >
                         {product}
@@ -171,7 +167,7 @@ const Store = () => {
                     return (
                       <SSelectDayBtn
                         key={index}
-                        onClick={() => ondayTypeHandler(index)}
+                        onClick={() => handleDayTypeChange(index)}
                         $activeDay={dayType === index}
                       >
                         {day}
@@ -203,7 +199,7 @@ const Store = () => {
         ) : (
           <SNotOpenFilter>
             <SPageText>상세검색</SPageText>
-            <button onClick={onFilterHandler}>⌄</button>
+            <button onClick={handleFilterToggle}>⌄</button>
           </SNotOpenFilter>
         )}
       </div>
@@ -237,6 +233,7 @@ const Store = () => {
 };
 
 const Smain = styled.div`
+margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;

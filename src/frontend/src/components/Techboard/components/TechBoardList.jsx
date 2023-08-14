@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import styled from "styled-components"
 import { useNavigate, Link } from 'react-router-dom';
-import Pagination from "./Pagination";
 import {requestGet} from "../../../lib/api/api"
 
 
@@ -17,10 +16,9 @@ const TechBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`tech/post/${page}`)
     .then(res=>{console.log(res.data);setPosts(res.data.list)})
-   
-
-
   }
+
+  
   const goTowrite = () => {
     navigate('/tech/write');
   };
@@ -30,18 +28,13 @@ const TechBoardList = () => {
   }, []);
 
   return (
-    
     <Slayout>
-      <Layout>
-
-      <div>
-        
+      <Layout>   
         {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
         {posts.map(({ id, title, views, createAt,imagePath, }) => (
           <Contentbox key={id}>
             <div>
             <Link to={`/tech/post/detail/${id}`}>
-
               <Titletext>
                 {title}
               </Titletext>
@@ -56,13 +49,11 @@ const TechBoardList = () => {
               </Link>
             </div>
             <img src="/assets/images/testimg.png" alt="사진" />
-            
+   
           </Contentbox>
         ))}
-      </div>
-      <Button onClick={goTowrite}>게시글 등록하기</Button>  
-    </Layout>
-      
+      <Button onClick={goTowrite}>게시글 등록</Button>  
+    </Layout>  
     </Slayout>
   );
 };
@@ -87,17 +78,11 @@ const Button = styled.div`
 `
 
 const Layout = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   max-width: 800px;
   margin: 0 auto;
 `;
 
 const Contentbox = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   border-top: 1px solid #f5a4a4;
   border-bottom: 1px solid #f5a4a4;
   margin-bottom: 20px;
@@ -106,7 +91,6 @@ const Contentbox = styled.div`
 `
 
 const Userbox = styled.div`
-  display: flex;
   margin-bottom: 10px;
   margin-top: 5px;
 `

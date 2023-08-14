@@ -8,6 +8,7 @@ import { requestPost, requestGet, setToken } from "../../../lib/api/api";
 import {uploadToS3} from "../../../lib/api/upload"
 
 
+
 const SBtn = styled.div`
   display: flex;
   height: 50px;
@@ -63,8 +64,6 @@ const Title = styled.div`
 
 function TechBoardWrite() {
   const navigate = useNavigate();
-  
-  
 
   const [board, setBoard] = useState({
     title: '',
@@ -83,7 +82,7 @@ function TechBoardWrite() {
     });
   };
   
-
+  const [Imagepath,setPath] = useState()
 
   const saveBoard = async () => {
     try {
@@ -99,7 +98,7 @@ function TechBoardWrite() {
       const params = {
         title: board.title,
         detail: board.detail,// 수정된 부분: editorContent를 사용
-        imagePath: board.imagePath,
+        imagePath: [Imagepath],
         isAnonymous: board.isAnonymous,
       }
       setToken()
@@ -162,7 +161,7 @@ function TechBoardWrite() {
                 
                 console.log("함수안",imgURL)
                 callback(imgURL, blob.name);
-                
+                setPath(imgURL)
               };
 
 

@@ -1,5 +1,6 @@
 package com.coala.backend.member.db.dto.response;
 
+import com.coala.backend.member.db.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MemberInfoResponseDto {
+    private Member member;
 
+<<<<<<< HEAD
     // member Id
     private Long id;
 
@@ -42,5 +45,8 @@ public class MemberInfoResponseDto {
         this.statusCode = statusCode;
     }
 
+=======
+    private BaseResponseDto baseResponseDto;
+>>>>>>> feature/auction
 
 }

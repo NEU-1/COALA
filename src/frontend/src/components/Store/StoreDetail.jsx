@@ -3,20 +3,32 @@ import { images } from "../../assets/images";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
   const [pictures, setPictures] = useState([]); 
   const [pictureNum, setPictureNum] = useState(0);
-  const [like, setlike] = useState(false);
-  const [login, setLogin] = useState(false);
-  const [currentUser, setCurrentUser] = useState("현재 로그인한 사용자 정보");
-  const [postAuthor, setPostAuthor] = useState("게시글 작성자 정보");
-  const isAuthor = currentUser === postAuthor;
-  const [showModal, setShowModal] = useState(false);
-  
+  const [like, setLike] = useState(false);
+
+  const navigate = useNavigate();
   const { postId } = useParams();
-  console.log(postId);
+  
+  const isLogin = useSelector(state => state.login.isLogin);
+  const currentUser = "현재 로그인한 사용자 정보";
+  const postAuthor = "게시글 작성자 정보";
+  const isAuthor = currentUser === postAuthor;
+
+  const [showModal, setShowModal] = useState(false);
+
+   const handlePictureChange = (direction) => {
+    const totalPictures = pictures.length;
+    if (direction === 'next') {
+      setPictureNum((pictureNum + 1) % totalPictures);
+    } else {
+      setPictureNum((pictureNum - 1 + totalPictures) % totalPictures);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,34 +40,24 @@ const StoreDetail = () => {
         setPictures(picturesResponse.data);
         setPostData(postResponse.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('데이터를 가져오는데 실패:', error);
       }
     };
     fetchData();
   }, [postId]);
 
-  const picturePlusBtn = () => {
-    setPictureNum((pictureNum + 1) % "사진수");
+  const toggleLike = () => {
+    setLike(!like);
   };
-  const pictureMinusBtn = () => {
-    setPictureNum((pictureNum + "사진수" - 1) % "사진수");
-  };
-  const likeBtn = () => {
-    setlike(!like);
-  };
-  const goDelete = () => {
+  const showDeleteModal = () => {
     setShowModal(true);
   };
-  const navigate = useNavigate();
-  const handleConfirmDelete = async () => {
+  const handleDelete = async () => {
     try {
-      // 삭제 요청 전송
       await axios.delete(`your-server-url/posts/${postId}`);
-      
-      setShowModal(false);
       navigate("/store");
     } catch (error) {
-      console.error('Error deleting post:', error);
+      console.error('포스트 삭제 오류:', error);
       alert('포스트 삭제에 실패했습니다.');
     }
   };
@@ -68,8 +70,8 @@ const StoreDetail = () => {
     navigate("/profile");
   };
   const goChat = () => {
-    if (login) {
-      const chatId = `unique_chat_identifier`; // 실제 구현에서는 대화에 대한 실제 식별자가 필요합니다.
+    if (isLogin) {
+      const chatId = `unique_chat_identifier`;
       navigate(`/chat/${chatId}`);
     } else {
       alert("로그인하세요");
@@ -77,9 +79,6 @@ const StoreDetail = () => {
     }
   };
   
-  const goList = () => {
-    navigate("/store");
-  };
   const goUpdate = () => {
     if ("대기중") {
       navigate(`update`);
@@ -114,9 +113,9 @@ const StoreDetail = () => {
   return (
     <SMain>
       <SImgs>
-        <button onClick={pictureMinusBtn}>{"<"}</button>
+        <button onClick={handlePictureChange}>{"<"}</button>
         {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
-        <button onClick={picturePlusBtn}>{">"}</button>
+        <button onClick={handlePictureChange}>{">"}</button>
       </SImgs>
       <SHeader>
         <SProfile onClick={goProfile}>
@@ -141,9 +140,9 @@ const StoreDetail = () => {
         </STitleAndProduct>
         {!isAuthor &&
           (like ? (
-            <img src={images.like} alt="React" onClick={likeBtn} />
+            <img src={images.like} alt="React" onClick={toggleLike} />
           ) : (
-            <img src={images.notlike} alt="React" onClick={likeBtn} />
+            <img src={images.notlike} alt="React" onClick={toggleLike} />
           ))}
       </SContent>
       <SContentDetail>
@@ -156,14 +155,12 @@ const StoreDetail = () => {
       </SFooter>
         {isAuthor ? (
           <SButtons>
-            <SButtonGray onClick={goList}>목록</SButtonGray>
             <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
           </SButtons>
         ) : (
           <SButtons>
-            <SButtonWeekPurple onClick={goDelete}>삭제</SButtonWeekPurple>
+            <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
             <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
-            <SButtonGray onClick={goList}>목록</SButtonGray>
           </SButtons>
         )}
       {showModal && (
@@ -173,7 +170,7 @@ const StoreDetail = () => {
             <STextContent>삭제</STextContent>
             <STextDelete>정말 삭제하시겠습니까?</STextDelete>
             <SButtonsDelete>
-              <SButtonDelete onClick={handleConfirmDelete}>삭제</SButtonDelete>
+              <SButtonDelete onClick={handleDelete}>삭제</SButtonDelete>
               <SButtonBack onClick={handleCancel}>취소</SButtonBack>
             </SButtonsDelete>
           </SModal>
@@ -187,9 +184,10 @@ const StoreDetail = () => {
 export default StoreDetail;
 
 const SMain = styled.div`
+margin-top: 170px;
 display: flex;
 // weight: 800px;
-height: 1024px;
+// height: 1024px;
 padding: 10px;
 flex-direction: column;
 align-items: center;
@@ -343,25 +341,6 @@ align-items: center;
 gap: 10px;
 border-radius: 7px;
 background: #BD84FC;
-box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-color: white;
-text-align: center;
-text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-font-size: 14px;
-font-weight: 700;
-letter-spacing: -0.14px;
-`
-
-const SButtonGray = styled.button`
-display: flex;
-width: 106px;
-height: 40px;
-padding: 10px 40px;
-justify-content: center;
-align-items: center;
-gap: 10px;
-border-radius: 7px;
-background: #D9D9D9;
 box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 color: white;
 text-align: center;

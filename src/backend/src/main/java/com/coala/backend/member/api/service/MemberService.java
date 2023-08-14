@@ -14,15 +14,16 @@ public interface MemberService {
 
     BaseResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response);
 
-    MemberInfoResponseDto loadInfo(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse);
+    MemberInfoResponseDto loadInfo(String email);
 
     BaseResponseDto updatePassword(Map<String, String> info);
 
-    BaseResponseDto updateInfo(Map<String, String> info, HttpServletRequest request, HttpServletResponse response);
+    BaseResponseDto updateInfo(Map<String, String> info, String email);
 
     BaseResponseDto logout();
 
     BaseResponseDto certification(Map<String, String> info);
 
     BaseResponseDto sendOTP(Map<String, String> info);
+
 }

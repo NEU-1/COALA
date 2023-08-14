@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from "../../assets/images";
@@ -9,9 +8,25 @@ import Swal from "sweetalert2";
 
 const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "7일", " 14일", "30일"];
+const SERVER_URL = "--서버 주소--";
 
-const SelectButton = ({ itemList, activeIndex, onClickHandler }) => {
-  return itemList.map((item, index) => (
+
+const fetchPostData = (postId, setData) => {
+  axios
+    .get(`${SERVER_URL}/post/${postId}`)
+    .then((res) => setData(res.data))
+    .catch((err) => console.error("Error fetching post data:", err));
+};
+
+const fetchMySellData = (setMySell) => {
+  axios
+    .get(SERVER_URL)
+    .then((response) => setMySell(response.data))
+    .catch((error) => console.error("Error fetching my sell data:", error));
+};
+
+const SelectButton = ({ itemList, activeIndex, onClickHandler }) => (
+  itemList.map((item, index) => (
     <SSelectProductBtn
       key={index}
       onClick={() => onClickHandler(index)}
@@ -19,8 +34,8 @@ const SelectButton = ({ itemList, activeIndex, onClickHandler }) => {
     >
       {item}
     </SSelectProductBtn>
-  ));
-};
+  ))
+);
 
 const StoreUpdate = () => {
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
@@ -51,44 +66,31 @@ const StoreUpdate = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`--서버 주소--/post/${postId}`)
-      .then((res) => {
-        const {
-          title,
-          productName,
-          rentalFee,
-          deposit,
-          minRentalDay,
-          maxRentalDay,
-          content,
-        } = res.data;
-        setState({
-          title,
-          productName,
-          rentalFee,
-          deposit,
-          minRentalDay,
-          maxRentalDay,
-          content,
-        });
-      })
-      .catch((err) => {
-        console.error("There was an error!", err);
+    fetchPostData(postId, (data) => {
+      const {
+        title,
+        productName,
+        rentalFee,
+        deposit,
+        minRentalDay,
+        maxRentalDay,
+        content,
+      } = data;
+      setState({
+        title,
+        productName,
+        rentalFee,
+        deposit,
+        minRentalDay,
+        maxRentalDay,
+        content,
       });
-  }, []);
+    });
+  }, [postId]);
 
   const mySellHandler = () => {
     setShowDropdown(!showDropdown);
-    axios
-      .get("--서버 주소--")
-      .then((response) => {
-        const data = response.data;
-        setMySell(data);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-      });
+    fetchMySellData(setMySell);
   };
   const selectHandler = (type, index) => {
     setState((prev) => ({ ...prev, [type]: index }));
@@ -126,6 +128,8 @@ const StoreUpdate = () => {
   const onUpload = async (e) => {
     const files = e.target.files;
     const newImages = [...imageList];
+    setImageList([...imageList, ...files]);
+
 
     for (let i = 0; i < files.length; i++) {
       let reader = new FileReader();
@@ -206,9 +210,8 @@ const StoreUpdate = () => {
       formData.append("maxRentalDay", maxRentalDay);
       formData.append("content", content);
       formData.append("upperLimitDate", `${year}-${month}-${date}`);
-
       imageList.forEach((image, index) => {
-        formData.append("imageList", image, `image${index}.png`);
+        formData.append(`image${index}`, image);
       });
 
       axios
@@ -444,6 +447,7 @@ const StoreUpdate = () => {
 export default StoreUpdate;
 
 const SMain = styled.div`
+margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -606,20 +610,6 @@ const SSelectProductBtn = styled.button`
   background: #fff;
   cursor: pointer;
   color: ${(props) => (props.$activeProduct ? "#A255F7" : "#D9D9D9")};
-`;
-
-const SSelectDayBtn = styled.button`
-  display: flex;
-  width: 74px;
-  height: 26px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 115px;
-  border: 1px solid ${(props) => (props.$activeDay ? "#A255F7" : "#D9D9D9")};
-  background: #fff;
-  cursor: pointer;
-  color: ${(props) => (props.$activeDay ? "#A255F7" : "#D9D9D9")};
 `;
 
 const SFilterInput = styled.input`
@@ -800,3 +790,4 @@ const SDropdownMenuItem = styled.div`
   gap: 10px;
   color: white;
 `;
+

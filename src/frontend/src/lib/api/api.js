@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const baseUrl = 'http://i9d108.p.ssafy.io:9999/api/';
+// const baseUrl = 'http://localhost:9999/api/';
 
 const headers = {
   'Content-Type': 'application/json;charset=UTF-8',
@@ -61,11 +62,12 @@ export const requestPut = async (url, body) => {
   }
 };
 
-export const requestDelete = async (url, params) => {
+export const requestDel = async (url) => {
   try {
-    const data = await axios.delete(baseUrl + url);
+    const data = await axios.delete(baseUrl + url, headers);
     return data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };

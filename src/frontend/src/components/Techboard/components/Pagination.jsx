@@ -1,68 +1,44 @@
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-function Pagination({ total, limit, page, setPage }) {
-  const numPages = Math.ceil(total / limit);
-
-  return (
-    <>
-      <Nav>
-        <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
-          &lt;
-        </Button>
-        {Array(numPages)
-          .fill()
-          .map((_, i) => (
-            <Button
-              key={i + 1}
-              onClick={() => setPage(i + 1)}
-              aria-current={page === i + 1 ? "page" : null}
-            >
-              {i + 1}
-            </Button>
-          ))}
-        <Button onClick={() => setPage(page + 1)} disabled={page === numPages}>
-          &gt;
-        </Button>
-      </Nav>
-    </>
-  );
-}
-
-const Nav = styled.nav`
+const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 4px;
-  margin: 16px;
+  margin-top: 20px;
 `;
 
-const Button = styled.button`
-  border: none;
-  border-radius: 8px;
-  padding: 8px;
-  margin: 0;
-  background: black;
+const PaginationButton = styled.button`
+  margin: 0 5px;
+  padding: 5px 10px;
+  background-color: ${(props) => (props.isActive ? '#BD84FC' : '#E9D5FF')};
   color: white;
-  font-size: 1rem;
-
-  &:hover {
-    background: tomato;
-    cursor: pointer;
-    transform: translateY(-2px);
-  }
-
-  &[disabled] {
-    background: grey;
-    cursor: revert;
-    transform: revert;
-  }
-
-  &[aria-current] {
-    background: deeppink;
-    font-weight: bold;
-    cursor: revert;
-    transform: revert;
-  }
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 `;
+
+const Pagination = ({ totalPages, currentPage, onPageClick }) => {
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <PaginationButton
+          key={i}
+          isActive={currentPage === i}
+          onClick={() => onPageClick(i)}
+        >
+          {i}
+        </PaginationButton>
+      );
+    }
+    return buttons;
+  };
+
+  return (
+    <PaginationContainer>
+      {renderPaginationButtons()}
+    </PaginationContainer>
+  );
+};
 
 export default Pagination;

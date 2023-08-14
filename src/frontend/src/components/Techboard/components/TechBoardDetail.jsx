@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { requestGet, setToken, requestPost, requestDelete } from '../../../lib/api/api';
+import { requestGet, setToken, requestPost, requestDelete, requestPut } from '../../../lib/api/api';
 import React,{useState, useRef, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Viewer } from '@toast-ui/react-editor';
@@ -8,6 +8,8 @@ import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import styled from 'styled-components'
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
+import Modal from 'react-modal'
+
 
 
 
@@ -16,24 +18,17 @@ const TechBoardDetail = () => {
   const { postid } = useParams(); // /board/:idx와 동일한 변수명으로 데이터를 꺼낼 수 있습니다.
   const [board, setBoard] = useState();
   const navigate = useNavigate();
+  const [Imagepath,setPath] = useState()
   const moveToUpdate = () => {
     navigate('/tech/update/' + postid);
   };
   const [postData, setPostData] = useState();
-  const [pictures, setPictures] = useState([]); 
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setlike] = useState(false);
-  const [login, setLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState("현재 로그인한 사용자 정보");
   const [postAuthor, setPostAuthor] = useState("게시글 작성자 정보");
   const isAuthor = currentUser === postAuthor;
-  const [showModal, setShowModal] = useState(false);
-  const picturePlusBtn = () => {
-    setPictureNum((pictureNum + 1) % "사진수");
-  };
-  const pictureMinusBtn = () => {
-    setPictureNum((pictureNum + "사진수" - 1) % "사진수");
-  };
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const deleteBoard = async () => {
     if (window.confirm('게시글을 삭제하시겠습니까?')) {
@@ -166,6 +161,40 @@ const saveCommentBoard = async () => {
   
 };
 
+const commentUpdate = async(commentId) => {
+  try {
+  const params = {
+    tpId: {
+      "id": Number(postid),       
+  },
+    author: commentboard.author,
+    content:commentboard.commentcontent,
+  }
+  // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
+  const response = await requestPut(`tech/post/update/${commentId}`, params);
+  
+  console.log(response);
+  alert('등록되었습니다.');
+  navigate('/tech/post/detail/' + postid);
+}catch (error) {
+  console.error('게시글 등록 에러:', error);
+}} 
+
+  
+
+const commentDelete = async (commentId) => {
+  if (window.confirm('게시글을 삭제하시겠습니까?')) {
+    try {
+      const resp = await axios.delete(`http://i9d108.p.ssafy.io:9999/api/tech/comment/delete/${commentId}`);
+      if (resp.status === 200) {
+        alert('삭제되었습니다.');
+        navigate(`/tech/post/detail/${postid}`);
+      }
+    } catch (error) {
+      console.error("Error deleting board:", error);
+    } 
+  }
+};
 
   
   return (
@@ -194,7 +223,7 @@ const saveCommentBoard = async () => {
         <Like>좋아요{board.goodCount}</Like>
         </LIkeconteiner>
       </Container>
-        <div>댓글</div>
+        <div>댓글{board.commentCount}</div>
         <CommentSlayout>
         <Writecontainer>
         <p>작성자:</p>
@@ -211,22 +240,33 @@ const saveCommentBoard = async () => {
       {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
       {posts && posts.map(({ id, author , content, createAt,}) => (
         <Contentbox key={id}>
-          <div>
-            
-            <Titletext2>
-              {author}
-            </Titletext2>
+          <Commenttitlebox>
+          <Titletext2
+                    type="text"
+                    name="author"
+                    value={author}
+                    onChange={(event) => onChange(event, id)}
+                  />
             <Userbox>
-              <Numbertext>|</Numbertext>
               <Numbertext>{createAt.slice(0,10)}</Numbertext>
-              <Numbertext>|</Numbertext>
             </Userbox>
+          </Commenttitlebox>
+            <Commentcontentbox>
             {content}
-          </div>
-
+            </Commentcontentbox>
+            <Subcommentupdatebox>
+            <SBtn onClick={()=> setModalIsOpen(true)}>수정</SBtn>
+            <Modal isOpen={true}>
+              This is Modal content
+              <button onClick={()=> setModalIsOpen(false)}>x</button>
+            </Modal>
+            <SBtn onClick={() => commentDelete(id)}>삭제</SBtn>
+            
+            </Subcommentupdatebox>
           
         </Contentbox>
       ))}
+      
       <SBtnContainer>
         <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
         <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
@@ -340,11 +380,12 @@ const Contentbox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border-top: 1px solid #BD84FC;
+  align-items: center;
   border-bottom: 1px solid #BD84FC;
   margin-bottom: 20px;
-  border-radius: 3%;
   width: 800px;
+  margin-bottom: 0;
+  padding: 3px;
 `
 
 const Userbox = styled.div`
@@ -374,9 +415,12 @@ const Count = styled.div`
   font-size: 15px;
 `
 
-const Titletext2 = styled.div`
-  font-size: 30px;
-  margin-left: 5px;
+const Titletext2 = styled.input`
+  font-size: 15px;
+  margin-left: 10px;
+  width: 80px;
+  display: flex;
+  justify-content: center;
 `
 
 const Container = styled.div`
@@ -410,9 +454,10 @@ const CommentTextinput = styled.input`
 const SBtn = styled.div`
   display: flex;
   height: 30px;
-  width: 30px;
+  width: 40px;
   justify-content: center;
   align-items: center;
+  margin-left: 10px;
   gap: 10px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -425,3 +470,16 @@ const SBtn = styled.div`
     font-size: 12px;
     border: 1px black;
 `
+  const Commenttitlebox = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  `
+  const Subcommentupdatebox = styled.div`
+    display: flex;
+  `
+
+  const Commentcontentbox = styled.div`
+    
+  `

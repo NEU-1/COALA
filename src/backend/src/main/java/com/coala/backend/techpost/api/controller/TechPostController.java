@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins="*")
 @RequiredArgsConstructor
 @RequestMapping("/api/tech/post/")
 public class TechPostController {
