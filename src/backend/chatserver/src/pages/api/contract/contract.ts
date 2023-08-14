@@ -72,7 +72,7 @@ if (req.method === 'POST') {
     
     // 이미지 inputData 처리
     await createContract(constractFrom);
-    const Latest_History = await dbQuery(`SELECT * FROM history id = LAST_INSERT_ID()`,[]);
+    const Latest_History = await dbQuery(`SELECT * FROM history WHERE id = LAST_INSERT_ID()`, []);
     const {id} = Latest_History;
 
     await updateRoom({contract_id : id}, room_id);
