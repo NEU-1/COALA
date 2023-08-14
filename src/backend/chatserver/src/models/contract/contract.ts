@@ -52,11 +52,11 @@ const Read_Consumer = async (target : object) => {
 
 const Update = async (target : any, id : any) => {
     try{
-        // const {consumer_sign, contract_id} = target;
-        // const {conditionQuery, values} = buildConditionQuery(consumer_sign, ' AND ');
+        const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
+        const placeholders = [...values, id]
         // const result = await readQuery('history', {conditionQuery, values});
         
-        const result = await updateQuery('History', target, [id]);
+        const result = await updateQuery('History', conditionQuery, placeholders);
         return result;
     }catch(error){
         console.log(error)

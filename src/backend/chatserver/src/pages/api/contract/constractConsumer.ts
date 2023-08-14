@@ -61,7 +61,7 @@ const receiveData = withCors(async (req: any, res: any) => {
       const NewConstractData = { consumer_sign, contract_path : "example_Path"}
       
       
-      const result = await updateContract(NewConstractData, contract_id);
+      const result = await updateContract({NewConstractData}, contract_id);
       console.log(result);
       // const contractData = await readQuery('history',{conditionQuery, values})
       if (!result){
