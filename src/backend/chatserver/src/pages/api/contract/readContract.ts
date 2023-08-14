@@ -22,10 +22,12 @@ const receiveData = withCors(async (req: any, res: any) => {
     // 나머지 GET 로직...
     //   const inputData = req.query;
         const {id} = req.query;
+        console.log(req.query);
         const {conditionQuery, values} = buildConditionQuery({id}, ' AND ');
         // const result = await readQuery('history', {conditionQuery, values});
+        console.log({conditionQuery, values})
         const result = await readQuery('History', {conditionQuery, values});
-
+        console.log(result)
         res.status(200).json({ contract_data : result, message : "Send Contract Data "})
         return;
     }
