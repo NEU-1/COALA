@@ -23,7 +23,7 @@ public class TechPostResponseDto {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private String imagePath;
-    private Member nickname;
+    private String nickname;
     private boolean good;
     private boolean mine;
     private int views;
@@ -32,7 +32,7 @@ public class TechPostResponseDto {
 
     @Builder
     public TechPostResponseDto(Long id, Member memberId, String title, String detail, LocalDateTime createAt, LocalDateTime updateAt,
-                               String imagePath, Member nickname, int views, int commentCount, int goodCount, boolean good, boolean mine) {
+                               String imagePath, String nickname, int views, int commentCount, int goodCount, boolean good, boolean mine) {
         this.id = id;
         this.memberId = memberId;
         this.title = title;

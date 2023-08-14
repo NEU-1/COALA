@@ -84,13 +84,13 @@ public class TechCommentServiceImpl implements TechCommentService {
             return new IllegalArgumentException("댓글이 존재하지 않습니다.");
         });
 
-        TechPost techPost = techPostRepository.findById(techComment.getId()).orElseThrow(() -> {
+        TechPost techPost = techPostRepository.findById(techComment.getTpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
         if (!techComment.getMemberId().equals(member.getEmail())) {
             throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다!!!");
-        } else if (techComment.getTpId().equals(techPost.getId())) {
+        } else if (!techComment.getTpId().getId().equals(techPost.getId())) {
             throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다!!!");
         }
 

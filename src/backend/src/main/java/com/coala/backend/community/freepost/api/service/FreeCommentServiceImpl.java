@@ -85,13 +85,13 @@ public class FreeCommentServiceImpl implements FreeCommentService{
         FreeComment freeComment = freeCommentRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("댓글이 존재하지 않습니다.");
         });
-        FreePost freePost = freePostRepository.findById(freeComment.getId()).orElseThrow(() -> {
+        FreePost freePost = freePostRepository.findById(freeComment.getFpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
         if (!freeComment.getMemberId().equals(member.getEmail())) {
             throw new IllegalArgumentException("해당 댓글의 작성자가 아닙니다!!!");
-        } else if (freeComment.getFpId().equals(freePost.getId())) {
+        } else if (!freeComment.getFpId().getId().equals(freePost.getId())) {
             throw new IllegalArgumentException("해당 게시글의 댓글이 아닙니다!!!");
         }
 
