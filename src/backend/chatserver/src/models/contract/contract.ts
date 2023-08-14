@@ -52,10 +52,10 @@ const Read_Consumer = async (target : object) => {
 
 const Update = async (target : any) => {
     try{
-        const {target_images, contract_id} = target;
-        // const {conditionQuery, values} = buildConditionQuery(target_images, ' AND ');
+        const {consumer_sign, contract_id} = target;
+        const {conditionQuery, values} = buildConditionQuery(consumer_sign, ' AND ');
         // const result = await readQuery('history', {conditionQuery, values});
-        const result = await updateQuery('History', target_images, [contract_id]);
+        const result = await updateQuery('History', consumer_sign, [contract_id]);
         return result;
     }catch(error){
         console.log(error)
