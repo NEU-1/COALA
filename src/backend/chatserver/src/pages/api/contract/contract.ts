@@ -101,10 +101,10 @@ if (req.method === 'POST') {
       const {file, contractForm} = req.files;
     
       const image_consumer = file[0]
-      const image_contract = file[1]
+      // const image_contract = file[1]
       // 이미지 upload
       const consumer_sign = await uploadToS3('signature', image_consumer.originalname, image_consumer.buffer);
-      const contract = await uploadToS3('contract', image_consumer.originalname, image_consumer.buffer);
+      // const contract = await uploadToS3('contract', image_consumer.originalname, image_consumer.buffer);
 
 
       const contractFormData = contractForm[0].buffer.toString('utf8');  // buffer를 문자열로 변환
@@ -113,7 +113,7 @@ if (req.method === 'POST') {
       // 이미지 삭제하는거 추가해야함
       const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
-      const NewConstractData = { consumer_sign, contract_path : contract}
+      const NewConstractData = { consumer_sign, contract_path : "example_Path"}
       
       
       const result = await updateContract({...NewConstractData, id});
@@ -123,7 +123,7 @@ if (req.method === 'POST') {
         return;
       }
       // 이미지 저장하는거 추가해야함
-      res.status(200).json({ contract : contract, message: 'contract finished' })
+      res.status(200).json({ contract : "example_Path", message: 'contract finished' })
     }
     
     if (req.method === 'GET') {
