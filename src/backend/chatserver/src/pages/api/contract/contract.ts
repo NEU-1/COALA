@@ -74,9 +74,9 @@ if (req.method === 'POST') {
     await createContract(constractFrom);
     let table = 'History'
     const Latest_History = await dbQuery(`SELECT * FROM ${table} WHERE id = LAST_INSERT_ID()`, []);
-    const {id} = Latest_History;
+    const {id : contract_id} = Latest_History;
 
-    await updateRoom({contract_id : id}, room_id);
+    await updateRoom({contract_id}, room_id);
     
 
     res.status(200).json({ constractFrom : Latest_History, message: 'send to consumer' });
