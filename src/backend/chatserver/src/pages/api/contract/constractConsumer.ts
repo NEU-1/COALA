@@ -53,6 +53,7 @@ const receiveData = withCors(async (req: any, res: any) => {
       
       const contractFormData = id[0].buffer.toString('utf8');  // buffer를 문자열로 변환
       const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
+      console.log(contractFormJSON);
       const _id = contractFormJSON.id || contractFormJSON.contract_id;
 
     //   const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
