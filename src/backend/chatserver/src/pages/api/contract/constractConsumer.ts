@@ -26,13 +26,13 @@ export const config = {
 };
 
 const receiveData = withCors(async (req: any, res: any) => {
-    
+  console.log("Reqeusted accessed");
   //   return
   if (req.method === 'POST') {
     await new Promise<void>((resolve, reject) => {
       getData.fields([
-        { name: 'file', maxCount: 2 },
-        { name: 'contractForm', maxCount: 1 }
+        { name: 'file', maxCount: 1 },
+        { name: 'id', maxCount: 1 }
       ])(req, res, (err: any) => {
           if (err) {
               reject(err);
@@ -41,8 +41,8 @@ const receiveData = withCors(async (req: any, res: any) => {
           resolve();
       });
     });
-      const {file, contractForm} = req.files;   
-      console.log(file, contractForm);
+      const {file, id} = req.files;   
+      console.log(file, id);
       const image_consumer = file[0]
       // const image_contract = file[1]
       // 이미지 upload
@@ -50,17 +50,17 @@ const receiveData = withCors(async (req: any, res: any) => {
       console.log("consumer_img", consumer_sign)
       // const contract = await uploadToS3('contract', image_consumer.originalname, image_consumer.buffer);
 
-
-      const contractFormData = contractForm[0].buffer.toString('utf8');  // buffer를 문자열로 변환
+      
+      const contractFormData = id[0].buffer.toString('utf8');  // buffer를 문자열로 변환
       const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
-      const id = contractFormJSON.id;
+      const _id = contractFormJSON.id || contractFormJSON.contract_id;
 
     //   const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
       const NewConstractData = { consumer_sign, contract_path : "example_Path"}
       
       
-      const result = await updateContract({...NewConstractData, id});
+      const result = await updateContract({...NewConstractData, _id});
       console.log(result);
       // const contractData = await readQuery('history',{conditionQuery, values})
       if (!result){
@@ -87,10 +87,6 @@ const receiveData = withCors(async (req: any, res: any) => {
       return;
     }
 
-    
-    if (req.method === 'DELETE') {
-      // 나머지 DELETE 로직...
-    }
     
     return res.status(500).json({ error: 'just checking logs' });
   });
