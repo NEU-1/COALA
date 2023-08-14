@@ -54,6 +54,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             else if(refreshToken != null){
                 logger.info("AccessToken 이 만료되었습니다. RefreshToken을 확인합니다.");
                 // refreshToken 검증 & RefreshToken이 DB에 존재하는지 유무 판단
+                
                 boolean isRefreshToken = jwtTokenProvider.refreshTokenValidation(refreshToken);
 
                 // refreshToken 유효, DB의 refreshToken과 일치
