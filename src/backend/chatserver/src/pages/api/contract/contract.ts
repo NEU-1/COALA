@@ -71,14 +71,14 @@ if (req.method === 'POST') {
     // Object.assign(newInputData, { producer_sign: url });
     
     // 이미지 inputData 처리
-    const result = await createContract(constractFrom);
-    const Latest_History = await dbQuery(`SELECT * FROM HISTORY id = LAST_INSERT_ID()`,[]);
+    await createContract(constractFrom);
+    const Latest_History = await dbQuery(`SELECT * FROM history id = LAST_INSERT_ID()`,[]);
     const {id} = Latest_History;
 
-    await updateRoom({room_id}, id);
+    await updateRoom({contract_id : id}, room_id);
     
 
-    res.status(200).json({ constractFrom, message: 'send to consumer' });
+    res.status(200).json({ constractFrom : Latest_History, message: 'send to consumer' });
     return;
   }
     

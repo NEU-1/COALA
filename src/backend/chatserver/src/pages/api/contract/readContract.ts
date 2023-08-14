@@ -24,7 +24,7 @@ const receiveData = withCors(async (req: any, res: any) => {
         const {id} = req.query;
         const {conditionQuery, values} = buildConditionQuery({id}, ' AND ');
         // const result = await readQuery('history', {conditionQuery, values});
-        const result = await readQuery('History', {conditionQuery, values});
+        const result = await readQuery('history', {conditionQuery, values});
 
         res.status(200).json({ contract_data : result, message : "Send Contract Data "})
 
