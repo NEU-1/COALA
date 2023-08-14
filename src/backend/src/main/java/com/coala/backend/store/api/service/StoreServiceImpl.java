@@ -8,35 +8,32 @@ import com.coala.backend.product.db.repository.CategoryRepository;
 import com.coala.backend.store.db.dto.response.ListResponseDto;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
 import com.coala.backend.store.db.dto.response.StoreListDto;
+import com.coala.backend.store.db.dto.response.StorePostResponseDto;
 import com.coala.backend.store.db.entity.StoreLike;
 import com.coala.backend.store.db.entity.StorePost;
 import com.coala.backend.store.db.repository.CustomStorePostRepository;
+import com.coala.backend.store.db.repository.StoreImageRepository;
 import com.coala.backend.store.db.repository.StoreLikeRepository;
 import com.coala.backend.store.db.repository.StorePostRepository;
+import lombok.AllArgsConstructor;
+import org.apache.catalina.Store;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
     private StorePostRepository storePostRepository;
+    private StoreImageRepository storeImageRepository;
     private StoreLikeRepository storeLikeRepository;
     private MemberRepository memberRepository;
-
     private CustomStorePostRepository customStorePostRepository;
-
     private CategoryRepository categoryRepository;
-
-    public StoreServiceImpl(StorePostRepository storePostRepository, StoreLikeRepository storeLikeRepository, MemberRepository memberRepository, CustomStorePostRepository customStorePostRepository, CategoryRepository categoryRepository) {
-        this.storePostRepository = storePostRepository;
-        this.storeLikeRepository = storeLikeRepository;
-        this.memberRepository = memberRepository;
-        this.customStorePostRepository = customStorePostRepository;
-        this.categoryRepository = categoryRepository;
-    }
 
     @Override
     public ListResponseDto list(Integer page, Map<String, String> info, String email) {
@@ -73,6 +70,8 @@ public class StoreServiceImpl implements StoreService {
                     break;
                 }
             }
+            SLD.setStoreImageList(storeImageRepository.findByStorePost(store));
+
             result.add(SLD);
         }
 
@@ -87,27 +86,34 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public BaseResponseDto write(Map<String, String> info, Member member) {
-        StorePost storePost = new StorePost();
-
-        storePost.setTitle(info.get("title"));
-        storePost.setDetail(info.get("detail"));
-        storePost.setMinRentalPeriod(Integer.parseInt(info.get("minRentalPeriod")));
-        storePost.setMaxRentalPeriod(Integer.parseInt(info.get("maxRentalPeriod")));
-        storePost.setLimitDate(Date.valueOf(info.get("limitDate")));
-        storePost.setRentalCost(Integer.parseInt(info.get("rentalCost")));
-        storePost.setDeposit(Integer.parseInt(info.get("deposit")));
+    public StorePostResponseDto write(StorePost storePost, Member member) {
+        storePost.setTitle(storePost.getTitle());
+        storePost.setDetail(storePost.getDetail());
+        storePost.setMinRentalPeriod(storePost.getMinRentalPeriod());
+        storePost.setMaxRentalPeriod(storePost.getMaxRentalPeriod());
+        storePost.setLimitDate(storePost.getLimitDate());
+        storePost.setRentalCost(storePost.getRentalCost());
+        storePost.setDeposit(storePost.getDeposit());
         storePost.setAuthor(member.getName());
         storePost.setMember(member);
 
-        Category category = categoryRepository.findById(Long.parseLong(info.get("category")))
+        Category category = categoryRepository.findById(storePost.getCategory().getId())
                         .orElseThrow(() -> new NoSuchElementException("제품분류가 없습니다."));
 
         storePost.setCategory(category);
 
         storePostRepository.save(storePost);
 
-        return new BaseResponseDto("게시글이 성공적으로 저장되었습니다.", 200);
+        List<StorePost> list = storePostRepository.findAll();
+
+        StorePost post = list.get(list.size()-1);
+
+        StorePostResponseDto storePostResponseDto = new StorePostResponseDto();
+
+        storePostResponseDto.setBaseResponseDto(new BaseResponseDto("게시글이 성공적으로 저장되었습니다.", 200));
+        storePostResponseDto.setStorePost(post);
+
+        return storePostResponseDto;
     }
 
     @Override
@@ -143,27 +149,29 @@ public class StoreServiceImpl implements StoreService {
         }
 
         postResponseDto.setBaseResponseDto(new BaseResponseDto( "성공적으로 정보를 불러왔습니다.", 200));
-
+        postResponseDto.setStoreImageList(storeImageRepository.findByStorePost(storePost));
         return postResponseDto;
     }
 
     @Override
-    public BaseResponseDto update(Long id, Map<String, String> info, String email){
+    public BaseResponseDto update(Long id, StorePost post, String email){
+
+
         // 수정 페이지 넘어가는 유효성 검사는 프론트단에서
         StorePost storePost = storePostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
 
         if(filter(storePost.getMember().getEmail(), email)){
-            storePost.setTitle(info.get("title"));
-            storePost.setDetail(info.get("detail"));
-            storePost.setMinRentalPeriod(Integer.parseInt(info.get("minRentalPeriod")));
-            storePost.setMaxRentalPeriod(Integer.parseInt(info.get("maxRentalPeriod")));
-            storePost.setLimitDate(Date.valueOf(info.get("limitDate")));
-            storePost.setRentalCost(Integer.parseInt(info.get("rentalCost")));
-            storePost.setDeposit(Integer.parseInt(info.get("deposit")));
+            storePost.setTitle(post.getTitle());
+            storePost.setDetail(post.getDetail());
+            storePost.setMinRentalPeriod(post.getMinRentalPeriod());
+            storePost.setMaxRentalPeriod(post.getMaxRentalPeriod());
+            storePost.setLimitDate(post.getLimitDate());
+            storePost.setRentalCost(post.getRentalCost());
+            storePost.setDeposit(post.getDeposit());
             storePost.setUpdatedAt(LocalDateTime.now());
 
-            Category category = categoryRepository.findById(Long.parseLong(info.get("category")))
+            Category category = categoryRepository.findById(post.getCategory().getId())
                     .orElseThrow(() -> new NoSuchElementException("제품분류가 없습니다."));
 
             storePost.setCategory(category);

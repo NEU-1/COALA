@@ -1,19 +1,17 @@
 package com.coala.backend.store.db.dto.response;
 
-import com.coala.backend.store.db.entity.StoreImage;
+import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.store.db.entity.StorePost;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class StoreListDto {
+public class StorePostResponseDto {
+
     private StorePost storePost;
-    private boolean mine;
-    private boolean like;
-    private List<StoreImage> storeImageList;
+
+    private BaseResponseDto baseResponseDto;
 }

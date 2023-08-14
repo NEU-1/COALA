@@ -5,8 +5,11 @@ import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.store.db.dto.response.ListResponseDto;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
 import com.coala.backend.store.db.dto.response.StoreListDto;
+import com.coala.backend.store.db.dto.response.StorePostResponseDto;
+import com.coala.backend.store.db.entity.StoreImage;
 import com.coala.backend.store.db.entity.StorePost;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -17,13 +20,13 @@ public interface StoreService {
 
     ListResponseDto list(Integer page, Map<String, String> info, String email);
 
-    BaseResponseDto write(Map<String, String> info, Member member);
+    StorePostResponseDto write(StorePost storePost, Member member);
 
     void views(Long id);
 
     PostResponseDto detail(Long id, String email);
 
-    BaseResponseDto update(Long id,Map<String, String> info, String email);
+    BaseResponseDto update(Long id,StorePost storePost, String email);
 
     BaseResponseDto delete(Long id, String email);
 
@@ -32,4 +35,5 @@ public interface StoreService {
     BaseResponseDto status(Long id, String email);
 
     PostResponseDto valid(Long id, String email);
+
 }
