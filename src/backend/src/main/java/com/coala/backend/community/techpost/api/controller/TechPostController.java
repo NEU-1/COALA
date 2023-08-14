@@ -59,8 +59,9 @@ public class TechPostController {
 
     // 모든 게시물 불러오기, page 는 page 번호
     @GetMapping("{page}")
-    public ResponseEntity<CommunityBaseResponseDto> techPostList(@PathVariable("page") Integer page) {
-        CommunityBaseResponseDto responseDto = techPostService.getPostList(page);
+    public ResponseEntity<CommunityBaseResponseDto> techPostList(@PathVariable("page") Integer page,
+                                                                 HttpServletRequest httpServletRequest) {
+        CommunityBaseResponseDto responseDto = techPostService.getPostList(page, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);
@@ -69,8 +70,9 @@ public class TechPostController {
     // 검색어 관련 게시물 불러오기
     @GetMapping("search/{keyword}/{page}")
     public ResponseEntity<CommunityBaseResponseDto> findTechPosts(@PathVariable("keyword") String keyword,
-                                                                  @PathVariable("page") Integer page) {
-        CommunityBaseResponseDto responseDto = techPostService.searchPosts(keyword, page);
+                                                                  @PathVariable("page") Integer page,
+                                                                  HttpServletRequest httpServletRequest) {
+        CommunityBaseResponseDto responseDto = techPostService.searchPosts(keyword, page, getEmail(httpServletRequest));
 
         return ResponseEntity.status(responseDto.getStatusCode())
                 .body(responseDto);

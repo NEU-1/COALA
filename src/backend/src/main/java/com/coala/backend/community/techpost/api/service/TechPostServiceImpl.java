@@ -1,9 +1,5 @@
 package com.coala.backend.community.techpost.api.service;
 
-import com.coala.backend.community.techpost.db.entity.TechGood;
-import com.coala.backend.community.techpost.db.entity.TechImage;
-import com.coala.backend.community.techpost.db.repository.TechImageRepository;
-import com.coala.backend.s3.S3UploadService;
 import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.techpost.db.dto.request.TechPostRequestDto;
 import com.coala.backend.member.db.entity.Member;
@@ -19,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +28,6 @@ import java.util.stream.Collectors;
 public class TechPostServiceImpl implements TechPostService{
     private final TechPostRepository techPostRepository;
     private final TechGoodRepository techGoodRepository;
-    private final TechImageRepository techImageRepository;
 
 //    private final S3UploadService s3UploadService;
 
@@ -46,19 +40,11 @@ public class TechPostServiceImpl implements TechPostService{
                 .memberId(member)
                 .title(postDto.getTitle())
                 .detail(postDto.getDetail())
+                .techImages(postDto.getImagePath())
                 .nickname(member)
                 .build();
 
         techPostRepository.saveAndFlush(techPost);
-
-        if (!postDto.getImagePath().isEmpty()) {
-            for (int i = 0; i < postDto.getImagePath().size(); i++) {
-                techImageRepository.save(TechImage.builder()
-                        .tpId(techPost)
-                        .imagePath(postDto.getImagePath().get(i))
-                        .build());
-            }
-        }
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
@@ -69,7 +55,7 @@ public class TechPostServiceImpl implements TechPostService{
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto getPostList(int page) {
+    public CommunityBaseResponseDto getPostList(int page, Member member) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
         int allPost = techPostRepository.findAll().size();
@@ -80,6 +66,8 @@ public class TechPostServiceImpl implements TechPostService{
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
                         .nickname(techPost.getMemberId())
+                        .imagePath(str + techPost.getTechImages())
+                        .mine(techPost.getMemberId().getEmail().equals(member.getEmail()))
                         .createAt(techPost.getCreateAt())
                         .updateAt(techPost.getUpdateAt())
                         .views(techPost.getViews())
@@ -113,13 +101,6 @@ public class TechPostServiceImpl implements TechPostService{
             }
         }
 
-        List<String> uri = new ArrayList<>();
-        List<TechImage> imageList = techImageRepository.findByTpId(techPost);
-        for (int i = 0; i < imageList.size(); i++) {
-            TechImage techImage = imageList.get(i);
-            uri.add(str + techImage.getImagePath());
-        }
-
         return TechPostResponseDto.builder()
                 .id(techPost.getId())
                 .memberId(techPost.getMemberId())
@@ -130,7 +111,6 @@ public class TechPostServiceImpl implements TechPostService{
                 .updateAt(techPost.getUpdateAt())
                 .good(good)
                 .mine(techPost.getMemberId().getEmail().equals(member.getEmail()))
-                .imagePath(uri)
                 .views(techPost.getViews())
                 .commentCount(techPost.getComments().size())
                 .goodCount(techPost.getGoods().size())
@@ -150,14 +130,13 @@ public class TechPostServiceImpl implements TechPostService{
 
         // 이미지 삭제 = 필드 전부 삭제
 
-        techImageRepository.findByTpId(techPost);
         techGoodRepository.deleteByTpId(techPost);
         techPostRepository.deleteById(id);
     }
 
     @Transactional
     @Override
-    public CommunityBaseResponseDto searchPosts(String keyword, int page) {
+    public CommunityBaseResponseDto searchPosts(String keyword, int page, Member member) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
         List<TechPost> allPost = techPostRepository.findByTitleContaining(keyword);
@@ -168,6 +147,8 @@ public class TechPostServiceImpl implements TechPostService{
                         .title(techPost.getTitle())
                         .detail(techPost.getDetail())
                         .nickname(techPost.getMemberId())
+                        .imagePath(str + techPost.getTechImages())
+                        .mine(techPost.getMemberId().getEmail().equals(member.getEmail()))
                         .createAt(techPost.getCreateAt())
                         .updateAt(techPost.getUpdateAt())
                         .views(techPost.getViews())
@@ -198,16 +179,10 @@ public class TechPostServiceImpl implements TechPostService{
         techPost.updateTechPost(
                 dto.getTitle(),
                 dto.getDetail(),
-                member);
+                member,
+                dto.getImagePath());
 
         techPostRepository.save(techPost);
-
-        for (int i = 0; i < dto.getImagePath().size(); i++) {
-            techImageRepository.save(TechImage.builder()
-                    .tpId(techPost)
-                    .imagePath(dto.getImagePath().get(i))
-                    .build());
-        }
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)

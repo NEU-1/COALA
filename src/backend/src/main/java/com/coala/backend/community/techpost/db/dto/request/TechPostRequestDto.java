@@ -18,10 +18,10 @@ public class TechPostRequestDto {
     private Long id;
     private String title;
     private String detail;
-    private List<String> imagePath;
+    private String imagePath;
 
     @Builder
-    public TechPostRequestDto(Long id, String title, String detail, List<String> imagePath) {
+    public TechPostRequestDto(Long id, String title, String detail, String imagePath) {
         this.id = id;
         this.title = title;
         this.detail = detail;

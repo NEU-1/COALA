@@ -15,10 +15,10 @@ import java.util.List;
 public class NoticeRequestDto {
     private String title;
     private String detail;
-    private List<String> imagePath;
+    private String imagePath;
 
     @Builder
-    public NoticeRequestDto(String title, String detail, List<String> imagePath) {
+    public NoticeRequestDto(String title, String detail, String imagePath) {
 
         this.title = title;
         this.detail = detail;

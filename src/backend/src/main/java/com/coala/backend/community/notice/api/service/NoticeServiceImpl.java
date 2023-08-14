@@ -4,10 +4,7 @@ import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.notice.db.dto.response.NoticeResponseDto;
 import com.coala.backend.community.notice.db.entity.Notice;
 import com.coala.backend.community.notice.db.dto.request.NoticeRequestDto;
-import com.coala.backend.community.notice.db.entity.NoticeImage;
-import com.coala.backend.community.notice.db.repository.NoticeImageRepository;
 import com.coala.backend.community.notice.db.repository.NoticeRepository;
-import com.coala.backend.community.techpost.db.entity.TechImage;
 import com.coala.backend.s3.S3UploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NoticeServiceImpl implements NoticeService {
     private final NoticeRepository noticeRepository;
-    private final NoticeImageRepository noticeImageRepository;
 
     private final S3UploadService s3UploadService;
 
@@ -44,27 +39,16 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = Notice.builder()
                 .title(postDto.getTitle())
                 .detail(postDto.getDetail())
+                .images(postDto.getImagePath())
                 .build();
 
-        noticeRepository.saveAndFlush(postDto.toEntity());
-
-        // S3주소 빼고 넣기
-        if (!postDto.getImagePath().isEmpty()) {
-            for (int i = 0; i < postDto.getImagePath().size(); i++) {
-                noticeImageRepository.save(NoticeImage.builder()
-                        .npId(notice)
-                        .imagePath(postDto.getImagePath().get(i))
-                        .build());
-            }
-        }
-
+        noticeRepository.saveAndFlush(notice);
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 게시글 Id 반환, image 주소 반환")
                 .id(notice.getId())
                 .build();
-
     }
 
     @Transactional
@@ -77,6 +61,7 @@ public class NoticeServiceImpl implements NoticeService {
                         .id(notice.getId())
                         .title(notice.getTitle())
                         .detail(notice.getDetail())
+                        .imagePath(str + notice.getImages())
                         .createAt(notice.getCreateAt())
                         .updateAt(notice.getUpdateAt())
                         .build())
@@ -97,19 +82,10 @@ public class NoticeServiceImpl implements NoticeService {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
-        // 불러올 때는 다시 주소 붙여서
-        List<String> uri = new ArrayList<>();
-        List<NoticeImage> imageList = noticeImageRepository.findByNpId(notice);
-        for (int i = 0; i < imageList.size(); i++) {
-            NoticeImage noticeImage = imageList.get(i);
-            uri.add(str + noticeImage.getImagePath());
-        }
-
         return NoticeResponseDto.builder()
                 .id(notice.getId())
                 .title(notice.getTitle())
                 .detail(notice.getDetail())
-                .imagePath(uri)
                 .createAt(notice.getCreateAt())
                 .updateAt(notice.getUpdateAt())
                 .build();
@@ -122,7 +98,6 @@ public class NoticeServiceImpl implements NoticeService {
             return new IllegalArgumentException("게시판이 존재하지 않습니다.");
         });
 
-        noticeImageRepository.deleteByNpId(notice);
         noticeRepository.deleteById(id);
     }
 
@@ -135,6 +110,7 @@ public class NoticeServiceImpl implements NoticeService {
                             .id(notice.getId())
                             .title(notice.getTitle())
                             .detail(notice.getDetail())
+                            .imagePath(str + notice.getImages())
                             .createAt(notice.getCreateAt())
                             .updateAt(notice.getUpdateAt())
                             .build())
@@ -157,17 +133,10 @@ public class NoticeServiceImpl implements NoticeService {
 
         notice.updateFreePost(
                 dto.getTitle(),
-                dto.getDetail());
+                dto.getDetail(),
+                dto.getImagePath());
 
         noticeRepository.save(notice);
-        noticeImageRepository.deleteByNpId(notice);
-
-        for (int i = 0; i < dto.getImagePath().size(); i++) {
-            noticeImageRepository.save(NoticeImage.builder()
-                    .npId(notice)
-                    .imagePath(dto.getImagePath().get(i))
-                    .build());
-        }
 
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)

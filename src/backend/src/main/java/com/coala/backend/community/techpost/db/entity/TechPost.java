@@ -54,15 +54,16 @@ public class TechPost {
     @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE)
     private List<TechComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE)
-    private List<TechImage> techImages = new ArrayList<>();
+    @Column
+    private String techImages;
 
     @Builder
-    public TechPost(Member memberId, String title, String detail , Member nickname) {
+    public TechPost(Member memberId, String title, String detail , Member nickname, String techImages) {
         this.memberId = memberId;
         this.title = title;
         this.detail = detail;
         this.nickname = nickname;
+        this.techImages = techImages;
     }
 
     @PrePersist
@@ -70,10 +71,11 @@ public class TechPost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateTechPost(String title, String detail, Member nickname) {
+    public void updateTechPost(String title, String detail, Member nickname, String techImages) {
         this.title = title;
         this.detail = detail;
         this.nickname = nickname;
+        this.techImages = techImages;
         this.updateAt = LocalDateTime.now();
     }
 
