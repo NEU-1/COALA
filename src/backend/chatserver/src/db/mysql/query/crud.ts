@@ -41,7 +41,7 @@ const readQuery = async (table : string, target : any,
 
 const updateQuery = async (table : string, target : any, value : any[]) => {
   return await dbQuery(
-    `UPDATE ${table} SET ${target} WHERE id = ?`, value);
+    `UPDATE ${table} SET ? WHERE id = ?`, value);
 }
 
 const deleteQuery = async (
