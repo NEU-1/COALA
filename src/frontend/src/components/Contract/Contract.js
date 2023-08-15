@@ -7,6 +7,7 @@ import CButton from '../Common/CButton';
 
 const Contract = ({
   contractForm,
+  producer_sign,
   producer,
   consumer,
   post,
@@ -27,6 +28,7 @@ const Contract = ({
   onChangeProductName,
   onChangeAccount,
   onClickClose,
+  onClickFinishBtn,
 }) => {
   return (
     <>
@@ -62,7 +64,7 @@ const Contract = ({
           </SSubContent>
           <SSubContent>
             <div className="title">[계약조건]</div>
-            <STable2>
+            <STable2 isDisable={myId === consumer.id}>
               <tr>
                 <td className="tableHead">제품명</td>
                 <td className="tableData">
@@ -76,7 +78,13 @@ const Contract = ({
               <tr>
                 <td className="tableHead">계약기간</td>
                 <td className="tableData">
-                  <input type="date" onChange={onChangeRentalDate} /> ~ &nbsp;
+                  {myId === producer.id && (
+                    <input type="date" onChange={onChangeRentalDate} />
+                  )}
+                  {myId === consumer.id &&
+                    contractForm.return_at &&
+                    dateFormat(contractForm.rental_at)}
+                  &nbsp; ~ &nbsp;
                   {contractForm.return_at && dateFormat(contractForm.return_at)}
                   (
                   <input
@@ -114,7 +122,7 @@ const Contract = ({
           </SSubContent>
           <SSubContent>
             <div className="title">[납부]</div>
-            <STable2>
+            <STable2 isDisable={myId === consumer.id}>
               <tr>
                 <td className="tableHead">계좌</td>
                 <td className="tableData">
@@ -141,12 +149,19 @@ const Contract = ({
         </SContractContent>
         <div className="agreement">위 계약에 동의합니다.</div>
         <SContractSign>
-          <SignatureContainer
-            name={`${producer.name}`}
-            who="제공자(인)"
-            ref={producerSignRef}
-            isDisable={consumer.id === myId}
-          />
+          {myId === producer.id ? (
+            <SignatureContainer
+              name={`${producer.name}`}
+              who="제공자(인)"
+              ref={producerSignRef}
+              isDisable={consumer.id === myId}
+            />
+          ) : (
+            <SProducerSign>
+              <SName>{producer.name}</SName>
+              <SSignImg src={producer_sign} />
+            </SProducerSign>
+          )}
           <SignatureContainer
             name={`${consumer.name}`}
             who="대여자(인)"
@@ -157,7 +172,12 @@ const Contract = ({
         <SContractDate>{dateFormat(contractForm.created_at)}</SContractDate>
         <SBtnContainer>
           <CButton text={'취소'} bgColor={'#d9d9d9'} onClick={onClickClose} />
-          <CButton text={'전송'} onClick={onClickSendBtn} />
+          {producer.id === myId && (
+            <CButton text={'전송'} onClick={onClickSendBtn} />
+          )}
+          {consumer.id === myId && (
+            <CButton text={'완료'} onClick={onClickFinishBtn} />
+          )}
         </SBtnContainer>
       </SLayout>
     </>
@@ -291,6 +311,7 @@ const STable2 = styled.div`
     width: 495px;
     padding: 10px 0px;
     gap: 10px;
+    pointer-events: ${(props) => (props.isDisable ? 'none' : 'auto')};
 
     input[type='number'] {
       font-size: 16px;
@@ -337,6 +358,27 @@ const SBtnContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
+`;
+
+const SProducerSign = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+`;
+
+const SName = styled.div`
+  color: #000;
+  font-size: 16px;
+  font-weight: 700;
+`;
+
+const SSignImg = styled.img`
+  width: 121px;
+  height: 61px;
+  background: #fff;
+  border: 1px solid ${colors.middlePrimary};
+  border-radius: 10px;
 `;
 
 export default Contract;

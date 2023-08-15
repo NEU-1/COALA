@@ -35,13 +35,14 @@ const ChatOpenContainer = () => {
 
   const makeContract = (e) => {
     if (e.data.msg === 'openContract') {
-      console.log(e);
       dispatch(
         openContractModal({
           post: e.data.post,
           producer: e.data.producer,
           consumer: e.data.consumer,
           myId: e.data.myId,
+          chatRoomId: e.data.chatRoomId,
+          contractId: e.data.contractId,
         })
       );
     }

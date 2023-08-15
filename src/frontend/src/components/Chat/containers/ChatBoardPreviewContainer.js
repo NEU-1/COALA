@@ -36,6 +36,7 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
   };
 
   const onClickContractBtn = () => {
+    console.log(inform.room.id);
     window.parent.postMessage(
       {
         msg: 'openContract',
@@ -43,9 +44,23 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
         producer: producer,
         consumer: consumer,
         myId: myId,
+        chatRoomId: inform.room.id,
+        contractId: null,
       },
       'http://localhost:3000'
     );
+  };
+
+  const onClickAcceptBtn = () => {
+    window.parent.postMessage({
+      msg: 'openContract',
+      post: post,
+      producer: producer,
+      consumer: consumer,
+      myId: myId,
+      chatRoomId: inform.room.id,
+      contractId: inform.room.contract_id,
+    });
   };
 
   return (
@@ -54,9 +69,11 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
         post={post}
         producer={producer}
         consumer={consumer}
+        inform={inform}
         myId={myId}
         onClickPost={onClickPost}
         onClickContractBtn={onClickContractBtn}
+        onClickAcceptBtn={onClickAcceptBtn}
       />
     )
   );

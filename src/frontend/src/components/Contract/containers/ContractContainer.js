@@ -1,7 +1,12 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import Contract from '../Contract';
 import Swal from 'sweetalert2';
-import { requestPostNode, setToken } from '../../../lib/api/api';
+import {
+  requestPostNode,
+  requestGetNode,
+  requestPut,
+  setToken,
+} from '../../../lib/api/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeContractModal } from '../../../store/contractSlice';
 
@@ -23,10 +28,17 @@ const ContractContainer = () => {
   const myId = useSelector((state) => {
     return state.contract.myId;
   });
-  console.log(info);
+  const chatRoomId = useSelector((state) => {
+    return state.contract.chatRoomId;
+  });
+  const contract_id = useSelector((state) => {
+    return state.contract.contractId;
+  });
+
   const [isAgree1, setIsAgree1] = useState(false);
   const [isAgree2, setIsAgree2] = useState(false);
   const [contractForm, setContractForm] = useState({
+    room_id: chatRoomId,
     producer_id: producer.id,
     consumer_id: consumer.id,
     productName: '',
@@ -38,6 +50,7 @@ const ContractContainer = () => {
     period: 0,
     account: '',
   });
+  const [producer_sign, setProducer_sign] = useState(null);
   let formData = new FormData();
 
   const producerSignRef = useRef(null);
@@ -72,16 +85,47 @@ const ContractContainer = () => {
   };
 
   useEffect(() => {
-    let today = new Date();
-    today = today.toISOString();
-    setContractForm({ ...contractForm, created_at: today });
+    if (myId === producer.id) {
+      console.log('제공자!');
+      let today = new Date();
+      today.setHours(today.getHours() + 9);
+      today = today.toISOString().replace('T', ' ').substring(0, 19);
+      setContractForm({ ...contractForm, created_at: today });
+    } else if (myId === consumer.id) {
+      console.log('난 이용자야!!!');
+      setToken();
+      requestGetNode(`contract/readContract?id=${contract_id}`)
+        .then((res) => {
+          console.log(res.data.contract_data[0]);
+          setContractForm({
+            ...contractForm,
+            room_id: chatRoomId,
+            producer_id: producer.id,
+            consumer_id: consumer.id,
+            productName: res.data.contract_data[0].productName,
+            rental_cost: res.data.contract_data[0].rental_cost,
+            deposit: res.data.contract_data[0].deposit,
+            created_at: res.data.contract_data[0].created_at,
+            rental_at: res.data.contract_data[0].rental_at,
+            return_at: res.data.contract_data[0].return_at,
+            period: res.data.contract_data[0].period,
+            account: res.data.contract_data[0].account,
+          });
+          setProducer_sign(res.data.contract_data[0].producer_sign);
+        })
+        .catch((err) => console.log(err));
+    }
   }, []);
 
   useEffect(() => {
     if (contractForm.rental_at) {
       let returnDate = new Date(contractForm.rental_at);
       returnDate.setDate(returnDate.getDate() + Number(contractForm.period));
-      setContractForm({ ...contractForm, return_at: returnDate.toISOString() });
+      returnDate.setHours(returnDate.getHours() + 9);
+      setContractForm({
+        ...contractForm,
+        return_at: returnDate.toISOString().replace('T', ' ').substring(0, 19),
+      });
     }
   }, [contractForm.rental_at, contractForm.period]);
 
@@ -89,13 +133,93 @@ const ContractContainer = () => {
     const date = new Date(e.target.value);
     setContractForm({
       ...contractForm,
-      rental_at: date.toISOString(),
+      rental_at: date.toISOString().replace('T', ' ').substring(0, 19),
     });
   };
 
   const onClickSendBtn = () => {
+    // 제공자 약관 동의
     if (isAgree1 && isAgree2) {
-      formData = producerSignRef.current.saveSign();
+      // 제공자일 경우, 제공자 서명을 가져와 post api로 1차 계약서 작성
+      if (myId === producer.id) {
+        formData = producerSignRef.current.saveSign();
+        if (!formData) {
+          Swal.fire({
+            title:
+              '<div style="font-size: 16px; font-weight: 700">서명을 해주세요.</div>',
+            width: '300px',
+          }).then(() => {
+            return;
+          });
+        } else {
+          if (
+            contractForm.productName &&
+            contractForm.account &&
+            contractForm.deposit &&
+            contractForm.period &&
+            contractForm.rental_at &&
+            contractForm.rental_cost &&
+            contractForm.return_at
+          ) {
+            formData.append(
+              'contractForm',
+              new Blob([JSON.stringify(contractForm)], {
+                type: 'applications/json',
+              })
+            );
+            console.log(formData.get('contractForm'));
+            setToken();
+            requestPostNode(`contract/contract`, formData, {
+              'Content-Type': 'multipart/form-data',
+            })
+              .then((res) => {
+                Swal.fire({
+                  title:
+                    '<div style="font-size: 16px; font-weight: 700">계약서가 전송되었습니다.</div>',
+                  width: '350px',
+                }).then(() => {
+                  requestPut(`store/status?id=${info.id}`).then((res) => {
+                    if (res.data.statusCode === 200) {
+                      onClickClose();
+                    }
+                  });
+                });
+              }) // 하고 모달 닫기
+              .catch((err) => {
+                if (err.response.data.statusCode === 403) {
+                  Swal.fire({
+                    title: `<div style="font-size: 16px; font-weight: 700">${err.response.data.msg}</div>`,
+                    width: '350px',
+                  }).then(() => {
+                    return;
+                  });
+                }
+              });
+          } else {
+            Swal.fire({
+              title:
+                '<div style="font-size: 16px; font-weight: 700">계약에 필요한 내용을 모두 입력해주세요.</div>',
+              width: '350px',
+            }).then(() => {
+              return;
+            });
+          }
+        }
+      }
+    } else {
+      Swal.fire({
+        title:
+          '<div style="font-size: 16px; font-weight: 700">약관에 동의해주세요.</div>',
+        width: '300px',
+      });
+    }
+  };
+
+  const onClickFinishBtn = () => {
+    console.log('finish');
+    // 이용자 약관 동의
+    if (isAgree1 && isAgree2) {
+      formData = consumerSignRef.current.saveSign();
       if (!formData) {
         Swal.fire({
           title:
@@ -105,18 +229,30 @@ const ContractContainer = () => {
           return;
         });
       } else {
+        // 해당 계약서에 consumer_sign 업데이트
         formData.append(
-          'contractForm',
-          new Blob([JSON.stringify(contractForm)], {
+          'id',
+          new Blob([JSON.stringify({ contract_id: contract_id })], {
             type: 'applications/json',
           })
         );
-        console.log(formData.get('contractForm'));
-        setToken();
-        requestPostNode(`contract/contract`, formData, {
+        requestPostNode(`contract/constractConsumer`, formData, {
           'Content-Type': 'multipart/form-data',
         })
-          .then((res) => console.log(res)) // 하고 모달 닫기
+          .then((res) => {
+            console.log(res);
+            Swal.fire({
+              title:
+                '<div style="font-size: 16px; font-weight: 700">계약이 성립되었습니다.</div>',
+              width: '350px',
+            }).then(() => {
+              requestPut(`store/status?id=${info.id}`).then((res) => {
+                if (res.data.statusCode === 200) {
+                  onClickClose();
+                }
+              });
+            });
+          })
           .catch((err) => console.log(err));
       }
     } else {
@@ -150,6 +286,7 @@ const ContractContainer = () => {
   return (
     <Contract
       contractForm={contractForm}
+      producer_sign={producer_sign}
       producer={producer}
       consumer={consumer}
       myId={myId}
@@ -169,6 +306,7 @@ const ContractContainer = () => {
       onChangeProductName={onChangeProductName}
       onChangeAccount={onChangeAccount}
       onClickClose={onClickClose}
+      onClickFinishBtn={onClickFinishBtn}
     />
   );
 };

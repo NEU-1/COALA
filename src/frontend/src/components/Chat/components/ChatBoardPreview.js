@@ -8,9 +8,11 @@ const ChatBoardPreview = ({
   post,
   producer,
   consumer,
+  inform,
   myId,
   onClickPost,
   onClickContractBtn,
+  onClickAcceptBtn,
 }) => {
   return (
     <SLayout>
@@ -36,8 +38,8 @@ const ChatBoardPreview = ({
       {myId === producer.id && post.status === 1 && (
         <STradeBtn onClick={onClickContractBtn}>거래하기</STradeBtn>
       )}
-      {myId === consumer.id && post.status === 0 && (
-        <STradeBtn>수락하기</STradeBtn>
+      {myId === consumer.id && inform.room.contract_id && (
+        <STradeBtn onClick={onClickAcceptBtn}>수락하기</STradeBtn>
       )}
     </SLayout>
   );
