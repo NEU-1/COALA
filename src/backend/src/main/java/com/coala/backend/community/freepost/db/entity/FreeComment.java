@@ -45,7 +45,7 @@ public class FreeComment {
     }
 
     @Builder
-    public FreeComment(FreePost fpId, String author, boolean isAnonymous, Member memberId, String content) {
+    public FreeComment(FreePost fpId, boolean isAnonymous, Member memberId, String content) {
         this.fpId = fpId;
         this.isAnonymous = isAnonymous;
         this.memberId = memberId;
