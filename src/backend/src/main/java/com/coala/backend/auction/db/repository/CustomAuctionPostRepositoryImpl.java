@@ -1,5 +1,6 @@
 package com.coala.backend.auction.db.repository;
 
+import com.coala.backend.auction.db.entity.AuctionApply;
 import com.coala.backend.auction.db.entity.AuctionPost;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;

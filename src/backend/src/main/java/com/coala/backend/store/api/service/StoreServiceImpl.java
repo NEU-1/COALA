@@ -228,10 +228,10 @@ public class StoreServiceImpl implements StoreService {
         StorePost storePost = storePostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글을 찾을 수 없습니다."));
 
-        // 권한
-        if(!storePost.getMember().getEmail().equals(email)){
-            return new BaseResponseDto("권한이 없습니다.", 403);
-        }
+//        // 권한
+//        if(!storePost.getMember().getEmail().equals(email)){
+//            return new BaseResponseDto("권한이 없습니다.", 403);
+//        }
 
         // 대기중 => 예약중
         if(storePost.getStatus() == 1){

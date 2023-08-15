@@ -1,6 +1,7 @@
 package com.coala.backend.auction.api.service;
 
 import com.coala.backend.auction.db.dto.response.ApplyResponseDto;
+import com.coala.backend.auction.db.dto.response.ApplySetResponseDto;
 import com.coala.backend.auction.db.dto.response.PostResponseDto;
 import com.coala.backend.auction.db.entity.AuctionApply;
 import com.coala.backend.auction.db.entity.AuctionImage;
@@ -143,29 +144,47 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public BaseResponseDto apply(Long id, AuctionApply auctionApply, String email) {
+    public ApplySetResponseDto apply(Long id, AuctionApply auctionApply, String email) {
         AuctionPost auctionPost = auctionPostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
 
         if(auctionPost.getMember().getEmail().equals(email)){
-            return new BaseResponseDto("본인의 게시물에는 제안할 수 없습니다.", 403);
+            return new ApplySetResponseDto(new BaseResponseDto("본인의 게시물에는 제안할 수 없습니다.", 403));
         }
-
         if(auctionPost.getStatus() != 1){
-            return new BaseResponseDto("현재 거래가 진행되어 신청이 불가능합니다.", 403);
+            return new ApplySetResponseDto(new BaseResponseDto("현재 거래가 진행되어 신청이 불가능합니다.", 403));
         }
+        System.out.println(auctionApply.getTitle());
+
+        AuctionApply newApply = new AuctionApply();
+
+        // 제안하기 폼 기본 정보
+        newApply.setTitle(auctionApply.getTitle());
+        newApply.setDetail(auctionApply.getDetail());
+        newApply.setDeposit(auctionApply.getDeposit());
+        newApply.setRentalCost(auctionApply.getRentalCost());
+        newApply.setNegotiation(auctionApply.getNegotiation());
+
+        // 게시글 정보 등록
+        newApply.setAuctionPost(auctionPost);
 
         // 제안자(폼 변경 필요)
         Member applier = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("신청자가 존재하지 않습니다."));
 
-        auctionApply.setAuctionPost(auctionPost);
+        newApply.setMember(applier);
 
-        auctionApply.setMember(applier);
+        auctionApplyRepository.save(newApply);
 
-        auctionApplyRepository.save(auctionApply);
+        List<AuctionApply> list = auctionApplyRepository.findAll();
 
-        return new BaseResponseDto("신청이 완료되었습니다.", 200);
+        AuctionApply apply = list.get(list.size()-1);
+
+        ApplySetResponseDto applySetResponseDto = new ApplySetResponseDto();
+        applySetResponseDto.setBaseResponseDto(new BaseResponseDto("신청이 완료되었습니다.", 200));
+        applySetResponseDto.setAuctionApply(apply);
+
+        return applySetResponseDto;
     }
 
     @Override
@@ -173,11 +192,11 @@ public class AuctionServiceImpl implements AuctionService{
         AuctionPost auctionPost = auctionPostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글을 찾을 수 없습니다."));
 
-        Member member = auctionPost.getMember();
-        // 권한
-        if(!member.getEmail().equals(email)){
-            return new BaseResponseDto("권한이 없습니다.", 403);
-        }
+//        Member member = auctionPost.getMember();
+//        // 권한
+//        if(!member.getEmail().equals(email)){
+//            return new BaseResponseDto("권한이 없습니다.", 403);
+//        }
 
         // 대기중 => 예약중
         if(auctionPost.getStatus() == 1){
@@ -241,7 +260,9 @@ public class AuctionServiceImpl implements AuctionService{
         AuctionPost auctionPost = auctionPostRepository.findById(id)
                 .orElseThrow(() -> new IllegalAccessException("게시글이 존재하지 않습니다."));
 
-        int idx = auctionPost.getAuctionApply().size();
+        List<AuctionApply> auctionApplyList = auctionApplyRepository.findByAuctionPost(auctionPost);
+
+        int idx = auctionApplyList.size();
 
         return idx;
     }

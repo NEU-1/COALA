@@ -2,6 +2,7 @@ package com.coala.backend.auction.api.controller;
 
 import com.coala.backend.auction.api.service.ApplyFileService;
 import com.coala.backend.auction.api.service.AuctionService;
+import com.coala.backend.auction.db.dto.response.ApplySetResponseDto;
 import com.coala.backend.auction.db.entity.AuctionApply;
 import com.coala.backend.auction.db.entity.AuctionPost;
 import com.coala.backend.member.api.service.MemberService;
@@ -12,6 +13,7 @@ import com.coala.backend.store.db.dto.response.ListResponseDto;
 import com.coala.backend.store.db.entity.StorePost;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,18 +76,21 @@ public class AuctionController {
                                                            @RequestPart("multipartFile") List<MultipartFile> files,
                                                            HttpServletRequest request)
     throws Exception{
+        System.out.println("hello");
         ObjectMapper objectMapper = new ObjectMapper();
         AuctionApply auctionApply = objectMapper.readValue(json, AuctionApply.class);
 
-        BaseResponseDto responseDto = auctionService.apply(id, auctionApply, jwtTokenProvider.getMail(request));
+        ApplySetResponseDto applySetResponseDto = auctionService.apply(id, auctionApply, jwtTokenProvider.getMail(request));
 
-        int idx = auctionService.getId(id);
+        BaseResponseDto baseResponseDto = applySetResponseDto.getBaseResponseDto();
+
+        Long idx = applySetResponseDto.getAuctionApply().getId();
 
         for(int i = 0; i < files.size(); i++){
             applyFileService.file(files.get(i), "auction", id, idx, i+1);
         }
 
-        return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
+        return ResponseEntity.status(baseResponseDto.getStatusCode()).body(baseResponseDto);
     }
 
     @PutMapping("/status")

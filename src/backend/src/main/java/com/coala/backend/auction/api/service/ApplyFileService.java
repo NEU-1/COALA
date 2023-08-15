@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 
@@ -58,15 +59,15 @@ public class ApplyFileService {
     }
 
     @Transactional
-    public void file(MultipartFile multipartFile, String directory, Long id, int idx,  Integer num) throws Exception {
+    public void file(MultipartFile multipartFile, String directory, Long id, Long idx,  Integer num) throws Exception {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType((multipartFile.getContentType()));
         objectMetadata.setContentLength(multipartFile.getSize());
 
-        AuctionApply auctionApply = auctionApplyRepository.findById(id)
-                .orElseThrow(() -> new IllegalAccessException("게시글이 존재하지 않습니다."));
+        AuctionApply auctionApply = auctionApplyRepository.findById(idx)
+                .orElseThrow(()-> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        String key = directory + "/" + convert(auctionApply.getId()) + "/" + convert(idx) + "/" + convert(num);
+        String key = directory + "/" + convert(id) + "/" + convert(idx) + "/" + convert(num);
 
         // add
         try(InputStream inputStream = multipartFile.getInputStream()){
@@ -74,9 +75,13 @@ public class ApplyFileService {
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         }
 
+        System.out.println(id);
+
+
         String url = amazonS3Client.getUrl(bucket, key).toString();
         AuctionImage auctionImage = new AuctionImage(url);
         auctionImage.setAuctionApply(auctionApply);
+
         auctionImageRepository.save(auctionImage);
 
     }
