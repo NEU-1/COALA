@@ -4,11 +4,9 @@ import com.coala.backend.member.api.service.MemberService;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.store.api.service.StoreService;
-import com.coala.backend.store.db.dto.request.PostRequestDto;
 import com.coala.backend.store.db.dto.response.PostResponseDto;
 import com.coala.backend.store.db.entity.StorePost;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

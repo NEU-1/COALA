@@ -27,9 +27,15 @@ import ChatContainer from '../components/Chat/containers/ChatContainer';
 import NotFound from '../pages/NotFound';
 // 제공자 페이지
 import Store from '../components/Store/Store';
-import StoreDetail from '../components/Store/StoreDetail';
 import StoreWrite from '../components/Store/StoreWrite';
+import StoreDetail from '../components/Store/StoreDetail';
 import StoreUpdate from '../components/Store/StoreUpdate';
+
+// 이용자 페이지
+import Auction from '../components/Auction/Auction';
+import AuctionWrite from '../components/Auction/AuctionWrite';
+import AuctionDetail from '../components/Auction/AuctionDetail';
+import AuctionUpdate from '../components/Auction/AuctionUpdate';
 
 // 테크게시판
 import TechBoardDetail from '../components/Techboard/components/TechBoardDetail';
@@ -58,6 +64,11 @@ const RootNavigation = () => {
           <Route path="/store/write" element={<StoreWrite />} />
           <Route path="/store/:postId" element={<StoreDetail />} />
           <Route path="/store/:postId/update" element={<StoreUpdate />} />
+
+          <Route path="/auction" element={<Auction />} />
+          <Route path="/auction/write" element={<AuctionWrite />} />
+          <Route path="/auction/:postId" element={<AuctionDetail />} />
+          <Route path="/auction/:postId/update" element={<AuctionUpdate />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

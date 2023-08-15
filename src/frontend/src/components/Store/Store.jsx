@@ -11,7 +11,7 @@ import { login } from "../../store/LoginSlice";
 import { requestPost, setToken } from "../../lib/api/api";
 
 const product = ["키보드", "마우스", "헤드셋", "태블릿"];
-const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
+const day = ["1일", "7일", " 14일", "30일"];
 
 const Store = () => {
   const [filter, setFilter] = useState(false);
@@ -210,6 +210,7 @@ const Store = () => {
 };
 
 const Smain = styled.div`
+margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;

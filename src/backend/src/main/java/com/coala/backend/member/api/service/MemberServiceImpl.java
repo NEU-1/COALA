@@ -10,7 +10,6 @@ import com.coala.backend.member.db.entity.RefreshToken;
 import com.coala.backend.member.db.repository.CertificationRepository;
 import com.coala.backend.member.db.repository.MemberRepository;
 import com.coala.backend.member.db.repository.RefreshTokenRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
