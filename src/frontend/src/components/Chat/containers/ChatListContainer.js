@@ -40,7 +40,7 @@ const ChatListContainer = () => {
         // 나중에 잘되었는지 아닌지 필터 필요
         setUser(res.data.member);
         email = res.data.member.email;
-      })
+      })})
       .then(() => {
         // const email = user.email;
         console.log(email);
