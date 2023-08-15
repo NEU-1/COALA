@@ -32,7 +32,7 @@ const TechBoardList = () => {
     <Slayout>
       <Layout>   
         {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-        {posts.map(({ id, title, views, createAt, }) => (
+        {posts.map(({ id, title, views, createAt,imagePath }) => (
           <Contentbox key={id}>
             <div>
             <Link to={`/tech/post/detail/${id}`}>
@@ -49,7 +49,7 @@ const TechBoardList = () => {
               </Userbox>
               </Link>
             </div>
-            <img src="/assets/images/testimg.png" alt="사진" />
+            <Simg src={imagePath} alt="사진" />
    
           </Contentbox>
         ))}
@@ -66,32 +66,38 @@ const Slayout = styled.div`
 `
 const Button = styled.div`
   display: flex;
-  height: 50px;
-  padding: 20px 30px;
+  height: 40px;
+  padding: 5px;
   justify-content: center;
   align-items: center;
   gap: 10px;
+  width: 120px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => (props.color ? props.color : '#d9d9d9')};
+  background-color: #BD84FC;
   color: white;
   cursor: pointer;
 `
 
 const Layout = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   max-width: 800px;
   margin: 0 auto;
 `;
 
 const Contentbox = styled.div`
-  border-top: 1px solid #f5a4a4;
-  border-bottom: 1px solid #f5a4a4;
-  margin-bottom: 20px;
-  border-radius: 3%;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #BD84FC;
+  margin-bottom: 10px;
+
   width: 800px;
 `
 
 const Userbox = styled.div`
+  display: flex;
   margin-bottom: 10px;
   margin-top: 5px;
 `
@@ -110,3 +116,27 @@ const Titletext = styled.div`
   font-size: 15px;
   margin-left: 5px;
 `
+const Commentcontainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 800px;
+  margin-top: 0;
+`
+const Freecontainer = styled.div`
+  display: flex;
+`
+
+const Freeword = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100px;
+  padding-top: 10px;
+  margin-right: 20px;
+
+`
+const Simg = styled.img`
+  height: 80px;
+  width: 80px;
+  `

@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
 import Modal from 'react-modal'
+import { CheckBox } from '@mui/icons-material';
 
 
 
@@ -180,6 +181,7 @@ const commentDelete = async (commentId) => {
   }
 };
 
+
   
   return (
       board && (<Slayout>
@@ -214,7 +216,7 @@ const commentDelete = async (commentId) => {
         <div>댓글{board.commentCount}</div>
         <CommentSlayout>
         <Writecontainer>
-        <p>작성자:</p>
+        <CheckBox />
         <CommentTextinput type="text" name="author" value={author} onChange={onChange}/>
         <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} />
       </Writecontainer>
@@ -227,7 +229,7 @@ const commentDelete = async (commentId) => {
         <Contentbox key={id}>
           <Commenttitlebox>
             <Minititlebox>
-            <Titletext2>{nickname}</Titletext2>
+            <Titletext2>{nickname.length > 6 ? `${nickname.slice(0, 6)}...` : nickname}</Titletext2>
             <Numbertext>{createAt.slice(0,10)}</Numbertext>
             </Minititlebox>
           <Commentcontentbox>
@@ -255,12 +257,8 @@ const commentDelete = async (commentId) => {
             <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
             </SBtnContainer>
           ))}
-        
-      
     </div>
-
   </Slayout>)
-    
   );
 };
 
@@ -388,9 +386,9 @@ const Count = styled.div`
 `
 
 const Titletext2 = styled.div`
-  font-size: 15px;
+  font-size: 12px;
   margin-left: 10px;
-  width: 80px;
+  width: 100px;
   display: flex;
   justify-content: center;
 `
