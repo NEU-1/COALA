@@ -8,8 +8,6 @@ import { images } from "../../assets/images";
 import Swal from "sweetalert2";
 import { requestPost, setToken } from "../../lib/api/api";
 
-
-
 const StoreWrite = () => {
   console.log(images);
 
@@ -19,9 +17,9 @@ const StoreWrite = () => {
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
   const [showDropdown, setshowDropdown] = useState(false);
   const [title, setTitle] = useState("");
-  const [productName, setproductName] = useState("");
+  // const [productName, setproductName] = useState("");
   const [rentalFee, setRentalFee] = useState("");
-  const [deposit, setDeposit] = useState("");
+  const [deposit, setDeposit] = useState(0);
   const [minRentalDay, setMinRentalDay] = useState("");
   const [maxRentalDay, setMaxRentalDay] = useState("");
   const [content, setContent] = useState("");
@@ -31,11 +29,10 @@ const StoreWrite = () => {
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
   const [imageList, setImageList] = useState([]);
-  
 
   const mySellHandler = () => {
     setshowDropdown(!showDropdown);
-    setToken()
+    setToken();
     axios
       .get("--서버 주소--")
       .then((response) => {
@@ -49,15 +46,32 @@ const StoreWrite = () => {
   const titleHandler = (e) => {
     setTitle(e.target.value);
   };
-  const productNameHandler = (e) => {
-    setproductName(e.target.value);
-  };
+  // const productNameHandler = (e) => {
+  //   setproductName(e.target.value);
+  // };
   const rentalFeeHandler = (e) => {
     setRentalFee(e.target.value);
   };
   const depositHandler = (e) => {
-    setDeposit(e.target.value);
+    if (e.target.value === "0") {
+      setDeposit("");
+    } else {
+      setDeposit(e.target.value);
+    }
   };
+
+  const handleFocus = (e) => {
+    if (e.target.value === "0") {
+      setDeposit("");
+    }
+  };
+
+  const handleBlur = (e) => {
+    if (e.target.value === "") {
+      setDeposit(0);
+    }
+  };
+
   const minRentalDayHandler = (e) => {
     setMinRentalDay(e.target.value);
   };
@@ -85,6 +99,11 @@ const StoreWrite = () => {
       maxDayValue.substring(0, maxDayValue.indexOf("일"))
     );
     setMaxRentalDay(maxDayNumber);
+  };
+
+  const onDateChange = (date) => {
+    setCalendarDay(date);
+    setCalendar(false);
   };
   const calendarHandler = () => {
     setCalendar(!calendar);
@@ -122,7 +141,7 @@ const StoreWrite = () => {
       isValid:
         title !== "" &&
         productSelect !== "" &&
-        productName !== "" &&
+        // productName !== "" &&
         rentalFee !== "" &&
         minRentalDay !== "" &&
         maxRentalDay !== "" &&
@@ -133,9 +152,9 @@ const StoreWrite = () => {
           ? "제목"
           : productSelect === ""
           ? "분류"
-          : productName === ""
-          ? "제품명"
-          : rentalFee === ""
+          : // : productName === ""
+          // ? "제품명"
+          rentalFee === ""
           ? "대여료"
           : minRentalDay === ""
           ? "최소 대여 기간"
@@ -143,7 +162,7 @@ const StoreWrite = () => {
           ? "최대 대여 기간"
           : content === ""
           ? "내용"
-          : "no error",
+          : "최소 대여 기간은 최대 대여 기간보다 작거나 같게.",
     };
   };
 
@@ -165,23 +184,23 @@ const StoreWrite = () => {
       maxRentalDay,
       rentalFee,
       deposit,
-      productSelect
+      productSelect,
     });
 
     const validation = validateForm();
-    console.log(validation)
+    console.log(validation);
 
     if (validation.isValid) {
-      setToken()
+      setToken();
       requestPost("store/write", {
-        "title": title,
-        "detail": content,
-        "minRentalPeriod": minRentalDay,
-        "maxRentalPeriod": maxRentalDay,
-        "limitDate": `${year}-${month}-${date}`,
-        "rentalCost": rentalFee,
-        "deposit": deposit,
-        "category": productSelect+1,
+        title: title,
+        detail: content,
+        minRentalPeriod: minRentalDay,
+        maxRentalPeriod: maxRentalDay,
+        limitDate: `${year}-${month}-${date}`,
+        rentalCost: rentalFee,
+        deposit: deposit,
+        category: productSelect + 1,
         // "image": imageList,
       })
         .then((response) => {
@@ -251,7 +270,7 @@ const StoreWrite = () => {
           </SLabel>
         </SPictureList>
       </SPicture>
-      <SCalendarDate>
+      {/* <SCalendarDate>
         <SSubTitle>상한 날짜</SSubTitle>
         <SSubTitle
           onClick={calendarHandler}
@@ -261,7 +280,7 @@ const StoreWrite = () => {
         <Calendar onChange={setCalendarDay} value={calendarDay} />
       ) : (
         ""
-      )}
+      )} */}
       <SFilterContainer>
         <SFilterDoubleBox>
           <SFilterBoxGap35>
@@ -283,7 +302,15 @@ const StoreWrite = () => {
             </SSelectProduct>
           </SFilterBoxGap35>
           <SFilterBoxGap10>
-            <SSubTitle>
+            {/* <SCalendarDate> */}
+            <SSubTitle>상한 날짜</SSubTitle>
+            <SSubTitle
+              onClick={calendarHandler}
+            >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
+            {calendar && (
+              <Calendar onChange={onDateChange} value={calendarDay} />
+            )}
+            {/* <SSubTitle>
               제품명<SImportantStar>*</SImportantStar>
             </SSubTitle>
             <SFilterInput
@@ -291,7 +318,7 @@ const StoreWrite = () => {
               type="text"
               value={productName}
               onChange={productNameHandler}
-            />
+            /> */}
           </SFilterBoxGap10>
         </SFilterDoubleBox>
         <SFilterDoubleBox>
@@ -314,11 +341,13 @@ const StoreWrite = () => {
             <SSubTitle>보증금</SSubTitle>
             <SFilterInFutAndWon>
               <SFilterInputCost
-                className="deposit"
+                className="`deposit`"
                 type="text"
                 placeholder="숫자만 입력하세요."
                 value={deposit}
                 onChange={depositHandler}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
               />
               <p>원</p>
             </SFilterInFutAndWon>
@@ -477,7 +506,7 @@ const SSellHeader = styled.div`
 
 const SSellHeaderPading = styled.div`
   display: flex;
-  align-items: flex-start;
+  // align-items: flex-start;
   gap: 30px;
 `;
 
@@ -583,16 +612,16 @@ const SSelectDayBtn = styled.button`
   color: ${(props) => (props.$activeDay ? "#A255F7" : "#D9D9D9")};
 `;
 
-const SFilterInput = styled.input`
-  display: flex;
-  padding: 16px;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 10px;
-  align-self: stretch;
-  border-radius: 10px;
-  border: 1px solid var(--border, #d9d9d9);
-`;
+// const SFilterInput = styled.input`
+//   display: flex;
+//   padding: 16px;
+//   justify-content: center;
+//   align-items: flex-start;
+//   gap: 10px;
+//   align-self: stretch;
+//   border-radius: 10px;
+//   border: 1px solid var(--border, #d9d9d9);
+// `;
 
 const SFilterInputCost = styled.input`
   display: flex;
@@ -627,15 +656,15 @@ const SFilterInFutAndWon = styled.div`
   align-self: stretch;
 `;
 
-const SCalendarDate = styled.div`
-  display: flex;
-  width: 800px;
-  padding: 30px 20px;
-  align-items: flex-start;
-  gap: 30px;
-  // justify-content: center;
-  border-bottom: 1px solid var(--content-underline, #e9d5ff);
-`;
+// const SCalendarDate = styled.div`
+//   display: flex;
+//   width: 800px;
+//   padding: 30px 20px;
+//   align-items: flex-start;
+//   gap: 30px;
+//   // justify-content: center;
+//   border-bottom: 1px solid var(--content-underline, #e9d5ff);
+// `;
 
 const SPicture = styled.div`
   display: flex;
@@ -680,12 +709,15 @@ const SContentBorder = styled.div`
   align-self: stretch;
 `;
 
-const SSellContentInput = styled.input`
+const SSellContentInput = styled.textarea`
   color: #000;
   // text-align: center;
+  height: 400px;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
+  // overflow: hidden;
+  resize: none;
 `;
 
 const SSellFooter = styled.div`
@@ -746,11 +778,11 @@ const SBtnWritePost = styled.div`
 const SDropdownMenu = styled.div`
   position: absolute;
   background: var(--primary, #e9d5ff);
-  z-index: 1;
+  z-index: 30;
   width: 143px;
   padding: 11px 16px;
   border-radius: 10px;
-  top: 64px;
+  top: 240px;
 `;
 
 const SDropdownMenuItem = styled.div`

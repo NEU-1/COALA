@@ -23,15 +23,18 @@ export default function ImgMediaCard({ item, onClick }) {
         console.log("자기가 쓴 글은 추천 못함");
       });
   };
+  console.log(item);
 
   return (
     <SCard $isRented={item.isRented} onClick={onClick}>
       <SCardMedia image={item.image}>
         <div>{item.isRented ? <SRental>대여 완료</SRental> : ""}</div>
       </SCardMedia>
-      <SLike onClick={handleLike} isLiked={isLiked}>
-        {isLiked ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
-      </SLike>
+      {!item.mine && (
+        <SLike onClick={handleLike} isLiked={isLiked}>
+          {isLiked ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
+        </SLike>
+      )}
       <SCardText>
         <STitleAndProduct>
           <STitle>{item.storePost.title}</STitle>
@@ -64,6 +67,9 @@ const SCard = styled.div`
   max-width: 345px;
   ${(props) => props.$isRented && `background: rgba(128, 128, 128, 0.5);`}
   border-radius: 10px;
+  &:hover {
+    background: var(--primary, #e9d5ff);
+  }
 `;
 
 const SCardMedia = styled.div`
@@ -148,6 +154,7 @@ const SReservation = styled.p`
   color: white;
   font-size: 8px;
   font-weight: 700;
+  margin-right: auto;
 `;
 
 const SCost = styled.p`
@@ -160,6 +167,7 @@ const SCost = styled.p`
   font-size: 12px;
   font-weight: 700;
   line-height: normal;
+  margin-left: auto;
 `;
 
 const SRental = styled.div`

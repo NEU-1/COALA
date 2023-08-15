@@ -38,12 +38,13 @@ const Store = () => {
     setProductType("");
     setDayType("");
     setPriceRange([0, 100000]);
+    applyFilter();
   };
   const applyFilter = () => {
-    pageRef.current = -1; 
-    setData([]); 
+    pageRef.current = -1;
+    setData([]);
     loadMoreData();
-};
+  };
 
   const seeProductCheckHandler = (e) => {
     setseeProductCheck(e.target.checked);
@@ -66,7 +67,7 @@ const Store = () => {
       })
       .catch((err) => {
         console.error(err);
-      })
+      });
   };
 
   const handleScroll = () => {
@@ -107,7 +108,7 @@ const Store = () => {
     };
   }, []);
   useEffect(() => {
-    setToken(); 
+    setToken();
     loadMoreData();
   }, []);
 
@@ -164,7 +165,7 @@ const Store = () => {
                 range
                 min={0}
                 max={100000}
-                defaultValue={[0, 100000]}
+                value={priceRange}
                 step={1000}
                 onChange={(value) => setPriceRange(value)}
               />
