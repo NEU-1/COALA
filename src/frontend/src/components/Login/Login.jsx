@@ -10,6 +10,7 @@ import {
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/LoginSlice";
+import { useEffect } from "react";
 
 const Login = () => {
   const onSubmitHandler = (e) => {
@@ -54,7 +55,13 @@ const Login = () => {
     } else {
       setErrorMessage("누구세요?");
     }
-  };
+  }
+  useEffect(() => {
+    if(localStorage.getItem(saveId)) {
+      setInputId(localStorage.getItem(saveId));
+    }
+  }, [])
+  
 
   const handleLoginSuccess = (res) => {
     setLoginFailCount(0);
@@ -70,46 +77,54 @@ const Login = () => {
   };
 
   const onClickLogin = () => {
-    const showAlert = (icon, title) => {
-      setTimeout(() => {
-        Swal.fire({
-          icon,
-          title,
-          html: "",
-          timer: 1000,
-          showConfirmButton: false,
-        });
-      }, 300);
-    };
-    if (!inputId) {
-      showAlert("warning", "아이디 칸이 비어있습니다.\n아이디를 입력해주세요.");
-    }
-    if (!inputPw) {
-      showAlert(
-        "warning",
-        "비밀번호 칸이 비어있습니다.\n비밀번호를 입력해주세요."
-      );
-    }
-    if (loginFailCount > 5) {
-      setErrorMessage(
-        "가능한 횟수를 초과하였습니다. 비밀번호를 재 설정 해주세요"
-      );
-      return;
-    }
-    requestPost(`member/login`, {
-      email: inputId,
-      password: inputPw,
-    })
-      .then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          showAlert("success", "로그인 성공!");
-          handleLoginSuccess(res);
-        }
+    if(inputId && inputPw) {
+      requestPost(`member/login`, {
+        email: inputId,
+        password: inputPw,
       })
-      .catch((err) => {
-        handleLoginFailure(err);
-      });
+        .then((res) => {
+          console.log(res)
+          if (res.data.statusCode === 200) {
+            Swal.fire({
+              icon: "success",
+              title: "로그인 성공!",
+              html: "",
+              timer: 1000,
+              showConfirmButton: false,
+            }).then(() => {
+              handleLoginSuccess(res);
+            });
+          }
+        })
+        .catch((err) => {
+          if(err.response.data.statusCode === 400) {
+            Swal.fire({
+              icon: 'error',
+              title: `<div style="font-size: 16px; font-weight: 700">${err.response.data.msg}</div>`,
+              width: '350px'
+            })
+          } else if(err.response.data.status === 500) {
+            Swal.fire({
+              icon: 'error',
+              title: `<div style="font-size: 16px; font-weight: 700">존재하지 않는 회원입니다.</div>`,
+              width: '350px'
+            })
+          }
+        });
+    } else {
+      if(!inputId) {
+        Swal.fire({
+          title: '<div style="font-size: 16px; font-weight: 700">아이디를 입력하세요.</div>',
+          width: '350px'
+        })
+      }
+      else {
+        Swal.fire({
+          title: '<div style="font-size: 16px; font-weight: 700">비밀번호를 입력하세요.</div>',
+          width: '350px'
+        })
+      }
+    }
   };
 
   const handleSaveIDFlag = (e) => {
@@ -118,7 +133,7 @@ const Login = () => {
       localStorage.setItem(saveId, inputId);
       console.log(inputId);
     } else {
-      localStorage.setItem(saveId, "");
+      localStorage.removeItem(saveId);
     }
   };
 
@@ -135,6 +150,11 @@ const Login = () => {
       onClickLogin();
     }
   };
+  const onKeyPress = (e) => {
+    if(e.key === 'Enter') {
+      onClickLogin();
+    }
+  }
 
   return (
     <div className="page">
@@ -151,6 +171,7 @@ const Login = () => {
             onChange={oninputIdHandler}
             onKeyDown={onIdKeyDownHandler}
             placeholder="아이디"
+            onKeyUp={onKeyPress}
           />
         </div>
         <div className="pwBox">
@@ -162,6 +183,7 @@ const Login = () => {
             onChange={oninputPwHandler}
             onKeyDown={onPwKeyDownHandler}
             placeholder="비밀번호"
+            onKeyUp={onKeyPress}
           />
         </div>
         <div>
@@ -171,7 +193,6 @@ const Login = () => {
             onChange={handleSaveIDFlag}
           />
         </div>
-        {errorMessage && <div className="error">{errorMessage}</div>}
         <button className="button" type="button" onClick={onClickLogin}>
           로그인
         </button>
