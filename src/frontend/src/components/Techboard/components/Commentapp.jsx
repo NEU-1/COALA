@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Comment from './Comment';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
+import styled from 'styled-components';
 
 class Commentapp extends Component{
     state = {
@@ -10,7 +11,7 @@ class Commentapp extends Component{
     componentDidMount() {
         this.setState({
             ...this.state,
-            list:[{userid: 'jenny1', content: '안녕하세요1', date: '2022-04-21', updateFlag: true}]
+            list:[{userid: '', content: '', date: '', updateFlag: ''}]
         });
     }
     addList = obj => {
@@ -28,14 +29,19 @@ class Commentapp extends Component{
     render() {
         const {list} = this.state;
         return(
-            <>
+            <Slayout>  
                 <Comment value={this.state.value}>
                     <CommentForm addList={this.addList}/>
                     <CommentList list={list} updateList={this.updateList}/>
                 </Comment>
-            </>
+            </Slayout>
         )
     }
 };
 
 export default Commentapp;
+
+const Slayout = styled.div`
+  margin-top: 170px;
+  width: 800px;
+`

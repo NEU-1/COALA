@@ -15,18 +15,18 @@ public class TechImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.LAZY)
     @JoinColumn (name = "fp_id")
     @NotNull
-    private TechPost fpId;
+    private TechPost tpId;
 
     @NotNull
     @Column (name = "image_path")
     private String imagePath;
 
     @Builder
-    public TechImage(TechPost fpId, String imagePath) {
-        this.fpId = fpId;
+    public TechImage(TechPost tpId, String imagePath) {
+        this.tpId = tpId;
         this.imagePath = imagePath;
     }
 }

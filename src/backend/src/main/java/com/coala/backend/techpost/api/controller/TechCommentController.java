@@ -7,11 +7,16 @@ import com.coala.backend.techpost.db.entity.TechComment;
 import com.coala.backend.techpost.db.repository.TechCommentRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+/*
+* 테크게시판 댓글 controller 입니다.
+* */
 
 @RestController
 @RequiredArgsConstructor
@@ -23,32 +28,25 @@ public class TechCommentController {
 
     // 댓글 저장
     @PostMapping("comment/save")
-    public TechCommentResponseDto saveComment(@RequestBody @Valid TechCommentRequestDto requestDto) {
+    public ResponseEntity<TechComment> saveComment(@RequestBody @Valid TechCommentRequestDto requestDto) {
         techCommentService.saveComment(requestDto);
 
-        return new TechCommentResponseDto(
-                requestDto.toEntity().getId(),
-                requestDto.toEntity().getFpId(),
-                requestDto.toEntity().getAuthor(),
-                requestDto.toEntity().getContent(),
-                requestDto.toEntity().getCreateAt()
-        );
+        return ResponseEntity.ok()
+                .header("성공", "댓글 저장")
+                .body(requestDto.toEntity());
     }
 
     @PutMapping("comment/update/{id}")
-    public TechCommentResponseDto updateTechComment(@PathVariable("id") Long id,
+    public ResponseEntity<TechComment> updateTechComment(@PathVariable("id") Long id,
                                                     @RequestBody @Valid TechCommentRequestDto requestDto) {
 
-        techCommentService.updateFreeComment(id, requestDto);
+        techCommentService.updateTechComment(id, requestDto);
         Optional<TechComment> findComment = techCommentRepository.findById(id);
         TechComment techComment = findComment.get();
 
-        return new TechCommentResponseDto(
-                techComment.getId(),
-                techComment.getFpId(),
-                techComment.getAuthor(),
-                techComment.getContent(),
-                techComment.getCreateAt());
+        return ResponseEntity.ok()
+                .header("성공", "댓글 수정")
+                .body(techComment);
     }
 
     @GetMapping("comment/{page}")
@@ -58,7 +56,7 @@ public class TechCommentController {
         return commentAll.stream()
                 .map(techCommentRequestDto -> new TechCommentResponseDto(
                         techCommentRequestDto.getId(),
-                        techCommentRequestDto.getFpId(),
+                        techCommentRequestDto.getTpId(),
                         techCommentRequestDto.getAuthor(),
                         techCommentRequestDto.getContent(),
                         techCommentRequestDto.getCreateAt()))

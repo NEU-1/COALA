@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 - 추천 수 기능 미구현
@@ -21,8 +23,8 @@ public class TechPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_email", referencedColumnName = "email")
+    @ManyToOne(targetEntity = Member.class)
+    @JoinColumn(name = "member_id", referencedColumnName = "email")
     @NotNull
     private Member memberId;
 
@@ -41,7 +43,8 @@ public class TechPost {
     @Column(name = "image_path")
     private String imagePath;
 
-    @ManyToOne
+     // 왜 참조가 안되지?
+    @ManyToOne(targetEntity = Member.class)
     @JoinColumn(name = "nickname")
     private Member nickname;
 
@@ -49,9 +52,19 @@ public class TechPost {
     @NotNull
     private int views;
 
-    @Column(columnDefinition = "integer default 0")
+    @Column
     @NotNull
-    private int count;
+    private int commentCount;
+
+    @Column
+    @NotNull
+    private int goodCount;
+
+    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<TechGood> goods = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<TechComment> comments = new ArrayList<>();
 
     @Builder
     public TechPost(Member memberId, String title, String detail , String imagePath, Member nickname) {
@@ -60,6 +73,8 @@ public class TechPost {
         this.detail = detail;
         this.imagePath = imagePath;
         this.nickname = nickname;
+        this.commentCount = this.getComments().size();
+        this.goodCount = this.getGoods().size();
     }
 
     @PrePersist
@@ -67,8 +82,7 @@ public class TechPost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateTechPost(Member memberId, String title, String detail, String imagePath, Member nickname) {
-        this.memberId = memberId;
+    public void updateTechPost(String title, String detail, String imagePath, Member nickname) {
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();

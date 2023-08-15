@@ -10,7 +10,6 @@ import com.coala.backend.member.db.entity.RefreshToken;
 import com.coala.backend.member.db.repository.CertificationRepository;
 import com.coala.backend.member.db.repository.MemberRepository;
 import com.coala.backend.member.db.repository.RefreshTokenRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -120,8 +119,26 @@ public class MemberServiceImpl implements MemberService{
 
         // Meber 정보와 응답 한번에 출력
         MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto();
+<<<<<<< HEAD
         memberInfoResponseDto.setMember(member);
         memberInfoResponseDto.setBaseResponseDto(new BaseResponseDto(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.", HttpStatus.OK.value()));
+=======
+<<<<<<< HEAD
+        memberInfoResponseDto.setId(member.getId());
+        memberInfoResponseDto.setEmail(member.getEmail());
+        memberInfoResponseDto.setName(member.getName());
+        memberInfoResponseDto.setNickname(member.getNickname());
+        memberInfoResponseDto.setStudentId(member.getStudentId());
+        memberInfoResponseDto.setDepart(member.getDepart());
+        memberInfoResponseDto.setOrdinal(member.getOrdinal());
+        memberInfoResponseDto.setPhoneNo(member.getPhoneNo());
+        memberInfoResponseDto.setMsg(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.");
+        memberInfoResponseDto.setStatusCode(HttpStatus.OK.value());
+=======
+        memberInfoResponseDto.setMember(member);
+        memberInfoResponseDto.setBaseResponseDto(new BaseResponseDto(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.", HttpStatus.OK.value()));
+>>>>>>> feature/auction
+>>>>>>> origin/techboard/front
 
         logger.info("member Name : {}", member.getName());
         return memberInfoResponseDto;

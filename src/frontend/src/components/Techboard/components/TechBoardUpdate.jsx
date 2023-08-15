@@ -4,18 +4,19 @@ import axios from 'axios';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import styled from 'styled-components';
+import { requestPost, requestGet, setToken, requestPut } from "../../../lib/api/api";
 
 const TechBoardUpdate = () => {
   const navigate = useNavigate();
-  const { idx } = useParams(); // /update/:idx와 동일한 변수명으로 데이터를 꺼낼 수 있습니다.
+  const { postid } = useParams(); // /update/:idx와 동일한 변수명으로 데이터를 꺼낼 수 있습니다.
   const [board, setBoard] = useState({
-    idx: 0,
     title: '',
-    createdBy: '',
     detail: '',
+    imagePath: ['string'],
+    isAnonymous: "boolean",
   });
   const editorRef = useRef();
-  const { title,detail } = board; //비구조화 할당
+  const { title, detail } = board; //비구조화 할당
 
   const onChange = (event) => {
     const { value, name } = event.target; //event.target에서 name과 value만 가져오기
@@ -25,29 +26,58 @@ const TechBoardUpdate = () => {
     });
   };
 
-  const getBoard = async () => {
-    const resp = await (await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/detail/${idx}`)).data;
-    setBoard(resp.data);
-  };
+  const getBoard = () => {
+    setToken()
+    // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
+    requestGet(`tech/post/detail/${postid}`)
+    .then(res=>{
+      console.log(res.data);
+      setBoard(res.data);
+      editorRef.current?.getInstance().setHTML(res.data.detail);
+    })
+  }
+  
+useEffect(() => {
+  getBoard();
+}, []);
+
+
 
   const updateBoard = async () => {
-    await axios.patch(`http://i9d108.p.ssafy.io:9999/api/tech/update/${idx}`, board).then((res) => {
-      alert('수정되었습니다.');
-      navigate('/tech/' + idx);
-    });
+    try {
+      setToken()
+      const editorContent = editorRef.current?.getInstance().getMarkdown();
+      const editorContent2 = editorRef.current?.getInstance().getHTML();
+
+      // 저장하고자 하는 내용을 board 객체에 추가
+      setBoard({
+        ...board,
+        detail: editorContent2
+      });
+
+      const params = {
+        title: board.title,
+        detail: editorContent2, // 수정된 부분: editorContent를 사용
+        imagePath: board.imagePath,
+        isAnonymous: board.isAnonymous,
+      }
+
+      // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
+      const response = await requestPut(`tech/post/update/${postid}`, params);
+      
+      console.log(response);
+      alert('등록되었습니다.');
+      navigate('/tech/post/detail/' + postid);
+    } catch (error) {
+      console.error('게시글 등록 에러:', error);
+    } 
   };
 
   const backToDetail = () => {
-    navigate('/tech/' + idx);
+    navigate('/tech/post/detail/' + postid);
   };
 
-  useEffect(() => {
-    getBoard();
-  }, []);
-  const handleRegisterButton = () => {
-    // 에디터 내용을 얻어와서 변수에 저장
-    const detail = editorRef.current?.getInstance().getMarkdown();
-  }
+  
   return (
     <Slayout>
       <div>
@@ -60,7 +90,6 @@ const TechBoardUpdate = () => {
       <div>
         <Editor
           ref={editorRef}
-          placeholder="내용을 입력해주세요."
           previewStyle="vertical"
           height="500px"
           width="100%"
@@ -73,9 +102,7 @@ const TechBoardUpdate = () => {
             ['table', 'image', 'link'],
             ['code', 'codeblock']
           ]}
-          useCommandShortcut={false}
         />
-        <SBtn onClick={handleRegisterButton}>확인</SBtn>
       </div>
       <br />
       <SBtnContainer>
@@ -85,7 +112,6 @@ const TechBoardUpdate = () => {
     </Slayout>
   );
 };
-
 export default TechBoardUpdate;
 
 const SBtn = styled.div`

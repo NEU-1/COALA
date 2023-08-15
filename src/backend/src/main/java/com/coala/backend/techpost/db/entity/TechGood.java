@@ -4,6 +4,7 @@ import com.coala.backend.member.db.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,20 +17,24 @@ public class TechGood {
     private Long id;
 
     @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "fp_id")
+    @JoinColumn(name = "tp_id")
     @NotNull
-    private TechPost fpId;
+    private TechPost tpId;
 
     @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_id")
+    @JoinColumn(name = "writer_id", referencedColumnName = "member_id")
     @NotNull
     private TechPost writerId;
 
-    @ManyToOne(targetEntity = TechPost.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", referencedColumnName = "email")
     @NotNull
-    private Member userId;
+    private Member memberId;
 
-    @Column(columnDefinition = "integer default 0", name = "is_good")
-    private int isGood;
+    @Builder
+    public TechGood(TechPost tpId, TechPost writerId, Member memberId) {
+        this.tpId = tpId;
+        this.writerId = writerId;
+        this.memberId = memberId;
+    }
 }

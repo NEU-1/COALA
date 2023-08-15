@@ -7,6 +7,7 @@ import com.coala.backend.notice.db.entity.Notice;
 import com.coala.backend.notice.db.repository.NoticeRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,33 +29,25 @@ public class NoticeController {
 
     // 게시글 저장
     @PostMapping("post/save")
-    public NoticeResponseDto saveNoticePost(@RequestBody @Valid NoticeRequestDto requestDto) {
+    public ResponseEntity<Notice> saveNoticePost(@RequestBody @Valid NoticeRequestDto requestDto) {
         noticeService.savePost(requestDto);
 
-        return new NoticeResponseDto(
-                requestDto.toEntity().getId(),
-                requestDto.toEntity().getTitle(),
-                requestDto.toEntity().getDetail(),
-                requestDto.toEntity().getCreateAt(),
-                requestDto.toEntity().getUpdateAt(),
-                requestDto.toEntity().getImagePath());
+        return ResponseEntity.ok()
+                .header("성공", "게시글 작성")
+                .body(requestDto.toEntity());
     }
 
     // 게시글 수정
     @PutMapping("post/update/{id}")
-    public NoticeResponseDto updateNotice(@PathVariable("id") Long id,
+    public ResponseEntity<Notice> updateNotice(@PathVariable("id") Long id,
                                               @RequestBody @Valid NoticeRequestDto requestDto) {
         noticeService.updateNotice(id, requestDto);
         Optional<Notice> findPost = noticeRepository.findById(id);
         Notice notice = findPost.get();
 
-        return new NoticeResponseDto(
-                notice.getId(),
-                notice.getTitle(),
-                notice.getDetail(),
-                notice.getCreateAt(),
-                notice.getUpdateAt(),
-                notice.getImagePath());
+        return ResponseEntity.ok()
+                .header("성공", "게시글 수정")
+                .body(notice);
     }
 
     // 모든 게시물 불러오기, page 는 page 번호
@@ -92,16 +85,12 @@ public class NoticeController {
 
     // 게시물 상세화면
     @GetMapping("post/detail/{id}")
-    public NoticeResponseDto detailNoticePost(@PathVariable("id") Long id) {
+    public ResponseEntity<NoticeRequestDto> detailNoticePost(@PathVariable("id") Long id) {
         NoticeRequestDto noticeRequestDto = noticeService.getPost(id);
 
-        return new NoticeResponseDto(
-                noticeRequestDto.getId(),
-                noticeRequestDto.getTitle(),
-                noticeRequestDto.getDetail(),
-                noticeRequestDto.getCreateAt(),
-                noticeRequestDto.getUpdateAt(),
-                noticeRequestDto.getImagePath());
+        return ResponseEntity.ok()
+                .header("성공", "게시글 상세")
+                .body(noticeRequestDto);
     }
     
     // 게시물 삭제

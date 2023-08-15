@@ -4,6 +4,12 @@ import styled from "styled-components";
 import axios from 'axios';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
+// import axios from 'axios';
+import { Editor } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import { requestPost, requestGet, setToken } from "../../../lib/api/api";
+import {uploadToS3} from "../../../lib/api/upload"
+
 
 
 const SBtn = styled.div`
@@ -58,25 +64,18 @@ const Title = styled.div`
   font-size: 30px;
 `
 
+
 function TechBoardWrite() {
   const navigate = useNavigate();
 
   const [board, setBoard] = useState({
-    memberId : '',
     title: '',
     detail: '',
-    imagePath: 'String',
+    imagePath: [''],
     isAnonymous: false,
   });
 
-  const getMemberId = () => {
-    axios.get('http://i9d108.p.ssafy.io:9999/api/member/info')
-     .then((response) => {
-      const memberId = response.data
-     })
-  }
-
-  const { memberId, title, detail } = board;
+  const { title, detail } = board;
 
   const onChange = (event) => {
     const { value, name } = event.target;
@@ -85,27 +84,36 @@ function TechBoardWrite() {
       [name]: value,
     });
   };
+  
+  const [Imagepath,setPath] = useState()
 
   const saveBoard = async () => {
     try {
-      
-      // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-      const dataToSend = {
-        memberId: board.memberId,
+      const editorContent = editorRef.current?.getInstance().getMarkdown();
+      const editorContent2 = editorRef.current?.getInstance().getHTML();
+  
+      // 저장하고자 하는 내용을 board 객체에 추가
+      setBoard({
+        ...board,
+        detail: editorContent, editorContent2
+      });
+  
+      const params = {
         title: board.title,
-        detail: board.detail,
-        imagePath: board.imagePath,
+        detail: board.detail,// 수정된 부분: editorContent를 사용
+        imagePath: [Imagepath],
         isAnonymous: board.isAnonymous,
-      };
-
-      console.log(dataToSend)
-
-      await axios.post('http://i9d108.p.ssafy.io:9999/api/tech/post/save', dataToSend);
+      }
+      setToken()
+      // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
+      const response = await requestPost("tech/post/save", params);
+      
+      console.log(response);
       alert('등록되었습니다.');
-      navigate('/tech');
+      navigate(`/tech`);
     } catch (error) {
       console.error('게시글 등록 에러:', error);
-    }
+    } 
   };
 
   const backToList = () => {
@@ -114,16 +122,7 @@ function TechBoardWrite() {
 
   const editorRef = useRef();
 
-  const handleRegisterButton = () => {
-    // 에디터 내용을 얻어와서 변수에 저장
-    const editorContent = editorRef.current?.getInstance().getMarkdown();
-    console.log(editorContent)
-    // 저장하고자 하는 내용을 board 객체에 추가
-    setBoard({
-      ...board,
-      detail: editorContent,
-    });
-  }
+  
   return (
     <Slayout>
       <div>
@@ -134,7 +133,7 @@ function TechBoardWrite() {
         </Titletext>
       </div>
       <div>
-        {/* <Editor
+        {<Editor
           ref={editorRef}
           placeholder="내용을 입력해주세요."
           previewStyle="vertical"
@@ -150,9 +149,32 @@ function TechBoardWrite() {
             ['code', 'codeblock']
           ]}
           useCommandShortcut={false}
-          
-        /> */}
-        <SBtn onClick={handleRegisterButton}>확인</SBtn>
+          hooks={{
+            addImageBlobHook: async (blob, callback) => {
+              let imgURL;
+              console.log(blob);  // File {name: '카레유.png', ... }
+              console.log(blob.name)
+              const reader = new FileReader();
+              
+              
+              reader.onload = async function(event) {
+                const buffer = event.target.result;
+                console.log(buffer);
+                imgURL = await uploadToS3("Tech", blob.name, buffer);
+                
+                console.log("함수안",imgURL)
+                callback(imgURL, blob.name);
+                setPath(imgURL)
+              };
+
+
+              reader.readAsArrayBuffer(blob);
+              // 2. 첨부된 이미지를 화면에 표시(경로는 임의로 넣었다.)
+              console.log("함수밖",imgURL);
+            }
+          }}
+        />
+      }
       </div>
       <br />
       <SBtnContainer>
