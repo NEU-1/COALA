@@ -76,6 +76,13 @@ const RootNavigation = () => {
         <Route path="/changepw" element={<ChangePw />} />
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
+
+        <Route path="/chat" element={<ChatContainer />}>
+          <Route index path="/chat/chat-list" element={<ChatListContainer />} />
+          <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
