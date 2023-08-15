@@ -23,13 +23,13 @@ export default function ImgMediaCard({ item, onClick }) {
         console.log("자기가 쓴 글은 추천 못함");
       });
   };
-  console.log(item);
+  // console.log(item);
 
   return (
     <SCard $isRented={item.isRented} onClick={onClick}>
-      <SCardMedia image={item.image}>
+      <SCardMedia image={item.storeImageList[0].url}>
         <div>{item.isRented ? <SRental>대여 완료</SRental> : ""}</div>
-      </SCardMedia>
+      </SCardMedia> 
       {!item.mine && (
         <SLike onClick={handleLike} isLiked={isLiked}>
           {isLiked ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
@@ -63,7 +63,7 @@ const SCard = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid grey;
+  border: 1px solid #e9d5ff;
   max-width: 345px;
   ${(props) => props.$isRented && `background: rgba(128, 128, 128, 0.5);`}
   border-radius: 10px;
@@ -80,6 +80,7 @@ const SCardMedia = styled.div`
     ${(props) => (props.$isRented ? "rgba(128, 128, 128, 0.5)" : "lightgray")}
       50% / cover no-repeat;
   position: relative;
+  background-size: 100%;
 `;
 
 const SLike = styled(({ isLiked, ...props }) => <div {...props} />)`

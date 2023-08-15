@@ -13,37 +13,42 @@ import {
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
   const { postId } = useParams();
-
+  
   setToken();
   useEffect(() => {
     requestGet(`store/detail?id=${postId}`)
-      .then((res) => {
+    .then((res) => {
         setPostData(res.data);
         setLike(res.data.like);
         setIsAuthor(res.data.mine);
+        setPictures(res.data.storeImageList)
+        console.log(res.data.storeImageList)
+        console.log(pictures)
       })
       .catch((err) => {
         console.error(err);
       });
-  }, []);
-
-  console.log(postData);
-
-  const [pictures, setPictures] = useState([]);
+    }, []);
+    
+    console.log(postData);
+    
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setLike] = useState(false);
   const [isAuthor, setIsAuthor] = useState(false);
+  const [pictures, setPictures] = useState([]);
   useEffect(() => {
     if (postData) {
       setLike(postData.like);
       setIsAuthor(postData.mine);
+      setPictures(postData.storeImageList)
+
     }
   }, []);
-
+  
   const navigate = useNavigate();
-
+  
   const isLogin = login;
-
+  
   const [showModal, setShowModal] = useState(false);
 
   const formattedDate = (dateString) => {
@@ -137,7 +142,7 @@ const StoreDetail = () => {
       {pictures.length ? (
         <SImgs>
           <button onClick={handlePictureChange}>{"<"}</button>
-          {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
+          {pictures.length > 0 && <SImg src={pictures[pictureNum].url} alt="" />}
           <button onClick={handlePictureChange}>{">"}</button>
         </SImgs>
       ) : null}
@@ -227,7 +232,7 @@ const SImgs = styled.div`
 `;
 
 const SImg = styled.img`
-  width: 800px;
+  // width: 800px;
   height: 372px;
 `;
 

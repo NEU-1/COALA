@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from "../../assets/images";
 import Swal from "sweetalert2";
-import { requestPost, setToken } from "../../lib/api/api";
+import { requestPost2, setToken } from "../../lib/api/api";
 
 const StoreWrite = () => {
   console.log(images);
@@ -192,17 +192,27 @@ const StoreWrite = () => {
 
     if (validation.isValid) {
       setToken();
-      requestPost("store/write", {
-        title: title,
-        detail: content,
-        minRentalPeriod: minRentalDay,
-        maxRentalPeriod: maxRentalDay,
-        limitDate: `${year}-${month}-${date}`,
-        rentalCost: rentalFee,
-        deposit: deposit,
-        category: productSelect + 1,
-        // "image": imageList,
-      })
+
+      const formData = new FormData();
+      formData.append(
+        "json",
+        JSON.stringify({
+          title: title,
+          detail: content,
+          minRentalPeriod: minRentalDay,
+          maxRentalPeriod: maxRentalDay,
+          limitDate: `${year}-${month}-${date}`,
+          rentalCost: rentalFee,
+          deposit: deposit,
+          category: productSelect + 1,
+        })
+      );
+          formData.append(`multipartFile`, imageList);
+        
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      requestPost2("store/write", formData)
         .then((response) => {
           displayMessage("success", "게시글 등록됨");
           console.log(response);
@@ -531,6 +541,7 @@ const SSellTitleInput = styled.input`
   font-size: 20px;
   font-weight: 700;
   width: 600px;
+  // maxLength={15}
 `;
 
 const SFilterContainer = styled.div`

@@ -11,9 +11,10 @@ import { login } from "../../store/LoginSlice";
 import { requestPost, setToken } from "../../lib/api/api";
 
 const product = ["키보드", "마우스", "헤드셋", "태블릿"];
-const day = ["1일", "1일 이상", " 7일 이상", "30일 이상"];
+const day = ["1일", "7일", " 14일", "30일"];
 
 const Store = () => {
+  console.log("렌더링 됩니다~")
   const [filter, setFilter] = useState(false);
   const [productType, setProductType] = useState("");
   const [dayType, setDayType] = useState("");
@@ -26,13 +27,22 @@ const Store = () => {
   const handleFilterToggle = () => {
     setFilter(!filter);
   };
-
+  console.log(productType, "렌더링 직후")
+  
   const handleProductTypeChange = (index) => {
-    setProductType(index);
+    if (productType === index) {
+      setProductType("")
+    } else {
+      setProductType(index);
+    }
   };
 
   const handleDayTypeChange = (index) => {
-    setDayType(index);
+    if (dayType === index) {
+      setDayType("")
+    } else {
+      setDayType(index);
+    }
   };
   const resetDayAndProduct = () => {
     setProductType("");
@@ -45,36 +55,42 @@ const Store = () => {
     setData([]);
     loadMoreData();
   };
-
+  
   const seeProductCheckHandler = (e) => {
     setseeProductCheck(e.target.checked);
   };
-  const loadMoreData = () => {
+  
+  console.log(productType, "렌더링 직후2")
+  const loadMoreData = () => { // 함수 들어가면서 값 갱신이 바로바로 안되는데. 변경 전 값을 계속 유지하고 있고 코드 쪽에서 뭐라도 수정하고 저장하면 갱신되네
+    console.log(productType, "렌더링 직후3")
     const nextPage = pageRef.current + 1;
     pageRef.current = nextPage;
 
+    console.log(productType, "파람스 정의 전") // 스크롤 내리면 렌더링 되나?
     const params = {
       category: productType,
-      minRentalPeriod: dayType,
+      Period: dayType,
       minRentalCost: priceRange[0],
       maxRentalCost: priceRange[1],
       status: seeProductCheck,
     };
-
     requestPost(`store/list?page=${nextPage}`, params)
-      .then((response) => {
-        setData((prevData) => [...prevData, ...response.data.list]);
+      .then((res) => {
+        console.log(productType, "리퀘스트 안") // 스크롤 내리면 params 가 초기화 됨
+        console.log(res.data)
+        setData((prevData) => [...prevData, ...res.data.list]);
       })
       .catch((err) => {
         console.error(err);
       });
-  };
+    };
 
   const handleScroll = () => {
     const scrollTTop = document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
     const clientHeight = document.documentElement.clientHeight;
     const scrollBottom = Math.ceil(scrollTTop + clientHeight);
+
+    const scrollHeight = document.documentElement.scrollHeight;
 
     if (scrollBottom >= scrollHeight) {
       loadMoreData();
@@ -143,11 +159,12 @@ const Store = () => {
                 <SPageText>대여 기간</SPageText>
                 <SSelectProduct>
                   {day.map((day, index) => {
+                    const Nindex = index + 1;
                     return (
                       <SSelectDayBtn
                         key={index}
-                        onClick={() => handleDayTypeChange(index)}
-                        $activeDay={dayType === index}
+                        onClick={() => handleDayTypeChange(Nindex)}
+                        $activeDay={dayType === Nindex}
                       >
                         {day}
                       </SSelectDayBtn>
@@ -157,7 +174,7 @@ const Store = () => {
               </SFilterProduct>
             </SFilterProductType>
             <SFilterGageBar>
-              <STextCost>가격</STextCost>
+              <STextCost>렌탈비</STextCost>
               <div>
                 {priceRange[0]} - {priceRange[1]}
               </div>
