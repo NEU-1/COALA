@@ -42,7 +42,7 @@ public class FreePostServiceImpl implements FreePostService{
                 .title(postDto.getTitle())
                 .detail(postDto.getDetail())
                 .images(postDto.getImagePath())
-                .isAnonymous(postDto.isAnonymous())
+                .anonymous(postDto.isAnonymous())
                 .build();
 
         freePostRepository.saveAndFlush(freePost);
@@ -72,7 +72,7 @@ public class FreePostServiceImpl implements FreePostService{
                         .updateAt(freePost.getUpdateAt())
                         .imagePath(str + freePost.getImages())
                         .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
-                        .isAnonymous(freePost.isAnonymous())
+                        .anonymous(freePost.isAnonymous())
                         .views(freePost.getViews())
                         .commentCount(freePost.getComments().size())
                         .goodCount(freePost.getGoods().size())
@@ -113,7 +113,7 @@ public class FreePostServiceImpl implements FreePostService{
                 .updateAt(freePost.getUpdateAt())
                 .good(good)
                 .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
-                .isAnonymous(freePost.isAnonymous())
+                .anonymous(freePost.isAnonymous())
                 .views(freePost.getViews())
                 .commentCount(freePost.getComments().size())
                 .goodCount(freePost.getGoods().size())
@@ -149,7 +149,7 @@ public class FreePostServiceImpl implements FreePostService{
                         .detail(freePost.getDetail())
                         .createAt(freePost.getCreateAt())
                         .updateAt(freePost.getUpdateAt())
-                        .isAnonymous(freePost.isAnonymous())
+                        .anonymous(freePost.isAnonymous())
                         .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
                         .imagePath(str + freePost.getImages())
                         .views(freePost.getViews())
