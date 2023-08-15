@@ -8,7 +8,9 @@ import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import styled from 'styled-components'
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
-// import CCheckBox from '../Common/CCheckBox';
+import CCheckBox from '../../Common/CCheckBox';
+import './Pagination.css';
+import Pagination from "react-js-pagination";
 
 
 
@@ -62,6 +64,14 @@ const FreeBoardDetail = () => {
 
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
+  const [anonymous, setAnonymous] = useState(false);
+  const [maxpage, setMaxpage] = useState();
+
+  const onChangeAnonymous = () => {
+    setAnonymous(!anonymous);
+    console.log(anonymous)
+  };
+
 
 
   const getBoardList = () => {
@@ -70,6 +80,10 @@ const FreeBoardDetail = () => {
     .then(resp=>{console.log(resp.data.list);setPosts(resp.data.list)})
    
   }
+  const handlePageChange = (page) => {
+    setPage(page);
+    getBoardList();
+  };
 
   useEffect(() => {
     getBoardList()
@@ -82,8 +96,8 @@ const [commentboard, setcommentBoard] = useState({
   fpId: {
     "id": "int",
   },
-  author: '',
   commentcontent: '',
+  anonymous: false,
 });
 
 const { author , commentcontent} = commentboard;
@@ -103,8 +117,8 @@ const saveCommentBoard = async () => {
       fpId: {
         "id": Number(postid),       
     },
-      author: commentboard.author,
       content:commentboard.commentcontent,
+      anonymous : anonymous,
     }
     // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
     const response = await requestPost(`free/comment/save/${postid}`, params);
@@ -196,9 +210,14 @@ const unlikeBtn = async() => {
         <div>댓글</div>
         <CommentSlayout>
         <Writecontainer>
-        <p>작성자:</p>
-        <CommentTextinput type="text" name="author" value={author} onChange={onChange} />
-        <p>내용:</p>
+        <CCheckBoxcontainer>
+          <CCheckBox
+            text={'익명'}
+            checked={anonymous}
+            onChange={onChangeAnonymous}
+          />
+        </CCheckBoxcontainer>
+        
         <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} />
       </Writecontainer>
         <SBtn onClick={saveCommentBoard}>등록</SBtn>
@@ -208,25 +227,38 @@ const unlikeBtn = async() => {
     <div>
       
       {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-      {posts && posts.map(({ id, author , content, createAt, nickname, mine}) => (
+      {posts && posts.map(({ id, author , content, createAt,nickname,mine ,anonymous}) => (
         <Contentbox key={id}>
           <Commenttitlebox>
-            <Titletext2>
-              {nickname}
-            </Titletext2>
-            <Userbox>
-              <Numbertext>{createAt.slice(0,10)}</Numbertext>
-            </Userbox>
-          </Commenttitlebox>
+            <Minititlebox>
+            {(anonymous ? (
+            <Titletext2>******</Titletext2>
+          ) : ( <Titletext2>{nickname.length > 6 ? `${nickname.slice(0, 6)}...` : nickname}</Titletext2>
+          ))}    
+            <Linetext>|</Linetext>
+            <Numbertext>{createAt.slice(0,10)}</Numbertext>
+            </Minititlebox>
+          <Commentcontentbox>
             {content}
-            <Subcommentupdatebox>
-          {(mine ? (
-            <SBtn onClick={() => commentDelete(id)}>삭제</SBtn>
-          ) : ( <div></div>
-          ))}     
+          </Commentcontentbox>
+          </Commenttitlebox>
+          <Subcommentupdatebox>
+            {(mine ? (
+              <SBtndelete onClick={() => commentDelete(id)}>삭제</SBtndelete>
+            ) : ( <div></div>
+            ))}     
           </Subcommentupdatebox>   
         </Contentbox>
       ))}
+      <Pagination
+          activePage={page}
+          itemsCountPerPage={5}
+          totalItemsCount={maxpage*5}
+          pageRangeDisplayed={maxpage}
+          prevPageText={"‹"}
+          nextPageText={"›"}
+          onChange={handlePageChange}
+        />
       {(board.mine ? (
             <SBtnContainer>
             <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
@@ -258,7 +290,7 @@ const SBtn1 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 20px 20px;
   justify-content: center;
   align-items: center;
   background-color: #E9D5FF;
@@ -270,7 +302,7 @@ const SBtn2 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 20px 20px;
   justify-content: center;
   align-items: center;
   background-color: #BD84FC;
@@ -282,7 +314,7 @@ const SBtn3 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 10px 10px;
   justify-content: center;
   align-items: center;
   background-color: #D9D9D9;
@@ -304,11 +336,9 @@ padding-bottom: 20px;
 `;
 
 const Profiletext = styled.div`
-  
   width: 800px;
   margin-bottom: 3px;
   font-size: 15px;
-  border-bottom: 1px solid #BD84FC;
   padding-bottom: 15px;
 
 `
@@ -316,7 +346,6 @@ const Profiletext = styled.div`
 const LIkeconteiner = styled.div`
   display: flex;
   font-size: 10px;
-  margin-bottom: 10px;
 `
 
 const Detailconteiner = styled.div`
@@ -347,27 +376,17 @@ const Contentbox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border-top: 1px solid #BD84FC;
-  border-bottom: 1px solid #BD84FC;
+  border-bottom: 1px solid #e9d5ff;
   margin-bottom: 20px;
-  border-radius: 3%;
   width: 800px;
+  margin-bottom: 0;
+  padding: 3px;
 `
 
-const Userbox = styled.div`
-  display: flex;
-  margin-bottom: 10px;
-  margin-top: 5px;
-`
-const Usertext = styled.div`
-  margin-left: 5px;
-  margin-right: 5px;
-  font-size: 13px;
-`
 const Numbertext = styled.div`
   margin-left: 5px;
   margin-right: 5px;
-  font-size: 13px;
+  font-size: 8px;
   margin-top: 3px;
 `
 const Titletext = styled.div`
@@ -382,12 +401,15 @@ const Count = styled.div`
 `
 
 const Titletext2 = styled.div`
-  font-size: 15px;
-  margin-left: 5px;
+  font-size: 12px;
+  margin-left: 10px;
+  width: 70px;
+  display: flex;
+  justify-content: center;
 `
 
 const Container = styled.div`
-  border-bottom: 1px solid #BD84FC;
+  border-bottom: 1px solid #e9d5ff;
   margin-bottom: 50px;
 `
 const Like = styled.div`
@@ -398,32 +420,58 @@ const CommentSlayout = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     width: 800px;
     margin-top: 20px;
-    border-top: 1px solid #BD84FC;
-    border-bottom: 1px solid #BD84FC;
+    border-top: 1px solid #e9d5ff;
+    border-bottom: 1px solid #e9d5ff;
     padding-top: 10px;
     padding-bottom: 10px;
+    margin-bottom: 20px;
 
 `
 const Writecontainer = styled.div`
-    display: flex;`
+      display: flex;
+      align-items: center;
+    `
 
 const CommentTextinput = styled.input`
     font-size: 12px;
-    border: 1px black;
+    height: 50px;
+    width: 500px;
+    border: 1px solid #d9d9d9;
+    margin-left: 50px;
+
 `
 
 const SBtn = styled.div`
   display: flex;
   height: 30px;
-  width: 30px;
+  width: 40px;
   justify-content: center;
   align-items: center;
+  margin-left: 10px;
+  margin-right: 13px;
   gap: 10px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => (props.color ? props.color : '#d9d9d9')};
+  background-color:#e9d5ff;
+  color: white;
+  cursor: pointer;
+  `
+
+const SBtndelete = styled.div`
+  display: flex;
+  height: 30px;
+  width: 40px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  margin-right: 10px;
+  gap: 10px;
+  border-radius: 7px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  background-color:#e9d5ff;
   color: white;
   cursor: pointer;
   `
@@ -432,13 +480,43 @@ const SBtn = styled.div`
     font-size: 12px;
     border: 1px black;
 `
-
-const Commenttitlebox = styled.div`
+  const Commenttitlebox = styled.div`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-around;
     align-items: center;
   `
   const Subcommentupdatebox = styled.div`
     display: flex;
+  `
+
+  const Commentcontentbox = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    font-size: 15px;
+
+  `
+  const Profilebox = styled.div`
+    display: flex;
+    border-bottom: 1px solid #e9d5ff;
+  ` 
+
+  const Minititlebox = styled.div`
+    display: flex;
+    align-items: end;
+    width: 200px;
+
+  `
+  const CCheckBoxcontainer = styled.div`
+    margin-left: 30px;
+  `
+  const Linetext = styled.div`
+    display: flex;
+    font-size: 8px;
+    justify-content: center;
+    margin-left: 5px;
+    color: #D9D9D9
+    
+
   `

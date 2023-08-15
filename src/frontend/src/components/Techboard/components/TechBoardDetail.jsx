@@ -10,6 +10,8 @@ import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
 import Modal from 'react-modal'
 import CCheckBox from '../../Common/CCheckBox';
+import './Pagination.css';
+import Pagination from "react-js-pagination";
 
 
 
@@ -106,6 +108,7 @@ const TechBoardDetail = () => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
   const [anonymous, setAnonymous] = useState(false);
+  const [maxpage, setMaxpage] = useState();
 
   const onChangeAnonymous = () => {
     setAnonymous(!anonymous);
@@ -142,10 +145,13 @@ const TechBoardDetail = () => {
   const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`tech/comment/${postid}/${page}`)
-    .then(resp=>{console.log(resp.data);setPosts(resp.data.list)})
+    .then(resp=>{console.log(resp.data);setPosts(resp.data.list);setMaxpage(resp.data.detail);})
     setcommentBoard({...commentboard, author: '', commentcontent: ''});
   }
-
+  const handlePageChange = (page) => {
+    setPage(page);
+    getBoardList();
+  };
   useEffect(() => {
     getBoardList() // 1) 게시글 목록 조회 함수 호출
     getBoard();
@@ -242,7 +248,7 @@ const commentDelete = async (commentId) => {
           <Commenttitlebox>
             <Minititlebox>
             {(anonymous ? (
-            <Titletext2>익명</Titletext2>
+            <Titletext2>*******</Titletext2>
           ) : ( <Titletext2>{nickname.length > 6 ? `${nickname.slice(0, 6)}...` : nickname}</Titletext2>
           ))}    
             
@@ -261,7 +267,15 @@ const commentDelete = async (commentId) => {
         </Contentbox>
       ))}
       
-      
+      <Pagination
+          activePage={page}
+          itemsCountPerPage={5}
+          totalItemsCount={maxpage*5}
+          pageRangeDisplayed={maxpage}
+          prevPageText={"‹"}
+          nextPageText={"›"}
+          onChange={handlePageChange}
+        />
         {(board.mine ? (
             <SBtnContainer>
             <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
@@ -404,7 +418,7 @@ const Count = styled.div`
 const Titletext2 = styled.div`
   font-size: 12px;
   margin-left: 10px;
-  width: 100px;
+  
   display: flex;
   justify-content: center;
 `
@@ -421,16 +435,19 @@ const CommentSlayout = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     width: 800px;
     margin-top: 20px;
     border-top: 1px solid #e9d5ff;
     border-bottom: 1px solid #e9d5ff;
     padding-top: 10px;
     padding-bottom: 10px;
+    margin-bottom: 20px;
 
 `
 const Writecontainer = styled.div`
       display: flex;
+      align-items: center;
     `
 
 const CommentTextinput = styled.input`
@@ -449,6 +466,23 @@ const SBtn = styled.div`
   justify-content: center;
   align-items: center;
   margin-left: 10px;
+  margin-right: 13px;
+  gap: 10px;
+  border-radius: 7px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  background-color:#e9d5ff;
+  color: white;
+  cursor: pointer;
+  `
+
+const SBtndelete = styled.div`
+  display: flex;
+  height: 30px;
+  width: 40px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  margin-right: 10px;
   gap: 10px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -486,8 +520,18 @@ const SBtn = styled.div`
   const Minititlebox = styled.div`
     display: flex;
     align-items: end;
+    width: 200px;
+
   `
   const CCheckBoxcontainer = styled.div`
     margin-left: 30px;
   `
+  const Linetext = styled.div`
+    display: flex;
+    font-size: 8px;
+    justify-content: center;
+    margin-left: 5px;
+    color: #D9D9D9
+    
 
+  `

@@ -3,7 +3,8 @@ import axios from "axios";
 import styled from "styled-components"
 import { useNavigate, Link } from 'react-router-dom';
 import {requestGet} from "../../../lib/api/api"
-import Pagination from './Pagination';
+import './Pagination.css';
+import Pagination from "react-js-pagination";
 
 
 const FreeBoardList = () => {
@@ -25,6 +26,10 @@ const FreeBoardList = () => {
   }
   const goTowrite = () => {
     navigate('/free/write');
+  };
+  const handlePageChange = (page) => {
+    setPage(page);
+    getBoardList(page);
   };
 
   useEffect(() => {
@@ -48,7 +53,7 @@ const FreeBoardList = () => {
             <Link to={`/free/post/detail/${id}`}>
             <Commentcontainer>
               <Freecontainer>
-              <Freeword>자유</Freeword>
+              <Freeword>Free</Freeword>
               <div>
               <Titletext>
                 {title}
@@ -64,18 +69,24 @@ const FreeBoardList = () => {
               </div>
               </Freecontainer>
               <Simg src={imagePath} alt="사진" />
-            
             </Commentcontainer>
             </Link>
           </Contentbox>
         ))}
 
-      <Pagination
-            totalPages={maxpage}
-            currentPage={currentPage}
-            onPageClick={onPageChange}
+        <Footerbutton>
+          <Dummi></Dummi>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={5}
+            totalItemsCount={maxpage*7}
+            pageRangeDisplayed={maxpage}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
           />
-      <Button onClick={goTowrite}>게시글 등록</Button>  
+          <Button onClick={goTowrite}>등록</Button>
+        </Footerbutton> 
     </Layout>
       
     </Slayout>
@@ -112,7 +123,9 @@ const Layout = styled.div`
 
 const Contentbox = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid #BD84FC;
   margin-bottom: 10px;
   width: 800px;
@@ -121,7 +134,7 @@ const Contentbox = styled.div`
 
 const Userbox = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  
   margin-top: 5px;
 `
 const Usertext = styled.div`
@@ -143,8 +156,9 @@ const Commentcontainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   width: 800px;
-  margin-top: 0;
+  margin-bottom: 10px;
 `
 const Freecontainer = styled.div`
   display: flex;
@@ -164,3 +178,14 @@ const Simg = styled.img`
   width: 80px;
 
 ` 
+
+const Footerbutton = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 800px;
+`
+const Dummi = styled.div`
+  width: 100px;
+`

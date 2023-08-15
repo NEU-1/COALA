@@ -82,15 +82,10 @@ const Store = () => {
       status: seeProductCheck,
     };
     requestPost(`store/list?page=${nextPage}`, params)
-<<<<<<< HEAD
-      .then((response) => {
-        setData((prevData) => [...prevData, ...response.data.list]);
-=======
       .then((res) => {
         console.log(productType, "리퀘스트 안") // 스크롤 내리면 params 가 초기화 됨
         console.log(res.data)
         setData((prevData) => [...prevData, ...res.data.list]);
->>>>>>> feature/store
       })
       .catch((err) => {
         console.error(err);

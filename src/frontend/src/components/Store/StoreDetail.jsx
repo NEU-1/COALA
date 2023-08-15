@@ -49,12 +49,9 @@ const StoreDetail = () => {
   }, []);
   
   const navigate = useNavigate();
-<<<<<<< HEAD
   const dispatch = useDispatch();
 
-=======
   
->>>>>>> feature/store
   const isLogin = login;
   
   const [showModal, setShowModal] = useState(false);

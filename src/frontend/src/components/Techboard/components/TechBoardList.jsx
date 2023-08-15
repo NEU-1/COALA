@@ -3,6 +3,8 @@ import axios from "axios";
 import styled from "styled-components"
 import { useNavigate, Link } from 'react-router-dom';
 import {requestGet} from "../../../lib/api/api"
+import Pagination from "react-js-pagination";
+import './Pagination.css';
 
 
 
@@ -10,33 +12,43 @@ const TechBoardList = () => {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
-  const [member, setMember] = useState()
+  const [maxpage, setMaxpage] = useState();
 
 
   const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`tech/post/${page}`)
-    .then(res=>{console.log(res.data);setPosts(res.data.list);})
+    .then(res=>{
+      console.log(res.data);
+      setMaxpage(res.data.detail);
+      setPosts(res.data.list);
 
-  }
-
-  
+    })
+      }
+  const handlePageChange = (page) => {
+    setPage(page);
+    getBoardList(page);
+  };
+ 
   const goTowrite = () => {
     navigate('/tech/write');
   };
 
   useEffect(() => {
-    getBoardList() // 1) 게시글 목록 조회 함수 호출
+    getBoardList(page) // 1) 게시글 목록 조회 함수 호출
   }, []);
-
+  
   return (
     <Slayout>
       <Layout>   
         {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
         {posts.map(({ id, title, views, createAt,imagePath,memberId  }) => (
           <Contentbox key={id}>
-            <div>
             <Link to={`/tech/post/detail/${id}`}>
+            <Commentcontainer>
+              <Techcontainer>
+              <Techword>Tech</Techword>
+              <div>
               <Titletext>
                 {title}
               </Titletext>
@@ -48,13 +60,28 @@ const TechBoardList = () => {
                 <Usertext>조회수</Usertext>
                 <Numbertext>{views}</Numbertext>
               </Userbox>
+              </div>
+              </Techcontainer>
+              <Simg src={imagePath} alt="사진" />
+            
+            </Commentcontainer>
               </Link>
-            </div>
-            <Simg src={imagePath} alt="사진" />
    
           </Contentbox>
         ))}
-      <Button onClick={goTowrite}>게시글 등록</Button>  
+        <Footerbutton>
+          <Dummi></Dummi>
+          <Pagination
+            activePage={page}
+            itemsCountPerPage={5}
+            totalItemsCount={maxpage*7}
+            pageRangeDisplayed={maxpage}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            onChange={handlePageChange}
+          />
+          <Button onClick={goTowrite}>등록</Button>
+        </Footerbutton>
     </Layout>  
     </Slayout>
   );
@@ -64,7 +91,6 @@ export default TechBoardList;
 
 const Slayout = styled.div`
   margin-top: 170px;
-  
 `
 const Button = styled.div`
   display: flex;
@@ -91,7 +117,9 @@ const Layout = styled.div`
 
 const Contentbox = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid #BD84FC;
   margin-bottom: 10px;
   width: 800px;
@@ -100,7 +128,7 @@ const Contentbox = styled.div`
 
 const Userbox = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  
   margin-top: 5px;
 `
 const Usertext = styled.div`
@@ -122,14 +150,15 @@ const Commentcontainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   width: 800px;
-  margin-top: 0;
+  margin-bottom: 10px;
 `
-const Freecontainer = styled.div`
+const Techcontainer = styled.div`
   display: flex;
 `
 
-const Freeword = styled.div`
+const Techword = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -141,4 +170,15 @@ const Freeword = styled.div`
 const Simg = styled.img`
   height: 80px;
   width: 80px;
-  `
+
+` 
+const Footerbutton = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 800px;
+`
+const Dummi = styled.div`
+  width: 100px;
+`

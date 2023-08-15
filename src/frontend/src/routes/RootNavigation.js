@@ -41,7 +41,6 @@ import AuctionUpdate from "../components/Auction/AuctionUpdate";
 import TechBoardDetail from "../components/Techboard/components/TechBoardDetail";
 import TechBoardWrite from "../components/Techboard/components/TechBoardWrite";
 import TechBoardList from "../components/Techboard/components/TechBoardList";
-import Commentapp from "../components/Techboard/components/Commentapp";
 import TechBoardUpdate from "../components/Techboard/components/TechBoardUpdate"
 
 //자유게시판
@@ -49,8 +48,6 @@ import FreeBoardDetail from "../components/Freeboard/components/FreeBoardDetail"
 import FreeBoardWrite from "../components/Freeboard/components/FreeBoardWrite";
 import FreeBoardList from "../components/Freeboard/components/FreeBoardList";
 import FreeBoardUpdate from "../components/Freeboard/components/FreeBoardUpdate"
-import FreeCommentForm from "../components/Freeboard/components/FreeCommentForm";
-import FreeCommentList from "../components/Freeboard/components/FreeCommentList";
 
 const RootNavigation = () => {
   return (
@@ -67,13 +64,11 @@ const RootNavigation = () => {
           <Route path="/tech/write" element={<TechBoardWrite />} />
           <Route path="/tech" element={<TechBoardList />} />
           <Route path="/tech/post/detail/:postid" element={<TechBoardDetail />} />
-          <Route path="/tech/comment" element={<Commentapp />} />
           <Route path="/tech/update/:postid" element={<TechBoardUpdate />} />
           <Route path="/free/update/:postid" element={<FreeBoardUpdate />} />
           <Route path="/free/post/detail/:postid" element={<FreeBoardDetail />} />
           <Route path="/free/write" element={<FreeBoardWrite />} />
           <Route path="/free" element={<FreeBoardList />} />
-          <Route path="/free/comment/:postid" element={<FreeCommentList />} />
           
 
           <Route path="/store" element={<Store />} />
