@@ -59,17 +59,24 @@ const Store = () => {
   const seeProductCheckHandler = (e) => {
     setseeProductCheck(e.target.checked);
   };
-  
+  console.log(dayType,"날짜")
   console.log(productType, "렌더링 직후2")
   const loadMoreData = () => { // 함수 들어가면서 값 갱신이 바로바로 안되는데. 변경 전 값을 계속 유지하고 있고 코드 쪽에서 뭐라도 수정하고 저장하면 갱신되네
     console.log(productType, "렌더링 직후3")
     const nextPage = pageRef.current + 1;
     pageRef.current = nextPage;
+    const dayTypeMapping = {
+      "1": 1,
+      "2": 7,
+      "3": 14,
+      "4": 30
+    };
+    const Period = dayTypeMapping[dayType] || "";
 
     console.log(productType, "파람스 정의 전") // 스크롤 내리면 렌더링 되나?
     const params = {
       category: productType,
-      Period: dayType,
+      Period,
       minRentalCost: priceRange[0],
       maxRentalCost: priceRange[1],
       status: seeProductCheck,
