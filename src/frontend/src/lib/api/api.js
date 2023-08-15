@@ -86,3 +86,14 @@ export const requestPost2 = async (url, body) => {
     throw error;
   }
 };
+
+
+export const requestPut2 = async (url, body) => {
+  try {
+    const data = await axios.put(baseUrl + url, body, headers2);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

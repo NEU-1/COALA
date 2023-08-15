@@ -37,7 +37,7 @@ export default function ImgMediaCard({ item, onClick }) {
       )}
       <SCardText>
         <STitleAndProduct>
-          <STitle>{item.storePost.title}</STitle>
+        <STitle>{item.storePost.title.length > 10 ? item.storePost.title.substring(0, 10) + '...' : item.storePost.title}</STitle>
           <SProduct>{item.storePost.product}</SProduct>
         </STitleAndProduct>
         <SDayAndCost>
