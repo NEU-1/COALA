@@ -424,6 +424,7 @@ const StoreUpdate = () => {
 export default StoreUpdate;
 
 const SMain = styled.div`
+margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -766,3 +767,4 @@ const SDropdownMenuItem = styled.div`
   gap: 10px;
   color: white;
 `;
+

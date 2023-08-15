@@ -17,6 +17,7 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
         // 데이터 자동 입력
         Category keyboard = new Category();
         keyboard.setName("키보드");

@@ -3,6 +3,7 @@ import axios from 'axios';
 // const baseUrl = 'https://i9d108.p.ssafy.io/api/';
 const baseUrl = 'http://i9d108.p.ssafy.io:9999/api/';
 const baseNodeUrl = 'http://i9d108.p.ssafy.io:3030/api/';
+// const baseUrl = 'http://localhost:9999/api/';
 
 const headers = {
   'Content-Type': 'application/json;charset=UTF-8',
@@ -53,7 +54,7 @@ export const requestGetNode = async (url, params) => {
   }
 };
 
-export const requestPost = async (url, body) => {
+export const requestPost = async (url, body, headers) => {
   try {
     const data = await axios.post(baseUrl + url, body, headers);
     return data;
