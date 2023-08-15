@@ -86,6 +86,4 @@ public class StorePost {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
-
 }

@@ -1,5 +1,6 @@
 package com.coala.backend.auction.api.service;
 
+import com.coala.backend.auction.db.entity.AuctionApply;
 import com.coala.backend.auction.db.entity.AuctionPost;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.member.db.entity.Member;
@@ -25,9 +26,11 @@ public interface AuctionService {
 
     BaseResponseDto delete(Long id, String email);
 
-    BaseResponseDto apply(Long id, Map<String, String> info, String email);
+    BaseResponseDto apply(Long id, AuctionApply auctionApply, String email);
 
     BaseResponseDto status(Long id, String email);
 
     PostResponseDto valid(Long id, String email);
+
+    int getId(Long id) throws Exception;
 }

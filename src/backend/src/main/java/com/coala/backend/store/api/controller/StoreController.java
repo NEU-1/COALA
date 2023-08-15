@@ -66,7 +66,7 @@ public class StoreController {
     }
 
     @PostMapping(value = "/write", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<? extends BaseResponseDto> write(@RequestParam("json") String json, HttpServletRequest request, @RequestParam("multipartFile") List<MultipartFile> files) throws Exception {
+    public ResponseEntity<? extends BaseResponseDto> write(@RequestParam("json") String json, HttpServletRequest request, @RequestPart("multipartFile") MultipartFile[] files) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         StorePost storePost = objectMapper.readValue(json, StorePost.class);
 
@@ -76,15 +76,16 @@ public class StoreController {
 
         fileService.delete(id, "store");
 
-        for(int i = 0; i < files.size(); i++){
-            fileService.file(files.get(i), "store", id,i+1);
+        for(int i = 0; i < files.length; i++){
+            fileService.file(files[i], "store", id,i+1);
         }
         return ResponseEntity.status(baseResponseDto.getStatusCode()).body(baseResponseDto);
     }
 
     @PutMapping("/update")
     public ResponseEntity<? extends BaseResponseDto> update(@RequestParam("json") String json, @RequestParam(value = "id")Long id,
-                                                            HttpServletRequest request, @RequestParam("multipartFile") List<MultipartFile> files) throws Exception{
+                                                            HttpServletRequest request,
+                                                            @RequestPart("multipartFile") List<MultipartFile> files) throws Exception{
         ObjectMapper objectMapper = new ObjectMapper();
         StorePost storePost = objectMapper.readValue(json, StorePost.class);
 

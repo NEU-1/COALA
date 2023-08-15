@@ -20,6 +20,7 @@ public class AuctionApply {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @JsonIgnore
     private Member member;
 
     @ManyToOne
@@ -50,6 +51,7 @@ public class AuctionApply {
     // 흥정가능 여부(1 : 가능, 0 :불가)
     @Column(name = "negotiation", nullable = false, columnDefinition = "int")
     private Integer negotiation;
+
 }
 
 

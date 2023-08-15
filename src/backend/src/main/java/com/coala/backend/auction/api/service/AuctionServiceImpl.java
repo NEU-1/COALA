@@ -3,8 +3,10 @@ package com.coala.backend.auction.api.service;
 import com.coala.backend.auction.db.dto.response.ApplyResponseDto;
 import com.coala.backend.auction.db.dto.response.PostResponseDto;
 import com.coala.backend.auction.db.entity.AuctionApply;
+import com.coala.backend.auction.db.entity.AuctionImage;
 import com.coala.backend.auction.db.entity.AuctionPost;
 import com.coala.backend.auction.db.repository.AuctionApplyRepository;
+import com.coala.backend.auction.db.repository.AuctionImageRepository;
 import com.coala.backend.auction.db.repository.AuctionPostRepository;
 import com.coala.backend.auction.db.repository.CustomAuctionPostRepositoryImpl;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
@@ -14,14 +16,17 @@ import com.coala.backend.product.db.entity.Category;
 import com.coala.backend.product.db.repository.CategoryRepository;
 import com.coala.backend.store.db.dto.response.ListResponseDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class AuctionServiceImpl implements AuctionService{
 
+    private AuctionImageRepository auctionImageRepository;
     private AuctionPostRepository auctionPostRepository;
 
     private MemberRepository memberRepository;
@@ -32,14 +37,6 @@ public class AuctionServiceImpl implements AuctionService{
 
     private AuctionApplyRepository auctionApplyRepository;
 
-
-    public AuctionServiceImpl(AuctionPostRepository auctionPostRepository, MemberRepository memberRepository, CategoryRepository categoryRepository, CustomAuctionPostRepositoryImpl customAuctionPostRepository, AuctionApplyRepository auctionApplyRepository) {
-        this.auctionPostRepository = auctionPostRepository;
-        this.memberRepository = memberRepository;
-        this.categoryRepository = categoryRepository;
-        this.customAuctionPostRepository = customAuctionPostRepository;
-        this.auctionApplyRepository = auctionApplyRepository;
-    }
 
     @Override
     public ListResponseDto list(Integer page, Map<String, String> info) {
@@ -99,7 +96,7 @@ public class AuctionServiceImpl implements AuctionService{
         List<ApplyResponseDto> applyResponseDtoList = new ArrayList<>();
 
         for(AuctionApply apply : auctionApplies){
-            applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId()));
+            applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId(), auctionImageRepository.findByAuctionApply(apply)));
         }
 
         postResponseDto.setAuctionApplies(applyResponseDtoList);
@@ -146,7 +143,7 @@ public class AuctionServiceImpl implements AuctionService{
     }
 
     @Override
-    public BaseResponseDto apply(Long id, Map<String, String> info, String email) {
+    public BaseResponseDto apply(Long id, AuctionApply auctionApply, String email) {
         AuctionPost auctionPost = auctionPostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
 
@@ -158,21 +155,13 @@ public class AuctionServiceImpl implements AuctionService{
             return new BaseResponseDto("현재 거래가 진행되어 신청이 불가능합니다.", 403);
         }
 
-        // 제안자
+        // 제안자(폼 변경 필요)
         Member applier = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("신청자가 존재하지 않습니다."));
-
-        AuctionApply auctionApply = new AuctionApply();
 
         auctionApply.setAuctionPost(auctionPost);
 
         auctionApply.setMember(applier);
-
-        auctionApply.setTitle(info.get("title"));
-        auctionApply.setDetail(info.get("detail"));
-        auctionApply.setDeposit(Integer.parseInt(info.get("deposit")));
-        auctionApply.setRentalCost(Integer.parseInt(info.get("rentalCost")));
-        auctionApply.setNegotiation(Integer.parseInt(info.get("negotiation")));
 
         auctionApplyRepository.save(auctionApply);
 
@@ -228,8 +217,9 @@ public class AuctionServiceImpl implements AuctionService{
 
             List<ApplyResponseDto> applyResponseDtoList = new ArrayList<>();
 
+
             for(AuctionApply apply : auctionApplies){
-                applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId()));
+                applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId(), auctionImageRepository.findByAuctionApply(apply)));
             }
 
             postResponseDto.setAuctionApplies(applyResponseDtoList);
@@ -245,5 +235,14 @@ public class AuctionServiceImpl implements AuctionService{
             return true;
         }
         return false;
+    }
+
+    public int getId(Long id) throws Exception{
+        AuctionPost auctionPost = auctionPostRepository.findById(id)
+                .orElseThrow(() -> new IllegalAccessException("게시글이 존재하지 않습니다."));
+
+        int idx = auctionPost.getAuctionApply().size();
+
+        return idx;
     }
 }
