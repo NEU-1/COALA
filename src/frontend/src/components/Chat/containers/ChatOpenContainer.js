@@ -23,8 +23,14 @@ const ChatOpenContainer = () => {
   };
 
   const moveStorePost = (e) => {
-    if (e.data.msg === 'movePage') {
+    if (e.data.msg === 'moveStorePage') {
       navigate(`store/${e.data.id}`);
+    }
+  };
+
+  const moveAuctionPost = (e) => {
+    if (e.data.msg === 'moveAuctionPage') {
+      navigate(`auction/${e.data.id}`);
     }
   };
 
@@ -32,11 +38,13 @@ const ChatOpenContainer = () => {
     // 이벤트리스너 한 번만 추가
     window.addEventListener('message', closeChat, false);
     window.addEventListener('message', moveStorePost, false);
+    window.addEventListener('message', moveAuctionPost, false);
 
     return () => {
       //언마운트되면 이벤트리스너 제거
       window.removeEventListener('message', closeChat);
       window.removeEventListener('message', moveStorePost);
+      window.removeEventListener('message', moveAuctionPost);
     };
   }, []);
 

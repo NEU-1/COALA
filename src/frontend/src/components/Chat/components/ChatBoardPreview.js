@@ -21,9 +21,11 @@ const ChatBoardPreview = ({ post, producer, consumer, myId, onClickPost }) => {
         />
         <SDescription>
           <div>{post.title}</div>
-          <div>
-            {post.rentalCost}원 / {post.deposit}원
-          </div>
+          {post.rentalCost && (
+            <div>
+              {post.rentalCost}원 / {post.deposit}원
+            </div>
+          )}
         </SDescription>
       </SStart>
       {/* 제공자와 이용자에 따라 활성화 / 비활성화 + 거래하기 / 수락하기 */}

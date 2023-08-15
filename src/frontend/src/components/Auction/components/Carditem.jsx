@@ -1,6 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchRoom } from "../../../api/nodeServer/Room";
+import { openChatModal } from "../../../store/chatModalSlice";
 
 export default function ImgMediaCard({
   img,
@@ -22,8 +25,28 @@ export default function ImgMediaCard({
   //   }
   // };
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const generateRoomId = () => {
+    let text = "";
+    let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(let i = 0;i < 5;i++) {
+      text += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    }
+
+    return text;
+  }
+
   const goChat = () => {
-    navigate("/chat");
+    const name = generateRoomId();
+      fetchRoom.create({roomName: name, pr_id: postId, ur_id: proposerId})
+      .then((res)=> {
+        dispatch(openChatModal());
+        setTimeout(()=>{
+          const chatModal = document.getElementById("chatModal");
+          chatModal.src=`/chat/${res.data.result.name}`; // roomID 받아오기
+        }, 100)
+      })
   };
   return (
     <SCard>
