@@ -31,21 +31,13 @@ const ChatListContainer = () => {
     requestGet(`member/info`).then((res) => {
       // 나중에 잘되었는지 아닌지 필터 필요
       setUser(res.data);
-      email = res.data.email;
-      console.log("dd",email)
+      email = res.data.member.email;
+      console.log("dd",res.data.member.email)
     }).then(() => {
       // const email = user.email;
       fetchRoom.read({ email })
       .then((res) => {
-        // 나중에 잘되었는지 아닌지 필터 필요
-        setUser(res.data.member);
-        email = res.data.member.email;
-      })})
-      .then(() => {
-        // const email = user.email;
-        console.log(email);
-        fetchRoom.read({ email }).then((res) => {
-          console.log('데이터', res);
+
           setList(res.data.rooms);
         });
       });

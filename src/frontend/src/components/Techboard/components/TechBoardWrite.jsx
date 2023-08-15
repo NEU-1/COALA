@@ -5,8 +5,8 @@ import axios from 'axios';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 // import axios from 'axios';
-import { Editor } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
+// import { Editor } from '@toast-ui/react-editor';
+// import '@toast-ui/editor/dist/toastui-editor.css';
 import { requestPost, requestGet, setToken } from "../../../lib/api/api";
 import {uploadToS3} from "../../../lib/api/upload"
 

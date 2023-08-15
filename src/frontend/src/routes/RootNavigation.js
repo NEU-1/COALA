@@ -38,18 +38,10 @@ import AuctionDetail from "../components/Auction/AuctionDetail";
 import AuctionUpdate from "../components/Auction/AuctionUpdate";
 
 // 테크게시판
-<<<<<<< HEAD
-import TechBoardDetail from '../components/Techboard/components/TechBoardDetail';
-import TechBoardWrite from '../components/Techboard/components/TechBoardWrite';
-import TechBoardList from '../components/Techboard/components/TechBoardList';
-import Commentapp from '../components/Techboard/components/Commentapp';
-=======
->>>>>>> origin/feature/file
 import TechBoardDetail from "../components/Techboard/components/TechBoardDetail";
 import TechBoardWrite from "../components/Techboard/components/TechBoardWrite";
 import TechBoardList from "../components/Techboard/components/TechBoardList";
 import Commentapp from "../components/Techboard/components/Commentapp";
-<<<<<<< HEAD
 import TechBoardUpdate from "../components/Techboard/components/TechBoardUpdate"
 
 //자유게시판
@@ -59,8 +51,6 @@ import FreeBoardList from "../components/Freeboard/components/FreeBoardList";
 import FreeBoardUpdate from "../components/Freeboard/components/FreeBoardUpdate"
 import FreeCommentForm from "../components/Freeboard/components/FreeCommentForm";
 import FreeCommentList from "../components/Freeboard/components/FreeCommentList";
-=======
->>>>>>> origin/feature/file
 
 const RootNavigation = () => {
   return (
@@ -111,11 +101,8 @@ const RootNavigation = () => {
         <Route path="/store/:postId/update" element={<StoreUpdate />} />
 
         <Route path="*" element={<NotFound />} />
-<<<<<<< HEAD
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
-=======
->>>>>>> origin/feature/file
       </Routes>
     </BrowserRouter>
   );
