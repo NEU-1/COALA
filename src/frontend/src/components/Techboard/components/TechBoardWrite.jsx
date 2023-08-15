@@ -68,7 +68,7 @@ function TechBoardWrite() {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-    imagePath: [''],
+    imagePath: '',
     isAnonymous: false,
   });
 
@@ -85,6 +85,7 @@ function TechBoardWrite() {
   const [Imagepath,setPath] = useState()
 
   const saveBoard = async () => {
+    setToken()
     try {
       const editorContent = editorRef.current?.getInstance().getMarkdown();
       const editorContent2 = editorRef.current?.getInstance().getHTML();
@@ -98,14 +99,13 @@ function TechBoardWrite() {
       const params = {
         title: board.title,
         detail: board.detail,// 수정된 부분: editorContent를 사용
-        imagePath: [Imagepath],
+        imagePath: Imagepath,
         isAnonymous: board.isAnonymous,
       }
-      setToken()
+  
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
       const response = await requestPost("tech/post/save", params);
-      
-      console.log(response);
+            console.log(response);
       alert('등록되었습니다.');
       navigate(`/tech`);
     } catch (error) {
@@ -149,7 +149,7 @@ function TechBoardWrite() {
           hooks={{
             addImageBlobHook: async (blob, callback) => {
               let imgURL;
-              console.log(blob);  // File {name: '카레유.png', ... }
+              console.log(blob);
               console.log(blob.name)
               const reader = new FileReader();
               
@@ -164,14 +164,12 @@ function TechBoardWrite() {
                 setPath(imgURL)
               };
 
-
               reader.readAsArrayBuffer(blob);
-              // 2. 첨부된 이미지를 화면에 표시(경로는 임의로 넣었다.)
               console.log("함수밖",imgURL);
             }
           }}
         />
-      }
+      }  
       </div>
       <br />
       <SBtnContainer>

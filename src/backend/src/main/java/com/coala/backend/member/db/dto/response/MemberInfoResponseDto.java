@@ -12,6 +12,7 @@ public class MemberInfoResponseDto {
     private Member member;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // member Id
     private Long id;
 
@@ -48,5 +49,8 @@ public class MemberInfoResponseDto {
 =======
     private BaseResponseDto baseResponseDto;
 >>>>>>> feature/auction
+=======
+    private BaseResponseDto baseResponseDto;
+>>>>>>> chat/front
 
 }

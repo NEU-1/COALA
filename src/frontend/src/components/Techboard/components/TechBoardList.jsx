@@ -16,6 +16,7 @@ const TechBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`tech/post/${page}`)
     .then(res=>{console.log(res.data);setPosts(res.data.list)})
+
   }
 
   
@@ -31,7 +32,7 @@ const TechBoardList = () => {
     <Slayout>
       <Layout>   
         {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-        {posts.map(({ id, title, views, createAt,imagePath, }) => (
+        {posts.map(({ id, title, views, createAt, }) => (
           <Contentbox key={id}>
             <div>
             <Link to={`/tech/post/detail/${id}`}>

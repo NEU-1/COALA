@@ -1,23 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { io as socketIOClient } from 'socket.io-client';
 import socketIO from '../../../api/nodeServer/socketIO';
+import api from '../../../api/nodeServer/base';
 import { fetchRoom } from '../../../api/nodeServer/Room';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatRoom from '../ChatRoom';
+import { requestGet, setToken } from '../../../lib/api/api';
+import Swal from 'sweetalert2';
+import ChatBlank from '../components/ChatBlank';
 
 let socket;
-let inform = {};
+// let inform = {};
 const name = 'chats';
-
-
+let email;
 const ChatRoomContainer = () => {
   const { roomName } = useParams();
   const [socket_state, setSocket_state] = useState('try connecting...');
   const [message, setMessage] = useState('');
-  const [username, setUsername] = useState('');
+  const [memberId, setMemberId] = useState('');
   const [allMessages, setAllMessages] = useState([]);
+  const [inform, setInform] = useState(null);
 
+  const inputRef = useRef();
   const onChangeMessage = (e) => {
+    inputRef.current = e.target.value;
     setMessage(e.target.value);
   };
 
@@ -36,24 +42,36 @@ const ChatRoomContainer = () => {
   };
   // 초기에 메시지 로그 받아오기
   const joinRoom = (roomName) => {
-    const email = 'tncks097@naver.com'
-    socket.emit('joinRoom', { roomName }, async (chatting_logs) => {
-      console.log(`join room[${roomName}]  successfully`);
-      const {data} = await fetchRoom.join({ roomName, email });
-      inform = data;
-      setAllMessages((pre) => [...pre, ...chatting_logs]);
-      // console.log("올 메시지",allMessages)
+    requestGet(`member/info`).then(() => {
+      socket.emit(
+        'joinRoom',
+        { roomName },
+        async ({ isRoom, chattingLogs }) => {
+          if (!isRoom) {
+            navigate('/chat-list/there-is-no-chat-room', { replace: true });
+          }
+          console.log(`join room[${roomName}]  successfully`);
+          const { data } = await fetchRoom.join({ roomName, email });
+          setInform(data.roomUser);
+          setAllMessages((pre) => [...pre, ...chattingLogs]);
+          // console.log("올 메시지",allMessages)
+        }
+      );
     });
   };
 
   useEffect(() => {
-    socketInitializer();
-
+    setToken();
+    requestGet(`member/info`).then((res) => {
+      socketInitializer();
+      // 나중에 잘되었는지 아닌지 필터 필요
+      setMemberId(res.data.member.id);
+      email = res.data.member.email;
+    });
     return () => {
       console.log('disconected');
       if (socket) {
         socket.disconnect();
-        fetchRoom.execute({ roomName });
       }
     };
   }, []);
@@ -61,7 +79,7 @@ const ChatRoomContainer = () => {
   async function socketInitializer() {
     socketIO.fetchEnter(`/api/socket?name=${name}`);
 
-    socket = socketIOClient('http://localhost:3030', {
+    socket = socketIOClient('http://i9d108.p.ssafy.io:3030', {
       path: `/${name}/socket.io`,
       withCredentials: true,
       extraHeaders: {
@@ -84,20 +102,38 @@ const ChatRoomContainer = () => {
     });
   }
 
-  const onSubmitMessage = (e) => {
+  const onSubmitMessage = () => {
     if (!socket) {
       return;
     }
     if (!message) {
       return;
     }
-
-    console.log('message emitted');
-    socket.emit('send-message', {
-      roomUser : inform.roomUser,
-      message,
+    requestGet(`member/info`).then((res) => {
+      console.log('message emitted');
+      socket.emit('send-message', {
+        roomUser: inform,
+        message,
+      });
+      setMessage('');
     });
-    setMessage('');
+  };
+
+  // 채팅방 나가기
+  const onClickExitBtn = () => {
+    Swal.fire({
+      title:
+        '<div style="font-size: 20px; font-weight: 700">채팅방 나가기</div>',
+      text: '정말 나가시겠습니까?',
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        //나가기 호출
+        console.log('나가자~');
+        fetchRoom.execute({ roomName, email });
+        navigate('/chat/chat-list', { replace: true });
+      }
+    });
   };
 
   useEffect(() => {
@@ -106,15 +142,21 @@ const ChatRoomContainer = () => {
     scrollToBottom();
   }, [allMessages]);
 
-  return (
+  return inform ? (
     <ChatRoom
+      inputRef={inputRef}
       message={message}
       onClickBackBtn={onClickBackBtn}
       onChangeMessage={onChangeMessage}
       onSubmitMessage={onSubmitMessage}
       allMessages={allMessages}
+      myId={memberId}
       scrollRef={scrollRef}
+      inform={inform}
+      onClickExitBtn={onClickExitBtn}
     />
+  ) : (
+    <ChatBlank />
   );
 };
 

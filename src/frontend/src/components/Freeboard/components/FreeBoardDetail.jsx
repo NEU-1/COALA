@@ -29,12 +29,6 @@ const FreeBoardDetail = () => {
   const [postAuthor, setPostAuthor] = useState("게시글 작성자 정보");
   const isAuthor = currentUser === postAuthor;
   const [showModal, setShowModal] = useState(false);
-  const picturePlusBtn = () => {
-    setPictureNum((pictureNum + 1) % "사진수");
-  };
-  const pictureMinusBtn = () => {
-    setPictureNum((pictureNum + "사진수" - 1) % "사진수");
-  };
   
   const deleteBoard = async () => {
     if (window.confirm('게시글을 삭제하시겠습니까?')) {
@@ -73,12 +67,12 @@ const FreeBoardDetail = () => {
   const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`free/comment/${postid}/${page}`)
-    .then(resp=>{console.log(resp.data);setPosts(resp.data.list)})
+    .then(resp=>{console.log(resp.data.list);setPosts(resp.data.list)})
    
   }
 
   useEffect(() => {
-    getBoardList() // 1) 게시글 목록 조회 함수 호출
+    getBoardList()
     getBoard();
     setlike();
   }, []);
@@ -116,10 +110,10 @@ const saveCommentBoard = async () => {
     const response = await requestPost(`free/comment/save/${postid}`, params);
     console.log(response);
     alert('등록되었습니다.');
-    navigate(`/free/post/detail/${postid}`);
+    getBoardList()
   } catch (error) {
     console.error('댓글 등록 에러:', error);
-    navigate(`/free/post/detail/${postid}`)
+    getBoardList()
   }
   
 };
@@ -130,7 +124,7 @@ const commentDelete = async (commentId) => {
       const resp = await axios.delete(`http://i9d108.p.ssafy.io:9999/api/free/comment/delete/${commentId}`);
       if (resp.status === 200) {
         alert('삭제되었습니다.');
-        navigate(`/free/post/detail/${postid}`);
+        getBoardList()
       }
     } catch (error) {
       console.error("Error deleting board:", error);
@@ -146,7 +140,7 @@ const likeBtn = async() => {
 } 
 try {
   console.log(param)
-    const likeres = await axios.post('http://i9d108.p.ssafy.io:9999/api/free/post/is/good', { data: param });
+    const likeres = await axios.post('http://i9d108.p.ssafy.io:9999/api/free/post/is/good', param);
     setlike(true);
     console.log(like)
     console.log('성공')
@@ -155,6 +149,7 @@ try {
   console.error('에러:', error);
 }
 };
+
 const unlikeBtn = async() => {
   const param2 = {
     fpId: {
@@ -166,7 +161,7 @@ const unlikeBtn = async() => {
     const unlikeres = await axios.delete('http://i9d108.p.ssafy.io:9999/api/free/post/un/good', { data: param2 });
     setlike(false);
     console.log(like);
-    console.log('실패');
+    console.log('삭제');
   } catch (error) {
     console.error('에러:', error);
   }
@@ -213,16 +208,11 @@ const unlikeBtn = async() => {
     <div>
       
       {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-      {posts && posts.map(({ id, author , content, createAt,}) => (
+      {posts && posts.map(({ id, author , content, createAt, nickname, mine}) => (
         <Contentbox key={id}>
           <Commenttitlebox>
-          {/* <CCheckBox
-              text={'동의'}
-              checked={isAgree1}
-              onChange={onChangeAgree1}
-            /> */}
             <Titletext2>
-              {author}
+              {nickname}
             </Titletext2>
             <Userbox>
               <Numbertext>{createAt.slice(0,10)}</Numbertext>
@@ -230,20 +220,24 @@ const unlikeBtn = async() => {
           </Commenttitlebox>
             {content}
             <Subcommentupdatebox>
-            <SBtn>
-              수정
-            </SBtn>
+          {(mine ? (
             <SBtn onClick={() => commentDelete(id)}>삭제</SBtn>
-            
-            </Subcommentupdatebox>
-        
+          ) : ( <div></div>
+          ))}     
+          </Subcommentupdatebox>   
         </Contentbox>
       ))}
-      <SBtnContainer>
-        <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
-        <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
-        <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
-      </SBtnContainer> 
+      {(board.mine ? (
+            <SBtnContainer>
+            <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
+            <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
+            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
+            </SBtnContainer> 
+          ) : (
+            <SBtnContainer>
+            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
+            </SBtnContainer>
+          ))}
     </div>
 
   </Slayout>)
@@ -388,7 +382,7 @@ const Count = styled.div`
 `
 
 const Titletext2 = styled.div`
-  font-size: 30px;
+  font-size: 15px;
   margin-left: 5px;
 `
 

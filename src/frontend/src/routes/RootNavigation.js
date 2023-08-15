@@ -1,23 +1,23 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import Layout from "../pages/Layout";
+import Layout from '../pages/Layout';
 
 // 로그인
-import Home from "../components/Home/Home";
-import Login from "../components/Login/Login";
+import Home from '../components/Home/Home';
+import Login from '../components/Login/Login';
 
 // 비밀번호 변경
-import FindPw from "../components/Login/FindPw";
-import ChangePw from "../components/Login/ChangePw";
+import FindPw from '../components/Login/FindPw';
+import ChangePw from '../components/Login/ChangePw';
 
 // 회원가입
-import SignUpContainer from "../components/SignUp/containers/SignUpContainer";
-import AgreementContainer from "../components/SignUp/containers/AgreementContainer";
+import SignUpContainer from '../components/SignUp/containers/SignUpContainer';
+import AgreementContainer from '../components/SignUp/containers/AgreementContainer';
 
 // 마이페이지
-import MyPageContainer from "../components/MyPage/containers/MyPageContainer";
-import ModifyUserinfoContainer from "../components/MyPage/containers/ModifyUserinfoContainer";
+import MyPageContainer from '../components/MyPage/containers/MyPageContainer';
+import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUserinfoContainer';
 
 // 채팅
 import ChatListContainer from '../components/Chat/containers/ChatListContainer';
@@ -59,7 +59,10 @@ const RootNavigation = () => {
         <Route element={<Layout />}>
           <Route index path="/" element={<Home />} />
           <Route path="/my-page" element={<MyPageContainer />}>
-            <Route path="/my-page/modify-userinfo" element={<ModifyUserinfoContainer />} />
+            <Route
+              path="/my-page/modify-userinfo"
+              element={<ModifyUserinfoContainer />}
+            />
           </Route>
           <Route path="/tech/write" element={<TechBoardWrite />} />
           <Route path="/tech" element={<TechBoardList />} />
@@ -94,15 +97,14 @@ const RootNavigation = () => {
           <Route index path="/chat/chat-list" element={<ChatListContainer />} />
           <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
         </Route>
-        <Route path="/store" element={<Store />} />
-        <Route path="/store/write" element={<StoreWrite />} />
-        <Route path="/store/:postId" element={<StoreDetail />} />
-        <Route path="/store/:postId/update" element={<StoreUpdate />} />
+
 
         <Route path="*" element={<NotFound />} />
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
         <Route path="/tech" element={<TechBoardList />} />
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

@@ -74,7 +74,7 @@ const TechBoardDetail = () => {
       setlike(true);
       console.log(like)
       console.log('성공')
-    
+
   }
   const unlikeBtn = async() => {
     const param2 = {
@@ -111,7 +111,7 @@ const TechBoardDetail = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`tech/comment/${postid}/${page}`)
     .then(resp=>{console.log(resp.data);setPosts(resp.data.list)})
-   
+    setcommentBoard({...commentboard, author: '', commentcontent: ''});
   }
 
   useEffect(() => {
@@ -121,6 +121,7 @@ const TechBoardDetail = () => {
   }, []);
 
 // 코멘트 작성 폼
+
 const [commentboard, setcommentBoard] = useState({
   tpId: {
     "id": "int",
@@ -153,32 +154,15 @@ const saveCommentBoard = async () => {
     const response = await requestPost(`tech/comment/save/${postid}`, params);
     console.log(response);
     alert('등록되었습니다.');
-    navigate(`/tech/post/detail/${postid}`);
+    getBoardList();
+    
+    
   } catch (error) {
     console.error('댓글 등록 에러:', error);
-    navigate(`/tech/post/detail/${postid}`)
+    getBoardList();
   }
   
 };
-
-const commentUpdate = async(commentId) => {
-  try {
-  const params = {
-    tpId: {
-      "id": Number(postid),       
-  },
-    author: commentboard.author,
-    content:commentboard.commentcontent,
-  }
-  // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-  const response = await requestPut(`tech/post/update/${commentId}`, params);
-  
-  console.log(response);
-  alert('등록되었습니다.');
-  navigate('/tech/post/detail/' + postid);
-}catch (error) {
-  console.error('게시글 등록 에러:', error);
-}} 
 
   
 
@@ -188,7 +172,7 @@ const commentDelete = async (commentId) => {
       const resp = await axios.delete(`http://i9d108.p.ssafy.io:9999/api/tech/comment/delete/${commentId}`);
       if (resp.status === 200) {
         alert('삭제되었습니다.');
-        navigate(`/tech/post/detail/${postid}`);
+        getBoardList();
       }
     } catch (error) {
       console.error("Error deleting board:", error);
@@ -200,7 +184,11 @@ const commentDelete = async (commentId) => {
   return (
       board && (<Slayout>
       <Container>
+      <Profilebox>
+      <div>image</div>
       <Profiletext>작성자</Profiletext>
+      
+      </Profilebox>
         <Titlecontainer>
        <div>
        <Titletext>{board.title}</Titletext>
@@ -227,51 +215,48 @@ const commentDelete = async (commentId) => {
         <CommentSlayout>
         <Writecontainer>
         <p>작성자:</p>
-        <CommentTextinput type="text" name="author" value={author} onChange={onChange} />
-        <p>내용:</p>
+        <CommentTextinput type="text" name="author" value={author} onChange={onChange}/>
         <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} />
       </Writecontainer>
         <SBtn onClick={saveCommentBoard}>등록</SBtn>
       </CommentSlayout>  
-      
-
     <div>
       
       {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-      {posts && posts.map(({ id, author , content, createAt,}) => (
+      {posts && posts.map(({ id, author , content, createAt,nickname,mine}) => (
         <Contentbox key={id}>
           <Commenttitlebox>
-          <Titletext2
-                    type="text"
-                    name="author"
-                    value={author}
-                    onChange={(event) => onChange(event, id)}
-                  />
-            <Userbox>
-              <Numbertext>{createAt.slice(0,10)}</Numbertext>
-            </Userbox>
-          </Commenttitlebox>
-            <Commentcontentbox>
+            <Minititlebox>
+            <Titletext2>{nickname}</Titletext2>
+            <Numbertext>{createAt.slice(0,10)}</Numbertext>
+            </Minititlebox>
+          <Commentcontentbox>
             {content}
-            </Commentcontentbox>
-            <Subcommentupdatebox>
-            <SBtn onClick={()=> setModalIsOpen(true)}>수정</SBtn>
-            <Modal isOpen={true}>
-              This is Modal content
-              <button onClick={()=> setModalIsOpen(false)}>x</button>
-            </Modal>
+          </Commentcontentbox>
+          </Commenttitlebox>
+          <Subcommentupdatebox>
+          {(mine ? (
             <SBtn onClick={() => commentDelete(id)}>삭제</SBtn>
-            
-            </Subcommentupdatebox>
-          
+          ) : ( <div></div>
+          ))}     
+          </Subcommentupdatebox>   
         </Contentbox>
       ))}
       
-      <SBtnContainer>
-        <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
-        <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
-        <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
-      </SBtnContainer> 
+      
+        {(board.mine ? (
+            <SBtnContainer>
+            <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
+            <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
+            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
+            </SBtnContainer> 
+          ) : (
+            <SBtnContainer>
+            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
+            </SBtnContainer>
+          ))}
+        
+      
     </div>
 
   </Slayout>)
@@ -338,11 +323,9 @@ padding-bottom: 20px;
 `;
 
 const Profiletext = styled.div`
-  
   width: 800px;
   margin-bottom: 3px;
   font-size: 15px;
-  border-bottom: 1px solid #BD84FC;
   padding-bottom: 15px;
 
 `
@@ -380,7 +363,6 @@ const Contentbox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
   border-bottom: 1px solid #BD84FC;
   margin-bottom: 20px;
   width: 800px;
@@ -388,20 +370,10 @@ const Contentbox = styled.div`
   padding: 3px;
 `
 
-const Userbox = styled.div`
-  display: flex;
-  margin-bottom: 10px;
-  margin-top: 5px;
-`
-const Usertext = styled.div`
-  margin-left: 5px;
-  margin-right: 5px;
-  font-size: 13px;
-`
 const Numbertext = styled.div`
   margin-left: 5px;
   margin-right: 5px;
-  font-size: 13px;
+  font-size: 8px;
   margin-top: 3px;
 `
 const Titletext = styled.div`
@@ -415,7 +387,7 @@ const Count = styled.div`
   font-size: 15px;
 `
 
-const Titletext2 = styled.input`
+const Titletext2 = styled.div`
   font-size: 15px;
   margin-left: 10px;
   width: 80px;
@@ -472,7 +444,7 @@ const SBtn = styled.div`
 `
   const Commenttitlebox = styled.div`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-around;
     align-items: center;
   `
@@ -481,5 +453,18 @@ const SBtn = styled.div`
   `
 
   const Commentcontentbox = styled.div`
-    
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    font-size: 15px;
+
+  `
+  const Profilebox = styled.div`
+    display: flex;
+    border-bottom: 1px solid #BD84FC;
+  ` 
+
+  const Minititlebox = styled.div`
+    display: flex;
+    align-items: end;
   `

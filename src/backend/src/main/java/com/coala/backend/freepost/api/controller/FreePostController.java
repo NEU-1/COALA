@@ -24,11 +24,14 @@ import java.util.List;
     - 업데이트 시 추천수미구현, 페이징 기능 개선 필요
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 @Slf4j
 =======
 @CrossOrigin(origins = "*")
 >>>>>>> feature/auction
+=======
+>>>>>>> chat/front
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/free/")

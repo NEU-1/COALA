@@ -18,6 +18,7 @@ const FreeBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`free/post/${page}`)
     .then(res=>{console.log(res.data.list);setPosts(res.data.list);})
+    .catch(err=>console.log(err))
    
 
 
@@ -28,8 +29,8 @@ const FreeBoardList = () => {
 
   useEffect(() => {
     getBoardList(); // 1) 게시글 목록 조회 함수 호출
-    setPage();
-  }, [page]);
+    // setPage();
+  }, []);
 
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 정보를 useState로 관리
 
@@ -42,14 +43,13 @@ const FreeBoardList = () => {
     <Slayout>
       <Layout>     
 
-        {posts.map(({ id, title, views, createAt,imagePath,memberId }) => (
+        {posts.map(({ id, title, views, createAt,imagePath }) => (
           <Contentbox key={id}>
             <Link to={`/free/post/detail/${id}`}>
             <Commentcontainer>
               <Freecontainer>
               <Freeword>자유</Freeword>
               <div>
-              {memberId}
               <Titletext>
                 {title}
               </Titletext>
@@ -62,7 +62,7 @@ const FreeBoardList = () => {
               </Userbox>
               </div>
               </Freecontainer>
-            <img src={imagePath} alt="사진" />
+              <Simg src={imagePath} alt="사진" />
             
             </Commentcontainer>
             </Link>
@@ -157,5 +157,9 @@ const Freeword = styled.div`
   padding-top: 10px;
   margin-right: 20px;
 
-
 `
+const Simg = styled.img`
+  height: 80px;
+  width: 80px;
+
+` 

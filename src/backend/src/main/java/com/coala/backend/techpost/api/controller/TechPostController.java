@@ -19,7 +19,10 @@ import java.util.stream.Collectors;
     테크게시판 controller 입니다.
 */
 
+<<<<<<< HEAD
 @Slf4j
+=======
+>>>>>>> chat/front
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tech/post/")

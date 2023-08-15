@@ -1,90 +1,92 @@
-import api from '../base'
+import api from '../base';
 
 const fetchRoom = {
-  
-  create : async ({roomName}) =>{
-      return await api({
-        method : 'POST',
-        url : `/api/chat/chat_room`,
-        data:{
-          name : roomName,
-        }
-      })
-      .catch(error =>{
-        if (error.response){
-          // console.log(error.response.data)
-          // console.log(error.response.status)
-          // console.log(error.response.headers)
-        }else if(error.request){
-          // console.log(error.request)
-        }else{
-          // console.log('Error', error.message)
-        }
-      })
-  },
-  
-  read : async () =>{
+  create: async ({ roomName, pp_id, pr_id, ur_id }) => {
     return await api({
-      method : 'GET',
-      url : `/api/chat/chat_room`,
-
-    })
-    .catch(error =>{
-      if (error.response){
+      method: 'POST',
+      url: `/api/chat/chat_room`,
+      data: {
+        name: roomName,
+        pp_id,
+        pr_id,
+        ur_id,
+      },
+    }).catch((error) => {
+      if (error.response) {
         // console.log(error.response.data)
         // console.log(error.response.status)
         // console.log(error.response.headers)
-      }else if(error.request){
+      } else if (error.request) {
         // console.log(error.request)
-      }else{
+      } else {
         // console.log('Error', error.message)
       }
-    })
+    });
   },
 
-  join : async({roomName, email}) =>{
-    
+  read: async ({ email }) => {
     return await api({
-      method : 'POST',
-      url : `/api/chat/room_member`,
-      data:{
-        name : roomName,
-        email
+      method: 'GET',
+      url: `/api/chat/chat_room`,
+      params: {
+        email,
+      },
+    }).catch((error) => {
+      if (error.response) {
+        // console.log(error.response.data)
+        // console.log(error.response.status)
+        // console.log(error.response.headers)
+      } else if (error.request) {
+        // console.log(error.request)
+      } else {
+        // console.log('Error', error.message)
+      }
+    });
+  },
+
+  join: async ({ roomName, email }) => {
+    return await api({
+      method: 'POST',
+      url: `/api/chat/room_member`,
+      data: {
+        name: roomName,
+        email,
         // 유저 정보 넣어야함...
-      }
-    })
-    .catch(error =>{
-      if (error.response){
+      },
+    }).catch((error) => {
+      if (error.response) {
         // console.log(error.response.data)
         // console.log(error.response.status)
         // console.log(error.response.headers)
-      }else if(error.request){
+      } else if (error.request) {
         // console.log(error.request)
-      }else{
+      } else {
         // console.log('Error', error.message)
       }
-    })
+    });
   },
-  
-  execute : async() =>{
+
+  execute: async ({ roomName, email }) => {
     return await api({
-      method : 'DELETE',
-      url : `/api/chat/room_member`
-    })
-    .catch(error =>{
-      if (error.response){
+      method: 'DELETE',
+      url: `/api/chat/room_member`,
+      data: {
+        name: roomName,
+        email,
+        // 유저 정보 넣어야함...
+      },
+    }).catch((error) => {
+      if (error.response) {
         // console.log(error.response.data)
         // console.log(error.response.status)
         // console.log(error.response.headers)
-      }else if(error.request){
+      } else if (error.request) {
         // console.log(error.request)
-      }else{
+      } else {
         // console.log('Error', error.message)
       }
-    })
-  }
-}
+    });
+  },
+};
 
-export {
-  fetchRoom
-} 
+export { fetchRoom };

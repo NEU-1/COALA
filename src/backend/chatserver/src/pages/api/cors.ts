@@ -31,7 +31,8 @@ function withCORS(handler : any) {
     req: NextApiRequest,
     res: NextApiResponse
     ) => {
-    // 헤더에서 accesstocken이 먼저 있는지 확인해봅니다.
+    
+    const {access_token, refresh_token} = req.headers;
 
     // 먼저 CORS 처리를 실행합니다.
     await runCorsHandler(req, res, cors);

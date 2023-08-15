@@ -6,13 +6,18 @@ import ChatBoardPreviewContainer from './containers/ChatBoardPreviewContainer';
 import ChatBubble from './components/ChatBubble';
 
 const ChatRoom = ({
+  inputRef,
   message,
   onClickBackBtn,
   onChangeMessage,
   onSubmitMessage,
   allMessages,
+  myId,
   scrollRef,
+  inform,
+  onClickExitBtn,
 }) => {
+  console.log('로그 계속 나오는지 채크');
   return (
     <SLayout>
       <SChatHeader>
@@ -29,20 +34,74 @@ const ChatRoom = ({
               alt=""
               className="profile"
             />
-            <div className="otherName">상대방</div>
+            <div className="otherName">{inform.other.name}</div>
           </SOtherInfo>
         </SStart>
-        <SExitBtn>나가기</SExitBtn>
+        <SExitBtn onClick={onClickExitBtn}>나가기</SExitBtn>
       </SChatHeader>
 
       {/* 게시글이 있는 경우에만 랜더링 */}
-      <ChatBoardPreviewContainer />
+      {(inform.room.pr_id || inform.room.pp_id) && (
+        <ChatBoardPreviewContainer inform={inform} myId={myId} />
+      )}
 
       <SChatBubbleList>
         {/* key는 메세지 id로 */}
         {allMessages &&
-          allMessages.map((message) => {
-            return <ChatBubble key={message._id} message={message} />;
+          allMessages.map((message, index) => {
+            let displayDate = false;
+            let today = '';
+
+            const isCreated = new Date(message.created_at);
+            isCreated.setHours(isCreated.getHours() - 9);
+
+            if (index !== allMessages.length - 1) {
+              const nextCreated = new Date(allMessages[index + 1].created_at);
+              nextCreated.setHours(nextCreated.getHours() - 9);
+
+              if (isCreated.getDate() !== nextCreated.getDate()) {
+                displayDate = true;
+
+                let day = '';
+                switch (nextCreated.getDay()) {
+                  case 0:
+                    day = '일';
+                    break;
+                  case 1:
+                    day = '월';
+                    break;
+                  case 2:
+                    day = '화';
+                    break;
+                  case 3:
+                    day = '수';
+                    break;
+                  case 4:
+                    day = '목';
+                    break;
+                  case 5:
+                    day = '금';
+                    break;
+                  case 6:
+                    day = '토';
+                    break;
+                  default:
+                    break;
+                }
+                today = `${nextCreated.getFullYear()}년 ${
+                  nextCreated.getMonth() + 1
+                }월 ${nextCreated.getDate()}일 ${day}요일`;
+              }
+            }
+            return (
+              <ChatBubble
+                key={message._id}
+                message={message}
+                memberId={myId}
+                displayDate={displayDate}
+                today={today}
+              />
+            );
           })}
         <div ref={scrollRef}></div>
       </SChatBubbleList>
@@ -54,6 +113,7 @@ const ChatRoom = ({
         </SAttachBtn>
         <SInputMsg
           type="text"
+          ref={inputRef}
           value={message}
           placeholder="내용을 입력하세요."
           onChange={onChangeMessage}

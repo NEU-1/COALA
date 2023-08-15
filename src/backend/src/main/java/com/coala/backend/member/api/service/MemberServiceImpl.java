@@ -120,6 +120,7 @@ public class MemberServiceImpl implements MemberService{
         // Meber 정보와 응답 한번에 출력
         MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto();
 <<<<<<< HEAD
+<<<<<<< HEAD
         memberInfoResponseDto.setId(member.getId());
         memberInfoResponseDto.setEmail(member.getEmail());
         memberInfoResponseDto.setName(member.getName());
@@ -134,6 +135,10 @@ public class MemberServiceImpl implements MemberService{
         memberInfoResponseDto.setMember(member);
         memberInfoResponseDto.setBaseResponseDto(new BaseResponseDto(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.", HttpStatus.OK.value()));
 >>>>>>> feature/auction
+=======
+        memberInfoResponseDto.setMember(member);
+        memberInfoResponseDto.setBaseResponseDto(new BaseResponseDto(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.", HttpStatus.OK.value()));
+>>>>>>> chat/front
 
         logger.info("member Name : {}", member.getName());
         return memberInfoResponseDto;
