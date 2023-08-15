@@ -35,6 +35,8 @@ const ContractContainer = () => {
     return state.contract.contractId;
   });
 
+  console.log(info);
+
   const [isAgree1, setIsAgree1] = useState(false);
   const [isAgree2, setIsAgree2] = useState(false);
   const [contractForm, setContractForm] = useState({
@@ -42,8 +44,8 @@ const ContractContainer = () => {
     producer_id: producer.id,
     consumer_id: consumer.id,
     productName: '',
-    rental_cost: info.rentalCost,
-    deposit: info.deposit,
+    rental_cost: info.rentalCost ? info.rentalCost : 0,
+    deposit: info.deposit ? info.deposit : 0,
     created_at: '',
     rental_at: '',
     return_at: '',
@@ -178,11 +180,20 @@ const ContractContainer = () => {
                     '<div style="font-size: 16px; font-weight: 700">계약서가 전송되었습니다.</div>',
                   width: '350px',
                 }).then(() => {
-                  requestPut(`store/status?id=${info.id}`).then((res) => {
-                    if (res.data.statusCode === 200) {
-                      onClickClose();
-                    }
-                  });
+                  if (info.rentalCost) {
+                    requestPut(`store/status?id=${info.id}`).then((res) => {
+                      if (res.data.statusCode === 200) {
+                        onClickClose();
+                      }
+                    });
+                  } else {
+                    requestPut(`auction/status?id=${info.id}`).then((res) => {
+                      console.log('이용자 게시글 상태 변경');
+                      if (res.data.statusCode === 200) {
+                        onClickClose();
+                      }
+                    });
+                  }
                 });
               }) // 하고 모달 닫기
               .catch((err) => {
@@ -246,11 +257,20 @@ const ContractContainer = () => {
                 '<div style="font-size: 16px; font-weight: 700">계약이 성립되었습니다.</div>',
               width: '350px',
             }).then(() => {
-              requestPut(`store/status?id=${info.id}`).then((res) => {
-                if (res.data.statusCode === 200) {
-                  onClickClose();
-                }
-              });
+              if (info.rentalCost) {
+                requestPut(`store/status?id=${info.id}`).then((res) => {
+                  if (res.data.statusCode === 200) {
+                    onClickClose();
+                  }
+                });
+              } else {
+                requestPut(`auction/status?id=${info.id}`).then((res) => {
+                  console.log('이용자 게시글 상태 변경');
+                  if (res.data.statusCode === 200) {
+                    onClickClose();
+                  }
+                });
+              }
             });
           })
           .catch((err) => console.log(err));

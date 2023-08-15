@@ -138,8 +138,8 @@ const Contract = ({
                 <td className="tableData">
                   {contractForm.period &&
                     priceFormat(
-                      contractForm.deposit +
-                        contractForm.rental_cost * contractForm.period
+                      Number(contractForm.deposit) +
+                        Number(contractForm.rental_cost) * contractForm.period
                     )}
                   &nbsp;원
                 </td>

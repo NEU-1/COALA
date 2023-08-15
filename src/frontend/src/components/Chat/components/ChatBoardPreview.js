@@ -14,6 +14,7 @@ const ChatBoardPreview = ({
   onClickContractBtn,
   onClickAcceptBtn,
 }) => {
+  console.log(post);
   return (
     <SLayout>
       <SStart
@@ -40,7 +41,7 @@ const ChatBoardPreview = ({
       {myId === producer.id && post.status === 1 && (
         <STradeBtn onClick={onClickContractBtn}>거래하기</STradeBtn>
       )}
-      {myId === consumer.id && inform.room.contract_id && (
+      {myId === consumer.id && post.status === 0 && inform.room.contract_id && (
         <STradeBtn onClick={onClickAcceptBtn}>수락하기</STradeBtn>
       )}
     </SLayout>
