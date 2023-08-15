@@ -72,12 +72,18 @@ const TradeOfferForm = ({ onClose }) => {
   };
   const goServer = async () => {
     setToken();
-    requestPost(`auction/apply?id=${postId}`, {
+    let formData = new FormData();
+    formData.append('json', JSON.stringify({
       title : title,
       detail : mainText,
       deposit: deposit,
       rentalCost : rentalFee,
       negotiation : bargain
+    }))
+    let file = new Blob();
+    formData.append('multipartFile', file);
+    requestPost(`auction/apply?id=${postId}`, formData, {
+      'Content-Type': 'multipart/form-data'
     })
     .then((res) => {
       console.log(res)

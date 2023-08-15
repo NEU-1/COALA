@@ -180,21 +180,23 @@ const AuctionDetail = () => {
                     ></SButtonArea>
                     <ImgMediaCard
                       // img={postData.auctionApplies[currentProposalIndex].img}
+                      proposerId={postData.auctionApplies[currentProposalIndex].memberId}
+                      postId={postId}
                       title={
-                        postData.auctionApplies[currentProposalIndex].title
+                        postData.auctionApplies[currentProposalIndex].auctionApply.title
                       }
                       mainText={
-                        postData.auctionApplies[currentProposalIndex].detail
+                        postData.auctionApplies[currentProposalIndex].auctionApply.detail
                       }
                       rentalFee={
-                        postData.auctionApplies[currentProposalIndex].rentalCost
+                        postData.auctionApplies[currentProposalIndex].auctionApply.rentalCost
                       }
                       deposit={
-                        postData.auctionApplies[currentProposalIndex].deposit
+                        postData.auctionApplies[currentProposalIndex].auctionApply.deposit
                       }
                       // endDay={postData.auctionApplies[currentProposalIndex].endDay}
                       bargaining={
-                        postData.auctionApplies[currentProposalIndex]
+                        postData.auctionApplies[currentProposalIndex].auctionApply
                           .negotiation
                       }
                     />

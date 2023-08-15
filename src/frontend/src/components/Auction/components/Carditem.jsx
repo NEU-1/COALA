@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function ImgMediaCard({
   img,
+  postId,
+  proposerId,
   title,
   mainText,
   rentalFee,
