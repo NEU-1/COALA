@@ -22,11 +22,11 @@ import java.util.List;
 @Service
 public class FileService {
 
-    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3Client;
     private final StoreImageRepository storeImageRepository;
     private final StorePostRepository storePostRepository;
 
-    public FileService(AmazonS3Client amazonS3Client, StoreImageRepository storeImageRepository, StorePostRepository storePostRepository) {
+    public FileService(AmazonS3 amazonS3Client, StoreImageRepository storeImageRepository, StorePostRepository storePostRepository) {
         this.amazonS3Client = amazonS3Client;
         this.storeImageRepository = storeImageRepository;
         this.storePostRepository = storePostRepository;

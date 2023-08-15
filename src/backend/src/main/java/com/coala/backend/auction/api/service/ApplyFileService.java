@@ -1,6 +1,7 @@
 package com.coala.backend.auction.api.service;
 
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -22,13 +23,13 @@ import java.util.List;
 public class ApplyFileService {
 
 
-    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3 amazonS3Client;
 
     private final AuctionImageRepository auctionImageRepository;
 
     private final AuctionApplyRepository auctionApplyRepository;
 
-    public ApplyFileService(AmazonS3Client amazonS3Client, AuctionImageRepository auctionImageRepository, AuctionApplyRepository auctionApplyRepository) {
+    public ApplyFileService(AmazonS3 amazonS3Client, AuctionImageRepository auctionImageRepository, AuctionApplyRepository auctionApplyRepository) {
         this.amazonS3Client = amazonS3Client;
         this.auctionImageRepository = auctionImageRepository;
         this.auctionApplyRepository = auctionApplyRepository;

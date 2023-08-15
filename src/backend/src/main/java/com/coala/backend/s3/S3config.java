@@ -27,22 +27,22 @@ public class S3config {
     private String region;
 
     // S3 객체와 연결
-//    @Bean
-//    public AmazonS3 amazonS3Client() {
-//        // 인증 정보 생성
-//        AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-//
-//        // Client 생성
-//        return AmazonS3ClientBuilder
-//                .standard()
-//                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-//                .withRegion(region)
-//                .build();
-//    }
-
     @Bean
-    public AmazonS3Client amazonS3Client() {
-        // AmazonS3Client를 생성하고 설정
-        return new AmazonS3Client();
+    public AmazonS3 amazonS3Client() {
+        // 인증 정보 생성
+        AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+
+        // Client 생성
+        return AmazonS3ClientBuilder
+                .standard()
+                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withRegion(region)
+                .build();
     }
+
+//    @Bean
+//    public AmazonS3Client amazonS3Client() {
+//        // AmazonS3Client를 생성하고 설정
+//        return new AmazonS3Client();
+//    }
 }
