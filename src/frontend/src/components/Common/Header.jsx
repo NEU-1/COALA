@@ -4,7 +4,7 @@ import { colors } from '../../assets/colors';
 import { images } from '../../assets/images';
 import { Link } from 'react-router-dom';
 
-const HeaderV2 = () => {
+const Header = ({isLogin, nickname}) => {
   return (
     <SLayout>
       <SContainer>
@@ -14,12 +14,13 @@ const HeaderV2 = () => {
             <img src={`${images.search}`} alt="" />
             <input type="text" placeholder="대여하러 가보자~" />
           </SSearchBar>
-          <SLoginLink to="/login">로그인</SLoginLink>
+          {isLogin ? <Link to="/my-page">{nickname}</Link> : <SLoginLink to="/login">{nickname}</SLoginLink>}
         </SLogoBox>
         <SNav>
-          <li>제공자</li>
-          <li>이용자</li>
+          <li><Link to="/store">제공자</Link></li>
+          <li><Link to="/auction">이용자</Link></li>
           <li><Link to="/tech">커뮤니티</Link></li>
+          <li><Link to="/free">자유게시판</Link></li>
           <li>검수</li>
         </SNav>
       </SContainer>
@@ -37,6 +38,7 @@ const SLayout = styled.div`
   top: 0;
   left: 0;
   background-color: white;
+  z-index: 30;
 `;
 
 const SContainer = styled.div`
@@ -69,6 +71,12 @@ const SLoginLink = styled(Link)`
   font-size: 16px;
   font-weight: 500;
 `;
+
+const SMypageLink = styled(Link)`
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+`
 
 const SSearchBar = styled.div`
   display: flex;
@@ -103,4 +111,4 @@ const SNav = styled.ul`
   }
 `;
 
-export default HeaderV2;
+export default Header;

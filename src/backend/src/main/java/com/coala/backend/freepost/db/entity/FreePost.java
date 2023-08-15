@@ -1,6 +1,7 @@
 package com.coala.backend.freepost.db.entity;
 
 import com.coala.backend.member.db.entity.Member;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -15,6 +16,7 @@ import java.util.List;
 /*
 - 추천 수 기능 미구현
 * */
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,8 +25,9 @@ public class FreePost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(targetEntity = Member.class)
-    @JoinColumn(name = "memberId", referencedColumnName = "email")
+    @JoinColumn(name = "member_id")
     @NotNull
     private Member memberId;
 
@@ -51,9 +54,16 @@ public class FreePost {
     @NotNull
     private int views;
 
-    @Column(columnDefinition = "integer default 0")
+    @Column
     @NotNull
-    private int count;
+    private int commentCount;
+
+    @Column
+    @NotNull
+    private int goodCount;
+
+    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<FreeGood> goods = new ArrayList<>();
 
     @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FreeComment> comments = new ArrayList<>();
@@ -65,6 +75,8 @@ public class FreePost {
         this.detail = detail;
         this.imagePath = imagePath;
         this.isAnonymous = isAnonymous;
+        this.commentCount = this.getComments().size();
+        this.goodCount = this.getGoods().size();
     }
 
     @PrePersist
@@ -72,8 +84,7 @@ public class FreePost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateFreePost(Member memberId, String title, String detail, String imagePath, boolean isAnonymous) {
-        this.memberId = memberId;
+    public void updateFreePost(String title, String detail, String imagePath, boolean isAnonymous) {
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();

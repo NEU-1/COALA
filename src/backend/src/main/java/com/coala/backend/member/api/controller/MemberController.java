@@ -26,62 +26,60 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<? extends BaseResponseDto> signUp(@RequestBody Map<String, String> member){
+    public ResponseEntity<? extends BaseResponseDto> signUp(@RequestBody Map<String, String> member) {
         BaseResponseDto response = memberService.signUp(member);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<? extends BaseResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse httpServletResponse){
+    public ResponseEntity<? extends BaseResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse httpServletResponse) {
+        // Header 에 토큰 값을 넣기 위해 HttpServletResponse 사용
         BaseResponseDto response = memberService.login(loginRequestDto, httpServletResponse);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @GetMapping("/info")
-    public ResponseEntity<? extends MemberInfoResponseDto> loadInfo(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
-
-        // Access Token(유효성 검사) => Filter로 보내자
-        MemberInfoResponseDto response = memberService.loadInfo(httpServletRequest, httpServletResponse);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+    public MemberInfoResponseDto loadInfo(HttpServletRequest request) {
+        return memberService.loadInfo(jwtTokenProvider.getMail(request));
     }
 
-    @PutMapping("/update-info")
     // 변경 가능한 값 : 닉네임, 암호
-    public ResponseEntity<? extends BaseResponseDto> updateInfo(@RequestBody Map<String, String> info, HttpServletRequest request, HttpServletResponse httpServletResponse){
-        BaseResponseDto response = memberService.updateInfo(info, request, httpServletResponse);
+    @PutMapping("/update-info")
+    public ResponseEntity<? extends BaseResponseDto> updateInfo(@RequestBody Map<String, String> info, HttpServletRequest request) {
+        BaseResponseDto response = memberService.updateInfo(info, jwtTokenProvider.getMail(request));
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?extends BaseResponseDto> logout(){
+    public ResponseEntity<? extends BaseResponseDto> logout() {
         BaseResponseDto response = memberService.logout();
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     // 회원가입 인증메일 전송
     @PostMapping("/email-certification")
-    public ResponseEntity<? extends BaseResponseDto> signUpCertification(@RequestBody Map<String, String> info){
+    public ResponseEntity<? extends BaseResponseDto> signUpCertification(@RequestBody Map<String, String> info) {
         BaseResponseDto response = memberService.sendOTP(info);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     // 비밀번호 찾기 메일 전송
     @PostMapping("/findpassword")
-    public ResponseEntity<? extends BaseResponseDto> findPassword(@RequestBody Map<String, String> info){
+    public ResponseEntity<? extends BaseResponseDto> findPassword(@RequestBody Map<String, String> info) {
         BaseResponseDto response = memberService.sendOTP(info);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     // 인증번호 확인
     @PostMapping("/certification")
-    public ResponseEntity <? extends BaseResponseDto> certification(@RequestBody Map<String, String> info){
+    public ResponseEntity<? extends BaseResponseDto> certification(@RequestBody Map<String, String> info) {
         BaseResponseDto response = memberService.certification(info);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    // 비밀번호 변경하기
+    // 비밀번호 변경하기(추후 수정이 필요할수도)
     @PutMapping("/updatepassword")
-    public ResponseEntity<? extends BaseResponseDto> updatePassword(@RequestBody Map<String, String> info){
+    public ResponseEntity<? extends BaseResponseDto> updatePassword(@RequestBody Map<String, String> info) {
         BaseResponseDto response = memberService.updatePassword(info);
 
         return ResponseEntity.status(response.getStatusCode()).body(response);

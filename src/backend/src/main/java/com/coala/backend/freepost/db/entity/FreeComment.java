@@ -17,7 +17,7 @@ public class FreeComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = FreePost.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "fp_id")
     @NotNull
     private FreePost fpId;
