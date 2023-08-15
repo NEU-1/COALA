@@ -18,6 +18,7 @@ const ChatRoom = ({
   onClickExitBtn,
 }) => {
   console.log('로그 계속 나오는지 채크');
+  console.log(inform)
   return (
     <SLayout>
       <SChatHeader>
