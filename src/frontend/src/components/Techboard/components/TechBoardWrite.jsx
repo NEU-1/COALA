@@ -157,11 +157,11 @@ function TechBoardWrite() {
               reader.onload = async function(event) {
                 const buffer = event.target.result;
                 console.log(buffer);
-                imgURL = await uploadToS3("Tech", blob.name, buffer);
+                imgURL = await uploadToS3("tech", blob.name, buffer);
                 
                 console.log("함수안",imgURL)
                 callback(imgURL, blob.name);
-                setPath(imgURL)
+                setPath(blob.name)
               };
 
               reader.readAsArrayBuffer(blob);

@@ -43,7 +43,7 @@ const FreeBoardList = () => {
     <Slayout>
       <Layout>     
 
-        {posts.map(({ id, title, views, createAt,imagePath }) => (
+        {posts.map(({ id, title, views, createAt,imagePath,memberId }) => (
           <Contentbox key={id}>
             <Link to={`/free/post/detail/${id}`}>
             <Commentcontainer>
@@ -54,6 +54,7 @@ const FreeBoardList = () => {
                 {title}
               </Titletext>
               <Userbox>
+                <Usertext>{memberId.nickname}</Usertext>
                 <Numbertext>|</Numbertext>
                 <Numbertext>{createAt.slice(0,10)}</Numbertext>
                 <Numbertext>|</Numbertext>
@@ -114,8 +115,8 @@ const Contentbox = styled.div`
   justify-content: space-between;
   border-bottom: 1px solid #BD84FC;
   margin-bottom: 10px;
-
   width: 800px;
+  cursor: pointer;
 `
 
 const Userbox = styled.div`

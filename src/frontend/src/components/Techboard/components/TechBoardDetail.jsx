@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
 import Modal from 'react-modal'
-import { CheckBox } from '@mui/icons-material';
+import CCheckBox from '../../Common/CCheckBox';
 
 
 
@@ -105,6 +105,37 @@ const TechBoardDetail = () => {
 
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
+  const [anonymous, setAnonymous] = useState(false);
+
+  const onChangeAnonymous = () => {
+    setAnonymous(!anonymous);
+    console.log(anonymous)
+  };
+
+  const saveCommentBoard = async () => {
+    try {
+  
+      const params = {
+        tpId: {
+          "id": Number(postid),       
+      },
+        content:commentboard.commentcontent,
+        anonymous : anonymous,
+      }
+      
+      // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
+      const response = await requestPost(`tech/comment/save/${postid}`, params);
+      console.log(response);
+      alert('등록되었습니다.');
+      getBoardList();
+      
+      
+    } catch (error) {
+      console.error('댓글 등록 에러:', error);
+      getBoardList();
+    }
+    
+  };
   
 
 
@@ -127,8 +158,8 @@ const [commentboard, setcommentBoard] = useState({
   tpId: {
     "id": "int",
   },
-  author: '',
   commentcontent: '',
+  anonymous: false,
 });
 
 const { author , commentcontent} = commentboard;
@@ -141,29 +172,6 @@ setcommentBoard({
 });
 };
 
-const saveCommentBoard = async () => {
-  try {
-
-    const params = {
-      tpId: {
-        "id": Number(postid),       
-    },
-      author: commentboard.author,
-      content:commentboard.commentcontent,
-    }
-    // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-    const response = await requestPost(`tech/comment/save/${postid}`, params);
-    console.log(response);
-    alert('등록되었습니다.');
-    getBoardList();
-    
-    
-  } catch (error) {
-    console.error('댓글 등록 에러:', error);
-    getBoardList();
-  }
-  
-};
 
   
 
@@ -186,24 +194,23 @@ const commentDelete = async (commentId) => {
   return (
       board && (<Slayout>
       <Container>
-      <Profilebox>
-      <div>image</div>
-      <Profiletext>작성자</Profiletext>
+        <Profilebox>
+          <div>image</div>
+        <Profiletext>{board.memberId.nickname}</Profiletext>
       
-      </Profilebox>
+        </Profilebox>
         <Titlecontainer>
-       <div>
-       <Titletext>{board.title}</Titletext>
-        <Createat>{board.createAt && board.createAt.slice(0,10)}</Createat>
-       </div>
+        <div>
+        <Titletext>{board.title}</Titletext>
+          <Createat>{board.createAt && board.createAt.slice(0,10)}</Createat>
+        </div>
        
-       {(like ? (
-            <BiSolidLike size={40} onClick={unlikeBtn}/>
-          ) : (
-            <BiLike size={40} onClick={likeBtn}/>
-          ))}
+        {(like ? (
+              <BiSolidLike size={40} onClick={unlikeBtn}/>
+            ) : (
+              <BiLike size={40} onClick={likeBtn}/>
+            ))}
        </Titlecontainer>
-      <hr />
      <Detailconteiner>
       <Viewer initialValue={board.detail} />
 
@@ -215,21 +222,30 @@ const commentDelete = async (commentId) => {
       </Container>
         <div>댓글{board.commentCount}</div>
         <CommentSlayout>
-        <Writecontainer>
-        <CheckBox />
-        <CommentTextinput type="text" name="author" value={author} onChange={onChange}/>
-        <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} />
-      </Writecontainer>
+          <Writecontainer>
+            <CCheckBoxcontainer>
+              <CCheckBox
+                    text={'익명'}
+                    checked={anonymous}
+                    onChange={onChangeAnonymous}
+                  />
+            </CCheckBoxcontainer>
+            <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} />
+            </Writecontainer>
         <SBtn onClick={saveCommentBoard}>등록</SBtn>
       </CommentSlayout>  
     <div>
       
       {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-      {posts && posts.map(({ id, author , content, createAt,nickname,mine}) => (
+      {posts && posts.map(({ id, author , content, createAt,nickname,mine ,anonymous}) => (
         <Contentbox key={id}>
           <Commenttitlebox>
             <Minititlebox>
-            <Titletext2>{nickname.length > 6 ? `${nickname.slice(0, 6)}...` : nickname}</Titletext2>
+            {(anonymous ? (
+            <Titletext2>익명</Titletext2>
+          ) : ( <Titletext2>{nickname.length > 6 ? `${nickname.slice(0, 6)}...` : nickname}</Titletext2>
+          ))}    
+            
             <Numbertext>{createAt.slice(0,10)}</Numbertext>
             </Minititlebox>
           <Commentcontentbox>
@@ -237,10 +253,10 @@ const commentDelete = async (commentId) => {
           </Commentcontentbox>
           </Commenttitlebox>
           <Subcommentupdatebox>
-          {(mine ? (
-            <SBtn onClick={() => commentDelete(id)}>삭제</SBtn>
-          ) : ( <div></div>
-          ))}     
+            {(mine ? (
+              <SBtn onClick={() => commentDelete(id)}>삭제</SBtn>
+            ) : ( <div></div>
+            ))}     
           </Subcommentupdatebox>   
         </Contentbox>
       ))}
@@ -275,7 +291,7 @@ const SBtn1 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 20px 20px;
   justify-content: center;
   align-items: center;
   background-color: #E9D5FF;
@@ -287,7 +303,7 @@ const SBtn2 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 20px 20px;
   justify-content: center;
   align-items: center;
   background-color: #BD84FC;
@@ -299,7 +315,7 @@ const SBtn3 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 10px 10px;
   justify-content: center;
   align-items: center;
   background-color: #D9D9D9;
@@ -361,7 +377,7 @@ const Contentbox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border-bottom: 1px solid #BD84FC;
+  border-bottom: 1px solid #e9d5ff;
   margin-bottom: 20px;
   width: 800px;
   margin-bottom: 0;
@@ -394,7 +410,7 @@ const Titletext2 = styled.div`
 `
 
 const Container = styled.div`
-  border-bottom: 1px solid #BD84FC;
+  border-bottom: 1px solid #e9d5ff;
   margin-bottom: 50px;
 `
 const Like = styled.div`
@@ -407,18 +423,23 @@ const CommentSlayout = styled.div`
     justify-content: space-between;
     width: 800px;
     margin-top: 20px;
-    border-top: 1px solid #BD84FC;
-    border-bottom: 1px solid #BD84FC;
+    border-top: 1px solid #e9d5ff;
+    border-bottom: 1px solid #e9d5ff;
     padding-top: 10px;
     padding-bottom: 10px;
 
 `
 const Writecontainer = styled.div`
-    display: flex;`
+      display: flex;
+    `
 
 const CommentTextinput = styled.input`
     font-size: 12px;
-    border: 1px black;
+    height: 50px;
+    width: 500px;
+    border: 1px solid #d9d9d9;
+    margin-left: 50px;
+
 `
 
 const SBtn = styled.div`
@@ -431,7 +452,7 @@ const SBtn = styled.div`
   gap: 10px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => (props.color ? props.color : '#d9d9d9')};
+  background-color:#e9d5ff;
   color: white;
   cursor: pointer;
   `
@@ -459,10 +480,14 @@ const SBtn = styled.div`
   `
   const Profilebox = styled.div`
     display: flex;
-    border-bottom: 1px solid #BD84FC;
+    border-bottom: 1px solid #e9d5ff;
   ` 
 
   const Minititlebox = styled.div`
     display: flex;
     align-items: end;
   `
+  const CCheckBoxcontainer = styled.div`
+    margin-left: 30px;
+  `
+

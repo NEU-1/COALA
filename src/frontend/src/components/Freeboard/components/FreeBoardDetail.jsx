@@ -171,7 +171,7 @@ const unlikeBtn = async() => {
   return (
       board && (<Slayout>
       <Container>
-      <Profiletext>작성자</Profiletext>
+      <Profiletext>{board.memberId.nickname}</Profiletext>
         <Titlecontainer>
        <div>
        <Titletext>{board.title}</Titletext>
