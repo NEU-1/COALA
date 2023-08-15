@@ -28,7 +28,14 @@ const ChatListContainer = () => {
   useEffect(() => {
     // api.setToken();
     setToken();
-    requestGet(`member/info`)
+    requestGet(`member/info`).then((res) => {
+      // 나중에 잘되었는지 아닌지 필터 필요
+      setUser(res.data);
+      email = res.data.email;
+      console.log("dd",email)
+    }).then(() => {
+      // const email = user.email;
+      fetchRoom.read({ email })
       .then((res) => {
         // 나중에 잘되었는지 아닌지 필터 필요
         setUser(res.data.member);
