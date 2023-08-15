@@ -33,9 +33,11 @@ public class FreeCommentServiceImpl implements FreeCommentService{
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
 
+        System.out.println(commentDto.isAnonymous());
+
         FreeComment freeComment = FreeComment.builder()
                 .fpId(commentDto.getFpId())
-                .isAnonymous(commentDto.isAnonymous())
+                .anonymous(commentDto.isAnonymous())
                 .content(commentDto.getContent())
                 .memberId(member)
                 .build();
@@ -63,7 +65,7 @@ public class FreeCommentServiceImpl implements FreeCommentService{
                 .map(freeComment -> FreeCommentResponseDto.builder()
                         .id(freeComment.getId())
                         .fpId(id)
-                        .isAnonymous(freeComment.isAnonymous())
+                        .anonymous(freeComment.isAnonymous())
                         .nickname(member.getNickname())
                         .content(freeComment.getContent())
                         .mine(freeComment.getMemberId().getEmail().equals(member.getEmail()))
