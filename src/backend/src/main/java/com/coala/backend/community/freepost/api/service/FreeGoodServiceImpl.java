@@ -3,7 +3,7 @@ package com.coala.backend.community.freepost.api.service;
 import com.coala.backend.community.freepost.db.dto.request.FreeGoodRequestDto;
 import com.coala.backend.community.freepost.db.entity.FreePost;
 import com.coala.backend.community.freepost.db.repository.FreeGoodRepository;
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.db.entity.FreeGood;
 import com.coala.backend.community.freepost.db.repository.FreePostRepository;
 import com.coala.backend.member.db.entity.Member;
@@ -23,7 +23,7 @@ public class FreeGoodServiceImpl implements FreeGoodService{
 
     @Transactional
     @Override
-    public BasePostResponseDto good(FreeGoodRequestDto freeGoodRequestDto, Member member) {
+    public CommunityBaseResponseDto good(FreeGoodRequestDto freeGoodRequestDto, Member member) {
 
         FreePost freePost = freePostRepository.findById(freeGoodRequestDto.getFpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
@@ -32,8 +32,6 @@ public class FreeGoodServiceImpl implements FreeGoodService{
         if (freeGoodRepository.findByMemberIdAndFpId(member, freePost).isPresent()) {
             throw new IllegalArgumentException("이미 추천되어 있습니다.");
         };
-
-        List<FreeGood> allGood = freeGoodRepository.findByFpId(freePost);
 
         FreeGood freeGood = FreeGood.builder()
                 .fpId(freePost)
@@ -44,17 +42,17 @@ public class FreeGoodServiceImpl implements FreeGoodService{
         freeGoodRepository.saveAndFlush(freeGood);
         freePost.getGoods().add(freeGood);
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("좋아요")
-                .detail(allGood.size())
+                .detail(freePost.getGoods().size())
                 .build();
 
     }
 
     @Transactional
     @Override
-    public BasePostResponseDto unGood(FreeGoodRequestDto freeGoodRequestDto, Member member) {
+    public CommunityBaseResponseDto unGood(FreeGoodRequestDto freeGoodRequestDto, Member member) {
         FreePost freePost = freePostRepository.findById(freeGoodRequestDto.getFpId().getId()).orElseThrow(() -> {
             return new IllegalArgumentException("게시글이 존재하지 않습니다.");
         });
@@ -63,15 +61,13 @@ public class FreeGoodServiceImpl implements FreeGoodService{
             return new IllegalArgumentException("없는 추천 입니다.");
         });
 
-        List<FreeGood> allGood = freeGoodRepository.findByFpId(freePost);
-
         freeGoodRepository.deleteById(freeGood.getId());
         freePost.getGoods().remove(freeGood);
 
-        return BasePostResponseDto.builder()
+        return CommunityBaseResponseDto.builder()
                 .statusCode(200)
-                .msg("좋아요")
-                .detail(allGood.size())
+                .msg("좋아요 취소")
+                .detail(freePost.getGoods().size())
                 .build();
     }
 }

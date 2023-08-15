@@ -1,5 +1,6 @@
 package com.coala.backend.community.freepost.db.entity;
 
+import com.coala.backend.member.db.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,7 +24,12 @@ public class FreeComment {
     private FreePost fpId;
 
     @NotNull
-    private String author;
+    @ManyToOne(targetEntity = Member.class)
+    @JoinColumn(name = "member_id")
+    private Member memberId;
+
+    @NotNull
+    private boolean isAnonymous;
 
     @NotNull
     private String content;
@@ -39,14 +45,15 @@ public class FreeComment {
     }
 
     @Builder
-    public FreeComment(FreePost fpId, String author, String content) {
+    public FreeComment(FreePost fpId, String author, boolean isAnonymous, Member memberId, String content) {
         this.fpId = fpId;
-        this.author = author;
+        this.isAnonymous = isAnonymous;
+        this.memberId = memberId;
         this.content = content;
     }
 
-    public void updateFreeComment(String author, String content) {
-        this.author = author;
+    public void updateFreeComment(boolean isAnonymous, String content) {
+        this.isAnonymous = isAnonymous;
         this.content = content;
         this.updateAt = LocalDateTime.now();
     }

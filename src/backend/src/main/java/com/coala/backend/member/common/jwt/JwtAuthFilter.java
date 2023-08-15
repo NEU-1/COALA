@@ -76,12 +76,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     setAuthentication(jwtTokenProvider.getEmailFromToken(newAccessToken));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                     // 필터 처리 후 AccessToken에 접근하기 위함
                     request.setAttribute("Access_Token", newAccessToken);
 =======
                     // 이거 처리 너무 힘들다 => 재발급 받는 경우 그냥 프론트에서 다시 한번 쏘는걸로 구성 부탁해야할듯. GPT도 클라이언트에서 해줘 하네...
 
 >>>>>>> origin/feature/techboard
+=======
+                    // 필터 처리 후 AccessToken에 접근하기 위함
+                    request.setAttribute("Access_Token", newAccessToken);
+>>>>>>> origin/feature/file
                 }
                 // 모든 토큰 만료
                 else{

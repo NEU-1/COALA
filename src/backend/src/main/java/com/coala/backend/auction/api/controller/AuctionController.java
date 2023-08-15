@@ -6,6 +6,7 @@ import com.coala.backend.member.api.service.MemberService;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.auction.db.dto.response.PostResponseDto;
+import com.coala.backend.store.db.dto.response.ListResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,14 +31,14 @@ public class AuctionController {
     }
 
     @PostMapping("/list")
-    public List<AuctionPost> list (@RequestParam Integer page, @RequestBody Map<String, String> info){
+    public ListResponseDto list (@RequestParam Integer page, @RequestBody Map<String, String> info){
         return auctionService.list(page, info);
     }
 
     @GetMapping("/detail")
-    public PostResponseDto detail(@RequestParam(value = "id") Long id){
+    public PostResponseDto detail(@RequestParam(value = "id") Long id, HttpServletRequest request){
         auctionService.views(id);
-        return auctionService.detail(id);
+        return auctionService.detail(id, jwtTokenProvider.getMail(request));
     }
 
     @PostMapping("/write")
@@ -69,5 +70,11 @@ public class AuctionController {
     public ResponseEntity<? extends BaseResponseDto> status(@RequestParam(value = "id") Long id, HttpServletRequest request){
         BaseResponseDto responseDto = auctionService.status(id, jwtTokenProvider.getMail(request));
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
+    }
+
+    @GetMapping("/valid")
+    public ResponseEntity<? extends PostResponseDto> valid(@RequestParam(value = "id") Long id, HttpServletRequest request){
+        PostResponseDto postResponseDto = auctionService.valid(id, jwtTokenProvider.getMail(request));
+        return ResponseEntity.status(postResponseDto.getBaseResponseDto().getStatusCode()).body(postResponseDto);
     }
 }

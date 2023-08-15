@@ -1,6 +1,6 @@
 package com.coala.backend.community.techpost.api.controller;
 
-import com.coala.backend.community.common.dto.BasePostResponseDto;
+import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.techpost.db.dto.request.TechGoodRequestDto;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
 import com.coala.backend.member.db.entity.Member;
@@ -28,20 +28,16 @@ public class TechGoodController {
     @PostMapping("is/good")
     public ResponseEntity good(@RequestBody @Valid TechGoodRequestDto techGoodRequestDto, HttpServletRequest httpServletRequest) {
 
-        techGoodService.good(techGoodRequestDto, getEmail(httpServletRequest));
-        return ResponseEntity.ok()
-                .body(BasePostResponseDto.builder()
-                        .statusCode(200)
-                        .msg("성공"));
+        CommunityBaseResponseDto responseDto = techGoodService.good(techGoodRequestDto, getEmail(httpServletRequest));
+        return ResponseEntity.status(responseDto.getStatusCode())
+                .body(responseDto);
     }
 
     @DeleteMapping("un/good")
     public ResponseEntity unGood(@RequestBody @Valid TechGoodRequestDto techGoodRequestDto, HttpServletRequest httpServletRequest) {
-        techGoodService.unGood(techGoodRequestDto, getEmail(httpServletRequest));
-        return ResponseEntity.ok()
-                .body(BasePostResponseDto.builder()
-                        .statusCode(200)
-                        .msg("성공"));
+        CommunityBaseResponseDto responseDto = techGoodService.unGood(techGoodRequestDto, getEmail(httpServletRequest));
+        return ResponseEntity.status(responseDto.getStatusCode())
+                .body(responseDto);
     }
 
     public Member getEmail(HttpServletRequest httpServletRequest) {

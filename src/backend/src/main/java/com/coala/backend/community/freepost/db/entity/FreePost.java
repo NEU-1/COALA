@@ -43,9 +43,6 @@ public class FreePost {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @Column(name = "image_path")
-    private String imagePath;
-
     @NotNull
     @Column(name = "is_anonymous")
     private boolean isAnonymous;
@@ -54,29 +51,22 @@ public class FreePost {
     @NotNull
     private int views;
 
-    @Column
-    @NotNull
-    private int commentCount;
-
-    @Column
-    @NotNull
-    private int goodCount;
-
-    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE)
     private List<FreeGood> goods = new ArrayList<>();
 
-    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "fpId", cascade = CascadeType.REMOVE)
     private List<FreeComment> comments = new ArrayList<>();
 
+    @Column
+    private String images;
+
     @Builder
-    public FreePost(Member memberId, String title, String detail , String imagePath, boolean isAnonymous) {
+    public FreePost(Member memberId, String title, String detail , boolean isAnonymous, String images) {
         this.memberId = memberId;
         this.title = title;
         this.detail = detail;
-        this.imagePath = imagePath;
         this.isAnonymous = isAnonymous;
-        this.commentCount = this.getComments().size();
-        this.goodCount = this.getGoods().size();
+        this.images = images;
     }
 
     @PrePersist
@@ -84,12 +74,12 @@ public class FreePost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateFreePost(String title, String detail, String imagePath, boolean isAnonymous) {
+    public void updateFreePost(String title, String detail, boolean isAnonymous, String images) {
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();
-        this.imagePath = imagePath;
-        this. isAnonymous = isAnonymous;
+        this.isAnonymous = isAnonymous;
+        this.images = images;
     }
 
     public void views() {

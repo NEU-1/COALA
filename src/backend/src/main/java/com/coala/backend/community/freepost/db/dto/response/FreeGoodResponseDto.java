@@ -11,11 +11,9 @@ import lombok.NoArgsConstructor;
 public class FreeGoodResponseDto {
 
     private FreePost fpId;
-    private FreePost writerId;
 
     @Builder
-    public FreeGoodResponseDto(FreePost fpId, FreePost writerId) {
+    public FreeGoodResponseDto(FreePost fpId) {
         this.fpId = fpId;
-        this.writerId = writerId;
     }
 }

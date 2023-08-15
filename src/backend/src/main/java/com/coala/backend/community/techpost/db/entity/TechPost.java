@@ -40,10 +40,6 @@ public class TechPost {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @Column(name = "image_path")
-    private String imagePath;
-
-     // 왜 참조가 안되지?
     @ManyToOne(targetEntity = Member.class)
     @JoinColumn(name = "nickname")
     private Member nickname;
@@ -52,29 +48,22 @@ public class TechPost {
     @NotNull
     private int views;
 
-    @Column
-    @NotNull
-    private int commentCount;
-
-    @Column
-    @NotNull
-    private int goodCount;
-
-    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE)
     private List<TechGood> goods = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "tpId", cascade = CascadeType.REMOVE)
     private List<TechComment> comments = new ArrayList<>();
 
+    @Column
+    private String techImages;
+
     @Builder
-    public TechPost(Member memberId, String title, String detail , String imagePath, Member nickname) {
+    public TechPost(Member memberId, String title, String detail , Member nickname, String techImages) {
         this.memberId = memberId;
         this.title = title;
         this.detail = detail;
-        this.imagePath = imagePath;
         this.nickname = nickname;
-        this.commentCount = this.getComments().size();
-        this.goodCount = this.getGoods().size();
+        this.techImages = techImages;
     }
 
     @PrePersist
@@ -82,12 +71,12 @@ public class TechPost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateTechPost(String title, String detail, String imagePath, Member nickname) {
+    public void updateTechPost(String title, String detail, Member nickname, String techImages) {
         this.title = title;
         this.detail = detail;
-        this.updateAt = LocalDateTime.now();
-        this.imagePath = imagePath;
         this.nickname = nickname;
+        this.techImages = techImages;
+        this.updateAt = LocalDateTime.now();
     }
 
     public void views() {

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /*
     공지게시판 요청 Dto 입니다.
 * */
@@ -16,8 +18,7 @@ public class NoticeRequestDto {
     private String imagePath;
 
     @Builder
-    public NoticeRequestDto(Long id, String title, String detail,
-                            String imagePath) {
+    public NoticeRequestDto(String title, String detail, String imagePath) {
 
         this.title = title;
         this.detail = detail;
@@ -28,7 +29,6 @@ public class NoticeRequestDto {
         return Notice.builder()
                 .title(this.title)
                 .detail(this.detail)
-                .imagePath(this.imagePath)
                 .build();
     }
 }

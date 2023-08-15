@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 public class TechGoodResponseDto {
 
     private TechPost tpId;
-    private TechPost writerId;
+    private boolean good;
 
     @Builder
-    public TechGoodResponseDto(TechPost tpId, TechPost writerId) {
+    public TechGoodResponseDto(TechPost tpId, boolean good) {
         this.tpId = tpId;
-        this.writerId = writerId;
+        this.good = good;
     }
 }

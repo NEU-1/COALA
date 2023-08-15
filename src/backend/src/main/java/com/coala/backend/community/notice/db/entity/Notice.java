@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 - 공지 게시판
@@ -33,14 +35,14 @@ public class Notice {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @Column(name = "image_path")
-    private String imagePath;
+    @Column
+    private String images;
 
     @Builder
-    public Notice(String title, String detail , String imagePath) {
+    public Notice(String title, String detail, String images) {
         this.title = title;
         this.detail = detail;
-        this.imagePath = imagePath;
+        this.images = images;
     }
 
     @PrePersist
@@ -48,10 +50,10 @@ public class Notice {
         createAt = LocalDateTime.now();
     }
 
-    public void updateFreePost(String title, String detail, String imagePath) {
+    public void updateFreePost(String title, String detail, String images) {
         this.title = title;
         this.detail = detail;
+        this.images = images;
         this.updateAt = LocalDateTime.now();
-        this.imagePath = imagePath;
     }
 }
