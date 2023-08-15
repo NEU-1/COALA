@@ -10,6 +10,7 @@ const Contract = ({
   producer,
   consumer,
   post,
+  myId,
   priceFormat,
   dateFormat,
   producerSignRef,
@@ -19,15 +20,17 @@ const Contract = ({
   onChangeAgree1,
   onChangeAgree2,
   onClickSendBtn,
-  onChangeModalFlag,
   onChangeRentalCost,
   onChangeDeposit,
   onChangeRentalDate,
   onChangePeriod,
+  onChangeProductName,
+  onChangeAccount,
+  onClickClose,
 }) => {
   return (
     <>
-      <SBackground onClick={onChangeModalFlag} />
+      <SBackground onClick={onClickClose} />
       <SLayout>
         <STitle>계약서</STitle>
         <TermsContainer
@@ -51,9 +54,9 @@ const Contract = ({
             <STable1>
               <tr>
                 <td className="tableHead">제공자</td>
-                <td className="tableData">{producer}</td>
+                <td className="tableData">{producer.name}</td>
                 <td className="tableHead">대여자</td>
-                <td className="tableData">{consumer}</td>
+                <td className="tableData">{consumer.name}</td>
               </tr>
             </STable1>
           </SSubContent>
@@ -62,7 +65,13 @@ const Contract = ({
             <STable2>
               <tr>
                 <td className="tableHead">제품명</td>
-                <td className="tableData">{post.productName}</td>
+                <td className="tableData">
+                  <input
+                    type="text"
+                    value={contractForm.productName}
+                    onChange={onChangeProductName}
+                  />
+                </td>
               </tr>
               <tr>
                 <td className="tableHead">계약기간</td>
@@ -108,7 +117,13 @@ const Contract = ({
             <STable2>
               <tr>
                 <td className="tableHead">계좌</td>
-                <td className="tableData">{contractForm.account}</td>
+                <td className="tableData">
+                  <input
+                    type="text"
+                    value={contractForm.account}
+                    onChange={onChangeAccount}
+                  />
+                </td>
               </tr>
               <tr>
                 <td className="tableHead">납부금액</td>
@@ -127,23 +142,21 @@ const Contract = ({
         <div className="agreement">위 계약에 동의합니다.</div>
         <SContractSign>
           <SignatureContainer
-            name={`${producer}`}
+            name={`${producer.name}`}
             who="제공자(인)"
             ref={producerSignRef}
+            isDisable={consumer.id === myId}
           />
           <SignatureContainer
-            name={`${consumer}`}
+            name={`${consumer.name}`}
             who="대여자(인)"
             ref={consumerSignRef}
+            isDisable={producer.id === myId}
           />
         </SContractSign>
         <SContractDate>{dateFormat(contractForm.created_at)}</SContractDate>
         <SBtnContainer>
-          <CButton
-            text={'취소'}
-            bgColor={'#d9d9d9'}
-            onClick={onChangeModalFlag}
-          />
+          <CButton text={'취소'} bgColor={'#d9d9d9'} onClick={onClickClose} />
           <CButton text={'전송'} onClick={onClickSendBtn} />
         </SBtnContainer>
       </SLayout>
@@ -186,6 +199,7 @@ const SLayout = styled.div`
     color: #000;
     font-size: 16px;
     font-weight: 700;
+    padding: 10px 20px;
   }
 `;
 
@@ -286,6 +300,12 @@ const STable2 = styled.div`
 
     input[type='date'] {
       font-size: 16px;
+      text-align: center;
+    }
+
+    input[type='text'] {
+      font-size: 16px;
+      width: 100%;
       text-align: center;
     }
   }

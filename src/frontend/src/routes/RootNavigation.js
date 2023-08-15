@@ -71,6 +71,7 @@ const RootNavigation = () => {
           <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
         </Route>
 
+<<<<<<< HEAD
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
         {/* <Route path="/tech/:postId" element={<TechViewPage />} /> */}
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
@@ -79,6 +80,8 @@ const RootNavigation = () => {
         <Route path="/store/:postId" element={<StoreDetail />} />
         <Route path="/store/:postId/update" element={<StoreUpdate />} />
 
+=======
+>>>>>>> origin/contract/front
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

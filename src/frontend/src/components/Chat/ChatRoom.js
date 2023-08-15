@@ -14,7 +14,7 @@ const ChatRoom = ({
   allMessages,
   myId,
   scrollRef,
-  productId,
+  inform,
   onClickExitBtn,
 }) => {
   console.log('로그 계속 나오는지 채크');
@@ -34,15 +34,15 @@ const ChatRoom = ({
               alt=""
               className="profile"
             />
-            <div className="otherName">상대방</div>
+            <div className="otherName">{inform.other.name}</div>
           </SOtherInfo>
         </SStart>
         <SExitBtn onClick={onClickExitBtn}>나가기</SExitBtn>
       </SChatHeader>
 
       {/* 게시글이 있는 경우에만 랜더링 */}
-      {(productId.pr_id || productId.pp_id) && (
-        <ChatBoardPreviewContainer productId={productId} myId={myId} />
+      {(inform.room.pr_id || inform.room.pp_id) && (
+        <ChatBoardPreviewContainer inform={inform} myId={myId} />
       )}
 
       <SChatBubbleList>

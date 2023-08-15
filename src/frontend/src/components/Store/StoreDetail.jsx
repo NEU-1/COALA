@@ -127,8 +127,7 @@ const StoreDetail = () => {
         dispatch(openChatModal());
         setTimeout(()=>{
           const chatModal = document.getElementById("chatModal");
-          // chatModal.src=`/chat/${res.data}`; // roomID 받아오기
-          chatModal.src='/chat/테스트룸1';
+          chatModal.src=`/chat/${res.data.result.name}`; // roomID 받아오기
         }, 100)
       })
     } else {
