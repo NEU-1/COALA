@@ -16,38 +16,47 @@ import {openChatModal} from '../../store/chatModalSlice'
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
   const { postId } = useParams();
-
+  
   setToken();
   useEffect(() => {
     requestGet(`store/detail?id=${postId}`)
-      .then((res) => {
+    .then((res) => {
         setPostData(res.data);
         setLike(res.data.like);
         setIsAuthor(res.data.mine);
+        setPictures(res.data.storeImageList)
+        console.log(res.data.storeImageList)
+        console.log(pictures)
       })
       .catch((err) => {
         console.error(err);
       });
-  }, []);
-
-  console.log(postData);
-
-  const [pictures, setPictures] = useState([]);
+    }, []);
+    
+    console.log(postData);
+    
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setLike] = useState(false);
   const [isAuthor, setIsAuthor] = useState(false);
+  const [pictures, setPictures] = useState([]);
   useEffect(() => {
     if (postData) {
       setLike(postData.like);
       setIsAuthor(postData.mine);
+      setPictures(postData.storeImageList)
+
     }
   }, []);
-
+  
   const navigate = useNavigate();
+<<<<<<< HEAD
   const dispatch = useDispatch();
 
+=======
+  
+>>>>>>> feature/store
   const isLogin = login;
-
+  
   const [showModal, setShowModal] = useState(false);
 
   const formattedDate = (dateString) => {
@@ -68,7 +77,7 @@ const StoreDetail = () => {
     } else {
       setPictureNum((pictureNum - 1 + totalPictures) % totalPictures);
     }
-  };
+  };  
 
   const toggleLike = () => {
     setLike((prevLike) => !prevLike);
@@ -153,14 +162,17 @@ const StoreDetail = () => {
   const handleModalContentClick = (event) => {
     event.stopPropagation();
   };
+  console.log(pictures)
 
   return postData ? (
     <SMain>
-      <SImgs>
-        <button onClick={handlePictureChange}>{"<"}</button>
-        {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
-        <button onClick={handlePictureChange}>{">"}</button>
-      </SImgs>
+      {pictures.length ? (
+        <SImgs >
+          <SButton onClick={handlePictureChange}>{"<"}</SButton>
+          {pictures.length > 0 && <SImg src={pictures[pictureNum].url} alt="" />}
+          <SButton onClick={handlePictureChange}>{">"}</SButton>
+        </SImgs>
+      ) : null}
       <SHeader>
         <SProfile onClick={goProfile}>
           <SProfileImg src={images.plus} alt="" />
@@ -179,15 +191,15 @@ const StoreDetail = () => {
       <SContent>
         <STitleAndProduct>
           <SText>{postData.storePost.title}</SText>
-          <STextSub>
+          <STextSubProductAndDay>
             {postData.storePost.category.name} / {displayDate}
-          </STextSub>
+          </STextSubProductAndDay>
         </STitleAndProduct>
         {!isAuthor &&
           (like ? (
-            <img src={images.like} alt="React" onClick={toggleLike} />
+            <SStarimg src={images.like} alt="React" onClick={toggleLike} />
           ) : (
-            <img src={images.notlike} alt="React" onClick={toggleLike} />
+            <SStarimg src={images.notlike} alt="React" onClick={toggleLike} />
           ))}
       </SContent>
       <SContentDetail>
@@ -246,9 +258,31 @@ const SImgs = styled.div`
   gap: 10px;
 `;
 
+const SButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e9d5ff;
+  }
+`;
+
 const SImg = styled.img`
   width: 800px;
   height: 372px;
+  object-fit: cover; 
+
+  &[width="800"] {
+    width: auto;
+    height: auto;
+  }
+
+  &[height="372"] {
+    width: auto;
+    height: auto;
+  }
 `;
 
 const SHeader = styled.div`
@@ -307,13 +341,16 @@ const STitleAndProduct = styled.div`
   gap: 8px;
 `;
 
-const STextSub = styled.p`
+// const STextSub = styled.p`
+//   color: #a4a4a4;
+//   font-size: 16px;
+//   font-weight: 700;
+// `;
+
+const STextSubProductAndDay = styled.p`
   color: #a4a4a4;
-  font-family: SF Pro Rounded;
-  font-size: 16px;
-  font-style: normal;
+  font-size: 12px;
   font-weight: 700;
-  line-height: normal;
 `;
 
 const SContentDetail = styled.div`
@@ -327,7 +364,8 @@ const SContentDetail = styled.div`
 const STextContent = styled.p`
   color: #000;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 500;
+  white-space: pre-wrap;
 `;
 
 const SFooter = styled.div`
@@ -341,11 +379,8 @@ const SFooter = styled.div`
 
 const STextSubSee = styled.p`
   color: #a4a4a4;
-  font-family: SF Pro Rounded;
   font-size: 12px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
 `;
 
 const SButtons = styled.div`
@@ -464,4 +499,8 @@ const SButtonBack = styled.button`
   color: var(--white, #fff);
   font-size: 12px;
   font-weight: 700;
+`;
+
+const SStarimg = styled.img`
+  height: 25px;
 `;
