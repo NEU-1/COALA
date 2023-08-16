@@ -9,7 +9,7 @@ import {
 } from '@/models/chat/room_member'
 
 import {
-  createQuery,
+  createQuery, readQuery,
 } from '@/db/mysql/query/crud'
 
 import { Read as readUser } from '@/models/user'
@@ -49,13 +49,33 @@ const receiveData = withCors(async (
     data = await searchRoom({member_id : usr['id']});
     console.log("이 들어간 채팅방은 ",data);
 
+    
     const updatedData = await Promise.all(data.map(async (room : room & room_member) => {
       const room_id = room.room_id;
-      const latestLog = await searchLog( {room_id});
+      const latestLog = await searchLog({room_id});
+
+      const [roomUserRelations] = await readRoomMember({room_id});
+      let others: any[] = [];
+    
+      for ( let roomUserRelation of roomUserRelations ){
+        const member_id = roomUserRelation?.member_id;
+        if (member_id !== usr['id']){
+          others = [...others, roomUserRelation.member_id] 
+        }
+      }
+
+      let other : Partial<member> | undefined;
+      for (let other_members_id of others){
+        const [member] : member[] = await readUser({id : other_members_id});
+        const {id, image_path, email, name, nickname} = member;
+        other = {id, image_path, email, name, nickname};
+      }
+
       // const latestLog = await searchLog(Number(id));
       console.log(`${room_id}의 마지막 로그는 ${latestLog}`);
-      return {...room, latestLog : {latestLog}};
+      return {...room, latestLog : {latestLog}, other : other};
     }));
+
     
     // console.log(`채팅로그 포함한 데이터는 ${updatedData}`)
     res.status(200).json({ rooms: updatedData });
@@ -70,12 +90,21 @@ const receiveData = withCors(async (
       name : name,
     };
     
-    if (pp_id !== undefined) {
-      data.pp_id = pp_id;
+    if (pp_id === undefined && pr_id === undefined) {
+      return res.status(400).json({  message: 'Wrong Room INFO Get... get two ids of post product' })
+    }
+    if (pp_id !== undefined && pr_id !== undefined) {
+      return res.status(400).json({  message: 'Wrong Room INFO Get... Dont hav ids of post product' })
+    }
+
+    if (pp_id !== undefined && pr_id === undefined) {
+      data.pp_id = pp_id;      
+      // await readQuery('StorePost', {conditionQuery, values})
     }
     
-    if (pr_id !== undefined) {
+    if (pr_id !== undefined && pp_id === undefined) {
       data.pr_id = pr_id;
+      // await readQuery('AuctionPost', {conditionQuery, values})
     }
 
     console.log(`방을 생성 중입니다.`, data);
