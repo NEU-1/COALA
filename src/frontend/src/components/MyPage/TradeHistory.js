@@ -41,7 +41,11 @@ const TradeHistory = ({
           <tbody>
             {contractList ? (
               contractList.map((item) => {
-                return <ContractListItem key={item} item={item} />;
+                if (trading && item.status === 0) {
+                  return <ContractListItem key={item.id} item={item} />;
+                } else if (traded && item.status === -1) {
+                  return <ContractListItem key={item.id} item={item} />;
+                }
               })
             ) : (
               <td colSpan={4}>
