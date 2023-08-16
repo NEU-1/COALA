@@ -1,8 +1,8 @@
 import { readQuery } from '@/db/mysql/query/crud';
 import {Read as readUser} from '@/models/user';
 import { buildConditionQuery } from '@/lib/queryBuilder';
-import { createCanvas, loadImage, registerFont } from 'canvas';
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { createCanvas, loadImage } from 'canvas';
+
 
 // registerFont('public/VarelaRound-Regular.ttf', { family: 'VarelaRound' });
 
