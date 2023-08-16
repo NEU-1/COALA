@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
 import { images } from '../../assets/images';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const Header = ({isLogin, nickname}) => {
   return (
@@ -17,9 +17,9 @@ const Header = ({isLogin, nickname}) => {
           {isLogin ? <Link to="/my-page">{nickname}</Link> : <SLoginLink to="/login">{nickname}</SLoginLink>}
         </SLogoBox>
         <SNav>
-          <li><Link to="/store">제공자</Link></li>
+          <li><SNavLink to="/store">제공자</SNavLink></li>
           <li>이용자</li>
-          <li><Link to="/tech">커뮤니티</Link></li>
+          <li><SNavLink to="/tech">커뮤니티</SNavLink></li>
           <li>검수</li>
         </SNav>
       </SContainer>
@@ -71,11 +71,21 @@ const SLoginLink = styled(Link)`
   font-weight: 500;
 `;
 
-const SMypageLink = styled(Link)`
+const SNavLink = styled(NavLink)`
   color: #000;
   font-size: 16px;
-  font-weight: 500;
-`
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  &.active {
+    color: ${colors.deepPrimary};
+    font-weight: 700;
+    text-decoration-line: underline;
+  }
+`;
 
 const SSearchBar = styled.div`
   display: flex;

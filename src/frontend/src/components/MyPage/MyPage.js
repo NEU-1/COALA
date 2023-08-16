@@ -4,7 +4,6 @@ import { Outlet } from 'react-router-dom';
 import SideBar from './components/SideBar';
 
 const MyPage = ({ form }) => {
-  // 추후 수정 필요(outlet써야 할듯?)
   return (
     <SLayout>
       <SideBar form={form} />
