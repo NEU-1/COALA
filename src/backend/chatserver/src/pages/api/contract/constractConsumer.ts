@@ -16,6 +16,8 @@ import { buildConditionQuery } from '@/lib/queryBuilder';
 import {uploadToS3, getData} from '@/pages/api/upload'
 import { IncomingForm } from "formidable";
 import { User } from 'aws-cdk-lib/aws-iam';
+import makeContract from '@/lib/makeContract';
+import timestamp from '@/lib/timestamp';
 // const storage = multer.memoryStorage();
 // const upload = multer({ storage: storage }).single('producer_sign');
 
@@ -54,22 +56,25 @@ const receiveData = withCors(async (req: any, res: any) => {
       const contractFormData = id[0].buffer.toString('utf8');  // buffer를 문자열로 변환
       const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
       console.log(contractFormJSON);
-      const {contract_id} = contractFormJSON;
+      const {contract_id, } = contractFormJSON;
 
     //   const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
-      const NewConstractData = { consumer_sign, contract_path : "example_Path"}
+      const NewConstractData = { consumer_sign }
       
       
       const result = await updateContract(NewConstractData, contract_id);
-      console.log(result);
+      const contract_images = await makeContract(contract_id);
+      const contract_path = await uploadToS3('contract', timestamp(), contract_images);
+      const result_ = await updateContract({contract_path}, contract_id);
+      console.log(result_);
       // const contractData = await readQuery('history',{conditionQuery, values})
-      if (!result){
+      if (!result_){
         res.status(500).json({ message: 'contract failed cuz of server error' });
         return;
       }
       // 이미지 저장하는거 추가해야함
-      res.status(200).json({ contract : "example_Path", message: 'contract finished' });
+      res.status(200).json({ contract : contract_path, message: 'contract finished' });
       return
     }
     

@@ -11,6 +11,24 @@ interface room {
     created_at : string,
 }
 
+interface contract   {
+    id: BigInt,
+    producer_id: BigInt,
+    consumer_id: BigInt,
+    deposit: Number,
+    rental_cost: Number,
+    created_at: string,
+    rental_at: string,
+    return_at: string,
+    status: Number,
+    contract_path: string,
+    producer_sign: string,
+    consumer_sign: string,
+    account: string,
+    productName: string,
+    period: Number
+  }
+
 interface member {
     id :  BigInt,
     email : string, 
