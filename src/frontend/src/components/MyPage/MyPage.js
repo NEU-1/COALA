@@ -1,12 +1,12 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { Outlet } from 'react-router-dom';
-import SideBar from './components/SideBar';
+import SideBarContainer from './containers/SideBarContainer';
 
 const MyPage = ({ form }) => {
   return (
     <SLayout>
-      <SideBar form={form} />
+      <SideBarContainer form={form} />
       <Outlet />
     </SLayout>
   );

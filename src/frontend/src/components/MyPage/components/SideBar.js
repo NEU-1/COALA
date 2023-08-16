@@ -4,11 +4,28 @@ import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
 
-const SideBar = ({ form }) => {
+const SideBar = ({
+  form,
+  profileImg,
+  fileInput,
+  onChangeProfile,
+  onClickUploadImgBtn,
+}) => {
+  console.log(profileImg);
   return (
     <SLayout>
       <SProfile>
-        <img className="imgProfile" src={`${images.search}`} />
+        <img
+          className="imgProfile"
+          src={profileImg ? `${profileImg}` : `${images.default_profile}`}
+          alt=""
+          onClick={onClickUploadImgBtn}
+        />
+        <SImgUploader
+          type="file"
+          ref={fileInput}
+          onChange={onChangeProfile}
+        ></SImgUploader>
         <SProfileInfo>
           <div className="info">
             <div>
@@ -127,6 +144,10 @@ const SNavLink = styled(NavLink)`
     font-weight: 700;
     text-decoration-line: underline;
   }
+`;
+
+const SImgUploader = styled.input`
+  display: none;
 `;
 
 export default SideBar;

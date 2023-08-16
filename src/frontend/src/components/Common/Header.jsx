@@ -14,7 +14,7 @@ const Header = ({isLogin, nickname}) => {
             <img src={`${images.search}`} alt="" />
             <input type="text" placeholder="대여하러 가보자~" />
           </SSearchBar>
-          {isLogin ? <Link to="/my-page">{nickname}</Link> : <SLoginLink to="/login">{nickname}</SLoginLink>}
+          {isLogin ? <Link to="/my-page/store-and-auction">{nickname}</Link> : <SLoginLink to="/login">{nickname}</SLoginLink>}
         </SLogoBox>
         <SNav>
           <li><SNavLink to="/store">제공자</SNavLink></li>
