@@ -93,12 +93,12 @@ function TechBoardWrite() {
       // 저장하고자 하는 내용을 board 객체에 추가
       setBoard({
         ...board,
-        detail: editorContent, editorContent2
+        detail: editorContent2
       });
   
       const params = {
         title: board.title,
-        detail: board.detail,// 수정된 부분: editorContent를 사용
+        detail: editorContent2, // 수정된 부분: editorContent를 사용
         imagePath: Imagepath,
         isAnonymous: board.isAnonymous,
       }
