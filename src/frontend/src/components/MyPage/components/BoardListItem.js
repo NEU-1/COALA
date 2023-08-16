@@ -2,12 +2,17 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 
-const BoardListItem = ({ item }) => {
+const BoardListItem = ({ item, onClickItem }) => {
+  console.log(item);
   const printDate = (date) => {
     return date.split('T')[0];
   };
   return (
-    <STr>
+    <STr
+      onClick={() => {
+        onClickItem({ category: item.category, id: item.id });
+      }}
+    >
       <td className="category">
         {item.category === 'S' ? 'STORE' : 'AUCTION'}
       </td>

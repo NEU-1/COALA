@@ -6,11 +6,13 @@ import BoardListItem from './components/BoardListItem';
 
 const StoreAndAuction = ({
   list,
+  onClickItem,
   showStore,
   showAuction,
   onChangeShowStore,
   onChangeShowAuction,
 }) => {
+  console.log(list);
   return (
     <SLayout>
       <SContainer>
@@ -38,19 +40,24 @@ const StoreAndAuction = ({
               <th className="date">작성일</th>
             </tr>
           </thead>
-          {list ? (
-            <tbody>
-              {list.map((item) => {
+          <tbody>
+            {list ? (
+              list.map((item) => {
+                console.log(item.category + item.id);
                 return (
-                  <BoardListItem item={item} key={item.category + item.id} />
+                  <BoardListItem
+                    item={item}
+                    key={item.category + item.id}
+                    onClickItem={onClickItem}
+                  />
                 );
-              })}
-            </tbody>
-          ) : (
-            <td colSpan={4}>
-              <SEmpty>작성한 글이 없습니다.</SEmpty>
-            </td>
-          )}
+              })
+            ) : (
+              <td colSpan={4}>
+                <SEmpty>작성한 글이 없습니다.</SEmpty>
+              </td>
+            )}
+          </tbody>
         </STable>
       </SContainer>
     </SLayout>
