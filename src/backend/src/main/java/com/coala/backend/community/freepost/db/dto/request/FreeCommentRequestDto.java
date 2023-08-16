@@ -11,20 +11,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FreeCommentRequestDto {
     private FreePost fpId;
-    private boolean isAnonymous;
+    private boolean anonymous;
     private String content;
 
     @Builder
-    public FreeCommentRequestDto(FreePost fpId, boolean isAnonymous, String content) {
+    public FreeCommentRequestDto(FreePost fpId, boolean anonymous, String content) {
         this.fpId = fpId;
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.content = content;
     }
 
     public FreeComment toEntity() {
         return FreeComment.builder()
                 .fpId(this.fpId)
-                .isAnonymous(this.isAnonymous)
+                .anonymous(this.anonymous)
                 .content(this.content)
                 .build();
     }

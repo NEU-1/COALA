@@ -29,8 +29,7 @@ public class TechComment {
     private Member memberId;
 
     @NotNull
-    @Column(name = "is_anonymous")
-    private boolean isAnonymous;
+    private boolean anonymous;
 
     @NotNull
     private String content;
@@ -46,15 +45,15 @@ public class TechComment {
     }
 
     @Builder
-    public TechComment(TechPost tpId, boolean isAnonymous, String content, Member memberId) {
+    public TechComment(TechPost tpId, boolean anonymous, String content, Member memberId) {
         this.tpId = tpId;
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.memberId = memberId;
         this.content = content;
     }
 
-    public void updateTechComment(boolean isAnonymous, String content) {
-        this.isAnonymous = isAnonymous;
+    public void updateTechComment(boolean anonymous, String content) {
+        this.anonymous = anonymous;
         this.content = content;
         this.updateAt = LocalDateTime.now();
     }

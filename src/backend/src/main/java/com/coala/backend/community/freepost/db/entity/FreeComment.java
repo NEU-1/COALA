@@ -29,7 +29,8 @@ public class FreeComment {
     private Member memberId;
 
     @NotNull
-    private boolean isAnonymous;
+    @Column(name = "anonymous")
+    private boolean anonymous;
 
     @NotNull
     private String content;
@@ -45,15 +46,15 @@ public class FreeComment {
     }
 
     @Builder
-    public FreeComment(FreePost fpId, String author, boolean isAnonymous, Member memberId, String content) {
+    public FreeComment(FreePost fpId, boolean anonymous, Member memberId, String content) {
         this.fpId = fpId;
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.memberId = memberId;
         this.content = content;
     }
 
-    public void updateFreeComment(boolean isAnonymous, String content) {
-        this.isAnonymous = isAnonymous;
+    public void updateFreeComment(boolean anonymous, String content) {
+        this.anonymous = anonymous;
         this.content = content;
         this.updateAt = LocalDateTime.now();
     }

@@ -70,7 +70,7 @@ public class NoticeServiceImpl implements NoticeService {
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + allList.size() / 7)
+                .detail(1 + allList.size() / 8)
                 .list(allList)
                 .build();
     }
@@ -119,7 +119,7 @@ public class NoticeServiceImpl implements NoticeService {
             return CommunityBaseResponseDto.builder()
                     .statusCode(200)
                     .msg("성공,  전체 페이지 수 & 해당 페이지 글 목록")
-                    .detail(1 + searchList.size() / 7)
+                    .detail(1 + searchList.size() / 8)
                     .list(searchList)
                     .build();
     }

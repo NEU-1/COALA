@@ -33,7 +33,7 @@ public class TechCommentServiceImpl implements TechCommentService {
 
         TechComment techComment = TechComment.builder()
                 .tpId(commentDto.getTpId())
-                .isAnonymous(commentDto.isAnonymous())
+                .anonymous(commentDto.isAnonymous())
                 .content(commentDto.getContent())
                 .memberId(member)
                 .build();
@@ -61,7 +61,7 @@ public class TechCommentServiceImpl implements TechCommentService {
                 .map(techComment -> TechCommentResponseDto.builder()
                         .id(techComment.getId())
                         .tpId(id)
-                        .isAnonymous(techComment.isAnonymous())
+                        .anonymous(techComment.isAnonymous())
                         .nickname(member.getNickname())
                         .content(techComment.getContent())
                         .mine(techComment.getMemberId().getEmail().equals(member.getEmail()))
@@ -73,7 +73,7 @@ public class TechCommentServiceImpl implements TechCommentService {
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 페이지 수 && 해당 페이지 댓글 목록")
-                .detail(1 + postComments.size() / 5)
+                .detail(1 + postComments.size() / 6)
                 .list(postComments)
                 .build();
     }

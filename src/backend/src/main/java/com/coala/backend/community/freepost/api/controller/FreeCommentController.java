@@ -3,9 +3,7 @@ package com.coala.backend.community.freepost.api.controller;
 import com.coala.backend.community.common.dto.CommunityBaseResponseDto;
 import com.coala.backend.community.freepost.api.service.FreeCommentServiceImpl;
 import com.coala.backend.community.freepost.db.dto.request.FreeCommentRequestDto;
-import com.coala.backend.community.freepost.db.entity.FreeComment;
 import com.coala.backend.member.common.jwt.JwtTokenProvider;
-import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 /*
 * 자유게시판 댓글 controller 입니다.

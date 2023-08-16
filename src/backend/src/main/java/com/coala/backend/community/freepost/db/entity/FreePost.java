@@ -44,8 +44,7 @@ public class FreePost {
     private LocalDateTime updateAt;
 
     @NotNull
-    @Column(name = "is_anonymous")
-    private boolean isAnonymous;
+    private boolean anonymous;
 
     @Column(columnDefinition = "integer default 0")
     @NotNull
@@ -61,11 +60,11 @@ public class FreePost {
     private String images;
 
     @Builder
-    public FreePost(Member memberId, String title, String detail , boolean isAnonymous, String images) {
+    public FreePost(Member memberId, String title, String detail , boolean anonymous, String images) {
         this.memberId = memberId;
         this.title = title;
         this.detail = detail;
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.images = images;
     }
 
@@ -74,11 +73,11 @@ public class FreePost {
         createAt = LocalDateTime.now();
     }
 
-    public void updateFreePost(String title, String detail, boolean isAnonymous, String images) {
+    public void updateFreePost(String title, String detail, boolean anonymous, String images) {
         this.title = title;
         this.detail = detail;
         this.updateAt = LocalDateTime.now();
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.images = images;
     }
 

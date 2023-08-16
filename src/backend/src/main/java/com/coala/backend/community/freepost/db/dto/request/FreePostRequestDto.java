@@ -15,15 +15,15 @@ import lombok.NoArgsConstructor;
 public class FreePostRequestDto {
     private String title;
     private String detail;
-    private boolean isAnonymous;
+    private boolean anonymous;
     private String imagePath;
 
     @Builder
-    public FreePostRequestDto(String title, String detail, boolean isAnonymous, String imagePath) {
+    public FreePostRequestDto(String title, String detail, boolean anonymous, String imagePath) {
 
         this.title = title;
         this.detail = detail;
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.imagePath = imagePath;
     }
 
@@ -32,7 +32,7 @@ public class FreePostRequestDto {
                 .memberId(member)
                 .title(this.title)
                 .detail(this.detail)
-                .isAnonymous(this.isAnonymous)
+                .anonymous(this.anonymous)
                 .build();
     }
 }

@@ -11,8 +11,13 @@ import lombok.Setter;
 public class MemberInfoResponseDto {
     private Member member;
 
+<<<<<<< HEAD
     private BaseResponseDto baseResponseDto;
 
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> feature/techboard
     // member Id
     private Long id;
 
@@ -46,4 +51,14 @@ public class MemberInfoResponseDto {
         this.statusCode = statusCode;
     }
 
+<<<<<<< HEAD
+=======
+=======
+    private BaseResponseDto baseResponseDto;
+>>>>>>> feature/auction
+=======
+    private BaseResponseDto baseResponseDto;
+>>>>>>> chat/front
+
+>>>>>>> feature/techboard
 }

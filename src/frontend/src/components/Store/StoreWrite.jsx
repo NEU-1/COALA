@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from "../../assets/images";
 import Swal from "sweetalert2";
-import { requestPost, setToken } from "../../lib/api/api";
+import { requestPost2, setToken } from "../../lib/api/api";
 
 const StoreWrite = () => {
   console.log(images);
@@ -110,9 +110,21 @@ const StoreWrite = () => {
   };
 
   const year = calendarDay.getFullYear();
-  const month = calendarDay.getMonth() + 1;
-  const date = calendarDay.getDate();
+  const month = (calendarDay.getMonth() + 1).toString().padStart(2, "0");
+  const date = calendarDay.getDate().toString().padStart(2, "0");
   const navigate = useNavigate();
+
+  const dataURLtoBlob = (dataURL) => {
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
 
   const onUpload = async (e) => {
     const files = e.target.files;
@@ -128,11 +140,15 @@ const StoreWrite = () => {
 
       reader.readAsDataURL(files[i]);
       const fileData = await fileRead;
-      newImages.push(fileData);
+
+      const blob = dataURLtoBlob(fileData);
+
+      newImages.push(blob);
     }
 
     setImageList(newImages);
   };
+  
   const goBackBtn = () => {
     navigate("/store");
   };
@@ -192,17 +208,30 @@ const StoreWrite = () => {
 
     if (validation.isValid) {
       setToken();
-      requestPost("store/write", {
-        title: title,
-        detail: content,
-        minRentalPeriod: minRentalDay,
-        maxRentalPeriod: maxRentalDay,
-        limitDate: `${year}-${month}-${date}`,
-        rentalCost: rentalFee,
-        deposit: deposit,
-        category: productSelect + 1,
-        // "image": imageList,
-      })
+
+      const formData = new FormData();
+      formData.append(
+        "json",
+        JSON.stringify({
+          title: title,
+          detail: content,
+          minRentalPeriod: minRentalDay,
+          maxRentalPeriod: maxRentalDay,
+          limitDate: `${year}-${month}-${date}`,
+          rentalCost: rentalFee,
+          deposit: deposit,
+          category: productSelect + 1,
+        })
+      );
+
+      for (let i = 0; i < imageList.length; i++) {
+        formData.append("multipartFile", imageList[i]);
+      }
+
+      // for (let [key, value] of formData.entries()) {
+      //   console.log(`${key}: ${value}`);
+      // }
+      requestPost2("store/write", formData)
         .then((response) => {
           displayMessage("success", "게시글 등록됨");
           console.log(response);
@@ -254,8 +283,10 @@ const StoreWrite = () => {
       <SPicture>
         <SSubTitle>사진 첨부</SSubTitle>
         <SPictureList>
-          {imageList.map((src, index) => {
-            return <SInsertPicture key={index} src={src} />;
+          {imageList.map((blob, index) => {
+            return (
+              <SInsertPicture key={index} src={URL.createObjectURL(blob)} />
+            );
           })}
           <SLabel>
             <input
@@ -532,6 +563,7 @@ const SSellTitleInput = styled.input`
   font-size: 20px;
   font-weight: 700;
   width: 600px;
+  // maxLength={15}
 `;
 
 const SFilterContainer = styled.div`
@@ -787,7 +819,7 @@ const SDropdownMenu = styled.div`
 
 const SDropdownMenuItem = styled.div`
   height: 41px;
-  padding: 11px 16px;
+  padding: 11px 16px; 
   justify-content: center;
   align-items: center;
   gap: 10px;
