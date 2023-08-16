@@ -5,10 +5,8 @@ import CCheckBox from "../../Common/CCheckBox";
 // import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
-import { requestPost, setToken } from "../../../lib/api/api";
+import { requestPost2, setToken } from "../../../lib/api/api";
 import { useParams } from "react-router-dom";
-
-const SERVER_URL = "--서버 주소--";
 
 const TradeOfferForm = ({ onClose }) => {
   const [imageList, setImageList] = useState([]);
@@ -19,7 +17,7 @@ const TradeOfferForm = ({ onClose }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
   const { postId } = useParams();
-  
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % imageList.length);
   };
@@ -52,46 +50,74 @@ const TradeOfferForm = ({ onClose }) => {
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
+  console.log(imageList);
+
+  const dataURLtoBlob = (dataURL) => {
+    console.log(dataURL);
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
   const onUpload = async (e) => {
     const files = e.target.files;
-    const newImages = await Promise.all(
-      [...files].map((file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = (error) => reject(error);
-          reader.readAsDataURL(file);
-        });
-      })
-    );
-    setImageList((prev) => [...prev, ...newImages]);
+    const newImages = [...imageList];
+
+    for (let i = 0; i < files.length; i++) {
+      let reader = new FileReader();
+      const fileRead = new Promise((resolve) => {
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+      });
+
+      reader.readAsDataURL(files[i]);
+      const fileData = await fileRead;
+
+      const blob = dataURLtoBlob(fileData);
+
+      newImages.push(blob);
+    }
+
+    setImageList(newImages);
   };
 
   const setBargainStatus = (e) => {
-    setBargain(e.target.checked ? 1: 0);
+    setBargain(e.target.checked ? 1 : 0);
   };
   const goServer = async () => {
     setToken();
     let formData = new FormData();
-    formData.append('json', JSON.stringify({
-      title : title,
-      detail : mainText,
-      deposit: deposit,
-      rentalCost : rentalFee,
-      negotiation : bargain
-    }))
-    let file = new Blob();
-    formData.append('multipartFile', file);
-    requestPost(`auction/apply?id=${postId}`, formData, {
-      'Content-Type': 'multipart/form-data'
-    })
-    .then((res) => {
-      console.log(res)
-      // console.log(title, mainText, deposit, rentalFee, bargain)
-    })
-    .catch((err) => {
-      console.error(err)
-    })
+    formData.append(
+      "json",
+      JSON.stringify({
+        title: title,
+        detail: mainText,
+        deposit: deposit,
+        rentalCost: rentalFee,
+        negotiation: bargain,
+      })
+    );
+    for (let i = 0; i < imageList.length; i++) {
+      formData.append("multipartFile", imageList[i]);
+    }
+    // for (let [key, value] of formData.entries()) {
+    //     console.log(`${key}: ${value}`);
+    //   }
+    requestPost2(`auction/apply?id=${postId}`, formData)
+      .then((res) => {
+        console.log(res, "제안 갔음");
+        // console.log(title, mainText, deposit, rentalFee, bargain)
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     // try {
     //   const formData = new FormData();
     //   imageList.forEach((image, index) => {
@@ -112,7 +138,7 @@ const TradeOfferForm = ({ onClose }) => {
   };
   const fetchMySellData = (setMySell) => {
     axios
-      .get(SERVER_URL)
+      // .get(SERVER_URL)
       .then((response) => setMySell(response.data))
       .catch((error) => console.error("Error fetching my sell data:", error));
   };
@@ -129,7 +155,9 @@ const TradeOfferForm = ({ onClose }) => {
     <SCard>
       <div>
         <SImgDiv>
-          {imageList.length > 0 && <SImg src={imageList[currentImageIndex]} />}
+          {imageList.length > 0 && (
+            <SImg src={URL.createObjectURL(imageList[currentImageIndex])} />
+          )}
 
           <label>
             <input

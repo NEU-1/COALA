@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function ImgMediaCard({
   img,
@@ -11,28 +12,29 @@ export default function ImgMediaCard({
   rentalFee,
   deposit,
   bargaining,
-}) {
-  // const [currentImgIndex, setCurrentImgIndex] = React.useState(0);
-  // const handlePictureChange = (direction) => {
-  //   const totalPictures = img.length;
-  //   if (direction === "next") {
-  //     setCurrentImgIndex((currentImgIndex + 1) % totalPictures);
-  //   } else {
-  //     setCurrentImgIndex((currentImgIndex - 1 + totalPictures) % totalPictures);
-  //   }
-  // };
+})
+{ 
+  console.log(img)  
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const handlePictureChange = (direction) => {
+    const totalPictures = img.length;
+    if (direction === "next") {
+      setCurrentImgIndex((currentImgIndex + 1) % totalPictures);
+    } else {
+      setCurrentImgIndex((currentImgIndex - 1 + totalPictures) % totalPictures);
+    }
+  };
   const navigate = useNavigate();
   const goChat = () => {
     navigate("/chat");
   };
   return (
     <SCard>
-      {/* <SImgDiv>
-        <SImg src={img} alt="" />
+      <SImgDiv>
         <button onClick={() => handlePictureChange("previous")}>{"<"}</button>
-        <SImg src={img[currentImgIndex]} alt="" />
+        <SImg src={img[currentImgIndex].url} alt="" />
         <button onClick={() => handlePictureChange("next")}>{">"}</button>
-      </SImgDiv> */}
+      </SImgDiv>
       <STitleDiv>
         <STitleP>{title}</STitleP>
       </STitleDiv>
@@ -77,25 +79,25 @@ const SCard = styled.div`
   background: #f5f5f5;
 `;
 
-// const SImgDiv = styled.div`
-//   display: flex;
-//   padding: 25px;
-//   flex-direction: column;
-//   align-items: flex-start;
-//   gap: 10px;
-//   align-self: stretch;
-// `;
+const SImgDiv = styled.div`
+  display: flex;
+  padding: 25px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+`;
 
-// const SImg = styled.img`
-//   display: flex;
-//   height: 269px;
-//   justify-content: flex-end;
-//   align-items: flex-start;
-//   gap: 10px;
-//   align-self: stretch;
-//   border-radius: 30px;
-//   background: url(<path-to-image>), lightgray 50% / cover no-repeat;
-// `;
+const SImg = styled.img`
+  display: flex;
+  height: 269px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+  border-radius: 30px;
+  background: url(<path-to-image>), lightgray 50% / cover no-repeat;
+`;
 
 const STitleDiv = styled.div`
   display: flex;
@@ -170,7 +172,7 @@ const STextP = styled.p`
 `;
 
 const SOfferP = styled.p`
-  color: ${(props) => (props.offer ? "white" : "#1A1C3D")};
+  color: white;
   font-size: 12px;
   font-weight: 400;
   background-color: ${(props) => (props.offer ? "green" : "red")};

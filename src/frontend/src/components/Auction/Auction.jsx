@@ -50,9 +50,18 @@ const Auction = () => {
 
   const applyFilter = () => {
     setToken();
+    let category = productType === "" ? "" : productType + 1;
+    const dayTypeMapping = {
+      "0": 1,
+      "1": 7,
+      "2": 14,
+      "3": 30
+    };
+    const minRentalPeriod = dayTypeMapping[dayType] || "";
+
     requestPost(`auction/list?page=${currentPage}`, {
-      category: productType + 1,
-      minRentalPeriod: dayType,
+      category,
+      minRentalPeriod,
       status: 1,
     })
       .then((res) => {
@@ -64,11 +73,19 @@ const Auction = () => {
   };
 
   const handleProductTypeChange = (index) => {
-    setProductType(index);
+    if (productType === index) {
+      setProductType(""); 
+    } else {
+      setProductType(index);
+    }
   };
 
   const handleDayTypeChange = (index) => {
+    if (dayType === index) {
+    setDayType(""); 
+  } else {
     setDayType(index);
+  }
   };
   const resetDayAndProduct = () => {
     setProductType("");
@@ -185,7 +202,7 @@ const Auction = () => {
         <SAuctionDetailHead>
           <SAuctionTitleP1>분류</SAuctionTitleP1>
           <SAuctionTitleP2>제목</SAuctionTitleP2>
-          <SAuctionTitleP3>최소기간</SAuctionTitleP3>
+          <SAuctionTitleP3>최소 대여 기간</SAuctionTitleP3>
           <SAuctionTitleP4>작성일</SAuctionTitleP4>
         </SAuctionDetailHead>
         <SCardList>
@@ -420,7 +437,7 @@ const SAuctionTitleP2 = styled.p`
 const SAuctionTitleP3 = styled.p`
   font-size: 16px;
   font-weight: 500;
-  width: 60px;
+  width: 100px;
 `;
 const SAuctionTitleP4 = styled.p`
   font-size: 16px;

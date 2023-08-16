@@ -179,7 +179,7 @@ const AuctionDetail = () => {
                       onClick={() => handlePictureChange("previous")}
                     ></SButtonArea>
                     <ImgMediaCard
-                      // img={postData.auctionApplies[currentProposalIndex].img}
+                      img={postData.auctionApplies[currentProposalIndex].auctionImageList}
                       proposerId={postData.auctionApplies[currentProposalIndex].memberId}
                       postId={postId}
                       title={
@@ -331,6 +331,7 @@ const STextMainContent = styled.p`
   font-size: 20px;
   font-weight: 500;
   white-space: pre-wrap;
+  min-height: 200px;
 `;
 
 const SButtons = styled.div`
