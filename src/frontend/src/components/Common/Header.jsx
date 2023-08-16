@@ -18,7 +18,7 @@ const Header = ({isLogin, nickname}) => {
         </SLogoBox>
         <SNav>
           <li><SNavLink to="/store">제공자</SNavLink></li>
-          <li>이용자</li>
+          <li><SNavLink to="/auction">이용자</SNavLink></li>
           <li><SNavLink to="/tech">커뮤니티</SNavLink></li>
           <li>검수</li>
         </SNav>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TradeHistory from '../TradeHistory';
-import { requestGet, setToken } from '../../../lib/api/api';
+import { requestGet, requestGetNode, setToken } from '../../../lib/api/api';
 import axios from 'axios';
 
 let email = null;
@@ -24,28 +24,21 @@ const TradeHistoryContainer = () => {
     });
   }, []);
 
-  const getContractList = async () => {
-    await axios
-      .get(
-        `http://i9d108.p.ssafy.io:3030/api/contract/contract?email=${email}`,
-        {}
-      )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   useEffect(() => {
     if (email) {
-      getContractList();
+      requestGetNode(`contract/contract?email=${email}`)
+        .then((res) => {
+          setContractList([...res.data.consumer, ...res.data.producer]);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [traded, trading]);
 
   return (
     <TradeHistory
+      contractList={contractList}
       trading={trading}
       traded={traded}
       onChangeTrading={onChangeTrading}

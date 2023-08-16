@@ -2,10 +2,10 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
 import CCheckBox from '../Common/CCheckBox';
+import ContractListItem from './components/ContractListItem';
 
 const TradeHistory = ({
-  list,
-  onClickItem,
+  contractList,
   trading,
   traded,
   onChangeTrading,
@@ -33,15 +33,21 @@ const TradeHistory = ({
           <thead>
             <tr>
               <th className="product">제품명</th>
-              <th className="trader">거래자</th>
+              <th className="tradeDate">거래일</th>
               <th className="returnDate">반납일</th>
               <th className="status">상태</th>
             </tr>
           </thead>
           <tbody>
-            <td colSpan={4}>
-              <SEmpty>작성한 글이 없습니다.</SEmpty>
-            </td>
+            {contractList ? (
+              contractList.map((item) => {
+                return <ContractListItem key={item} item={item} />;
+              })
+            ) : (
+              <td colSpan={4}>
+                <SEmpty>작성한 글이 없습니다.</SEmpty>
+              </td>
+            )}
           </tbody>
         </STable>
       </SContainer>
@@ -106,11 +112,14 @@ const STable = styled.table`
     th.product {
       width: 380px;
     }
-    th.trader {
+    th.tradeDate {
       width: 150px;
     }
     th.returnDate {
       width: 150px;
+    }
+    th.status {
+      width: 100px;
     }
   }
 `;

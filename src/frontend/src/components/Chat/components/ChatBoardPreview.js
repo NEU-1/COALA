@@ -15,7 +15,6 @@ const ChatBoardPreview = ({
   onClickContractBtn,
   onClickAcceptBtn,
 }) => {
-  console.log(post);
   return (
     <SLayout>
       <SStart
@@ -25,7 +24,7 @@ const ChatBoardPreview = ({
         }}
       >
         {imgURL ? (
-          <img src={`${imgURL}`} alt="" className="photo" />
+          <img src={`${imgURL.url}`} alt="" className="photo" />
         ) : (
           <img src={`${images.noImg}`} alt="" className="photo" />
         )}
