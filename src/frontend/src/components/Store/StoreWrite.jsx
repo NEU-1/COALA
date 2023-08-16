@@ -17,7 +17,6 @@ const StoreWrite = () => {
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
   const [showDropdown, setshowDropdown] = useState(false);
   const [title, setTitle] = useState("");
-  // const [productName, setproductName] = useState("");
   const [rentalFee, setRentalFee] = useState("");
   const [deposit, setDeposit] = useState(0);
   const [minRentalDay, setMinRentalDay] = useState("");
@@ -46,9 +45,6 @@ const StoreWrite = () => {
   const titleHandler = (e) => {
     setTitle(e.target.value);
   };
-  // const productNameHandler = (e) => {
-  //   setproductName(e.target.value);
-  // };
   const rentalFeeHandler = (e) => {
     setRentalFee(e.target.value);
   };
@@ -228,9 +224,6 @@ const StoreWrite = () => {
         formData.append("multipartFile", imageList[i]);
       }
 
-      // for (let [key, value] of formData.entries()) {
-      //   console.log(`${key}: ${value}`);
-      // }
       requestPost2("store/write", formData)
         .then((response) => {
           displayMessage("success", "게시글 등록됨");
@@ -254,7 +247,7 @@ const StoreWrite = () => {
       <SHeader>
         <STittleAndBtn>
           <STitle>게시글 등록</STitle>
-          <SCallMyProductBtn onClick={mySellHandler}>
+          {/* <SCallMyProductBtn onClick={mySellHandler}>
             <SBtnText>내 제품 불러오기</SBtnText>
             {showDropdown && (
               <SDropdownMenu>
@@ -263,7 +256,7 @@ const StoreWrite = () => {
                 ))}
               </SDropdownMenu>
             )}
-          </SCallMyProductBtn>
+          </SCallMyProductBtn> */}
         </STittleAndBtn>
         <SImportantText>*필수 항목</SImportantText>
       </SHeader>
@@ -281,7 +274,7 @@ const StoreWrite = () => {
         </SSellHeaderPading>
       </SSellHeader>
       <SPicture>
-        <SSubTitle>사진 첨부</SSubTitle>
+        <SSubTitle>사진 첨부<SImportantStar>*</SImportantStar></SSubTitle>
         <SPictureList>
           {imageList.map((blob, index) => {
             return (
@@ -301,17 +294,6 @@ const StoreWrite = () => {
           </SLabel>
         </SPictureList>
       </SPicture>
-      {/* <SCalendarDate>
-        <SSubTitle>상한 날짜</SSubTitle>
-        <SSubTitle
-          onClick={calendarHandler}
-        >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
-      </SCalendarDate>
-      {calendar ? (
-        <Calendar onChange={setCalendarDay} value={calendarDay} />
-      ) : (
-        ""
-      )} */}
       <SFilterContainer>
         <SFilterDoubleBox>
           <SFilterBoxGap35>
@@ -333,7 +315,6 @@ const StoreWrite = () => {
             </SSelectProduct>
           </SFilterBoxGap35>
           <SFilterBoxGap10>
-            {/* <SCalendarDate> */}
             <SSubTitle>상한 날짜</SSubTitle>
             <SSubTitle
               onClick={calendarHandler}
@@ -341,15 +322,6 @@ const StoreWrite = () => {
             {calendar && (
               <Calendar onChange={onDateChange} value={calendarDay} />
             )}
-            {/* <SSubTitle>
-              제품명<SImportantStar>*</SImportantStar>
-            </SSubTitle>
-            <SFilterInput
-              className="productName"
-              type="text"
-              value={productName}
-              onChange={productNameHandler}
-            /> */}
           </SFilterBoxGap10>
         </SFilterDoubleBox>
         <SFilterDoubleBox>
@@ -497,24 +469,24 @@ const STitle = styled.p`
   line-height: normal;
 `;
 
-const SCallMyProductBtn = styled.button`
-  display: flex;
-  width: 143px;
-  height: 41px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
-  background: var(--primary, #e9d5ff);
-`;
+// const SCallMyProductBtn = styled.button`
+//   display: flex;
+//   width: 143px;
+//   height: 41px;
+//   padding: 11px 16px;
+//   justify-content: center;
+//   align-items: center;
+//   gap: 10px;
+//   border-radius: 10px;
+//   background: var(--primary, #e9d5ff);
+// `;
 
-const SBtnText = styled.p`
-  color: var(--white, #fff);
-  text-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
-  font-family: Inter;
-  font-weight: 700;
-`;
+// const SBtnText = styled.p`
+//   color: var(--white, #fff);
+//   text-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+//   font-family: Inter;
+//   font-weight: 700;
+// `;
 
 const SImportantText = styled.p`
   color: var(--necessary, #fb1818);
@@ -644,17 +616,6 @@ const SSelectDayBtn = styled.button`
   color: ${(props) => (props.$activeDay ? "#A255F7" : "#D9D9D9")};
 `;
 
-// const SFilterInput = styled.input`
-//   display: flex;
-//   padding: 16px;
-//   justify-content: center;
-//   align-items: flex-start;
-//   gap: 10px;
-//   align-self: stretch;
-//   border-radius: 10px;
-//   border: 1px solid var(--border, #d9d9d9);
-// `;
-
 const SFilterInputCost = styled.input`
   display: flex;
   width: 277px;
@@ -687,16 +648,6 @@ const SFilterInFutAndWon = styled.div`
   gap: 20px;
   align-self: stretch;
 `;
-
-// const SCalendarDate = styled.div`
-//   display: flex;
-//   width: 800px;
-//   padding: 30px 20px;
-//   align-items: flex-start;
-//   gap: 30px;
-//   // justify-content: center;
-//   border-bottom: 1px solid var(--content-underline, #e9d5ff);
-// `;
 
 const SPicture = styled.div`
   display: flex;

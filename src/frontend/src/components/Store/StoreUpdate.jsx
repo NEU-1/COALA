@@ -26,8 +26,8 @@ const StoreUpdate = () => {
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
   const [imageList, setImageList] = useState({
-    urls: [], // 기존 이미지 URL 리스트
-    blobs: [], // 새로 추가된 이미지 Blob 리스트
+    urls: [], 
+    blobs: [],
   });
   const [postData, setPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +36,6 @@ const StoreUpdate = () => {
 
   const initialState = {
     title: "",
-    // productName: "",
     rentalFee: "",
     deposit: "",
     minRentalDay: "",
@@ -135,7 +134,6 @@ const StoreUpdate = () => {
 
   const {
     title,
-    // productName,
     rentalFee,
     deposit,
     minRentalDay,
@@ -199,7 +197,6 @@ const StoreUpdate = () => {
       isValid:
         title !== "" &&
         productSelect !== "" &&
-        // productName !== "" &&
         rentalFee !== "" &&
         minRentalDay !== "" &&
         maxRentalDay !== "" &&
@@ -210,9 +207,7 @@ const StoreUpdate = () => {
           ? "제목"
           : productSelect === ""
           ? "분류"
-          : // : productName === ""
-          // ? "제품명"
-          rentalFee === ""
+          : rentalFee === ""
           ? "대여료"
           : minRentalDay === ""
           ? "최소 대여 기간"
@@ -289,7 +284,7 @@ const StoreUpdate = () => {
       <SHeader>
         <STittleAndBtn>
           <STitle>게시글 업데이트</STitle>
-          <SCallMyProductBtn onClick={mySellHandler}>
+          {/* <SCallMyProductBtn onClick={mySellHandler}>
             <SBtnText>내 제품 불러오기</SBtnText>
             {showDropdown && (
               <SDropdownMenu>
@@ -298,7 +293,7 @@ const StoreUpdate = () => {
                 ))}
               </SDropdownMenu>
             )}
-          </SCallMyProductBtn>
+          </SCallMyProductBtn> */}
         </STittleAndBtn>
         <SImportantText>*필수 항목</SImportantText>
       </SHeader>
@@ -316,7 +311,7 @@ const StoreUpdate = () => {
         </SSellHeaderPading>
       </SSellHeader>
       <SPicture>
-        <SSubTitle>사진 첨부</SSubTitle>
+        <SSubTitle>사진 첨부<SImportantStar>*</SImportantStar></SSubTitle>
         <SPictureList>
           {imageList.urls.map((src, index) => (
             <SInsertPicture key={index} src={src} />
@@ -340,17 +335,6 @@ const StoreUpdate = () => {
           </SLabel>
         </SPictureList>
       </SPicture>
-      {/* <SCalendarDate>
-          <SSubTitle>상한 날짜</SSubTitle>
-          <SSubTitle
-            onClick={calendarHandler}
-          >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
-        </SCalendarDate>
-        {calendar ? (
-          <Calendar onChange={setCalendarDay} value={calendarDay} />
-        ) : (
-          ""
-        )} */}
       <SFilterContainer>
         <SFilterDoubleBox>
           <SFilterBoxGap35>
@@ -368,7 +352,6 @@ const StoreUpdate = () => {
             </SSelectProduct>
           </SFilterBoxGap35>
           <SFilterBoxGap10>
-            {/* <SCalendarDate> */}
             <SSubTitle>상한 날짜</SSubTitle>
             <SSubTitle
               onClick={calendarHandler}
@@ -376,15 +359,6 @@ const StoreUpdate = () => {
             {calendar && (
               <Calendar onChange={onDateChange} value={calendarDay} />
             )}
-            {/* <SSubTitle>
-                제품명<SImportantStar>*</SImportantStar>
-              </SSubTitle>
-              <SFilterInput
-                name="productName"
-                type="text"
-                value={productName}
-                onChange={handleChange}
-              /> */}
           </SFilterBoxGap10>
         </SFilterDoubleBox>
         <SFilterDoubleBox>
@@ -519,24 +493,24 @@ const STitle = styled.p`
   line-height: normal;
 `;
 
-const SCallMyProductBtn = styled.button`
-  display: flex;
-  width: 143px;
-  height: 41px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
-  background: var(--primary, #e9d5ff);
-`;
+// const SCallMyProductBtn = styled.button`
+//   display: flex;
+//   width: 143px;
+//   height: 41px;
+//   padding: 11px 16px;
+//   justify-content: center;
+//   align-items: center;
+//   gap: 10px;
+//   border-radius: 10px;
+//   background: var(--primary, #e9d5ff);
+// `;
 
-const SBtnText = styled.p`
-  color: var(--white, #fff);
-  text-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
-  font-family: Inter;
-  font-weight: 700;
-`;
+// const SBtnText = styled.p`
+//   color: var(--white, #fff);
+//   text-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+//   font-family: Inter;
+//   font-weight: 700;
+// `;
 
 const SImportantText = styled.p`
   color: var(--necessary, #fb1818);
@@ -651,17 +625,6 @@ const SSelectProductBtn = styled.button`
   color: ${(props) => (props.$activeProduct ? "#A255F7" : "#D9D9D9")};
 `;
 
-// const SFilterInput = styled.input`
-//   display: flex;
-//   padding: 16px;
-//   justify-content: center;
-//   align-items: flex-start;
-//   gap: 10px;
-//   align-self: stretch;
-//   border-radius: 10px;
-//   border: 1px solid var(--border, #d9d9d9);
-// `;
-
 const SFilterInputCost = styled.input`
   display: flex;
   width: 277px;
@@ -694,16 +657,6 @@ const SFilterInFutAndWon = styled.div`
   gap: 20px;
   align-self: stretch;
 `;
-
-// const SCalendarDate = styled.div`
-//   display: flex;
-//   width: 800px;
-//   padding: 30px 20px;
-//   align-items: flex-start;
-//   gap: 30px;
-//   // justify-content: center;
-//   border-bottom: 1px solid var(--content-underline, #e9d5ff);
-// `;
 
 const SPicture = styled.div`
   display: flex;
