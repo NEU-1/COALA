@@ -1,17 +1,16 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from "../../assets/images";
 import Swal from "sweetalert2";
+import { requestPut, requestGet, setToken } from "../../lib/api/api";
 
 const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "7일", " 14일", "30일"];
 
-const SelectButton = ({ itemList, activeIndex, onClickHandler }) => {
-  return itemList.map((item, index) => (
+const SelectButton = ({ itemList, activeIndex, onClickHandler }) =>
+  itemList.map((item, index) => (
     <SSelectProductBtn
       key={index}
       onClick={() => onClickHandler(index)}
@@ -20,7 +19,6 @@ const SelectButton = ({ itemList, activeIndex, onClickHandler }) => {
       {item}
     </SSelectProductBtn>
   ));
-};
 
 const StoreUpdate = () => {
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
@@ -28,12 +26,14 @@ const StoreUpdate = () => {
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
   const [imageList, setImageList] = useState([]);
+  const [postData, setPostData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { postId } = useParams();
 
   const initialState = {
     title: "",
-    productName: "",
+    // productName: "",
     rentalFee: "",
     deposit: "",
     minRentalDay: "",
@@ -42,53 +42,67 @@ const StoreUpdate = () => {
     productSelect: "",
     minDaySelect: "",
     maxDaySelect: "",
+    year: calendarDay.getFullYear(),
+    month: calendarDay.getMonth() + 1,
+    date: calendarDay.getDate(),
   };
   const [state, setState] = useState(initialState);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setState((prev) => ({ ...prev, [name]: value }));
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`--서버 주소--/post/${postId}`)
+    requestGet(`store/detail?id=${postId}`)
       .then((res) => {
-        const {
-          title,
-          productName,
-          rentalFee,
-          deposit,
-          minRentalDay,
-          maxRentalDay,
-          content,
-        } = res.data;
-        setState({
-          title,
-          productName,
-          rentalFee,
-          deposit,
-          minRentalDay,
-          maxRentalDay,
-          content,
-        });
+        console.log(res);
+        setPostData(res.data);
+        if (res.data) {
+          const {
+            title,
+            detail,
+            rentalCost,
+            deposit,
+            minRentalPeriod,
+            maxRentalPeriod,
+            limitDate,
+          } = res.data.storePost;
+
+          const calendarDay = new Date(limitDate);
+          const year = calendarDay.getUTCFullYear();
+          const month = calendarDay.getUTCMonth() + 1;
+          const date = calendarDay.getUTCDate();
+
+          setState({
+            title,
+            productSelect: res.data.storePost.category.id - 1,
+            // productName: "",
+            rentalFee: rentalCost,
+            deposit,
+            minRentalDay: minRentalPeriod,
+            maxRentalDay: maxRentalPeriod,
+            content: detail,
+            year,
+            month,
+            date,
+          });
+        }
+        setIsLoading(false);
       })
       .catch((err) => {
-        console.error("There was an error!", err);
+        console.error(err);
+        setIsLoading(false);
       });
   }, []);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    let newValue = value;
+    if (name === "deposit" && value.trim() === "") {
+      newValue = "0";
+    }
+    setState((prev) => ({ ...prev, [name]: newValue }));
+  };
+
   const mySellHandler = () => {
     setShowDropdown(!showDropdown);
-    axios
-      .get("--서버 주소--")
-      .then((response) => {
-        const data = response.data;
-        setMySell(data);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-      });
   };
   const selectHandler = (type, index) => {
     setState((prev) => ({ ...prev, [type]: index }));
@@ -105,9 +119,15 @@ const StoreUpdate = () => {
     setCalendar(!calendar);
   };
 
+  const handleDepositFocus = () => {
+    if (state.deposit === "0") {
+      setState((prev) => ({ ...prev, deposit: "" }));
+    }
+  };
+
   const {
     title,
-    productName,
+    // productName,
     rentalFee,
     deposit,
     minRentalDay,
@@ -118,14 +138,19 @@ const StoreUpdate = () => {
     maxDaySelect,
   } = state;
 
+  const onDateChange = (date) => {
+    setCalendarDay(date);
+    setCalendar(false);
+  };
+
   const year = calendarDay.getFullYear();
   const month = calendarDay.getMonth() + 1;
   const date = calendarDay.getDate();
-  const navigate = useNavigate();
 
   const onUpload = async (e) => {
     const files = e.target.files;
     const newImages = [...imageList];
+    setImageList([...imageList, ...files]);
 
     for (let i = 0; i < files.length; i++) {
       let reader = new FileReader();
@@ -142,6 +167,7 @@ const StoreUpdate = () => {
 
     setImageList(newImages);
   };
+
   const goBackBtn = () => {
     navigate("/store");
   };
@@ -150,7 +176,7 @@ const StoreUpdate = () => {
       isValid:
         title !== "" &&
         productSelect !== "" &&
-        productName !== "" &&
+        // productName !== "" &&
         rentalFee !== "" &&
         minRentalDay !== "" &&
         maxRentalDay !== "" &&
@@ -161,9 +187,9 @@ const StoreUpdate = () => {
           ? "제목"
           : productSelect === ""
           ? "분류"
-          : productName === ""
-          ? "제품명"
-          : rentalFee === ""
+          : // : productName === ""
+          // ? "제품명"
+          rentalFee === ""
           ? "대여료"
           : minRentalDay === ""
           ? "최소 대여 기간"
@@ -171,7 +197,7 @@ const StoreUpdate = () => {
           ? "최대 대여 기간"
           : content === ""
           ? "내용"
-          : "",
+          : "최소 대여 기간은 최대 대여 기간보다 작거나 같게.",
     };
   };
 
@@ -184,79 +210,45 @@ const StoreUpdate = () => {
       showConfirmButton: false,
     });
   };
-
   const goSellBtn = () => {
     console.log({
       title,
-      productName,
-      rentalFee,
+      content,
       minRentalDay,
       maxRentalDay,
-      content,
+      rentalFee,
+      deposit: deposit || "0",
+      productSelect,
     });
 
     const validation = validateForm();
 
     if (validation.isValid) {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("productName", productName);
-      formData.append("rentalFee", rentalFee);
-      formData.append("minRentalDay", minRentalDay);
-      formData.append("maxRentalDay", maxRentalDay);
-      formData.append("content", content);
-      formData.append("upperLimitDate", `${year}-${month}-${date}`);
-
-      imageList.forEach((image, index) => {
-        formData.append("imageList", image, `image${index}.png`);
-      });
-
-      axios
-        .post("--서버 주소--", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+      setToken();
+      requestPut(`store/update?id=${postId}`, {
+        title: title,
+        detail: content,
+        minRentalPeriod: minRentalDay,
+        maxRentalPeriod: maxRentalDay,
+        limitDate: `${year}-${month}-${date}`,
+        rentalCost: rentalFee,
+        deposit: deposit,
+        category: productSelect + 1,
+        // "image": imageList,
+      })
         .then((response) => {
-          displayMessage("success", "게시글 등록됨");
+          displayMessage("success", "게시글 수정됨");
           console.log(response);
-          navigate("/store");
+          navigate(`/store/${postId}`);
         })
         .catch((error) => {
-          displayMessage("error", "게시글 등록에 실패하였습니다.");
+          displayMessage("error", "게시글 수정에 실패하였습니다.");
           console.log(error);
         });
     } else {
       displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
     }
   };
-
-  useEffect(() => {
-    console.log(
-      title,
-      productName,
-      rentalFee,
-      deposit,
-      minRentalDay,
-      maxRentalDay,
-      content,
-      productSelect,
-      minDaySelect,
-      maxDaySelect
-    );
-  }, [
-    title,
-    productName,
-    rentalFee,
-    deposit,
-    minRentalDay,
-    maxRentalDay,
-    content,
-    productSelect,
-    minDaySelect,
-    maxDaySelect,
-  ]);
-
   return (
     <SMain>
       <SHeader>
@@ -307,17 +299,17 @@ const StoreUpdate = () => {
           </SLabel>
         </SPictureList>
       </SPicture>
-      <SCalendarDate>
-        <SSubTitle>상한 날짜</SSubTitle>
-        <SSubTitle
-          onClick={calendarHandler}
-        >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
-      </SCalendarDate>
-      {calendar ? (
-        <Calendar onChange={setCalendarDay} value={calendarDay} />
-      ) : (
-        ""
-      )}
+      {/* <SCalendarDate>
+          <SSubTitle>상한 날짜</SSubTitle>
+          <SSubTitle
+            onClick={calendarHandler}
+          >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
+        </SCalendarDate>
+        {calendar ? (
+          <Calendar onChange={setCalendarDay} value={calendarDay} />
+        ) : (
+          ""
+        )} */}
       <SFilterContainer>
         <SFilterDoubleBox>
           <SFilterBoxGap35>
@@ -335,15 +327,23 @@ const StoreUpdate = () => {
             </SSelectProduct>
           </SFilterBoxGap35>
           <SFilterBoxGap10>
-            <SSubTitle>
-              제품명<SImportantStar>*</SImportantStar>
-            </SSubTitle>
-            <SFilterInput
-              name="productName"
-              type="text"
-              value={productName}
-              onChange={handleChange}
-            />
+            {/* <SCalendarDate> */}
+            <SSubTitle>상한 날짜</SSubTitle>
+            <SSubTitle
+              onClick={calendarHandler}
+            >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
+            {calendar && (
+              <Calendar onChange={onDateChange} value={calendarDay} />
+            )}
+            {/* <SSubTitle>
+                제품명<SImportantStar>*</SImportantStar>
+              </SSubTitle>
+              <SFilterInput
+                name="productName"
+                type="text"
+                value={productName}
+                onChange={handleChange}
+              /> */}
           </SFilterBoxGap10>
         </SFilterDoubleBox>
         <SFilterDoubleBox>
@@ -371,6 +371,7 @@ const StoreUpdate = () => {
                 placeholder="숫자만 입력하세요."
                 value={deposit}
                 onChange={handleChange}
+                onFocus={handleDepositFocus}
               />
               <p>원</p>
             </SFilterInFutAndWon>
@@ -444,11 +445,12 @@ const StoreUpdate = () => {
 export default StoreUpdate;
 
 const SMain = styled.div`
+margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  //   gap: 30px;
+  margin-top: 170px;
 `;
 
 const SHeader = styled.div`
@@ -516,7 +518,7 @@ const SSellHeader = styled.div`
 
 const SSellHeaderPading = styled.div`
   display: flex;
-  align-items: flex-start;
+  // align-items: flex-start;
   gap: 30px;
 `;
 
@@ -608,30 +610,16 @@ const SSelectProductBtn = styled.button`
   color: ${(props) => (props.$activeProduct ? "#A255F7" : "#D9D9D9")};
 `;
 
-const SSelectDayBtn = styled.button`
-  display: flex;
-  width: 74px;
-  height: 26px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 115px;
-  border: 1px solid ${(props) => (props.$activeDay ? "#A255F7" : "#D9D9D9")};
-  background: #fff;
-  cursor: pointer;
-  color: ${(props) => (props.$activeDay ? "#A255F7" : "#D9D9D9")};
-`;
-
-const SFilterInput = styled.input`
-  display: flex;
-  padding: 16px;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 10px;
-  align-self: stretch;
-  border-radius: 10px;
-  border: 1px solid var(--border, #d9d9d9);
-`;
+// const SFilterInput = styled.input`
+//   display: flex;
+//   padding: 16px;
+//   justify-content: center;
+//   align-items: flex-start;
+//   gap: 10px;
+//   align-self: stretch;
+//   border-radius: 10px;
+//   border: 1px solid var(--border, #d9d9d9);
+// `;
 
 const SFilterInputCost = styled.input`
   display: flex;
@@ -666,15 +654,15 @@ const SFilterInFutAndWon = styled.div`
   align-self: stretch;
 `;
 
-const SCalendarDate = styled.div`
-  display: flex;
-  width: 800px;
-  padding: 30px 20px;
-  align-items: flex-start;
-  gap: 30px;
-  // justify-content: center;
-  border-bottom: 1px solid var(--content-underline, #e9d5ff);
-`;
+// const SCalendarDate = styled.div`
+//   display: flex;
+//   width: 800px;
+//   padding: 30px 20px;
+//   align-items: flex-start;
+//   gap: 30px;
+//   // justify-content: center;
+//   border-bottom: 1px solid var(--content-underline, #e9d5ff);
+// `;
 
 const SPicture = styled.div`
   display: flex;
@@ -719,12 +707,15 @@ const SContentBorder = styled.div`
   align-self: stretch;
 `;
 
-const SSellContentInput = styled.input`
+const SSellContentInput = styled.textarea`
   color: #000;
   // text-align: center;
+  height: 400px;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
+  // overflow: hidden;
+  resize: none;
 `;
 
 const SSellFooter = styled.div`
@@ -785,11 +776,11 @@ const SBtnWritePost = styled.div`
 const SDropdownMenu = styled.div`
   position: absolute;
   background: var(--primary, #e9d5ff);
-  z-index: 1;
+  z-index: 30;
   width: 143px;
   padding: 11px 16px;
   border-radius: 10px;
-  top: 64px;
+  top: 240px;
 `;
 
 const SDropdownMenuItem = styled.div`
@@ -800,3 +791,4 @@ const SDropdownMenuItem = styled.div`
   gap: 10px;
   color: white;
 `;
+

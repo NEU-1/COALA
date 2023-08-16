@@ -11,6 +11,7 @@ const ChangePw = () => {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
+    onClickChangePw(e);
   };
   const navigate = useNavigate();
   const navigateToHome = () => {
@@ -38,27 +39,39 @@ const ChangePw = () => {
         showConfirmButton: false,
       });
     };
-    
+
     const isPasswordValid = (password, passwordCheck) => {
       if (!email) {
-        showAlert("warning", "이메일 칸이 비어있습니다.\n이메일을 입력해주세요.");
+        showAlert(
+          "warning",
+          "이메일 칸이 비어있습니다.\n이메일을 입력해주세요."
+        );
         return false;
       }
       if (!password || !passwordCheck) {
-        showAlert("warning", "비밀번호 칸이 비어있습니다.\n비밀번호를 입력해주세요.");
+        showAlert(
+          "warning",
+          "비밀번호 칸이 비어있습니다.\n비밀번호를 입력해주세요."
+        );
         return false;
       }
       if (password !== passwordCheck) {
-        showAlert("warning", "비밀번호가 일치하지 않습니다.\n다시 입력해주세요.");
+        showAlert(
+          "warning",
+          "비밀번호가 일치하지 않습니다.\n다시 입력해주세요."
+        );
         return false;
       }
       return true;
     };
-  
+
     if (isPasswordValid(password, passwordCheck)) {
       requestPut(`member/updatepassword`, { email: email, password: password })
         .then((res) => {
-          showAlert("success", "비밀번호 변경이 완료되었습니다.\n로그인 해주세요.");
+          showAlert(
+            "success",
+            "비밀번호 변경이 완료되었습니다.\n로그인 해주세요."
+          );
           // navigate("/login");
         })
         .catch((err) => {
@@ -66,7 +79,19 @@ const ChangePw = () => {
         });
     }
   };
-  
+  const onEmailKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.querySelector('input[type="password"]').focus();
+    }
+  };
+
+  const onPasswordKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.querySelector('input[type="password2"]').focus();
+    }
+  };
 
   return (
     <div className="page">
@@ -80,6 +105,7 @@ const ChangePw = () => {
           className="input"
           value={email}
           onChange={emailHandler}
+          onKeyDown={onEmailKeyDown}
           placeholder="이메일"
         />
         <label className="text">비밀번호</label>
@@ -88,14 +114,16 @@ const ChangePw = () => {
           className="input"
           value={password}
           onChange={passwordHandler}
+          onKeyDown={onPasswordKeyDown}
           placeholder="비밀번호"
         />
         <label className="text">비밀번호 확인</label>
         <input
-          type="password"
+          type="password2"
           className="input"
           value={passwordCheck}
           onChange={passwordCheckHandler}
+          onKeyDown={onSubmitHandler}
           placeholder="비밀번호 확인"
         />
 

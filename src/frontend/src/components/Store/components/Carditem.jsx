@@ -3,35 +3,52 @@ import styled from "styled-components";
 import { useState } from "react";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import { requestPost, setToken } from "../../../lib/api/api";
 
-export default function ImgMediaCard({ item, onLike, onClick }) {
-  const [isLiked, setIsLiked] = useState(false);
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    onLike(item);
+export default function ImgMediaCard({ item, onClick }) {
+  const postId = item.storePost.id;
+  const [isLiked, setIsLiked] = useState(
+    item.like !== null ? item.like : false
+  );
+  const handleLike = (event) => {
+    event.stopPropagation();
+    setIsLiked((prevIsLiked) => !prevIsLiked);
+    setToken();
+    requestPost(`store/like?id=${postId}`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("자기가 쓴 글은 추천 못함");
+      });
   };
+  console.log(item);
 
   return (
     <SCard $isRented={item.isRented} onClick={onClick}>
       <SCardMedia image={item.image}>
         <div>{item.isRented ? <SRental>대여 완료</SRental> : ""}</div>
       </SCardMedia>
-      <SLike onClick={handleLike} isLiked={isLiked}>
-        {isLiked ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
-      </SLike>
+      {!item.mine && (
+        <SLike onClick={handleLike} isLiked={isLiked}>
+          {isLiked ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
+        </SLike>
+      )}
       <SCardText>
         <STitleAndProduct>
-          <STitle>{item.title}</STitle>
-          <SProduct>{item.product}</SProduct>
+          <STitle>{item.storePost.title}</STitle>
+          <SProduct>{item.storePost.product}</SProduct>
         </STitleAndProduct>
         <SDayAndCost>
           <SDay>
-            최소 {item.minday}일 / 최대 {item.maxday}일
+            최소 {item.storePost.minRentalPeriod}일 / 최대{" "}
+            {item.storePost.maxRentalPeriod}일
           </SDay>
           <SCostAndReservation>
             {item.isReservation ? <SReservation>예약 중</SReservation> : ""}
             <SCost>
-              {item.daycost}원 / {item.savecost}원
+              {item.storePost.rentalCost}원 / {item.storePost.deposit}원
             </SCost>
           </SCostAndReservation>
         </SDayAndCost>
@@ -46,10 +63,13 @@ const SCard = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px black;
+  border: 1px solid grey;
   max-width: 345px;
   ${(props) => props.$isRented && `background: rgba(128, 128, 128, 0.5);`}
   border-radius: 10px;
+  &:hover {
+    background: var(--primary, #e9d5ff);
+  }
 `;
 
 const SCardMedia = styled.div`
@@ -99,7 +119,7 @@ const SCostAndReservation = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%
+  width: 100%;
 `;
 
 const STitle = styled.p`
@@ -134,6 +154,7 @@ const SReservation = styled.p`
   color: white;
   font-size: 8px;
   font-weight: 700;
+  margin-right: auto;
 `;
 
 const SCost = styled.p`
@@ -146,6 +167,7 @@ const SCost = styled.p`
   font-size: 12px;
   font-weight: 700;
   line-height: normal;
+  margin-left: auto;
 `;
 
 const SRental = styled.div`

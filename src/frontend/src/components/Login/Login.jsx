@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import "./Style.css";
 import { useNavigate } from "react-router-dom";
 import CCheckBox from "../Common/CCheckBox";
-import { ACCESS_TOKEN_EXPIRE_TIME, getAccessToken, requestPost } from "../../lib/api/api";
+import {
+  ACCESS_TOKEN_EXPIRE_TIME,
+  getAccessToken,
+  requestPost,
+} from "../../lib/api/api";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/LoginSlice";
@@ -18,6 +22,8 @@ const Login = () => {
 
   const [inputId, setInputId] = useState("");
   const [inputPw, setInputPw] = useState("");
+  const [loginFailCount, setLoginFailCount] = useState(1);
+  const [errorMessage, setErrorMessage] = useState("");
   const [saveIdCheck, setSaveIDFlag] = useState(false);
   const saveId = "saveId";
 
@@ -37,6 +43,19 @@ const Login = () => {
   const oninputIdHandler = (e) => setInputId(e.currentTarget.value);
   const oninputPwHandler = (e) => setInputPw(e.currentTarget.value);
 
+  const handleLoginFailure = (err) => {
+    setLoginFailCount(loginFailCount + 1);
+
+    if (err.response.status === 404) {
+      setErrorMessage("존재하지 않는 회원입니다.");
+    } else if (err.response.status === 400) {
+      setErrorMessage(
+        `비밀번호가 ${loginFailCount}회 틀렸습니다. 5회 도달시 비밀번호를 재설정 해야 합니다`
+      );
+    } else {
+      setErrorMessage("누구세요?");
+    }
+  }
   useEffect(() => {
     if(localStorage.getItem(saveId)) {
       setInputId(localStorage.getItem(saveId));
@@ -45,15 +64,16 @@ const Login = () => {
   
 
   const handleLoginSuccess = (res) => {
-    const accessToken = res.headers['access_token'];
-    const refreshToken = res.headers['refresh_token']
-    localStorage.setItem('access_token', accessToken);
-    localStorage.setItem('refresh_token', refreshToken);
+    setLoginFailCount(0);
+    const accessToken = res.headers["access_token"];
+    const refreshToken = res.headers["refresh_token"];
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", refreshToken);
     setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
     // 전역 상태인 isLogin을 true로 설정
     dispatch(login());
-    
-    navigate('/', {replace: true});
+
+    navigate("/", { replace: true });
   };
 
   const onClickLogin = () => {
@@ -117,6 +137,19 @@ const Login = () => {
     }
   };
 
+  const onIdKeyDownHandler = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.querySelector(".input[type='password']").focus();
+    }
+  };
+
+  const onPwKeyDownHandler = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onClickLogin();
+    }
+  };
   const onKeyPress = (e) => {
     if(e.key === 'Enter') {
       onClickLogin();
@@ -136,6 +169,7 @@ const Login = () => {
             className="input"
             value={inputId}
             onChange={oninputIdHandler}
+            onKeyDown={onIdKeyDownHandler}
             placeholder="아이디"
             onKeyUp={onKeyPress}
           />
@@ -147,6 +181,7 @@ const Login = () => {
             className="input"
             value={inputPw}
             onChange={oninputPwHandler}
+            onKeyDown={onPwKeyDownHandler}
             placeholder="비밀번호"
             onKeyUp={onKeyPress}
           />

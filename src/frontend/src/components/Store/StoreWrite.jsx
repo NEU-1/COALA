@@ -4,12 +4,12 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
-import { images } from '../../assets/images';
+import { images } from "../../assets/images";
 import Swal from "sweetalert2";
-
+import { requestPost, setToken } from "../../lib/api/api";
 
 const StoreWrite = () => {
-  console.log(images)
+  console.log(images);
 
   const product = ["키보드", "마우스", "헤드셋", "태블릿"];
   const day = ["1일", "7일", " 14일", "30일"];
@@ -17,9 +17,9 @@ const StoreWrite = () => {
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
   const [showDropdown, setshowDropdown] = useState(false);
   const [title, setTitle] = useState("");
-  const [productName, setproductName] = useState("");
+  // const [productName, setproductName] = useState("");
   const [rentalFee, setRentalFee] = useState("");
-  const [deposit, setDeposit] = useState("");
+  const [deposit, setDeposit] = useState(0);
   const [minRentalDay, setMinRentalDay] = useState("");
   const [maxRentalDay, setMaxRentalDay] = useState("");
   const [content, setContent] = useState("");
@@ -32,6 +32,7 @@ const StoreWrite = () => {
 
   const mySellHandler = () => {
     setshowDropdown(!showDropdown);
+    setToken();
     axios
       .get("--서버 주소--")
       .then((response) => {
@@ -45,15 +46,32 @@ const StoreWrite = () => {
   const titleHandler = (e) => {
     setTitle(e.target.value);
   };
-  const productNameHandler = (e) => {
-    setproductName(e.target.value);
-  };
+  // const productNameHandler = (e) => {
+  //   setproductName(e.target.value);
+  // };
   const rentalFeeHandler = (e) => {
     setRentalFee(e.target.value);
   };
   const depositHandler = (e) => {
-    setDeposit(e.target.value);
+    if (e.target.value === "0") {
+      setDeposit("");
+    } else {
+      setDeposit(e.target.value);
+    }
   };
+
+  const handleFocus = (e) => {
+    if (e.target.value === "0") {
+      setDeposit("");
+    }
+  };
+
+  const handleBlur = (e) => {
+    if (e.target.value === "") {
+      setDeposit(0);
+    }
+  };
+
   const minRentalDayHandler = (e) => {
     setMinRentalDay(e.target.value);
   };
@@ -81,6 +99,11 @@ const StoreWrite = () => {
       maxDayValue.substring(0, maxDayValue.indexOf("일"))
     );
     setMaxRentalDay(maxDayNumber);
+  };
+
+  const onDateChange = (date) => {
+    setCalendarDay(date);
+    setCalendar(false);
   };
   const calendarHandler = () => {
     setCalendar(!calendar);
@@ -115,80 +138,83 @@ const StoreWrite = () => {
   };
   const validateForm = () => {
     return {
-      isValid: title !== "" &&
-               productSelect !== "" &&
-               productName !== "" &&
-               rentalFee !== "" &&
-               minRentalDay !== "" &&
-               maxRentalDay !== "" &&
-               content !== "" &&
-               maxRentalDay >= minRentalDay,
-      errorField: title === "" ? "제목" : 
-                  productSelect === "" ? "분류" : 
-                  productName === "" ? "제품명" : 
-                  rentalFee === "" ? "대여료" :
-                  minRentalDay === "" ? "최소 대여 기간" :
-                  maxRentalDay === "" ? "최대 대여 기간" :
-                  content === "" ? "내용" : "최대 기간 >= 최소 기간"
+      isValid:
+        title !== "" &&
+        productSelect !== "" &&
+        // productName !== "" &&
+        rentalFee !== "" &&
+        minRentalDay !== "" &&
+        maxRentalDay !== "" &&
+        content !== "" &&
+        maxRentalDay >= minRentalDay,
+      errorField:
+        title === ""
+          ? "제목"
+          : productSelect === ""
+          ? "분류"
+          : // : productName === ""
+          // ? "제품명"
+          rentalFee === ""
+          ? "대여료"
+          : minRentalDay === ""
+          ? "최소 대여 기간"
+          : maxRentalDay === ""
+          ? "최대 대여 기간"
+          : content === ""
+          ? "내용"
+          : "최소 대여 기간은 최대 대여 기간보다 작거나 같게.",
+    };
   };
-};
 
-const displayMessage = (type, message) => {
+  const displayMessage = (type, message) => {
     Swal.fire({
-        icon: type,
-        title: message,
-        html: "",
-        timer: 1000,
-        showConfirmButton: false,
+      icon: type,
+      title: message,
+      html: "",
+      timer: 1000,
+      showConfirmButton: false,
     });
-};
+  };
 
-const goSellBtn = () => {
+  const goSellBtn = () => {
     console.log({
-        title,
-        productName,
-        rentalFee,
-        minRentalDay,
-        maxRentalDay,
-        content,
+      title,
+      content,
+      minRentalDay,
+      maxRentalDay,
+      rentalFee,
+      deposit,
+      productSelect,
     });
 
     const validation = validateForm();
+    console.log(validation);
 
     if (validation.isValid) {
-      const formData = new FormData();
-    formData.append("title", title);
-    formData.append("productName", productName);
-    formData.append("rentalFee", rentalFee);
-    formData.append("minRentalDay", minRentalDay);
-    formData.append("maxRentalDay", maxRentalDay);
-    formData.append("content", content);
-    formData.append("upperLimitDate", `${year}-${month}-${date}`);
-
-    imageList.forEach((image, index) => {
-      formData.append("imageList", image, `image${index}.png`);
-    });
-
-    axios
-      .post("--서버 주소--", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      setToken();
+      requestPost("store/write", {
+        title: title,
+        detail: content,
+        minRentalPeriod: minRentalDay,
+        maxRentalPeriod: maxRentalDay,
+        limitDate: `${year}-${month}-${date}`,
+        rentalCost: rentalFee,
+        deposit: deposit,
+        category: productSelect + 1,
+        // "image": imageList,
       })
-      .then((response) => {
-        displayMessage("success", "게시글 등록됨");
-        console.log(response);
-        navigate("/store");
-      })
-      .catch((error) => {
-        displayMessage("error", "게시글 등록에 실패하였습니다.");
-        console.log(error);
-      });
+        .then((response) => {
+          displayMessage("success", "게시글 등록됨");
+          console.log(response);
+          navigate("/store");
+        })
+        .catch((error) => {
+          displayMessage("error", "게시글 등록에 실패하였습니다.");
+        });
     } else {
-        displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
+      displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
     }
-};
-
+  };
 
   useEffect(() => {
     console.log(productSelect, mindaySelect, maxdaySelect, calendarDay);
@@ -241,11 +267,10 @@ const goSellBtn = () => {
               onChange={(e) => onUpload(e)}
             />
             <img src={images.plus} alt="Plus" />
-            
           </SLabel>
         </SPictureList>
       </SPicture>
-      <SCalendarDate>
+      {/* <SCalendarDate>
         <SSubTitle>상한 날짜</SSubTitle>
         <SSubTitle
           onClick={calendarHandler}
@@ -255,7 +280,7 @@ const goSellBtn = () => {
         <Calendar onChange={setCalendarDay} value={calendarDay} />
       ) : (
         ""
-      )}
+      )} */}
       <SFilterContainer>
         <SFilterDoubleBox>
           <SFilterBoxGap35>
@@ -277,7 +302,15 @@ const goSellBtn = () => {
             </SSelectProduct>
           </SFilterBoxGap35>
           <SFilterBoxGap10>
-            <SSubTitle>
+            {/* <SCalendarDate> */}
+            <SSubTitle>상한 날짜</SSubTitle>
+            <SSubTitle
+              onClick={calendarHandler}
+            >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
+            {calendar && (
+              <Calendar onChange={onDateChange} value={calendarDay} />
+            )}
+            {/* <SSubTitle>
               제품명<SImportantStar>*</SImportantStar>
             </SSubTitle>
             <SFilterInput
@@ -285,7 +318,7 @@ const goSellBtn = () => {
               type="text"
               value={productName}
               onChange={productNameHandler}
-            />
+            /> */}
           </SFilterBoxGap10>
         </SFilterDoubleBox>
         <SFilterDoubleBox>
@@ -308,11 +341,13 @@ const goSellBtn = () => {
             <SSubTitle>보증금</SSubTitle>
             <SFilterInFutAndWon>
               <SFilterInputCost
-                className="deposit"
+                className="`deposit`"
                 type="text"
                 placeholder="숫자만 입력하세요."
                 value={deposit}
                 onChange={depositHandler}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
               />
               <p>원</p>
             </SFilterInFutAndWon>
@@ -342,7 +377,6 @@ const goSellBtn = () => {
               placeholder="숫자만 입력하세요."
               value={minRentalDay}
               onChange={minRentalDayHandler}
-
             />
           </SFilterBoxGap10>
           <SFilterBoxGap10>
@@ -399,11 +433,12 @@ const goSellBtn = () => {
 export default StoreWrite;
 
 const SMain = styled.div`
+margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  //   gap: 30px;
+  margin-top: 170px;
 `;
 
 const SHeader = styled.div`
@@ -471,7 +506,7 @@ const SSellHeader = styled.div`
 
 const SSellHeaderPading = styled.div`
   display: flex;
-  align-items: flex-start;
+  // align-items: flex-start;
   gap: 30px;
 `;
 
@@ -577,16 +612,16 @@ const SSelectDayBtn = styled.button`
   color: ${(props) => (props.$activeDay ? "#A255F7" : "#D9D9D9")};
 `;
 
-const SFilterInput = styled.input`
-  display: flex;
-  padding: 16px;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 10px;
-  align-self: stretch;
-  border-radius: 10px;
-  border: 1px solid var(--border, #d9d9d9);
-`;
+// const SFilterInput = styled.input`
+//   display: flex;
+//   padding: 16px;
+//   justify-content: center;
+//   align-items: flex-start;
+//   gap: 10px;
+//   align-self: stretch;
+//   border-radius: 10px;
+//   border: 1px solid var(--border, #d9d9d9);
+// `;
 
 const SFilterInputCost = styled.input`
   display: flex;
@@ -597,7 +632,7 @@ const SFilterInputCost = styled.input`
   border-radius: 10px;
   border: 1px solid var(--border, #d9d9d9);
   &::placeholder {
-    color:#d9d9d9;
+    color: #d9d9d9;
   }
 `;
 
@@ -610,7 +645,7 @@ const SFilterInputDay = styled.input`
   border-radius: 10px;
   border: 1px solid var(--border, #d9d9d9);
   &::placeholder {
-    color:#d9d9d9;
+    color: #d9d9d9;
   }
 `;
 
@@ -621,15 +656,15 @@ const SFilterInFutAndWon = styled.div`
   align-self: stretch;
 `;
 
-const SCalendarDate = styled.div`
-  display: flex;
-  width: 800px;
-  padding: 30px 20px;
-  align-items: flex-start;
-  gap: 30px;
-  // justify-content: center;
-  border-bottom: 1px solid var(--content-underline, #e9d5ff);
-`;
+// const SCalendarDate = styled.div`
+//   display: flex;
+//   width: 800px;
+//   padding: 30px 20px;
+//   align-items: flex-start;
+//   gap: 30px;
+//   // justify-content: center;
+//   border-bottom: 1px solid var(--content-underline, #e9d5ff);
+// `;
 
 const SPicture = styled.div`
   display: flex;
@@ -674,12 +709,15 @@ const SContentBorder = styled.div`
   align-self: stretch;
 `;
 
-const SSellContentInput = styled.input`
+const SSellContentInput = styled.textarea`
   color: #000;
   // text-align: center;
+  height: 400px;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
+  // overflow: hidden;
+  resize: none;
 `;
 
 const SSellFooter = styled.div`
@@ -740,11 +778,11 @@ const SBtnWritePost = styled.div`
 const SDropdownMenu = styled.div`
   position: absolute;
   background: var(--primary, #e9d5ff);
-  z-index: 1;
+  z-index: 30;
   width: 143px;
   padding: 11px 16px;
   border-radius: 10px;
-  top: 64px;
+  top: 240px;
 `;
 
 const SDropdownMenuItem = styled.div`
