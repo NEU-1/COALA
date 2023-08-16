@@ -100,6 +100,7 @@ const TradeOfferForm = ({ onClose }) => {
     requestPost2(`auction/apply?id=${postId}`, formData)
       .then((res) => {
         console.log(res, "제안 갔음");
+        onClose && onClose();
       })
       .catch((err) => {
         console.error(err);

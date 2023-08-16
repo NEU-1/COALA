@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import "react-calendar/dist/Calendar.css";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
@@ -20,18 +20,22 @@ const AuctionWrite = () => {
 
   const navigate = useNavigate();
 
-  const mySellHandler = () => {
-    setshowDropdown(!showDropdown);
-    axios
-      .get("--서버 주소--")
-      .then((response) => {
-        const data = response.data;
-        setMySell(data);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-      });
+  // const mySellHandler = () => {
+  //   setshowDropdown(!showDropdown);
+  //   axios
+  //     .get("--서버 주소--")
+  //     .then((response) => {
+  //       const data = response.data;
+  //       setMySell(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("There was an error!", error);
+  //     });
   };
+  useEffect(()=> {
+    window.scrollTo(0,0);
+  },[]);
+
   const titleHandler = (e) => {
     setTitle(e.target.value);
   };
