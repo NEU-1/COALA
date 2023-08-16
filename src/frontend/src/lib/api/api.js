@@ -2,9 +2,7 @@ import axios from 'axios';
 
 // const baseUrl = 'https://i9d108.p.ssafy.io/api/';
 const baseUrl = 'http://i9d108.p.ssafy.io:9999/api/';
-// const baseNodeUrl = 'http://localhost:3030/api/';
 const baseNodeUrl = 'http://i9d108.p.ssafy.io:3030/api/';
-
 // const baseUrl = 'http://localhost:9999/api/';
 
 const headers = {
@@ -51,9 +49,17 @@ export const requestGet = async (url, params) => {
   }
 };
 
+export const requestGetNode = async (url, params) => {
+  try {
+    const data = await axios.get(baseNodeUrl + url, params);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const requestPost = async (url, body, headers) => {
   try {
-
     const data = await axios.post(baseUrl + url, body, headers);
     return data;
   } catch (error) {
@@ -85,6 +91,16 @@ export const requestPut = async (url, body, headers) => {
   }
 };
 
+export const requestPutNode = async (url, body, headers) => {
+  try {
+    const data = await axios.put(baseNodeUrl + url, body, headers);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const requestDel = async (url) => {
   try {
     const data = await axios.delete(baseUrl + url, headers);
@@ -95,7 +111,6 @@ export const requestDel = async (url) => {
   }
 };
 
-
 export const requestPost2 = async (url, body) => {
   try {
     const data = await axios.post(baseUrl + url, body, headers2);
@@ -105,7 +120,6 @@ export const requestPost2 = async (url, body) => {
     throw error;
   }
 };
-
 
 export const requestPut2 = async (url, body) => {
   try {

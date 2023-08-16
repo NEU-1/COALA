@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled } from 'styled-components';
-import ContractContainer from '../Contract/containers/ContractContainer';
+import ContractContainer from '../contract/containers/ContractContainer';
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
