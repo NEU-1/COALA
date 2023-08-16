@@ -136,7 +136,7 @@ public class MemberServiceImpl implements MemberService{
 
         logger.info("member : {}", member.getNickname());
 
-//        memberRepository.save(member);
+        memberRepository.save(member);
 
         return new BaseResponseDto("회원정보가 성공적으로 재설정 되었습니다.", 200);
     }
