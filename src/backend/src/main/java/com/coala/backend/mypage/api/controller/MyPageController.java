@@ -6,6 +6,7 @@ import com.coala.backend.member.db.dto.response.BaseResponseDto;
 import com.coala.backend.member.db.entity.Member;
 import com.coala.backend.member.db.repository.MemberRepository;
 import com.coala.backend.mypage.api.service.MyPageService;
+import com.coala.backend.mypage.api.service.ProfileImageService;
 import com.coala.backend.store.db.dto.response.ListResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,13 @@ public class MyPageController {
     private JwtTokenProvider jwtTokenProvider;
     private MyPageService myPageService;
     private MemberRepository memberRepository;
+    private ProfileImageService profileImageService;
 
-    public MyPageController(JwtTokenProvider jwtTokenProvider, MyPageService myPageService, MemberRepository memberRepository) {
+    public MyPageController(JwtTokenProvider jwtTokenProvider, MyPageService myPageService, MemberRepository memberRepository, ProfileImageService profileImageService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.myPageService = myPageService;
         this.memberRepository = memberRepository;
+        this.profileImageService = profileImageService;
     }
 
     @PostMapping("/store")
@@ -62,18 +65,33 @@ public class MyPageController {
         return response;
     }
 
+    @PostMapping ("/tech")
+    public ListResponseDto myTech(HttpServletRequest request){
+        Member member = getMember(request);
+        logger.info("내가 쓴 글(이용자) : {} ", member.getEmail());
+        ListResponseDto response = myPageService.myTech(member);
+        return response;
+    }
+
+    @PostMapping ("/free")
+    public ListResponseDto myFree(HttpServletRequest request){
+        Member member = getMember(request);
+        logger.info("내가 쓴 글(이용자) : {} ", member.getEmail());
+        ListResponseDto response = myPageService.myFree(member);
+        return response;
+    }
+
     @PostMapping("/profile")
-    public ResponseEntity<? extends BaseResponseDto> myProfile(@RequestPart("multipartFile")MultipartFile file, HttpServletRequest request){
+    public ResponseEntity<? extends BaseResponseDto> myProfile(@RequestPart("multipartFile")MultipartFile file, HttpServletRequest request) throws Exception{
         Member member = getMember(request);
         logger.info("프로필 수정 : {}", member.getEmail());
-        BaseResponseDto response = myPageService.myProfile(file, member);
+        BaseResponseDto response = profileImageService.file(file, member);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
     public Member getMember(HttpServletRequest request){
         Member member = memberRepository.findByEmail(jwtTokenProvider.getMail(request))
                 .orElseThrow(() -> new NoSuchElementException("No User"));
-
         logger.info("User Email : {} ", member.getEmail());
         return member;
     }

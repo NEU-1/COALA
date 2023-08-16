@@ -73,11 +73,25 @@ public class MyPageServiceImpl implements MyPageService{
         return response;
     }
 
+    @Override
+    public ListResponseDto myTech(Member member) {
+        ListResponseDto response = new ListResponseDto();
+        List<TechPost> list = techPostRepository.findByMemberId(member);
+        response.setList(list);
+        response.setSize(list.size());
+        return response;
+    }
 
     @Override
-    public BaseResponseDto myProfile(MultipartFile file, Member member) {
-        return null;
+    public ListResponseDto myFree(Member member) {
+        ListResponseDto response = new ListResponseDto();
+        List<FreePost> list = freePostRepository.findByMemberId(member);
+        response.setList(list);
+        response.setSize(list.size());
+        return response;
     }
+
+
 
 
 }

@@ -10,11 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface MyPageService {
 
     ListResponseDto myStore(Member member);
-
     ListResponseDto myAuction(Member member);
-
     ListResponseDto myFavorite(Member member);
-
-    BaseResponseDto myProfile(MultipartFile file, Member member);
-
+    ListResponseDto myTech(Member member);
+    ListResponseDto myFree(Member member);
 }
