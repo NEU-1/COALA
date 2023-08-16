@@ -9,13 +9,15 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
   const [producer, setProducer] = useState(null);
   const [consumer, setConsumer] = useState(null);
   const [post, setPost] = useState(null);
+  const [imgURL, setImgURL] = useState(null);
   // 제공자 or 이용자 게시글 정보를 얻어와서 props로 전달
   useEffect(() => {
+    setToken();
     if (inform.room.pp_id) {
-      setToken();
       requestGet(`store/detail?id=${inform.room.pp_id}`).then((res) => {
         if (res.data.baseResponseDto.statusCode === 200) {
           setPost(res.data.storePost);
+          setImgURL(res.data.storeImageList[0]);
           if (res.data.memberId === myId) {
             setProducer(inform.user);
             setConsumer(inform.other); // 상대방 ID
@@ -25,14 +27,34 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
           }
         }
       });
+    } else if (inform.room.pr_id) {
+      requestGet(`auction/detail?id=${inform.room.pr_id}`).then((res) => {
+        if (res.data.baseResponseDto.statusCode === 200) {
+          setPost(res.data.auctionPost);
+          if (res.data.mine) {
+            setProducer(inform.other);
+            setConsumer(inform.user);
+          } else {
+            setProducer(inform.user);
+            setConsumer(inform.other);
+          }
+        }
+      });
     }
   }, []);
 
   const onClickPost = () => {
-    window.parent.postMessage(
-      { msg: 'movePage', id: post.id },
-      'http://localhost:3000'
-    );
+    if (inform.room.pp_id) {
+      window.parent.postMessage(
+        { msg: 'moveStorePage', id: post.id },
+        'http://localhost:3000'
+      );
+    } else if (inform.room.pr_id) {
+      window.parent.postMessage(
+        { msg: 'moveAuctionPage', id: post.id },
+        'http://localhost:3000'
+      );
+    }
   };
 
   const onClickContractBtn = () => {
@@ -52,6 +74,7 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
     post && (
       <ChatBoardPreview
         post={post}
+        imgURL={imgURL}
         producer={producer}
         consumer={consumer}
         myId={myId}

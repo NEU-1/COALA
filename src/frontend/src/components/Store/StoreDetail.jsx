@@ -16,38 +16,44 @@ import {openChatModal} from '../../store/chatModalSlice'
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
   const { postId } = useParams();
-
+  
   setToken();
   useEffect(() => {
     requestGet(`store/detail?id=${postId}`)
-      .then((res) => {
+    .then((res) => {
         setPostData(res.data);
         setLike(res.data.like);
         setIsAuthor(res.data.mine);
+        setPictures(res.data.storeImageList)
+        console.log(res.data.storeImageList)
+        console.log(pictures)
       })
       .catch((err) => {
         console.error(err);
       });
-  }, []);
-
-  console.log(postData);
-
-  const [pictures, setPictures] = useState([]);
+    }, []);
+    
+    console.log(postData);
+    
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setLike] = useState(false);
   const [isAuthor, setIsAuthor] = useState(false);
+  const [pictures, setPictures] = useState([]);
   useEffect(() => {
     if (postData) {
       setLike(postData.like);
       setIsAuthor(postData.mine);
+      setPictures(postData.storeImageList)
+
     }
   }, []);
-
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  
   const isLogin = login;
-
+  
   const [showModal, setShowModal] = useState(false);
 
   const formattedDate = (dateString) => {
@@ -68,7 +74,7 @@ const StoreDetail = () => {
     } else {
       setPictureNum((pictureNum - 1 + totalPictures) % totalPictures);
     }
-  };
+  };  
 
   const toggleLike = () => {
     setLike((prevLike) => !prevLike);
@@ -154,14 +160,15 @@ const StoreDetail = () => {
   const handleModalContentClick = (event) => {
     event.stopPropagation();
   };
+  console.log(pictures)
 
   return postData ? (
     <SMain>
       {pictures.length ? (
-        <SImgs>
-          <button onClick={handlePictureChange}>{"<"}</button>
-          {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
-          <button onClick={handlePictureChange}>{">"}</button>
+        <SImgs >
+          <SButton onClick={handlePictureChange}>{"<"}</SButton>
+          {pictures.length > 0 && <SImg src={pictures[pictureNum].url} alt="" />}
+          <SButton onClick={handlePictureChange}>{">"}</SButton>
         </SImgs>
       ) : null}
       <SHeader>
@@ -249,9 +256,31 @@ const SImgs = styled.div`
   gap: 10px;
 `;
 
+const SButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e9d5ff;
+  }
+`;
+
 const SImg = styled.img`
   width: 800px;
   height: 372px;
+  object-fit: cover; 
+
+  &[width="800"] {
+    width: auto;
+    height: auto;
+  }
+
+  &[height="372"] {
+    width: auto;
+    height: auto;
+  }
 `;
 
 const SHeader = styled.div`

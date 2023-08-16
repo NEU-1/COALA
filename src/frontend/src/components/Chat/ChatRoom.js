@@ -35,7 +35,7 @@ const ChatRoom = ({
               alt=""
               className="profile"
             />
-            <div className="otherName">{inform.other.name}</div>
+            <div className="otherName">{inform.other.nickname}</div>
           </SOtherInfo>
         </SStart>
         <SExitBtn onClick={onClickExitBtn}>나가기</SExitBtn>
@@ -173,10 +173,14 @@ const SOtherInfo = styled.div`
   }
 
   .otherName {
+    width: 150px;
     color: #000;
     font-size: 16px;
     font-weight: 700;
     line-height: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 

@@ -114,8 +114,6 @@ const RootNavigation = () => {
         <Route path="/store/:postId/update" element={<StoreUpdate />} />
 
         <Route path="*" element={<NotFound />} />
-        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
-        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
       </Routes>
     </BrowserRouter>
   );

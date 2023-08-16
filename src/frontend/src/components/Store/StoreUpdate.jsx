@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from "../../assets/images";
 import Swal from "sweetalert2";
-import { requestPut, requestGet, setToken } from "../../lib/api/api";
+import { requestPut2, requestGet, setToken } from "../../lib/api/api";
 
 const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "7일", " 14일", "30일"];
@@ -25,7 +25,10 @@ const StoreUpdate = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
-  const [imageList, setImageList] = useState([]);
+  const [imageList, setImageList] = useState({
+    urls: [], // 기존 이미지 URL 리스트
+    blobs: [], // 새로 추가된 이미지 Blob 리스트
+  });
   const [postData, setPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -66,14 +69,15 @@ const StoreUpdate = () => {
           } = res.data.storePost;
 
           const calendarDay = new Date(limitDate);
-          const year = calendarDay.getUTCFullYear();
-          const month = calendarDay.getUTCMonth() + 1;
-          const date = calendarDay.getUTCDate();
+          const year = calendarDay.getFullYear();
+          const month = (calendarDay.getMonth() + 1)
+            .toString()
+            .padStart(2, "0");
+          const date = calendarDay.getDate().toString().padStart(2, "0");
 
           setState({
             title,
             productSelect: res.data.storePost.category.id - 1,
-            // productName: "",
             rentalFee: rentalCost,
             deposit,
             minRentalDay: minRentalPeriod,
@@ -83,6 +87,11 @@ const StoreUpdate = () => {
             month,
             date,
           });
+          console.log(res.data.storeImageList)
+          const initialImageList = res.data.storeImageList.map(
+            (imageData) => imageData.url
+          );
+          setImageList((prev) => ({ ...prev, urls: initialImageList }));
         }
         setIsLoading(false);
       })
@@ -100,7 +109,6 @@ const StoreUpdate = () => {
     }
     setState((prev) => ({ ...prev, [name]: newValue }));
   };
-
   const mySellHandler = () => {
     setShowDropdown(!showDropdown);
   };
@@ -144,13 +152,25 @@ const StoreUpdate = () => {
   };
 
   const year = calendarDay.getFullYear();
-  const month = calendarDay.getMonth() + 1;
-  const date = calendarDay.getDate();
+  const month = (calendarDay.getMonth() + 1).toString().padStart(2, "0");
+  const date = calendarDay.getDate().toString().padStart(2, "0");
+
+  const dataURLtoBlob = (dataURL) => {
+    console.log(dataURL)
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
 
   const onUpload = async (e) => {
     const files = e.target.files;
-    const newImages = [...imageList];
-    setImageList([...imageList, ...files]);
+    const newBlobs = [...imageList.blobs];
 
     for (let i = 0; i < files.length; i++) {
       let reader = new FileReader();
@@ -162,11 +182,14 @@ const StoreUpdate = () => {
 
       reader.readAsDataURL(files[i]);
       const fileData = await fileRead;
-      newImages.push(fileData);
+
+      const blob = dataURLtoBlob(fileData);
+      newBlobs.push(blob);
     }
 
-    setImageList(newImages);
+    setImageList((prev) => ({ ...prev, blobs: newBlobs }));
   };
+  console.log(imageList)
 
   const goBackBtn = () => {
     navigate("/store");
@@ -210,6 +233,7 @@ const StoreUpdate = () => {
       showConfirmButton: false,
     });
   };
+  console.log(imageList)
   const goSellBtn = () => {
     console.log({
       title,
@@ -225,17 +249,29 @@ const StoreUpdate = () => {
 
     if (validation.isValid) {
       setToken();
-      requestPut(`store/update?id=${postId}`, {
-        title: title,
-        detail: content,
-        minRentalPeriod: minRentalDay,
-        maxRentalPeriod: maxRentalDay,
-        limitDate: `${year}-${month}-${date}`,
-        rentalCost: rentalFee,
-        deposit: deposit,
-        category: productSelect + 1,
-        // "image": imageList,
-      })
+
+      const formData = new FormData();
+      formData.append(
+        "json",
+        JSON.stringify({
+          title: title,
+          detail: content,
+          minRentalPeriod: minRentalDay,
+          maxRentalPeriod: maxRentalDay,
+          limitDate: `${year}-${month}-${date}`,
+          rentalCost: rentalFee,
+          deposit: deposit,
+          category: productSelect + 1,
+        })
+      );
+
+      for (let i = 0; i < imageList.blobs.length; i++) {
+        formData.append("multipartFile", imageList.blobs[i]);
+      }
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+      requestPut2(`store/update?id=${postId}`, formData)
         .then((response) => {
           displayMessage("success", "게시글 수정됨");
           console.log(response);
@@ -243,7 +279,6 @@ const StoreUpdate = () => {
         })
         .catch((error) => {
           displayMessage("error", "게시글 수정에 실패하였습니다.");
-          console.log(error);
         });
     } else {
       displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
@@ -283,9 +318,15 @@ const StoreUpdate = () => {
       <SPicture>
         <SSubTitle>사진 첨부</SSubTitle>
         <SPictureList>
-          {imageList.map((src, index) => {
-            return <SInsertPicture key={index} src={src} />;
-          })}
+          {imageList.urls.map((src, index) => (
+            <SInsertPicture key={index} src={src} />
+          ))}
+          {imageList.blobs.map((blob, index) => (
+            <SInsertPicture
+              key={`blob-${index}`}
+              src={URL.createObjectURL(blob)}
+            />
+          ))}
           <SLabel>
             <input
               id="fileInput"

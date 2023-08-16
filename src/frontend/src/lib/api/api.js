@@ -11,6 +11,10 @@ const headers = {
   'Content-Type': 'application/json;charset=UTF-8',
 };
 
+const headers2 = {
+  'Content-Type': 'multipart/form-data',
+};
+
 export const ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000;
 
 export const getAccessToken = async () => {
@@ -47,7 +51,7 @@ export const requestGet = async (url, params) => {
   }
 };
 
-export const requestPost = async (url, body) => {
+export const requestPost = async (url, body, headers) => {
   try {
 
     const data = await axios.post(baseUrl + url, body, headers);
@@ -84,6 +88,28 @@ export const requestPut = async (url, body, headers) => {
 export const requestDel = async (url) => {
   try {
     const data = await axios.delete(baseUrl + url, headers);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+
+export const requestPost2 = async (url, body) => {
+  try {
+    const data = await axios.post(baseUrl + url, body, headers2);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+
+export const requestPut2 = async (url, body) => {
+  try {
+    const data = await axios.put(baseUrl + url, body, headers2);
     return data;
   } catch (error) {
     console.log(error);

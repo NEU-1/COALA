@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 const ChatBoardPreview = ({
   post,
+  imgURL,
   producer,
   consumer,
   myId,
@@ -20,16 +21,18 @@ const ChatBoardPreview = ({
           onClickPost();
         }}
       >
-        <img
-          src={`${images.chatModal.default_profile}`}
-          alt=""
-          className="photo"
-        />
+        {imgURL ? (
+          <img src={`${imgURL}`} alt="" className="photo" />
+        ) : (
+          <img src={`${images.noImg}`} alt="" className="photo" />
+        )}
         <SDescription>
           <div>{post.title}</div>
-          <div>
-            {post.rentalCost}원 / {post.deposit}원
-          </div>
+          {post.rentalCost && (
+            <div>
+              {post.rentalCost}원 / {post.deposit}원
+            </div>
+          )}
         </SDescription>
       </SStart>
       {/* 제공자와 이용자에 따라 활성화 / 비활성화 + 거래하기 / 수락하기 */}
