@@ -59,8 +59,6 @@ public class FreePostServiceImpl implements FreePostService{
     public CommunityBaseResponseDto getPostList(int page, Member member) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
-
-
         int allPost = freePostRepository.findAll().size();
         List<FreePostResponseDto> allList = freePostRepository.findAll(pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
