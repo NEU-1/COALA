@@ -2,16 +2,15 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
 import CRadioButton from '../Common/CRadioButton';
-import BoardListItem from './components/BoardListItem';
+import FreeTechListItem from './components/FreeTechListItem';
 
-const StoreAndAuction = ({
+const AllCommunity = ({
   list,
   category,
   onClickItem,
-  showStore,
-  showAuction,
-  onChangeShowStore,
-  onChangeShowAuction,
+  showTech,
+  showFree,
+  onChangeCategory,
 }) => {
   console.log(list);
   return (
@@ -21,16 +20,16 @@ const StoreAndAuction = ({
           <STitle>내가 쓴 글</STitle>
           <SCheckBoxBlock>
             <CRadioButton
-              text={'STORE'}
+              text={'Tech'}
               name={'category'}
-              checked={showStore}
-              onChange={onChangeShowStore}
+              checked={showTech}
+              onChange={onChangeCategory}
             />
             <CRadioButton
-              text={'AUCTION'}
+              text={'Free'}
               name={'category'}
-              checked={showAuction}
-              onChange={onChangeShowAuction}
+              checked={showFree}
+              onChange={onChangeCategory}
             />
           </SCheckBoxBlock>
         </STitleBlock>
@@ -38,7 +37,6 @@ const StoreAndAuction = ({
           <thead>
             <tr>
               <th className="category">분류</th>
-              <th className="product">제품</th>
               <th className="title">제목</th>
               <th className="date">작성일</th>
             </tr>
@@ -47,7 +45,7 @@ const StoreAndAuction = ({
             {list.length > 0 ? (
               list.map((item) => {
                 return (
-                  <BoardListItem
+                  <FreeTechListItem
                     item={item}
                     category={category}
                     key={category + item.id}
@@ -118,20 +116,17 @@ const STable = styled.table`
       font-size: 16px;
       font-weight: 700;
       border-bottom: 1px solid ${colors.primary};
+      padding: 20px;
     }
 
-    th.category,
-    th.product {
-      padding: 20px;
+    th.category {
       width: 120px;
     }
     th.title {
-      padding: 20px;
-      width: 340px;
+      width: 460px;
     }
 
     th.date {
-      padding: 20px;
       width: 200px;
     }
   }
@@ -148,4 +143,4 @@ const SEmpty = styled.div`
   color: #d9d9d9;
 `;
 
-export default StoreAndAuction;
+export default AllCommunity;

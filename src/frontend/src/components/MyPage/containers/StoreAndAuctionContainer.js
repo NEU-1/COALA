@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const StoreAndAuctionContainer = () => {
   const [showStore, setShowStore] = useState(true);
   const [showAuction, setShowAuction] = useState(false);
-  const [list, setList] = useState(null);
+  const [list, setList] = useState([]);
   const [category, setCategory] = useState(null);
   const onChangeShowStore = () => {
     setShowStore(true);
