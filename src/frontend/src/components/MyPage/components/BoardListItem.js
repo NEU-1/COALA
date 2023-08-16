@@ -7,7 +7,7 @@ const BoardListItem = ({ item, category, onClickItem }) => {
   const printDate = (date) => {
     return date.split('T')[0];
   };
-  return (
+  return category ? (
     <STr
       onClick={() => {
         onClickItem({ category: category, id: item.id });
@@ -17,6 +17,19 @@ const BoardListItem = ({ item, category, onClickItem }) => {
       <td className="product">{item.category.name}</td>
       <td className="title">
         <div>{item.title}</div>
+      </td>
+      <td className="date">{printDate(item.createdAt)}</td>
+    </STr>
+  ) : (
+    <STr
+      onClick={() => {
+        onClickItem({ id: item.storePost.id });
+      }}
+    >
+      <td className="category">STORE</td>
+      <td className="product">{item.storePost.category.name}</td>
+      <td className="title">
+        <div>{item.storePost.title}</div>
       </td>
       <td className="date">{printDate(item.createdAt)}</td>
     </STr>

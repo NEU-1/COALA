@@ -21,6 +21,7 @@ import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUseri
 import StoreAndAuctionContainer from '../components/MyPage/containers/StoreAndAuctionContainer';
 import TradeHistoryContainer from '../components/MyPage/containers/TradeHistoryContainer';
 import AllCommunityContainer from '../components/MyPage/containers/AllCommunityContainer';
+import WishlistContainer from '../components/MyPage/containers/WishlistContainer';
 
 // 채팅
 import ChatListContainer from '../components/Chat/containers/ChatListContainer';
@@ -78,6 +79,7 @@ const RootNavigation = () => {
               path="/my-page/all-community"
               element={<AllCommunityContainer />}
             />
+            <Route path="/my-page/wishlist" element={<WishlistContainer />} />
           </Route>
           <Route path="/tech/write" element={<TechBoardWrite />} />
           <Route path="/tech" element={<TechBoardList />} />
