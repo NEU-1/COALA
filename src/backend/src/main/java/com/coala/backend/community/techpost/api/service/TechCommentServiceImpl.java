@@ -73,7 +73,7 @@ public class TechCommentServiceImpl implements TechCommentService {
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 페이지 수 && 해당 페이지 댓글 목록")
-                .detail(1 + postComments.size() / 5)
+                .detail(1 + postComments.size() / 6)
                 .list(postComments)
                 .build();
     }

@@ -77,7 +77,7 @@ public class FreeCommentServiceImpl implements FreeCommentService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 페이지 수 & 댓글 목록 출력")
-                .detail(1 + postComments.size() / 5)
+                .detail(1 + freePost.getComments().size() / 6)
                 .list(postComments)
                 .build();
     }
