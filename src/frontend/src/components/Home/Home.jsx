@@ -24,7 +24,7 @@ const Home = () => {
     <SLayout>
       <div>Home</div>
       <button onClick={onChangeModalFlag}>계약서(임의)</button>
-      <a href={payment()}> <img src="/assets/images/payment.png" /></a>
+      <a href={payment()}> <img src="/assets/images/payment__small.png" /></a>
       {isOpen && <ContractContainer onChangeModalFlag={onChangeModalFlag}/>}
     </SLayout>
   )
