@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 
@@ -73,8 +74,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     // Security context에 인증정보 넣기
                     setAuthentication(jwtTokenProvider.getEmailFromToken(newAccessToken));
 
+<<<<<<< HEAD
                     // 필터 처리 후 AccessToken에 접근하기 위함
                     request.setAttribute("Access_Token", newAccessToken);
+=======
+                    // 이거 처리 너무 힘들다 => 재발급 받는 경우 그냥 프론트에서 다시 한번 쏘는걸로 구성 부탁해야할듯. GPT도 클라이언트에서 해줘 하네...
+
+>>>>>>> f74bc3f84b741d77fab9b89839396e822d3cbadf
                 }
                 // 모든 토큰 만료
                 else{
