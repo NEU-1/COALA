@@ -27,8 +27,6 @@ const AuctionDetail = () => {
         setPostData(res.data);
         setIsAuthor(res.data.mine);
         console.log(res);
-        // console.log(res.data, ":res.data");
-        // console.log(postData, ":postData");
       })
       .catch((err) => {
         console.error(err);
@@ -136,7 +134,6 @@ const AuctionDetail = () => {
             </SProfile>
             <SDayAndCost>
               <STextSub>{displayDate}</STextSub>
-              <STextSub>조회수 {postData.auctionPost.views}</STextSub>
               <STextSub>
                 {postData.auctionPost.category.name} / 최소{" "}
                 {postData.auctionPost.minRentalPeriod}일
@@ -152,6 +149,7 @@ const AuctionDetail = () => {
           <SContentDetail>
             <STextMainContent>{postData.auctionPost.detail}</STextMainContent>
           </SContentDetail>
+
           {!isAuthor ? (
             <div>
               {showFormModal && (
@@ -163,7 +161,8 @@ const AuctionDetail = () => {
                     />
                   </SFormModal>
                 </SModalBackdrop>
-              )}
+              )}{" "}
+              <STextSub>조회수 {postData.auctionPost.views}</STextSub>
               <SButtons>
                 <SButtonWeekPurple onClick={showForm}>
                   제안하기
@@ -179,25 +178,33 @@ const AuctionDetail = () => {
                       onClick={() => handlePictureChange("previous")}
                     ></SButtonArea>
                     <ImgMediaCard
-                      img={postData.auctionApplies[currentProposalIndex].auctionImageList}
-                      proposerId={postData.auctionApplies[currentProposalIndex].memberId}
+                      img={
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionImageList
+                      }
+                      proposerId={
+                        postData.auctionApplies[currentProposalIndex].memberId
+                      }
                       postId={postId}
                       title={
-                        postData.auctionApplies[currentProposalIndex].auctionApply.title
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.title
                       }
                       mainText={
-                        postData.auctionApplies[currentProposalIndex].auctionApply.detail
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.detail
                       }
                       rentalFee={
-                        postData.auctionApplies[currentProposalIndex].auctionApply.rentalCost
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.rentalCost
                       }
                       deposit={
-                        postData.auctionApplies[currentProposalIndex].auctionApply.deposit
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.deposit
                       }
-                      // endDay={postData.auctionApplies[currentProposalIndex].endDay}
                       bargaining={
-                        postData.auctionApplies[currentProposalIndex].auctionApply
-                          .negotiation
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.negotiation
                       }
                     />
                     <SButtonArea
@@ -205,7 +212,8 @@ const AuctionDetail = () => {
                     ></SButtonArea>
                   </SCardModal>
                 </SModalBackdrop>
-              )}
+              )}{" "}
+              <STextSub>조회수 {postData.auctionPost.views}</STextSub>
               <SButtons>
                 <SButtonSeeProposal onClick={showProposalList}>
                   제안 확인
