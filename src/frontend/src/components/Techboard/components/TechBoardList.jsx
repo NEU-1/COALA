@@ -13,21 +13,22 @@ const TechBoardList = () => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
   const [maxpage, setMaxpage] = useState();
-
+  const [activepage, setActivepage] = useState();
 
   const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`tech/post/${page}`)
     .then(res=>{
-      console.log(res.data);
+      console.log(res);
       setMaxpage(res.data.detail);
       setPosts(res.data.list);
 
     })
       }
   const handlePageChange = (page) => {
-    setPage(page);
-    getBoardList(page);
+    setPage(page-1);
+    setActivepage(page)
+    // getBoardList();
   };
  
   const goTowrite = () => {
@@ -35,8 +36,8 @@ const TechBoardList = () => {
   };
 
   useEffect(() => {
-    getBoardList(page) // 1) 게시글 목록 조회 함수 호출
-  }, []);
+    getBoardList() // 1) 게시글 목록 조회 함수 호출
+  }, [page]);
   
   return (
     <Slayout>
@@ -72,8 +73,8 @@ const TechBoardList = () => {
         <Footerbutton>
           <Dummi></Dummi>
           <Pagination
-            activePage={page}
-            itemsCountPerPage={5}
+            activePage={activepage}
+            itemsCountPerPage={7}
             totalItemsCount={maxpage*7}
             pageRangeDisplayed={maxpage}
             prevPageText={"‹"}
@@ -94,15 +95,16 @@ const Slayout = styled.div`
 `
 const Button = styled.div`
   display: flex;
+  padding: 18px 25px;
+  width: 60px;
   height: 40px;
   padding: 5px;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  width: 120px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color: #BD84FC;
+  background-color: #e9d5ff;
   color: white;
   cursor: pointer;
 `
@@ -120,7 +122,7 @@ const Contentbox = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #BD84FC;
+  border-bottom: 1px solid #e9d5ff;
   margin-bottom: 10px;
   width: 800px;
   cursor: pointer;
@@ -128,13 +130,12 @@ const Contentbox = styled.div`
 
 const Userbox = styled.div`
   display: flex;
-  
   margin-top: 5px;
 `
 const Usertext = styled.div`
   margin-left: 5px;
   margin-right: 5px;
-  font-size: 13px;
+  font-size: 12px;
 `
 const Numbertext = styled.div`
   margin-left: 5px;
@@ -145,6 +146,7 @@ const Numbertext = styled.div`
 const Titletext = styled.div`
   font-size: 15px;
   margin-left: 5px;
+  margin-bottom: 15px;
 `
 const Commentcontainer = styled.div`
   display: flex;
