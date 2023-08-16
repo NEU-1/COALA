@@ -13,4 +13,6 @@ public interface StoreLikeRepository extends JpaRepository<StoreLike, Long> {
      Optional<StoreLike> findByMemberAndStorePost(Member member, StorePost storePost);
 
      List<StoreLike> findByStorePost(StorePost storePost);
+
+     List<StoreLike> findByMember(Member member);
 }
