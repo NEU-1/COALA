@@ -19,6 +19,7 @@ import AgreementContainer from '../components/SignUp/containers/AgreementContain
 import MyPageContainer from '../components/MyPage/containers/MyPageContainer';
 import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUserinfoContainer';
 import StoreAndAuctionContainer from '../components/MyPage/containers/StoreAndAuctionContainer';
+import TradeHistoryContainer from '../components/MyPage/containers/TradeHistoryContainer';
 
 // 채팅
 import ChatListContainer from '../components/Chat/containers/ChatListContainer';
@@ -67,6 +68,10 @@ const RootNavigation = () => {
             <Route
               path="/my-page/store-and-auction"
               element={<StoreAndAuctionContainer />}
+            />
+            <Route
+              path="/my-page/trade-history"
+              element={<TradeHistoryContainer />}
             />
           </Route>
           <Route path="/tech/write" element={<TechBoardWrite />} />

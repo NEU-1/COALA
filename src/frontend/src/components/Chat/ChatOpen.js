@@ -2,7 +2,7 @@ import React from 'react';
 import { css, keyframes, styled } from 'styled-components';
 import { images } from '../../assets/images';
 import { colors } from '../../assets/colors';
-import ContractContainer from '../contract/containers/ContractContainer';
+import ContractContainer from '../Contract/containers/ContractContainer';
 
 const ChatOpen = ({ isChatOpen, onClickChatBtn, isContractOpen }) => {
   return (
