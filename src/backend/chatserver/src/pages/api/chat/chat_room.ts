@@ -54,7 +54,7 @@ const receiveData = withCors(async (
       const room_id = room.room_id;
       const latestLog = await searchLog({room_id});
 
-      const [roomUserRelations] = await readRoomMember({room_id});
+      const roomUserRelations = await readRoomMember({room_id});
       console.log(roomUserRelations);
       let others: any[] = [];
     
