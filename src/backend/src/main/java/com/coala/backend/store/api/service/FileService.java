@@ -2,9 +2,7 @@ package com.coala.backend.store.api.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.coala.backend.store.db.entity.StoreImage;
 import com.coala.backend.store.db.entity.StorePost;
 import com.coala.backend.store.db.repository.StoreImageRepository;
@@ -17,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,24 +31,21 @@ public class FileService {
         this.storePostRepository = storePostRepository;
     }
 
+
+
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Transactional
-    public void delete(Long id , String directory) throws Exception{
+    public void delete(Long id) throws Exception{
         StorePost storePost = storePostRepository.findById(id)
                 .orElseThrow(() -> new IllegalAccessException("게시글이 존재하지 않습니다."));
 
-        String key = directory + "/" + convert(id) + "/" ;
-
         List<StoreImage> storeImageList = storeImageRepository.findByStorePost(storePost);
-
-        Integer idx = 1;
 
         // delete
         for(StoreImage storeImage : storeImageList){
             storeImageRepository.delete(storeImage);
-            amazonS3Client.deleteObject(bucket, key + convert(idx++));
         }
 
     }

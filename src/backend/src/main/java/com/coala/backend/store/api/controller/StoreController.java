@@ -70,11 +70,12 @@ public class StoreController {
         ObjectMapper objectMapper = new ObjectMapper();
         StorePost storePost = objectMapper.readValue(json, StorePost.class);
 
+
         StorePostResponseDto storePostResponseDto = storeService.write(storePost, memberService.loadInfo(jwtTokenProvider.getMail(request)).getMember());
         BaseResponseDto baseResponseDto = storePostResponseDto.getBaseResponseDto();
         Long id = storePostResponseDto.getStorePost().getId();
 
-        fileService.delete(id, "store");
+        fileService.delete(id);
 
         for(int i = 0; i < files.length; i++){
             fileService.file(files[i], "store", id,i+1);
@@ -82,19 +83,20 @@ public class StoreController {
         return ResponseEntity.status(baseResponseDto.getStatusCode()).body(baseResponseDto);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<? extends BaseResponseDto> update(@RequestParam("json") String json, @RequestParam(value = "id")Long id,
+    @PostMapping("/update")
+    public ResponseEntity<? extends BaseResponseDto> update(@RequestParam("json") String json,
+                                                            @RequestParam(value = "id")Long id,
                                                             HttpServletRequest request,
-                                                            @RequestPart("multipartFile") List<MultipartFile> files) throws Exception{
+                                                            @RequestPart("multipartFile") MultipartFile[] files) throws Exception{
         ObjectMapper objectMapper = new ObjectMapper();
         StorePost storePost = objectMapper.readValue(json, StorePost.class);
 
         BaseResponseDto responseDto = storeService.update(id, storePost, jwtTokenProvider.getMail(request));
 
-        fileService.delete(id, "store");
+        fileService.delete(id);
 
-        for(int i = 0; i < files.size(); i++){
-            fileService.file(files.get(i), "store", id,i+1);
+        for(int i = 0; i < files.length; i++){
+            fileService.file(files[i], "store", id,i+1);
         }
 
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
@@ -102,7 +104,7 @@ public class StoreController {
 
     @DeleteMapping("/delete")
     public ResponseEntity<? extends BaseResponseDto> delete(@RequestParam(value="id") Long id, HttpServletRequest request) throws Exception{
-        fileService.delete(id, "store");
+        fileService.delete(id);
         BaseResponseDto responseDto = storeService.delete(id, jwtTokenProvider.getMail(request));
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
     }

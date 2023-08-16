@@ -40,9 +40,7 @@ public class MyPageController {
     public ListResponseDto myStore(HttpServletRequest request){
         Member member = getMember(request);
         logger.info("내가 쓴 글(제공자) : {} ", member.getEmail());
-
         ListResponseDto response = myPageService.myStore(member);
-
         return response;
     }
 
@@ -50,9 +48,7 @@ public class MyPageController {
     public ListResponseDto myAuction(HttpServletRequest request){
         Member member = getMember(request);
         logger.info("내가 쓴 글(이용자) : {} ", member.getEmail());
-
         ListResponseDto response = myPageService.myAuction(member);
-
         return response;
     }
 

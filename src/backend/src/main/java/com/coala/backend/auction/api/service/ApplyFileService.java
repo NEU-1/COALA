@@ -41,20 +41,15 @@ public class ApplyFileService {
     private String bucket;
 
     @Transactional
-    public void delete(Long id, String directory) throws Exception{
+    public void delete(Long id) throws Exception{
         AuctionApply auctionApply = auctionApplyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("제안이 존재하지 않습니다."));
 
-        String key = directory + "/" + convert(auctionApply.getId()) + "/" + convert(id) + "/";
-
         List<AuctionImage> auctionImageList = auctionImageRepository.findByAuctionApply(auctionApply);
-
-        Integer idx = 1;
 
         // delete
         for(AuctionImage auctionImage : auctionImageList){
             auctionImageRepository.delete(auctionImage);
-            amazonS3Client.deleteObject(bucket, key + convert(idx++));
         }
     }
 
