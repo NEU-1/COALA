@@ -2,24 +2,19 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { images } from "../../../assets/images";
 import CCheckBox from "../../Common/CCheckBox";
-// import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
-import { requestPost, setToken } from "../../../lib/api/api";
+import { requestPost2, setToken } from "../../../lib/api/api";
 import { useParams } from "react-router-dom";
-
-const SERVER_URL = "--서버 주소--";
 
 const TradeOfferForm = ({ onClose }) => {
   const [imageList, setImageList] = useState([]);
   const [bargain, setBargain] = useState(0);
-  // const [calendarDay, setCalendarDay] = useState(new Date());
-  // const [calendar, setCalendar] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
   const { postId } = useParams();
-  
+
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % imageList.length);
   };
@@ -40,73 +35,78 @@ const TradeOfferForm = ({ onClose }) => {
   const [state, setState] = useState(initialState);
   const { title, mainText, deposit, rentalFee } = state;
 
-  // const calendarHandler = () => {
-  //   setCalendar(!calendar);
-  // };
-  // const year = calendarDay.getFullYear();
-  // const month = calendarDay.getMonth() + 1;
-  // const date = calendarDay.getDate();
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
+  console.log(imageList);
+
+  const dataURLtoBlob = (dataURL) => {
+    console.log(dataURL);
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
   const onUpload = async (e) => {
     const files = e.target.files;
-    const newImages = await Promise.all(
-      [...files].map((file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = (error) => reject(error);
-          reader.readAsDataURL(file);
-        });
-      })
-    );
-    setImageList((prev) => [...prev, ...newImages]);
+    const newImages = [...imageList];
+
+    for (let i = 0; i < files.length; i++) {
+      let reader = new FileReader();
+      const fileRead = new Promise((resolve) => {
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+      });
+
+      reader.readAsDataURL(files[i]);
+      const fileData = await fileRead;
+
+      const blob = dataURLtoBlob(fileData);
+
+      newImages.push(blob);
+    }
+
+    setImageList(newImages);
   };
 
   const setBargainStatus = (e) => {
-    setBargain(e.target.checked ? 1: 0);
+    setBargain(e.target.checked ? 1 : 0);
   };
   const goServer = async () => {
     setToken();
-    requestPost(`auction/apply?id=${postId}`, {
-      title : title,
-      detail : mainText,
-      deposit: deposit,
-      rentalCost : rentalFee,
-      negotiation : bargain
-    })
-    .then((res) => {
-      console.log(res)
-      // console.log(title, mainText, deposit, rentalFee, bargain)
-    })
-    .catch((err) => {
-      console.error(err)
-    })
-    // try {
-    //   const formData = new FormData();
-    //   imageList.forEach((image, index) => {
-    //     formData.append(`image${index}`);
-    //   });
-    //   formData.append("title", title);
-    //   formData.append("mainText", mainText);
-    //   formData.append("deposit", deposit);
-    //   formData.append("rentalFee", rentalFee);
-    //   formData.append("day", day);
-    //   formData.append("bargain", bargain);
-    //   const response = await axios.post("서버의 URL", formData);
-
-    //   alert(response.status === 200 ? "성공" : "실패");
-    // } catch (err) {
-    //   console.error("통신 오류", err);
-    // }
+    let formData = new FormData();
+    formData.append(
+      "json",
+      JSON.stringify({
+        title: title,
+        detail: mainText,
+        deposit: deposit,
+        rentalCost: rentalFee,
+        negotiation: bargain,
+      })
+    );
+    for (let i = 0; i < imageList.length; i++) {
+      formData.append("multipartFile", imageList[i]);
+    }
+    requestPost2(`auction/apply?id=${postId}`, formData)
+      .then((res) => {
+        console.log(res, "제안 갔음");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
   const fetchMySellData = (setMySell) => {
     axios
-      .get(SERVER_URL)
       .then((response) => setMySell(response.data))
       .catch((error) => console.error("Error fetching my sell data:", error));
   };
@@ -123,8 +123,9 @@ const TradeOfferForm = ({ onClose }) => {
     <SCard>
       <div>
         <SImgDiv>
-          {imageList.length > 0 && <SImg src={imageList[currentImageIndex]} />}
-
+          {imageList.length > 0 && (
+            <SImg src={URL.createObjectURL(imageList[currentImageIndex])} />
+          )}
           <label>
             <input
               id="fileInput"
@@ -200,20 +201,6 @@ const TradeOfferForm = ({ onClose }) => {
           </SDRFDiv>
         </SCDDiv>
         <SDCDiv>
-          <SMainP>기간</SMainP>
-          {/* <SDayDiv>
-            <SCalendarDate>
-              <SSubP>상한 날짜</SSubP>
-              <SSubP
-                onClick={calendarHandler}
-              >{`${year}년 ${month}월 ${date}일`}</SSubP>
-            </SCalendarDate>
-            {calendar ? (
-              <Calendar onChange={setCalendarDay} value={calendarDay} />
-            ) : (
-              ""
-            )}
-          </SDayDiv> */}
           <CCheckBox
             name="bargain"
             text={"가격 제안 여부"}
@@ -393,15 +380,6 @@ const SDCDiv = styled.div`
   gap: 18px;
 `;
 
-// const SDayDiv = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: flex-start;
-//   gap: 10px;
-//   flex-shrink: 0;
-//   align-self: stretch;
-// `;
-
 const SButtons = styled.div`
   display: flex;
   padding-bottom: 0px;
@@ -447,11 +425,6 @@ const SNoBtn = styled.button`
   font-weight: 700;
   letter-spacing: -0.14px;
 `;
-
-// const SCalendarDate = styled.div`
-//   display: flex;
-//   gap: 30px;
-// `;
 
 const SLRBtn = styled.div`
   display: flex;

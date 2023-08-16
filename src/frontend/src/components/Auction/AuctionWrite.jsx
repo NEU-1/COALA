@@ -1,17 +1,13 @@
 import axios from "axios";
 import React, { useState } from "react";
-// import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
-import { images } from "../../assets/images";
 import Swal from "sweetalert2";
 import { requestPost, setToken } from "../../lib/api/api";
 
 const AuctionWrite = () => {
-  // console.log(images);
-
-  const product = ["키보드", "마우스", "헤드셋", "태블릿"];
+  const product = ["키보드", "마우스", "헤드폰", "태블릿"];
   const day = ["1일", "7일", " 14일", "30일"];
 
   const [mySell, setMySell] = useState([111111, 222222, 33333]);
@@ -21,8 +17,6 @@ const AuctionWrite = () => {
   const [content, setContent] = useState("");
   const [productSelect, setProductSelect] = useState("");
   const [mindaySelect, setMinDaySelect] = useState("");
-  // const [calendarDay, setCalendarDay] = useState(new Date());
-  // const [calendar, setCalendar] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,15 +35,6 @@ const AuctionWrite = () => {
   const titleHandler = (e) => {
     setTitle(e.target.value);
   };
-  // const productNameHandler = (e) => {
-  //   setproductName(e.target.value);
-  // };
-  // const rentalFeeHandler = (e) => {
-  //   setRentalFee(e.target.value);
-  // };
-  // const depositHandler = (e) => {
-  //   setDeposit(e.target.value);
-  // };
   const minRentalDayHandler = (e) => {
     setMinRentalDay(e.target.value);
   };
@@ -67,13 +52,6 @@ const AuctionWrite = () => {
     );
     setMinRentalDay(minDayNumber);
   };
-  // const calendarHandler = () => {
-  //   setCalendar(!calendar);
-  // };
-
-  // const year = calendarDay.getFullYear();
-  // const month = calendarDay.getMonth() + 1;
-  // const date = calendarDay.getDate();
 
   const goBackBtn = () => {
     navigate("/store");
@@ -83,8 +61,6 @@ const AuctionWrite = () => {
       isValid:
         title !== "" &&
         productSelect !== "" &&
-        // productName !== "" &&
-        // rentalFee !== "" &&
         minRentalDay !== "" &&
         content !== "",
       errorField:
@@ -92,11 +68,7 @@ const AuctionWrite = () => {
           ? "제목"
           : productSelect === ""
           ? "분류"
-          : // : productName === ""
-          // ? "제품명"
-          // : rentalFee === ""
-          // ? "대여료"
-          minRentalDay === ""
+          : minRentalDay === ""
           ? "최소 대여 기간"
           : content === ""
           ? "내용"
@@ -119,8 +91,6 @@ const AuctionWrite = () => {
       title,
       content,
       minRentalDay,
-      // rentalFee,
-      // deposit,
       productSelect,
     });
 
@@ -133,9 +103,6 @@ const AuctionWrite = () => {
         title: title,
         detail: content,
         minRentalPeriod: minRentalDay,
-        // "limitDate": `${year}-${month}-${date}`,
-        // "rentalCost": rentalFee,
-        // "deposit": deposit,
         category: productSelect + 1,
       })
         .then((response) => {
@@ -184,17 +151,6 @@ const AuctionWrite = () => {
           />
         </SSellHeaderPading>
       </SSellHeader>
-      {/* <SCalendarDate>
-        <SSubTitle>상한 날짜</SSubTitle>
-        <SSubTitle
-          onClick={calendarHandler}
-        >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
-      </SCalendarDate>
-      {calendar ? (
-        <Calendar onChange={setCalendarDay} value={calendarDay} />
-      ) : (
-        ""
-      )} */}
       <SFilterContainer>
         <SFilterDoubleBox>
           <SFilterBoxGap35>
@@ -239,74 +195,8 @@ const AuctionWrite = () => {
               value={minRentalDay}
               onChange={minRentalDayHandler}
             />
-            {/* <SSubTitle>
-              제품명<SImportantStar>*</SImportantStar>
-            </SSubTitle> */}
-            {/* <SFilterInput
-              className="productName"
-              type="text"
-              value={productName}
-              onChange={productNameHandler}
-            /> */}
           </SFilterBoxGap10>
         </SFilterDoubleBox>
-        {/* <SFilterDoubleBox>
-          <SFilterBoxGap20>
-            <SSubTitle>
-              대여료<SImportantStar>*</SImportantStar>
-            </SSubTitle>
-            <SFilterInFutAndWon>
-              <SFilterInputCost
-                className="rentalFee"
-                type="text"
-                placeholder="숫자만 입력하세요."
-                value={rentalFee}
-                onChange={rentalFeeHandler}
-              />
-              <p>원</p>
-            </SFilterInFutAndWon>
-          </SFilterBoxGap20>
-          <SFilterBoxGap20>
-            <SSubTitle>보증금</SSubTitle>
-            <SFilterInFutAndWon>
-              <SFilterInputCost
-                className="deposit"
-                type="text"
-                placeholder="숫자만 입력하세요."
-                value={deposit}
-                onChange={depositHandler}
-              />
-              <p>원</p>
-            </SFilterInFutAndWon>
-          </SFilterBoxGap20>
-        </SFilterDoubleBox> */}
-        {/* <SFilterDoubleBox>
-          <SFilterBoxGap10> */}
-        {/* <SSubTitle>
-              최소 대여 기간<SImportantStar>*</SImportantStar>
-            </SSubTitle>
-            <SSelectProduct>
-              {day.map((day, index) => {
-                return (
-                  <SSelectDayBtn
-                    key={index}
-                    onClick={() => minDaySelectHandler(index)}
-                    $activeDay={mindaySelect === index}
-                  >
-                    {day}
-                  </SSelectDayBtn>
-                );
-              })}
-            </SSelectProduct>
-            <SFilterInputDay
-              className="minRentalDay"
-              type="text"
-              placeholder="숫자만 입력하세요."
-              value={minRentalDay}
-              onChange={minRentalDayHandler}
-            /> */}
-        {/* </SFilterBoxGap10>
-        </SFilterDoubleBox> */}
       </SFilterContainer>
       <SContent>
         <SContentBorder>
@@ -462,15 +352,6 @@ const SFilterBoxGap35 = styled.div`
   gap: 35px;
 `;
 
-// const SFilterBoxGap20 = styled.div`
-//   display: flex;
-//   width: 320px;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: flex-start;
-//   gap: 20px;
-// `;
-
 const SFilterBoxGap10 = styled.div`
   display: flex;
   flex-direction: column;
@@ -514,30 +395,6 @@ const SSelectDayBtn = styled.button`
   color: ${(props) => (props.$activeDay ? "#A255F7" : "#D9D9D9")};
 `;
 
-// const SFilterInput = styled.input`
-//   display: flex;
-//   padding: 16px;
-//   justify-content: center;
-//   align-items: flex-start;
-//   gap: 10px;
-//   align-self: stretch;
-//   border-radius: 10px;
-//   border: 1px solid var(--border, #d9d9d9);
-// `;
-
-// const SFilterInputCost = styled.input`
-//   display: flex;
-//   width: 277px;
-//   padding: 16px;
-//   align-items: center;
-//   gap: 10px;
-//   border-radius: 10px;
-//   border: 1px solid var(--border, #d9d9d9);
-//   &::placeholder {
-//     color: #d9d9d9;
-//   }
-// `;
-
 const SFilterInputDay = styled.input`
   display: flex;
   padding: 16px;
@@ -550,49 +407,6 @@ const SFilterInputDay = styled.input`
     color: #d9d9d9;
   }
 `;
-
-// const SFilterInFutAndWon = styled.div`
-//   display: flex;
-//   align-items: center;
-//   gap: 20px;
-//   align-self: stretch;
-// `;
-
-// const SCalendarDate = styled.div`
-//   display: flex;
-//   width: 800px;
-//   padding: 30px 20px;
-//   align-items: flex-start;
-//   gap: 30px;
-//   // justify-content: center;
-//   border-bottom: 1px solid var(--content-underline, #e9d5ff);
-// `;
-
-// const SPicture = styled.div`
-//   display: flex;
-//   width: 800px;
-//   padding: 30px 20px;
-//   align-items: center;
-//   gap: 10px;
-//   border-bottom: 1px solid var(--content-underline, #e9d5ff);
-// `;
-
-// const SLabel = styled.label`
-//   width: 138px;
-//   height: 101px;
-//   flex-shrink: 0;
-// `;
-
-// const SPictureList = styled.div`
-//   display: flex;
-//   align-items: center;
-//   gap: 15px;
-// `;
-
-// const SInsertPicture = styled.img`
-//   height: 101px;
-//   border-radius: 10px;
-// `;
 
 const SContent = styled.div`
   display: flex;

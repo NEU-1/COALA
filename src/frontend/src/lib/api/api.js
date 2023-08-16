@@ -51,7 +51,7 @@ export const requestGet = async (url, params) => {
   }
 };
 
-export const requestPost = async (url, body) => {
+export const requestPost = async (url, body, headers) => {
   try {
 
     const data = await axios.post(baseUrl + url, body, headers);
@@ -95,7 +95,6 @@ export const requestDel = async (url) => {
   }
 };
 
-
 export const requestPost2 = async (url, body) => {
   try {
     const data = await axios.post(baseUrl + url, body, headers2);
@@ -105,7 +104,6 @@ export const requestPost2 = async (url, body) => {
     throw error;
   }
 };
-
 
 export const requestPut2 = async (url, body) => {
   try {

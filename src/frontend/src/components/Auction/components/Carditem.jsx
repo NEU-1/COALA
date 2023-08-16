@@ -1,53 +1,56 @@
 import * as React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function ImgMediaCard({
   img,
+  postId,
+  proposerId,
   title,
   mainText,
   rentalFee,
   deposit,
   bargaining,
 }) {
-  // const [currentImgIndex, setCurrentImgIndex] = React.useState(0);
-  // const handlePictureChange = (direction) => {
-  //   const totalPictures = img.length;
-  //   if (direction === "next") {
-  //     setCurrentImgIndex((currentImgIndex + 1) % totalPictures);
-  //   } else {
-  //     setCurrentImgIndex((currentImgIndex - 1 + totalPictures) % totalPictures);
-  //   }
-  // };
+  console.log(img);
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const handlePictureChange = (direction) => {
+    const totalPictures = img.length;
+    if (direction === "next") {
+      setCurrentImgIndex((currentImgIndex + 1) % totalPictures);
+    } else {
+      setCurrentImgIndex((currentImgIndex - 1 + totalPictures) % totalPictures);
+    }
+  };
   const navigate = useNavigate();
   const goChat = () => {
     navigate("/chat");
   };
   return (
     <SCard>
-      {/* <SImgDiv>
-        <SImg src={img} alt="" />
-        <button onClick={() => handlePictureChange("previous")}>{"<"}</button>
-        <SImg src={img[currentImgIndex]} alt="" />
-        <button onClick={() => handlePictureChange("next")}>{">"}</button>
-      </SImgDiv> */}
+      <SImgDiv>
+        <SButton onClick={() => handlePictureChange("previous")}>{"<"}</SButton>
+        <SImg src={img[currentImgIndex].url} alt="" />
+        <SButton onClick={() => handlePictureChange("next")}>{">"}</SButton>
+      </SImgDiv>
       <STitleDiv>
         <STitleP>{title}</STitleP>
       </STitleDiv>
       <SMainTextDiv>
-        <SMainTextP>
-          {mainText}
-        </SMainTextP>
+        <SMainTextP>{mainText}</SMainTextP>
       </SMainTextDiv>
       <SProduct>
-        <SProductTitle>제품 상세 정보</SProductTitle>
+        <STitleP>제품 상세 정보</STitleP>
       </SProduct>
       <SProductDetail>
         <SCostDiv>
-          <STextP>가격</STextP>
-          <STextP>
-            {rentalFee}/{deposit}
-          </STextP>
+          <STextP>보증금</STextP>
+          <STextP>{deposit}</STextP>
+        </SCostDiv>
+        <SCostDiv>
+          <STextP>대여료</STextP>
+          <STextP>{rentalFee}</STextP>
         </SCostDiv>
       </SProductDetail>
       <SFooterDiv>
@@ -75,30 +78,48 @@ const SCard = styled.div`
   background: #f5f5f5;
 `;
 
-// const SImgDiv = styled.div`
-//   display: flex;
-//   padding: 25px;
-//   flex-direction: column;
-//   align-items: flex-start;
-//   gap: 10px;
-//   align-self: stretch;
-// `;
+const SImgDiv = styled.div`
+  display: flex;
+  padding: 25px;
+  // flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  align-self: stretch;
+`;
 
-// const SImg = styled.img`
-//   display: flex;
-//   height: 269px;
-//   justify-content: flex-end;
-//   align-items: flex-start;
-//   gap: 10px;
-//   align-self: stretch;
-//   border-radius: 30px;
-//   background: url(<path-to-image>), lightgray 50% / cover no-repeat;
-// `;
+const SButton = styled.button`
+  padding: 120px 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+`;
+
+const SImg = styled.img`
+  display: flex;
+  height: 300px;
+  width: 460px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+  border-radius: 30px;
+  background: url(<path-to-image>), lightgray 50% / cover no-repeat;
+  &[width="460"] {
+    width: auto;
+    height: auto;
+  }
+
+  &[height="300"] {
+    width: auto;
+    height: auto;
+  }
+`;
 
 const STitleDiv = styled.div`
   display: flex;
   width: 550px;
-  padding: 0px 20px;
+  padding: 0px 30px;
   align-items: center;
 `;
 
@@ -110,12 +131,12 @@ const STitleP = styled.p`
 
 const SMainTextDiv = styled.div`
   display: flex;
-  width: 510px;
+  width: 480px;
   justify-content: space-between;
   align-items: flex-start;
   flex-shrink: 0;
   align-self: stretch;
-  margin-left: 20px;
+  margin-left: 35px;
 `;
 
 const SMainTextP = styled.p`
@@ -128,7 +149,7 @@ const SMainTextP = styled.p`
 const SProduct = styled.div`
   display: flex;
   height: 12.978px;
-  padding: 0px 20px;
+  padding: 0px 30px;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
@@ -136,25 +157,19 @@ const SProduct = styled.div`
   align-self: stretch;
 `;
 
-const SProductTitle = styled.p`
-  color: #1a1c3d;
-  font-size: 14px;
-  font-weight: 400;
-`;
-
 const SProductDetail = styled.div`
   display: flex;
   height: 49px;
   align-items: center;
-  gap: 256px;
+  gap: 220px;
   flex-shrink: 0;
   align-self: stretch;
 `;
 
 const SCostDiv = styled.div`
   display: flex;
-  width: 100px;
-  padding: 0px 20px;
+  width: 120px;
+  padding: 0px 35px;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
@@ -168,22 +183,22 @@ const STextP = styled.p`
 `;
 
 const SOfferP = styled.p`
-  color: ${(props) => (props.offer ? "white" : "#1A1C3D")};
+  color: white;
   font-size: 12px;
   font-weight: 400;
   background-color: ${(props) => (props.offer ? "green" : "red")};
-  padding: 5px 10px;
+  padding: 10px 15px;
   border-radius: 5px;
 `;
 
 const SFooterDiv = styled.div`
-display: flex;
-height: 76px;
-padding: 0px 20px;
-justify-content: space-between;
-align-items: center;
-flex-shrink: 0;
-align-self: stretch;
+  display: flex;
+  height: 76px;
+  padding: 0px 20px;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  align-self: stretch;
 `;
 
 const SQuestionBtn = styled.div`
