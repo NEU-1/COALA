@@ -211,7 +211,7 @@ const StoreDetail = () => {
           조회수 {postData.storePost.views} 관심 {postData.likes}
         </STextSubSee>
       </SFooter>
-        {isAuthor ? (
+        {!isAuthor ? (
           <SButtons>
             <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
           </SButtons>
