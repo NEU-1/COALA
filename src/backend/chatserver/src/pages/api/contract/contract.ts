@@ -94,8 +94,8 @@ if (req.method === 'POST') {
         return res.status(500).json({ error: 'No Member found' });
       }
       const id = usr['id'];
-      const producer = readContract_P({producer_id : id});
-      const consumer = readContract_C({consumer_id : id});
+      const producer = await readContract_P({producer_id : id});
+      const consumer = await readContract_C({consumer_id : id});
       res.status(200).json({producer, consumer});
       return;
     }
