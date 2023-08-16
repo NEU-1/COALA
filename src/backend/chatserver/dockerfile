@@ -60,6 +60,5 @@ USER nextjs
 
 ENV PORT 3030
 ENV HOSTNAME localhost
-RUN apk add --no-cache python3 && ln -sf python3 /usr/bin/python
 
 CMD ["node", "server.js"]
