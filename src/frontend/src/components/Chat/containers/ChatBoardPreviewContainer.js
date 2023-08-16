@@ -9,6 +9,7 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
   const [producer, setProducer] = useState(null);
   const [consumer, setConsumer] = useState(null);
   const [post, setPost] = useState(null);
+  const [imgURL, setImgURL] = useState(null);
   // 제공자 or 이용자 게시글 정보를 얻어와서 props로 전달
   useEffect(() => {
     setToken();
@@ -16,6 +17,7 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
       requestGet(`store/detail?id=${inform.room.pp_id}`).then((res) => {
         if (res.data.baseResponseDto.statusCode === 200) {
           setPost(res.data.storePost);
+          setImgURL(res.data.storeImageList[0]);
           if (res.data.memberId === myId) {
             setProducer(inform.user);
             setConsumer(inform.other); // 상대방 ID
@@ -59,6 +61,7 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
     post && (
       <ChatBoardPreview
         post={post}
+        imgURL={imgURL}
         producer={producer}
         consumer={consumer}
         myId={myId}

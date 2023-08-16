@@ -17,4 +17,5 @@ export const images = {
   notlike: '/assets/images/notlike.png',
   up: '/assets/images/⌃.png',
   down: '/assets/images/⌄.png',
+  noImg: '/assets/images/coala1.png',
 };

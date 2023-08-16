@@ -41,7 +41,7 @@ const ChatListItem = ({ item, onClickListItem }) => {
           alt=""
         />
         <SPartnerInfo>
-          <div className="partner">{item.name}</div>
+          <div className="partner">{item.other.nickname}</div>
           {item.latestLog.latestLog && (
             <div className="cur-chat">
               {item.latestLog.latestLog.text_content}

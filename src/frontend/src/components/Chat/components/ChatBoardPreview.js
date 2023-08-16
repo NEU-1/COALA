@@ -4,7 +4,14 @@ import { images } from '../../../assets/images';
 import { colors } from '../../../assets/colors';
 import { Link } from 'react-router-dom';
 
-const ChatBoardPreview = ({ post, producer, consumer, myId, onClickPost }) => {
+const ChatBoardPreview = ({
+  post,
+  imgURL,
+  producer,
+  consumer,
+  myId,
+  onClickPost,
+}) => {
   return (
     <SLayout>
       <SStart
@@ -14,11 +21,11 @@ const ChatBoardPreview = ({ post, producer, consumer, myId, onClickPost }) => {
           onClickPost();
         }}
       >
-        <img
-          src={`${images.chatModal.default_profile}`}
-          alt=""
-          className="photo"
-        />
+        {imgURL ? (
+          <img src={`${imgURL}`} alt="" className="photo" />
+        ) : (
+          <img src={`${images.noImg}`} alt="" className="photo" />
+        )}
         <SDescription>
           <div>{post.title}</div>
           {post.rentalCost && (
