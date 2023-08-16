@@ -6,13 +6,16 @@ import { useNavigate } from 'react-router-dom';
 // 아무 것도 체크 X, 모두 체크 : STORE와 AUCTION의 정보 모두 출력(가능하면 라디오 버튼으로 변경)
 const StoreAndAuctionContainer = () => {
   const [showStore, setShowStore] = useState(true);
-  const [showAuction, setShowAuction] = useState(true);
+  const [showAuction, setShowAuction] = useState(false);
   const [list, setList] = useState(null);
+  const [category, setCategory] = useState(null);
   const onChangeShowStore = () => {
-    setShowStore(!showStore);
+    setShowStore(true);
+    setShowAuction(false);
   };
   const onChangeShowAuction = () => {
-    setShowAuction(!showAuction);
+    setShowAuction(true);
+    setShowStore(false);
   };
 
   const navigate = useNavigate();
@@ -26,20 +29,12 @@ const StoreAndAuctionContainer = () => {
 
   useEffect(() => {
     setToken();
-    let temp = [];
     // store 리스트 가져오기
     if (showStore) {
+      setCategory('S');
       requestPost(`mypage/store`)
         .then((res) => {
-          res.data.list.forEach((item) => {
-            temp.push({
-              category: 'S',
-              id: item.id,
-              title: item.title,
-              product: item.category.name,
-              created_at: item.createdAt,
-            });
-          });
+          setList(res.data.list);
         })
         .catch((err) => {
           console.log(err);
@@ -47,29 +42,21 @@ const StoreAndAuctionContainer = () => {
     }
     // auction 리스트 가져오기
     if (showAuction) {
+      setCategory('A');
       requestPost(`mypage/auction`)
         .then((res) => {
-          res.data.list.forEach((item) => {
-            temp.push({
-              category: 'A',
-              id: item.id,
-              title: item.title,
-              product: item.category.name,
-              created_at: item.createdAt,
-            });
-          });
+          setList(res.data.list);
         })
         .catch((err) => {
           console.log(err);
         });
     }
-
-    setList(temp);
   }, [showStore, showAuction]);
 
   return (
     <StoreAndAuction
       list={list}
+      category={category}
       onClickItem={onClickItem}
       showStore={showStore}
       showAuction={showAuction}

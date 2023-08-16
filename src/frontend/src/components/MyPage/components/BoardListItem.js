@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 
-const BoardListItem = ({ item, onClickItem }) => {
+const BoardListItem = ({ item, category, onClickItem }) => {
   console.log(item);
   const printDate = (date) => {
     return date.split('T')[0];
@@ -10,17 +10,15 @@ const BoardListItem = ({ item, onClickItem }) => {
   return (
     <STr
       onClick={() => {
-        onClickItem({ category: item.category, id: item.id });
+        onClickItem({ category: category, id: item.id });
       }}
     >
-      <td className="category">
-        {item.category === 'S' ? 'STORE' : 'AUCTION'}
-      </td>
-      <td className="product">{item.product}</td>
+      <td className="category">{category === 'S' ? 'STORE' : 'AUCTION'}</td>
+      <td className="product">{item.category.name}</td>
       <td className="title">
         <div>{item.title}</div>
       </td>
-      <td className="date">{printDate(item.created_at)}</td>
+      <td className="date">{printDate(item.createdAt)}</td>
     </STr>
   );
 };

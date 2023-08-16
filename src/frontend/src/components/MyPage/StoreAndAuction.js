@@ -1,11 +1,12 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
-import CCheckBox from '../Common/CCheckBox';
+import CRadioButton from '../Common/CRadioButton';
 import BoardListItem from './components/BoardListItem';
 
 const StoreAndAuction = ({
   list,
+  category,
   onClickItem,
   showStore,
   showAuction,
@@ -19,13 +20,15 @@ const StoreAndAuction = ({
         <STitleBlock>
           <STitle>내가 쓴 글</STitle>
           <SCheckBoxBlock>
-            <CCheckBox
+            <CRadioButton
               text={'STORE'}
+              name={'category'}
               checked={showStore}
               onChange={onChangeShowStore}
             />
-            <CCheckBox
+            <CRadioButton
               text={'AUCTION'}
+              name={'category'}
               checked={showAuction}
               onChange={onChangeShowAuction}
             />
@@ -43,11 +46,11 @@ const StoreAndAuction = ({
           <tbody>
             {list ? (
               list.map((item) => {
-                console.log(item.category + item.id);
                 return (
                   <BoardListItem
                     item={item}
-                    key={item.category + item.id}
+                    category={category}
+                    key={category + item.id}
                     onClickItem={onClickItem}
                   />
                 );
