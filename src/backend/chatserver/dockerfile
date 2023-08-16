@@ -8,8 +8,13 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN apk add --no-cache pkgconfig pixman-dev
-RUN apk update && apk add --no-cache python3 make g++ && which python3
+RUN apk update && apk add --no-cache python3 make g++ && apk add --no-cache pkgconfig pixman-dev
+RUN apk --no-cache add build-base \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    giflib-dev \
+    librsvg-dev
 # RUN npm config set python3 /usr/bin/python3
 ENV PYTHON=/usr/bin/python3
 RUN npm ci
