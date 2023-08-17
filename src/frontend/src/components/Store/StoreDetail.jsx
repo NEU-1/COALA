@@ -11,7 +11,7 @@ import {
 } from "../../lib/api/api";
 import { fetchRoom } from "../../api/nodeServer/Room";
 import { useDispatch } from "react-redux";
-import {openChatModal} from '../../store/chatModalSlice'
+import { openChatModal } from "../../store/chatModalSlice";
 
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
@@ -25,6 +25,7 @@ const StoreDetail = () => {
         setLike(res.data.like);
         setIsAuthor(res.data.mine);
         setPictures(res.data.storeImageList);
+        console.log(res);
         console.log(res.data.storeImageList);
         console.log(pictures);
       })
@@ -117,30 +118,35 @@ const StoreDetail = () => {
   const generateRoomId = () => {
     let text = "";
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for(let i = 0;i < 5;i++) {
+    for (let i = 0; i < 5; i++) {
       text += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     }
 
     return text;
-  }
+  };
 
   const goChat = () => {
     if (isLogin) {
       const name = generateRoomId();
-      fetchRoom.create({roomName: name, pp_id: postData.storePost.id, ur_id: postData.memberId})
-      .then((res)=> {
-        dispatch(openChatModal());
-        setTimeout(()=>{
-          const chatModal = document.getElementById("chatModal");
-          chatModal.src=`/chat/${res.data.result.name}`; // roomID 받아오기
-        }, 100)
-      })
+      fetchRoom
+        .create({
+          roomName: name,
+          pp_id: postData.storePost.id,
+          ur_id: postData.memberId,
+        })
+        .then((res) => {
+          dispatch(openChatModal());
+          setTimeout(() => {
+            const chatModal = document.getElementById("chatModal");
+            chatModal.src = `/chat/${res.data.result.name}`; // roomID 받아오기
+          }, 100);
+        });
     } else {
       alert("로그인하세요");
       navigate("/login");
     }
   };
-  
+
   const goUpdate = () => {
     requestGet(`store/valid?id=${postId}`)
       .then((res) => {
@@ -176,7 +182,11 @@ const StoreDetail = () => {
       )}
       <SHeader>
         <SProfile onClick={goProfile}>
-          <SProfileImg src={images.plus} alt="" />
+          {postData.url ? (
+            <SProfileImg src={postData.url} alt="" />
+          ) : (
+            <SProfileImg src={images.default_profile} alt="" />
+          )}
           <SText>{postData.storePost.author}</SText>
         </SProfile>
         <SDayAndCost>
@@ -241,15 +251,15 @@ const StoreDetail = () => {
 export default StoreDetail;
 
 const SMain = styled.div`
-margin-top: 170px;
-display: flex;
-// weight: 800px;
-// height: 1024px;
-padding: 10px;
-flex-direction: column;
-align-items: center;
-flex-shrink: 0;
-`
+  margin-top: 170px;
+  display: flex;
+  // weight: 800px;
+  // height: 1024px;
+  padding: 10px;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+`;
 
 const SImgs = styled.div`
   display: flex;
@@ -427,23 +437,23 @@ const SButtonWeekPurple = styled.button`
 `;
 
 const SButtonPurple = styled.button`
-display: flex;
-width: 106px;
-height: 40px;
-padding: 10px 40px;
-justify-content: center;
-align-items: center;
-gap: 10px;
-border-radius: 7px;
-background: #BD84FC;
-box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-color: white;
-text-align: center;
-text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-font-size: 14px;
-font-weight: 700;
-letter-spacing: -0.14px;
-`
+  display: flex;
+  width: 106px;
+  height: 40px;
+  padding: 10px 40px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 7px;
+  background: #bd84fc;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  color: white;
+  text-align: center;
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.14px;
+`;
 
 const SModal = styled.div`
   position: fixed;
