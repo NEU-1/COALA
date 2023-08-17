@@ -10,7 +10,6 @@ import com.coala.backend.member.db.entity.RefreshToken;
 import com.coala.backend.member.db.repository.CertificationRepository;
 import com.coala.backend.member.db.repository.MemberRepository;
 import com.coala.backend.member.db.repository.RefreshTokenRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -137,7 +136,7 @@ public class MemberServiceImpl implements MemberService{
 
         logger.info("member : {}", member.getNickname());
 
-//        memberRepository.save(member);
+        memberRepository.save(member);
 
         return new BaseResponseDto("회원정보가 성공적으로 재설정 되었습니다.", 200);
     }
@@ -166,7 +165,7 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // otp가 일치하지 않음
-        if(temp.map(Certification::getOtp).orElse("").equals(info.get("otp"))){
+        if(!temp.get().getOtp().equals(info.get("otp"))){
             return new BaseResponseDto("인증번호가 일치하지 않습니다.", 200, 204);
         }
 
@@ -183,7 +182,7 @@ public class MemberServiceImpl implements MemberService{
             certificationRepository.save(certification);
         }
 
-        return new BaseResponseDto("인증이 완료되었습니다. 비밀번호를 변경해주세요.", 200, 201);
+        return new BaseResponseDto("인증이 완료되었습니다.", 200, 201);
     }
 
     // 비밀번호 찾기 후 수행.

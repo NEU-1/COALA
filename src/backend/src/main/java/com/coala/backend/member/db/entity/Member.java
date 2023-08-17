@@ -1,5 +1,8 @@
 package com.coala.backend.member.db.entity;
 
+import com.coala.backend.auction.db.entity.AuctionApply;
+import com.coala.backend.community.freepost.db.entity.FreePost;
+import com.coala.backend.community.techpost.db.entity.TechPost;
 import com.coala.backend.member.db.dto.request.MemberRequestDto;
 import com.coala.backend.store.db.entity.StoreLike;
 import com.coala.backend.store.db.entity.StorePost;
@@ -89,4 +92,19 @@ public class Member {
     @OneToMany(mappedBy = "member")
     @JsonIgnore
     private List<StoreLike> storeLike = new ArrayList<>();
+
+    // StoreLike
+    @OneToMany(mappedBy = "member")
+    @JsonIgnore
+    private List<AuctionApply> auctionApply = new ArrayList<>();
+
+    @OneToMany(mappedBy = "memberId")
+    @JsonIgnore
+    private List<TechPost> techPost = new ArrayList<>();
+
+    @OneToMany(mappedBy = "memberId")
+    @JsonIgnore
+    private List<FreePost> freePost = new ArrayList<>();
+
+
 }

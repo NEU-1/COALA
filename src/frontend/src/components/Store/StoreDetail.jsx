@@ -136,6 +136,10 @@ const StoreDetail = () => {
       navigate("/login");
     }
   };
+<<<<<<< HEAD
+=======
+  
+>>>>>>> develop
   const goUpdate = () => {
     requestGet(`store/valid?id=${postId}`)
       .then((res) => {
@@ -199,6 +203,7 @@ const StoreDetail = () => {
           조회수 {postData.storePost.views} 관심 {postData.likes}
         </STextSubSee>
       </SFooter>
+<<<<<<< HEAD
       {isAuthor ? (
         <SButtons>
           <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
@@ -209,6 +214,18 @@ const StoreDetail = () => {
           <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
         </SButtons>
       )}
+=======
+        {isAuthor ? (
+          <SButtons>
+            <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
+          </SButtons>
+        ) : (
+          <SButtons>
+            <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
+            <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
+          </SButtons>
+        )}
+>>>>>>> develop
       {showModal && (
         <>
           <SModalBackdrop onClick={handleBackdropClick}>
@@ -230,6 +247,7 @@ const StoreDetail = () => {
 export default StoreDetail;
 
 const SMain = styled.div`
+<<<<<<< HEAD
   display: flex;
   // weight: 800px;
   height: 1024px;
@@ -239,6 +257,17 @@ const SMain = styled.div`
   flex-shrink: 0;
   margin-top: 170px;
 `;
+=======
+margin-top: 170px;
+display: flex;
+// weight: 800px;
+// height: 1024px;
+padding: 10px;
+flex-direction: column;
+align-items: center;
+flex-shrink: 0;
+`
+>>>>>>> develop
 
 const SImgs = styled.div`
   display: flex;
@@ -377,6 +406,7 @@ const SButtonWeekPurple = styled.button`
 `;
 
 const SButtonPurple = styled.button`
+<<<<<<< HEAD
   display: flex;
   width: 106px;
   height: 40px;
@@ -394,6 +424,25 @@ const SButtonPurple = styled.button`
   font-weight: 700;
   letter-spacing: -0.14px;
 `;
+=======
+display: flex;
+width: 106px;
+height: 40px;
+padding: 10px 40px;
+justify-content: center;
+align-items: center;
+gap: 10px;
+border-radius: 7px;
+background: #BD84FC;
+box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+color: white;
+text-align: center;
+text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+font-size: 14px;
+font-weight: 700;
+letter-spacing: -0.14px;
+`
+>>>>>>> develop
 
 const SModal = styled.div`
   position: fixed;

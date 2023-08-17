@@ -404,6 +404,7 @@ const StoreWrite = () => {
 export default StoreWrite;
 
 const SMain = styled.div`
+margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
