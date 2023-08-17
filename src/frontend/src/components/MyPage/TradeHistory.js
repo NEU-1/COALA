@@ -10,6 +10,9 @@ const TradeHistory = ({
   traded,
   onChangeTrading,
   onChangeTraded,
+  myId,
+  render,
+  onChangeRender,
 }) => {
   return (
     <SLayout>
@@ -42,9 +45,23 @@ const TradeHistory = ({
             {contractList ? (
               contractList.map((item) => {
                 if (trading && item.status === 0) {
-                  return <ContractListItem key={item.id} item={item} />;
+                  return (
+                    <ContractListItem
+                      key={item.id}
+                      item={item}
+                      myId={myId}
+                      onChangeRender={onChangeRender}
+                    />
+                  );
                 } else if (traded && item.status === -1) {
-                  return <ContractListItem key={item.id} item={item} />;
+                  return (
+                    <ContractListItem
+                      key={item.id}
+                      item={item}
+                      myId={myId}
+                      onChangeRender={onChangeRender}
+                    />
+                  );
                 }
               })
             ) : (

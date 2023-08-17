@@ -23,4 +23,5 @@ export const images = {
   right2: '/assets/images/Right2.png',
   left2: '/assets/images/Left2.png',
   noImg: '/assets/images/coala1.png',
+  payment: '/assets/images/payment__small.png',
 };
