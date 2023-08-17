@@ -180,38 +180,46 @@
 
 ## 3. 웹 사이트 예시 📺
 
-### **시작 페이지**
-
-
-<br>
-
 ### **메인 페이지**
-
+![](./docs/example/mainpage1.PNG)
+![](./docs/example/mainpage2.PNG)
 
 <br>
 
 ### **마이 페이지**
-
+![](./docs/example/mypage1.PNG)
 
 <br>
 
 
-### **자유게시판 및 테크게시판**
+### **자유게시판 **
+![](./docs/example/freePost1.PNG)
+
+<br>
+
+### **자유게시판 **
+![](./docs/example/techPost1.PNG)
 
 
 <br>
 
 ### **제공자 게시판**
+![](./docs/example/store1.PNG)
+![](./docs/example/store2.PNG)
 
 
 <br>
 
 ### **이용자 게시판**
+![](./docs/example/auction1.PNG)
+![](./docs/example/auction2.PNG)
 
 
 <br>
 
 ### **채팅**
+![](./docs/example/chat1.PNG)
+![](./docs/example/chat2.PNG)
 
 
 <br>
