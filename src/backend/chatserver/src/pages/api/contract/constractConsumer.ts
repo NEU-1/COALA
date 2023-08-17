@@ -60,7 +60,7 @@ const receiveData = withCors(async (req: any, res: any) => {
 
     //   const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
-      const NewConstractData = { consumer_sign }
+      const NewConstractData = { consumer_sign, status : -1 } // -1 : 대여 중
       
       
       const result = await updateContract(NewConstractData, contract_id);
