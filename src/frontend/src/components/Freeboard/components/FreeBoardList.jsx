@@ -19,12 +19,10 @@ const FreeBoardList = () => {
   const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`free/post/${page}`)
-    .then(res=>{console.log(res.data);setPosts(res.data.list);setMaxpage(res.data.detail)})
-    .catch(err=>console.log(err))
-   
-
-
+    .then(res=>{console.log(res.data);setPosts(res.data.list);setMaxpage(res.data.detail);})
+    .catch(err=>console.log(err));
   }
+  
   const goTowrite = () => {
     navigate('/free/write');
   };
