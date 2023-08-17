@@ -18,4 +18,5 @@ export const images = {
   up: '/assets/images/⌃.png',
   down: '/assets/images/⌄.png',
   noImg: '/assets/images/coala1.png',
+  payment: '/assets/images/payment__small.png',
 };

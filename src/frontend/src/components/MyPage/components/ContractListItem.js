@@ -1,12 +1,32 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
+import { images } from '../../../assets/images';
+import { requestPostNode } from '../../../lib/api/api';
 
-const ContractListItem = ({ item }) => {
+const ContractListItem = ({ item, myId, onChangeRender }) => {
   console.log(item);
+
   const printDate = (date) => {
     return date.substr(0, 10);
   };
+
+  function payment() {
+    var url = 'https://developers.kakao.com/demo/pay/prepare';
+    var params = {
+      agent: 'web',
+      itemCode: '1',
+      quantity: '5',
+    };
+    return url + '?' + '1regjlenrgqlhsajkd';
+  }
+
+  const onClickPayment = (contractId) => {
+    requestPostNode(`contract/readContract`, { contractId }).then(() => {
+      onChangeRender();
+    });
+  };
+
   return (
     <STr>
       <td className="product">
@@ -15,15 +35,28 @@ const ContractListItem = ({ item }) => {
       <td className="tradeDate">{printDate(item.rental_at)}</td>
       <td className="returnDate">{printDate(item.return_at)}</td>
       <td className="status">
-        <SStatus status={`${item.status}`}>
-          {item.status === 0 ? '거래 중' : '거래 완료'}
-        </SStatus>
+        {item.status === 0 ? (
+          <SStatus status={`${item.status}`}>거래 중</SStatus>
+        ) : item.payed === 0 && item.consumer_id === myId ? (
+          <a
+            href={payment()}
+            target="_blank"
+            onClick={() => {
+              onClickPayment(item.id);
+            }}
+          >
+            <SPayment src={`${images.payment}`} />
+          </a>
+        ) : (
+          <SStatus status={`${item.status}`}>거래 완료</SStatus>
+        )}
       </td>
     </STr>
   );
 };
 
 const STr = styled.tr`
+  height: 80px;
   &:hover {
     background-color: ${colors.primary};
   }
@@ -67,6 +100,10 @@ const SStatus = styled.div`
   text-align: center;
   font-size: 12px;
   font-weight: 700;
+`;
+
+const SPayment = styled.img`
+  width: 80px;
 `;
 
 export default ContractListItem;
