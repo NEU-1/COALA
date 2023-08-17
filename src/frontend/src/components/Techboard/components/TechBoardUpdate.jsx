@@ -13,7 +13,7 @@ const TechBoardUpdate = () => {
     title: '',
     detail: '',
     imagePath: ['string'],
-    isAnonymous: "boolean",
+    anonymous: "boolean",
   });
   const editorRef = useRef();
   const { title, detail } = board; //비구조화 할당
@@ -59,7 +59,7 @@ useEffect(() => {
         title: board.title,
         detail: editorContent2, // 수정된 부분: editorContent를 사용
         imagePath: board.imagePath,
-        isAnonymous: board.isAnonymous,
+        anonymous: board.anonymous,
       }
 
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.

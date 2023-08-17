@@ -72,7 +72,7 @@ function TechBoardWrite() {
     title: '',
     detail: '',
     imagePath: [''],
-    isAnonymous: false,
+    anonymous: false,
   });
 
   const { title, detail } = board;
@@ -102,7 +102,7 @@ function TechBoardWrite() {
         title: board.title,
         detail: board.detail,// 수정된 부분: editorContent를 사용
         imagePath: [Imagepath],
-        isAnonymous: board.isAnonymous,
+        anonymous: board.anonymous,
       }
       setToken()
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
