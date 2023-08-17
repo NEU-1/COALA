@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { styled } from 'styled-components';
-
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import HomeHeader from '../Common/HomeHeader';
-import Coalahome2 from './Coalahome2.png';
+import home2 from './home2.png';
 import coala from './coala.png';
 import ContractContainer from '../Contract/containers/ContractContainer';
 
@@ -28,7 +28,7 @@ const Home = () => {
       <HomeHeader/>
       <Img src={`${coala}`} alt="사진" />
       <div className='image-bg' styled>
-      <Img2 src={`${Coalahome2}`} alt="사진" />
+      <Img2 src={`${home2}`} alt="사진" />
       </div>
       {/* <div>Home</div>
       <button onClick={onChangeModalFlag}>계약서(임의)</button>
@@ -60,4 +60,5 @@ const Img  = styled.img`
 const Img2 = styled.img`
    width: 100vw;
 `
+
 export default Home;
