@@ -64,7 +64,7 @@ const TechBoardList = () => {
               </Userbox>
               </div>
               </Techcontainer>
-              {imagePath === "https://coala.s3.ap-northeast-2.amazonaws.com/Free/null" ? (
+              {imagePath === "https://coala.s3.ap-northeast-2.amazonaws.com/Tech/null" ? (
                 <Simg src={images.coala1} alt="" />
                 ) : (
                 <Simg src={imagePath} alt="" />

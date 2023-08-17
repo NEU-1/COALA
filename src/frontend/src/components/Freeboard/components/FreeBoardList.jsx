@@ -81,15 +81,19 @@ const FreeBoardList = () => {
         <Footerbutton>
        
           <Dummi></Dummi>
-          <Pagination
-            activePage={activepage}
-            itemsCountPerPage={7}
-            totalItemsCount={maxpage*7}
-            pageRangeDisplayed={maxpage}
-            prevPageText={"‹"}
-            nextPageText={"›"}
-            onChange={handlePageChange}
-          />
+          {(maxpage === 0 ? ( <Dummi></Dummi>
+            )
+             : (
+             <Pagination
+               activePage={activepage}
+               itemsCountPerPage={7}
+               totalItemsCount={maxpage*7}
+               pageRangeDisplayed={maxpage}
+               prevPageText={"‹"}
+               nextPageText={"›"}
+               onChange={handlePageChange}
+             />     
+           ))}
           <Button onClick={goTowrite}>등록</Button>
         </Footerbutton> 
     </Layout>

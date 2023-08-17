@@ -352,12 +352,12 @@ gap: 10px;
 padding-bottom: 20px;
 
 `;
-
 const Profiletext = styled.div`
   width: 800px;
   margin-bottom: 3px;
   font-size: 15px;
-  padding-bottom: 15px;
+  padding-left: 15px;
+  border: 1px;
 
 `
 
@@ -385,10 +385,13 @@ height: 372px;
 const Titlecontainer = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
 `
 const Createat = styled.div`
   font-size: 10px;
-  margin-left: 15px;
+  margin-left: 10px;
+  padding-top: 5px;
+  
 `
 
 const Contentbox = styled.div`
@@ -412,7 +415,7 @@ const Numbertext = styled.div`
 const Titletext = styled.div`
   font-size: 30px;
   margin-left: 5px;
-  padding: 10px;`
+  `
 
 const Count = styled.div`
   padding-right: 10px;
@@ -525,7 +528,11 @@ const SBtndelete = styled.div`
   `
   const Profilebox = styled.div`
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     border-bottom: 1px solid #e9d5ff;
+    padding-bottom: 10px;
   ` 
 
   const Minititlebox = styled.div`

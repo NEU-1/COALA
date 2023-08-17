@@ -377,7 +377,8 @@ const Profiletext = styled.div`
   width: 800px;
   margin-bottom: 3px;
   font-size: 15px;
-  padding-bottom: 15px;
+  padding-left: 15px;
+  border: 1px;
 
 `
 
@@ -544,6 +545,9 @@ const SBtndelete = styled.div`
   `
   const Profilebox = styled.div`
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     border-bottom: 1px solid #e9d5ff;
     padding-bottom: 10px;
 ;
