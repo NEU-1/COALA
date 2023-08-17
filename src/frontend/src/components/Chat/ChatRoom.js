@@ -31,7 +31,11 @@ const ChatRoom = ({
           />
           <SOtherInfo>
             <img
-              src={`${images.chatModal.default_profile}`}
+              src={
+                inform.other.image_path
+                  ? `${inform.other.image_path}`
+                  : `${images.default_profile}`
+              }
               alt=""
               className="profile"
             />

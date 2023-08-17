@@ -36,7 +36,11 @@ const ChatListItem = ({ item, onClickListItem }) => {
     >
       <SStart>
         <img
-          src={`${images.chatModal.default_profile}`}
+          src={
+            item.other.image_path
+              ? `${item.other.image_path}`
+              : `${images.default_profile}`
+          }
           className="profile"
           alt=""
         />
@@ -82,7 +86,7 @@ const SPartnerInfo = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-
+  text-align: left;
   .partner {
     color: ${colors.deepPrimary};
     font-size: 14px;
@@ -95,7 +99,6 @@ const SPartnerInfo = styled.div`
     font-size: 9px;
     font-weight: 400;
     line-height: normal;
-    text-align: left;
   }
 `;
 
