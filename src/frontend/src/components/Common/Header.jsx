@@ -36,6 +36,7 @@ const SLayout = styled.div`
   left: 0;
   z-index: 30;
   background-color: white;
+  /* border-bottom: 1px solid rgba(205, 205, 205, 0.5); */
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.05);
 `;
 
@@ -44,7 +45,7 @@ const SContainer = styled.div`
   width: 100%;
   padding: 10px;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 `;
 
 const SLogoBox = styled.div`
@@ -61,12 +62,12 @@ const SLoginLink = styled(Link)`
   color: #000;
   font-size: 16px;
   font-weight: 500;
-  padding: 0px 100px;
+  padding: 20px 100px;
 `;
 
 const SNavLink = styled(NavLink)`
   color: black;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   display: flex;
   justify-content: center;

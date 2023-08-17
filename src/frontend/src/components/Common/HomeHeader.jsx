@@ -82,7 +82,7 @@ const SContainer = styled.div`
   width: 100%;
   padding: 10px;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 `;
 
 const SLogoBox = styled.div`
@@ -99,12 +99,12 @@ const SLoginLink = styled(Link)`
   color: #000;
   font-size: 16px;
   font-weight: 500;
-  padding: 0px 100px;
+  padding: 20px 100px;
 `;
 
 const SNavLink = styled(NavLink)`
   color: black;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   display: flex;
   justify-content: center;
