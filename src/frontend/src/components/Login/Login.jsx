@@ -69,10 +69,10 @@ const Login = () => {
     const refreshToken = res.headers["refresh_token"];
     localStorage.setItem("access_token", accessToken);
     localStorage.setItem("refresh_token", refreshToken);
+    localStorage.setItem('login', true);
     setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
     // 전역 상태인 isLogin을 true로 설정
     dispatch(login());
-
     navigate("/", { replace: true });
   };
 
