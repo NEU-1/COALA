@@ -4,11 +4,29 @@ import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
 
-const SideBar = ({ form }) => {
+const SideBar = ({
+  form,
+  profileImg,
+  fileInput,
+  onChangeProfile,
+  onClickUploadImgBtn,
+  onClickLogout,
+}) => {
+  console.log('새로운 이미지', profileImg);
   return (
     <SLayout>
       <SProfile>
-        <img className="imgProfile" src={`${images.search}`} />
+        <img
+          className="imgProfile"
+          src={profileImg ? `${profileImg}` : `${images.default_profile}`}
+          alt=""
+          onClick={onClickUploadImgBtn}
+        />
+        <SImgUploader
+          type="file"
+          ref={fileInput}
+          onChange={onChangeProfile}
+        ></SImgUploader>
         <SProfileInfo>
           <div className="info">
             <div>
@@ -29,6 +47,7 @@ const SideBar = ({ form }) => {
         <SNavLink to={`/my-page/trade-history`}>거래 내역</SNavLink>
         <SNavLink to={`/my-page/all-community`}>COMMUNITY</SNavLink>
         <SNavLink to={`/my-page/wishlist`}>관심 목록</SNavLink>
+        <SLogout onClick={onClickLogout}>로그아웃</SLogout>
       </SSideNavBar>
     </SLayout>
   );
@@ -44,7 +63,7 @@ const SLayout = styled.div`
   padding: 10px;
   position: fixed;
   top: 0;
-  left: 30px;
+  left: 0px;
   gap: 10px;
 `;
 
@@ -127,6 +146,23 @@ const SNavLink = styled(NavLink)`
     font-weight: 700;
     text-decoration-line: underline;
   }
+`;
+
+const SImgUploader = styled.input`
+  display: none;
+`;
+
+const SLogout = styled.div`
+  color: #000;
+  font-size: 16px;
+  font-weight: 400;
+  display: flex;
+  height: 71px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  align-self: stretch;
 `;
 
 export default SideBar;

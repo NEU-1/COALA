@@ -129,7 +129,11 @@ const AuctionDetail = () => {
         <>
           <SContent>
             <SProfile onClick={goProfile}>
-              <SProfileImg src={images.plus} alt="" />
+              {postData.url ? (
+                <SProfileImg src={postData.url} alt="" />
+              ) : (
+                <SProfileImg src={images.default_profile} alt="" />
+              )}
               <STextSmall>{postData.auctionPost.author}</STextSmall>
             </SProfile>
             <SDayAndCost>
@@ -176,7 +180,9 @@ const AuctionDetail = () => {
                   <SCardModal onClick={(e) => e.stopPropagation()}>
                     <SButtonArea
                       onClick={() => handlePictureChange("previous")}
-                    ></SButtonArea>
+                    >
+                      <SBtnImg src={images.left2} alt="" />
+                    </SButtonArea>
                     <ImgMediaCard
                       img={
                         postData.auctionApplies[currentProposalIndex]
@@ -207,9 +213,9 @@ const AuctionDetail = () => {
                           .auctionApply.negotiation
                       }
                     />
-                    <SButtonArea
-                      onClick={() => handlePictureChange("next")}
-                    ></SButtonArea>
+                    <SButtonArea onClick={() => handlePictureChange("next")}>
+                      <SBtnImg src={images.right2} alt="" />
+                    </SButtonArea>
                   </SCardModal>
                 </SModalBackdrop>
               )}{" "}
@@ -495,6 +501,9 @@ const SCardModal = styled.div`
 const SButtonArea = styled.button`
   flex: 1;
   height: 100%;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 20px;
+  height: 673px;
 `;
 
 const SFormModal = styled.div`
@@ -503,4 +512,8 @@ const SFormModal = styled.div`
   padding: 0 20px;
   position: fixed;
   display: flex;
+`;
+
+const SBtnImg = styled.img`
+  height: 250px;
 `;

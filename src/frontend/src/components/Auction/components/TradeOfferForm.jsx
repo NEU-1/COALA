@@ -3,7 +3,6 @@ import { styled } from "styled-components";
 import { images } from "../../../assets/images";
 import CCheckBox from "../../Common/CCheckBox";
 import "react-calendar/dist/Calendar.css";
-import axios from "axios";
 import { requestPost2, setToken } from "../../../lib/api/api";
 import { useParams } from "react-router-dom";
 
@@ -11,8 +10,6 @@ const TradeOfferForm = ({ onClose }) => {
   const [imageList, setImageList] = useState([]);
   const [bargain, setBargain] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [mySell, setMySell] = useState([111111, 222222, 33333]);
   const { postId } = useParams();
 
   const nextImage = () => {

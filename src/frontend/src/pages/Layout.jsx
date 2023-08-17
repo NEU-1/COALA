@@ -4,13 +4,18 @@ import { styled } from 'styled-components'
 import ChatOpenContainer from '../components/Chat/containers/ChatOpenContainer'
 import HeaderContainer from '../components/Common/containers/HeaderContainer'
 import Footer from '../components/Common/Footer'
+import { useSelector } from 'react-redux'
 
 const Layout = () => {
+  const isLogin = useSelector((state)=>{
+    return state.login.isLogin;
+  })
+
   return (
     <SLayout>
         <HeaderContainer/>
         <Outlet/>
-        <ChatOpenContainer/>
+        {isLogin && <ChatOpenContainer/>}
         <Footer/>
     </SLayout>
   )
