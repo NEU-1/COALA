@@ -26,7 +26,7 @@ export const getAccessToken = async () => {
   };
 
   await axios.get(baseUrl + `member/info`, headers).then((res) => {
-    if (res.data.statusCode === 200) {
+    if (res.data.baseResponseDto.statusCode === 200) {
       localStorage.setItem('access_token', res.headers['access_token']);
       setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
     }

@@ -73,6 +73,7 @@ const SLayout = styled.button`
   justify-content: space-between;
   width: 100%;
   padding: 20px;
+  background-color: white;
 `;
 
 const SStart = styled.div`
