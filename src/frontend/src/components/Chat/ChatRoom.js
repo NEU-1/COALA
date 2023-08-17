@@ -30,23 +30,33 @@ const ChatRoom = ({
             onClick={onClickBackBtn}
           />
           <SOtherInfo>
-            <img
-              src={
-                inform.other.image_path
-                  ? `${inform.other.image_path}`
-                  : `${images.default_profile}`
-              }
-              alt=""
-              className="profile"
-            />
-            <div className="otherName">{inform.other.nickname}</div>
+            {inform.other ? (
+              <img
+                src={
+                  inform.other.image_path
+                    ? `${inform.other.image_path}`
+                    : `${images.default_profile}`
+                }
+                className="profile"
+                alt=""
+              />
+            ) : (
+              <img
+                src={`${images.default_profile}`}
+                className="profile"
+                alt=""
+              />
+            )}
+            <div className="otherName">
+              {inform.other ? inform.other.nickname : '알 수 없는 이용자'}
+            </div>
           </SOtherInfo>
         </SStart>
         <SExitBtn onClick={onClickExitBtn}>나가기</SExitBtn>
       </SChatHeader>
 
       {/* 게시글이 있는 경우에만 랜더링 */}
-      {(inform.room.pr_id || inform.room.pp_id) && (
+      {(inform.room.pr_id || inform.room.pp_id) && inform.other && (
         <ChatBoardPreviewContainer inform={inform} myId={myId} />
       )}
 
