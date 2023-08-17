@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {requestGet} from "../../../lib/api/api"
 import Pagination from "react-js-pagination";
 import './Pagination.css';
+import { images } from "../../../assets/images";
 
 
 
@@ -63,26 +64,36 @@ const TechBoardList = () => {
               </Userbox>
               </div>
               </Techcontainer>
-              <Simg src={imagePath} alt="사진" />
+              {imagePath === "https://coala.s3.ap-northeast-2.amazonaws.com/Tech/null" ? (
+                <Simg src={images.coala1} alt="" />
+                ) : (
+                <Simg src={imagePath} alt="" />
+                )}
             
             </Commentcontainer>
               </Link>
    
           </Contentbox>
         ))}
+        
         <Footerbutton>
-          <Dummi></Dummi>
-          <Pagination
-            activePage={activepage}
-            itemsCountPerPage={7}
-            totalItemsCount={maxpage*7}
-            pageRangeDisplayed={maxpage}
-            prevPageText={"‹"}
-            nextPageText={"›"}
-            onChange={handlePageChange}
-          />
-          <Button onClick={goTowrite}>등록</Button>
+        <Dummi></Dummi>
+        {(maxpage === 0 ? ( <Dummi></Dummi>
+            )
+             : (
+             <Pagination
+               activePage={activepage}
+               itemsCountPerPage={7}
+               totalItemsCount={maxpage*7}
+               pageRangeDisplayed={maxpage}
+               prevPageText={"‹"}
+               nextPageText={"›"}
+               onChange={handlePageChange}
+             />     
+           ))}
+           <Button onClick={goTowrite}>등록</Button>
         </Footerbutton>
+          
     </Layout>  
     </Slayout>
   );

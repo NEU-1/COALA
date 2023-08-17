@@ -13,6 +13,7 @@ import { BsX } from "react-icons/bs"
 import CCheckBox from '../../Common/CCheckBox';
 import './Pagination.css';
 import Pagination from "react-js-pagination";
+import { images } from "../../../assets/images";
 
 
 
@@ -200,7 +201,11 @@ const commentDelete = async (commentId) => {
       board && (<Slayout>
       <Container>
         <Profilebox>
-          <div>image</div>
+        {board.memberId.imagePath ? (
+            <SProfileImg src={board.memberId.imagePath } alt="" />
+          ) : (
+            <SProfileImg src={images.default_profile} alt="" />
+          )}
         <Profiletext>{board.memberId.nickname}</Profiletext>
       
         </Profilebox>
@@ -372,7 +377,8 @@ const Profiletext = styled.div`
   width: 800px;
   margin-bottom: 3px;
   font-size: 15px;
-  padding-bottom: 15px;
+  padding-left: 15px;
+  border: 1px;
 
 `
 
@@ -539,7 +545,12 @@ const SBtndelete = styled.div`
   `
   const Profilebox = styled.div`
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     border-bottom: 1px solid #e9d5ff;
+    padding-bottom: 10px;
+;
   ` 
 
   const Minititlebox = styled.div`
@@ -555,3 +566,8 @@ const SBtndelete = styled.div`
   const LikeBtn = styled.div`
     padding: 10px;
   `
+  const SProfileImg = styled.img`
+  width: 84px;
+  height: 84px;
+  border-radius: 84px;
+`;

@@ -4,6 +4,7 @@ export const images = {
   default_profile: '/assets/images/default_profile.png',
   arrow_down: '/assets/images/ic-arrow-down.png',
   arrow_back: '/assets/images/ic-arrow-back.png',
+  coala1: '/assets/images/coala1.png',
 
   chatModal: {
     default_profile: '../assets/images/default_profile.png',

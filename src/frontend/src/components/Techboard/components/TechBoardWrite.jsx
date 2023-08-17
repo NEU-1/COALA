@@ -165,7 +165,7 @@ function TechBoardWrite() {
                 
                 console.log("함수안",imgURL)
                 callback(imgURL, blob.name);
-                setPath(imgURL)
+                setPath(blob.name)
               };
 
 
