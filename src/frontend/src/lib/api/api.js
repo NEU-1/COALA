@@ -2,12 +2,15 @@ import axios from 'axios';
 
 // const baseUrl = 'https://i9d108.p.ssafy.io/api/';
 const baseUrl = 'http://i9d108.p.ssafy.io:9999/api/';
-// const baseNodeUrl = 'http://localhost:3030/api/';
 const baseNodeUrl = 'http://i9d108.p.ssafy.io:3030/api/';
-
+// const baseUrl = 'http://localhost:9999/api/';
 
 const headers = {
   'Content-Type': 'application/json;charset=UTF-8',
+};
+
+const headers2 = {
+  'Content-Type': 'multipart/form-data',
 };
 
 export const ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000;
@@ -23,7 +26,7 @@ export const getAccessToken = async () => {
   };
 
   await axios.get(baseUrl + `member/info`, headers).then((res) => {
-    if (res.data.statusCode === 200) {
+    if (res.data.baseResponseDto.statusCode === 200) {
       localStorage.setItem('access_token', res.headers['access_token']);
       setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
     }
@@ -46,9 +49,17 @@ export const requestGet = async (url, params) => {
   }
 };
 
-export const requestPost = async (url, body) => {
+export const requestGetNode = async (url, params) => {
   try {
+    const data = await axios.get(baseNodeUrl + url, params);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
+export const requestPost = async (url, body, headers) => {
+  try {
     const data = await axios.post(baseUrl + url, body, headers);
     return data;
   } catch (error) {
@@ -80,9 +91,39 @@ export const requestPut = async (url, body, headers) => {
   }
 };
 
+export const requestPutNode = async (url, body, headers) => {
+  try {
+    const data = await axios.put(baseNodeUrl + url, body, headers);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const requestDel = async (url) => {
   try {
     const data = await axios.delete(baseUrl + url, headers);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const requestPost2 = async (url, body) => {
+  try {
+    const data = await axios.post(baseUrl + url, body, headers2);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const requestPut2 = async (url, body) => {
+  try {
+    const data = await axios.put(baseUrl + url, body, headers2);
     return data;
   } catch (error) {
     console.log(error);

@@ -5,38 +5,41 @@ import { images } from '../../assets/images';
 import ChatListItem from './components/ChatListItem';
 
 const ChatList = ({ onClickCloseChatBtn, list, onClickListItem, user }) => {
-  
-  
-
   return (
     <>
-    <SLayout>
-      <SChatHeader>
-        <SMyProfile>
-          <img src={`${images.chatModal.default_profile}`} alt="" />
-          <div>{user.nickname}</div>
-        </SMyProfile>
-        <button onClick={onClickCloseChatBtn}>
-          <img
-            src={`${images.chatModal.arrow_down}`}
-            className="arrow-down"
-            alt=""
-          />
-        </button>
-      </SChatHeader>
-      <SChatList>
-        {list.map((item) => {
-          return (
-            <ChatListItem
-              key={item.id}
-              item={item}
-              onClickListItem={onClickListItem}
+      <SLayout>
+        <SChatHeader>
+          <SMyProfile>
+            <img
+              src={
+                user.imagePath
+                  ? `${user.imagePath}`
+                  : `${images.default_profile}`
+              }
+              alt=""
             />
-          );
-        })}
-      </SChatList>
-    </SLayout>
-
+            <div>{user.nickname}</div>
+          </SMyProfile>
+          <button onClick={onClickCloseChatBtn}>
+            <img
+              src={`${images.chatModal.arrow_down}`}
+              className="arrow-down"
+              alt=""
+            />
+          </button>
+        </SChatHeader>
+        <SChatList>
+          {list.map((item) => {
+            return (
+              <ChatListItem
+                key={item.id}
+                item={item}
+                onClickListItem={onClickListItem}
+              />
+            );
+          })}
+        </SChatList>
+      </SLayout>
     </>
   );
 };

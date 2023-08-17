@@ -8,9 +8,10 @@ export const Signature = ({
   onStartDrawing,
   onFinishDrawing,
   onDrawing,
+  isDisable,
 }) => {
   return (
-    <SLayout>
+    <SLayout isDisable={isDisable}>
       <SName>{name}</SName>
       <SCanvas
         ref={canvasRef}
@@ -31,6 +32,7 @@ const SLayout = styled.div`
   justify-content: center;
   align-items: center;
   gap: 20px;
+  pointer-events: ${(props) => (props.isDisable ? 'none' : 'auto')};
 `;
 
 const SName = styled.div`

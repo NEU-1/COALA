@@ -2,8 +2,9 @@ import React from 'react';
 import { css, keyframes, styled } from 'styled-components';
 import { images } from '../../assets/images';
 import { colors } from '../../assets/colors';
+import ContractContainer from '../Contract/containers/ContractContainer';
 
-const ChatOpen = ({ isChatOpen, onClickChatBtn }) => {
+const ChatOpen = ({ isChatOpen, onClickChatBtn, isContractOpen }) => {
   return (
     <>
       <SLayout isChatOpen={isChatOpen} onClick={onClickChatBtn}>
@@ -17,6 +18,7 @@ const ChatOpen = ({ isChatOpen, onClickChatBtn }) => {
           src="/chat/chat-list"
         />
       )}
+      {isContractOpen && <ContractContainer />}
     </>
   );
 };

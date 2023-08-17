@@ -2,176 +2,317 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { images } from "../../../assets/images";
 import CCheckBox from "../../Common/CCheckBox";
-import axios from "axios";
+import "react-calendar/dist/Calendar.css";
+import { requestPost2, setToken } from "../../../lib/api/api";
+import { useParams } from "react-router-dom";
 
 const TradeOfferForm = ({ onClose }) => {
   const [imageList, setImageList] = useState([]);
-  const [bargain, setBargain] = useState(false);
+  const [bargain, setBargain] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { postId } = useParams();
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % imageList.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex(
+      (prev) => (prev - 1 + imageList.length) % imageList.length
+    );
+  };
+
   const initialState = {
-    rentalFee: "",
+    title: "",
+    mainText: "",
     deposit: "",
+    rentalFee: "",
     day: "",
   };
   const [state, setState] = useState(initialState);
-  const { rentalFee, deposit, day } = state;
-  
+  const { title, mainText, deposit, rentalFee } = state;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setState((prev) => ({ ...prev, [name]: value }));
   };
-  
+
+  console.log(imageList);
+
+  const dataURLtoBlob = (dataURL) => {
+    console.log(dataURL);
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
   const onUpload = async (e) => {
     const files = e.target.files;
-    const newImages = await Promise.all([...files].map((file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
+    const newImages = [...imageList];
+
+    for (let i = 0; i < files.length; i++) {
+      let reader = new FileReader();
+      const fileRead = new Promise((resolve) => {
+        reader.onload = () => {
+          resolve(reader.result);
+        };
       });
-    }));
-    setImageList(prev => [...prev, ...newImages]);
-  };
-  
-  const setBargainStatus = (e) => {
-    setBargain(e.target.checked);
-  };
-  const goServer = async() => {
-    try{
-      const formData = new FormData();
-      imageList.forEach((image, index) => {
-        formData.append(`image${index}`);
-      });
-      formData.append('rentalFee', rentalFee);
-      formData.append('deposit', deposit);
-      formData.append('day', day);
-      formData.append('bargain', bargain);
-      const response = await axios.post('서버의 URL을 여기에 입력하세요', formData);
-      
-      if(response.status === 200){
-        alert('성공')
-      } else {
-        alert('실패')
-      }
-    } catch(err) {
-      console.error('통신 오류', err)
+
+      reader.readAsDataURL(files[i]);
+      const fileData = await fileRead;
+
+      const blob = dataURLtoBlob(fileData);
+
+      newImages.push(blob);
     }
-  }
-  
+
+    setImageList(newImages);
+  };
+
+  const setBargainStatus = (e) => {
+    setBargain(e.target.checked ? 1 : 0);
+  };
+  const goServer = async () => {
+    setToken();
+    let formData = new FormData();
+    formData.append(
+      "json",
+      JSON.stringify({
+        title: title,
+        detail: mainText,
+        deposit: deposit,
+        rentalCost: rentalFee,
+        negotiation: bargain,
+      })
+    );
+    for (let i = 0; i < imageList.length; i++) {
+      formData.append("multipartFile", imageList[i]);
+    }
+    requestPost2(`auction/apply?id=${postId}`, formData)
+      .then((res) => {
+        console.log(res, "제안 갔음");
+        onClose && onClose();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   const handleCancel = () => {
     onClose && onClose();
   };
-  
-  
+
   return (
-    <SMain>
-      <SImgList>
-        {imageList.map((src, index) => {
-          return <SImg key={index} src={src} />;
-        })}
-        <SLabel>
-          <input
-            id="fileInput"
-            style={{ display: "none" }}
-            accept="image/*"
-            multiple
-            type="file"
-            onChange={(e) => onUpload(e)}
+    <SCard>
+      <div>
+        <SImgDiv>
+          {imageList.length > 0 && (
+            <SImg src={URL.createObjectURL(imageList[currentImageIndex])} />
+          )}
+          <label>
+            <input
+              id="fileInput"
+              style={{ display: "none" }}
+              accept="image/*"
+              multiple
+              type="file"
+              onChange={(e) => onUpload(e)}
+            />
+            <SImgS src={images.plus} alt="Plus" />
+          </label>
+        </SImgDiv>
+        <SLRBtn>
+          <SLRBtns onClick={prevImage}>&lt;</SLRBtns>
+          <SLRBtns onClick={nextImage}>&gt;</SLRBtns>
+        </SLRBtn>
+      </div>
+      <STMTCPDiv>
+        <STMTDiv>
+          <STitleAndMainTextDiv>
+            <SMainP>제목</SMainP>
+            <STitleAndMainTextInput
+              name="title"
+              placeholder="제목을 입력하세요."
+              value={title}
+              onChange={handleChange}
+            />
+          </STitleAndMainTextDiv>
+          <STitleAndMainTextDiv>
+            <SMainP>내용</SMainP>
+            <STitleAndMainTextInput
+              name="mainText"
+              placeholder="내용을 입력하세요."
+              value={mainText}
+              onChange={handleChange}
+            />
+          </STitleAndMainTextDiv>
+        </STMTDiv>
+      </STMTCPDiv>
+      <SProductDetailDiv>
+        <SProductDetailP>제품 상세 정보</SProductDetailP>
+      </SProductDetailDiv>
+      <SCostAndDayDiv>
+        <SCDDiv>
+          <SMainP>가격</SMainP>
+          <SDRFDiv>
+            <SSubP>보증금</SSubP>
+            <SCDInput
+              name="deposit"
+              placeholder="보증금을 입력하세요."
+              value={deposit}
+              onChange={handleChange}
+            />
+          </SDRFDiv>
+          <SDRFDiv>
+            <SSubP>대여료</SSubP>
+            <SCDInput
+              name="rentalFee"
+              placeholder="대여료를 입력하세요."
+              value={rentalFee}
+              onChange={handleChange}
+            />
+          </SDRFDiv>
+        </SCDDiv>
+        <SDCDiv>
+          <CCheckBox
+            name="bargain"
+            text={"가격 제안 여부"}
+            checked={bargain}
+            onChange={setBargainStatus}
           />
-          <img src={images.plus} alt="Plus" />
-        </SLabel>
-      </SImgList>
-      <SDiv>
-        <SP>대여료</SP>
-        <SInput
-          name="rentalFee"
-          placeholder="숫자만 입력하세요."
-          value={rentalFee}
-          onChange={handleChange}
-        />
-      </SDiv>
-      <SDiv>
-        <SP>보증금</SP>
-        <SInput
-          name="deposit"
-          placeholder="숫자만 입력하세요."
-          value={deposit}
-          onChange={handleChange}
-        />
-      </SDiv>
-      <SDiv>
-        <SP>기간</SP>
-        <SInput
-          name="day"
-          placeholder="숫자만 입력하세요."
-          value={day}
-          onChange={handleChange}
-        />
-      </SDiv>
-      <SCheckBox>
-        <CCheckBox
-          name="bargain"
-          text={"가격 흥정 여부"}
-          checked={bargain}
-          onChange={setBargainStatus}
-        />
-      </SCheckBox>
+        </SDCDiv>
+      </SCostAndDayDiv>
       <SButtons>
         <SProposalBtn onClick={goServer}>제안</SProposalBtn>
         <SNoBtn onClick={handleCancel}>취소</SNoBtn>
       </SButtons>
-    </SMain>
+    </SCard>
   );
 };
 
 export default TradeOfferForm;
 
-const SMain = styled.div`
-  display: inline-flex;
-  padding: 30px;
+const SCard = styled.div`
+  display: flex;
+  width: 550px;
+  height: 700px;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 30px;
-  background: white;
-  border-radius: 10px;
-  // width: 500px;
-  // height: 650px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: #f5f5f5;
 `;
 
-const SImgList = styled.div`
+const SImgDiv = styled.div`
+  padding: 25px;
   display: inline-flex;
   align-items: center;
   gap: 15px;
 `;
 
-const SImg = styled.img`
-  width: 138px;
-  height: 101px;
-  border-radius: 10px;
-`;
-
-const SLabel = styled.label`
-  width: 138px;
-  height: 101px;
-`;
-
-const SDiv = styled.div`
+const STMTCPDiv = styled.div`
   display: flex;
-  width: 291px;
-  justify-content: space-between;
+  height: 57px;
   align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  align-self: stretch;
 `;
 
-const SP = styled.p`
-  color: #000;
+const STMTDiv = styled.div`
+  display: flex;
+  padding: 0px 25px;
+  flex-direction: column;
+  align-items: center;
+  gap: 19px;
+`;
+
+const SImg = styled.img`
+  display: flex;
+  height: 170px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+  border-radius: 30px;
+`;
+
+const SImgS = styled.img`
+  display: flex;
+  height: 170px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+`;
+
+const STitleAndMainTextDiv = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  align-self: stretch;
+`;
+const SMainP = styled.p`
+  color: #313737;
+  font-size: 16px;
+  font-weight: 700;
+`;
+
+const STitleAndMainTextInput = styled.input`
+  display: flex;
+  width: 300px;
+  height: 19px;
+  padding: 16px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border, #d9d9d9);
+`;
+
+const SProductDetailDiv = styled.div`
+  display: flex;
+  height: 16px;
+  padding: 20px 25px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+  align-self: stretch;
+`;
+
+const SProductDetailP = styled.p`
+  color: #1a1c3d;
   font-size: 20px;
   font-weight: 400;
 `;
 
-const SInput = styled.input`
+const SCostAndDayDiv = styled.div`
   display: flex;
-  width: 220px;
+  padding: 0px 25px;
+  justify-content: space-between;
+  align-self: stretch;
+`;
+
+const SCDDiv = styled.div`
+  display: flex;
+  width: 223.092px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+`;
+
+const SCDInput = styled.input`
+  display: flex;
+  width: 150px;
+  height: 19px;
   padding: 16px;
   align-items: center;
   gap: 10px;
@@ -180,18 +321,34 @@ const SInput = styled.input`
   border: 1px solid var(--border, #d9d9d9);
 `;
 
-const SCheckBox = styled.div`
-  display: flex;
-  width: 291px;
+const SDRFDiv = styled.div`
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 18px;
+`;
+
+const SSubP = styled.p`
+  color: #1a1c3d;
+  font-size: 12px;
+  font-weight: 400;
+`;
+
+const SDCDiv = styled.div`
+  display: flex;
+  width: 223.092px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
 `;
 
 const SButtons = styled.div`
   display: flex;
+  padding-bottom: 0px;
   justify-content: center;
   align-items: center;
   gap: 63px;
+  margin-bottom: 25px;
 `;
 
 const SProposalBtn = styled.button`
@@ -222,6 +379,31 @@ const SNoBtn = styled.button`
   gap: 10px;
   border-radius: 7px;
   background: #d9d9d9;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  color: white;
+  text-align: center;
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.14px;
+`;
+
+const SLRBtn = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 120px;
+`;
+
+const SLRBtns = styled.button`
+  display: flex;
+  width: 60px;
+  height: 30px;
+  padding: 10px 40px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 7px;
+  background: #e9d5ff;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   color: white;
   text-align: center;

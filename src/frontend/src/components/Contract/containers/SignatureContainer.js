@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { Signature } from '../components/Signature';
 
-const SignatureContainer = forwardRef(({ name, who }, ref) => {
+const SignatureContainer = forwardRef(({ name, who, isDisable }, ref) => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
 
@@ -110,6 +110,7 @@ const SignatureContainer = forwardRef(({ name, who }, ref) => {
       onStartDrawing={onStartDrawing}
       onFinishDrawing={onFinishDrawing}
       onDrawing={onDrawing}
+      isDisable={isDisable}
     />
   );
 });

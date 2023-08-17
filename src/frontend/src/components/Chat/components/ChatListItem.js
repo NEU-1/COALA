@@ -4,26 +4,30 @@ import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
 
 const ChatListItem = ({ item, onClickListItem }) => {
-  let printDate;
-  const itemDate = new Date(item.latestLog.latestLog.created_at);
-  const today = new Date();
+  console.log(item);
+  let printDate = null;
+  if (item.latestLog.latestLog) {
+    const itemDate = new Date(item.latestLog.latestLog.created_at);
+    const today = new Date();
 
-  itemDate.setHours(itemDate.getHours() - 9);
-  const options = { hour: '2-digit', minute: '2-digit', hour12: true };
-  if (
-    itemDate.getFullYear() === today.getFullYear() &&
-    itemDate.getMonth() === today.getMonth() &&
-    itemDate.getDate() === today.getDate()
-  ) {
-    printDate = itemDate.toLocaleTimeString('ko-KR', options);
-  } else {
-    printDate =
-      itemDate.getFullYear() +
-      '-' +
-      String(itemDate.getMonth() + 1).padStart(2, '0') +
-      '-' +
-      String(itemDate.getDate()).padStart(2, '0');
+    itemDate.setHours(itemDate.getHours() - 9);
+    const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+    if (
+      itemDate.getFullYear() === today.getFullYear() &&
+      itemDate.getMonth() === today.getMonth() &&
+      itemDate.getDate() === today.getDate()
+    ) {
+      printDate = itemDate.toLocaleTimeString('ko-KR', options);
+    } else {
+      printDate =
+        itemDate.getFullYear() +
+        '-' +
+        String(itemDate.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(itemDate.getDate()).padStart(2, '0');
+    }
   }
+
   return (
     <SLayout
       onClick={() => {
@@ -31,20 +35,32 @@ const ChatListItem = ({ item, onClickListItem }) => {
       }}
     >
       <SStart>
-        <img
-          src={`${images.chatModal.default_profile}`}
-          className="profile"
-          alt=""
-        />
+        {item.other ? (
+          <img
+            src={
+              item.other.image_path
+                ? `${item.other.image_path}`
+                : `${images.default_profile}`
+            }
+            className="profile"
+            alt=""
+          />
+        ) : (
+          <img src={`${images.default_profile}`} className="profile" alt="" />
+        )}
         <SPartnerInfo>
-          <div className="partner">{item.name}</div>
-          <div className="cur-chat">
-            {item.latestLog.latestLog.text_content}
+          <div className="partner">
+            {item.other ? item.other.nickname : '알 수 없는 이용자'}
           </div>
+          {item.latestLog.latestLog && (
+            <div className="cur-chat">
+              {item.latestLog.latestLog.text_content}
+            </div>
+          )}
         </SPartnerInfo>
       </SStart>
       <SEnd>
-        <div className="time">{printDate}</div>
+        {printDate && <div className="time">{printDate}</div>}
         {/* <div className="alarm">123</div> */}
       </SEnd>
     </SLayout>
@@ -57,6 +73,7 @@ const SLayout = styled.button`
   justify-content: space-between;
   width: 100%;
   padding: 20px;
+  background-color: white;
 `;
 
 const SStart = styled.div`
@@ -76,7 +93,7 @@ const SPartnerInfo = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-
+  text-align: left;
   .partner {
     color: ${colors.deepPrimary};
     font-size: 14px;
@@ -89,7 +106,6 @@ const SPartnerInfo = styled.div`
     font-size: 9px;
     font-weight: 400;
     line-height: normal;
-    text-align: left;
   }
 `;
 

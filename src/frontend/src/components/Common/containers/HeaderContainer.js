@@ -25,13 +25,13 @@ const HeaderContainer = () => {
       requestGet(`member/info`)
         .then((res) => {
           console.log(res, 'from HeaderContainer');
-          if (res.data.statusCode === 200) {
-            setNickname(res.data.nickname);
+          if (res.data.baseResponseDto.statusCode === 200) {
+            setNickname(res.data.member.nickname);
             dispatch(login());
             setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
-          } else if (res.data.statusCode === 401) {
+          } else if (res.data.baseResponseDto.statusCode === 401) {
             Swal.fire({
-              title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
+              title: `<div style="font-size: 16px; font-weight: 700">${res.data.baseResponseDto.msg}</div>`,
             }).then(() => {
               dispatch(logout());
               localStorage.removeItem('access_token');

@@ -11,6 +11,54 @@ import lombok.Setter;
 public class MemberInfoResponseDto {
     private Member member;
 
+<<<<<<< HEAD
     private BaseResponseDto baseResponseDto;
 
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> feature/techboard
+    // member Id
+    private Long id;
+
+    // 이메일
+    private String email;
+
+    // 이름
+    private String name;
+
+    // 별명
+    private String nickname;
+
+    // 학번
+    private String studentId;
+
+    // 지역
+    private String depart;
+
+    // 기수
+    private String ordinal;
+
+    // 핸드폰 번호
+    private String phoneNo;
+
+    private String msg;
+
+    private int statusCode;
+
+    public MemberInfoResponseDto(String msg, int statusCode) {
+        this.msg = msg;
+        this.statusCode = statusCode;
+    }
+
+<<<<<<< HEAD
+=======
+=======
+    private BaseResponseDto baseResponseDto;
+>>>>>>> feature/auction
+=======
+    private BaseResponseDto baseResponseDto;
+>>>>>>> chat/front
+
+>>>>>>> feature/techboard
 }

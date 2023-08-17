@@ -4,27 +4,46 @@ import { images } from '../../../assets/images';
 import { colors } from '../../../assets/colors';
 import { Link } from 'react-router-dom';
 
-const ChatBoardPreview = () => {
+const ChatBoardPreview = ({
+  post,
+  imgURL,
+  producer,
+  consumer,
+  inform,
+  myId,
+  onClickPost,
+  onClickContractBtn,
+  onClickAcceptBtn,
+}) => {
   return (
     <SLayout>
       <SStart
         onClick={() => {
           // 외부 페이지 이동
-          window.top.location.href = '/board';
+          onClickPost();
         }}
       >
-        <img
-          src={`${images.chatModal.default_profile}`}
-          alt=""
-          className="photo"
-        />
+        {imgURL ? (
+          <img src={`${imgURL.url}`} alt="" className="photo" />
+        ) : (
+          <img src={`${images.noImg}`} alt="" className="photo" />
+        )}
         <SDescription>
-          <div>한성 무접점 키보드 대여합니다!-!</div>
-          <div>5,000원 / 20,000원</div>
+          <div>{post.title}</div>
+          {post.rentalCost && (
+            <div>
+              {post.rentalCost}원 / {post.deposit}원
+            </div>
+          )}
         </SDescription>
       </SStart>
       {/* 제공자와 이용자에 따라 활성화 / 비활성화 + 거래하기 / 수락하기 */}
-      <STradeBtn>거래하기</STradeBtn>
+      {myId === producer.id && post.status === 1 && (
+        <STradeBtn onClick={onClickContractBtn}>거래하기</STradeBtn>
+      )}
+      {myId === consumer.id && post.status === 0 && inform.room.contract_id && (
+        <STradeBtn onClick={onClickAcceptBtn}>수락하기</STradeBtn>
+      )}
     </SLayout>
   );
 };

@@ -19,12 +19,10 @@ import java.io.IOException;
 /*
     자유게시판 controller 입니다.
 */
-
-@Slf4j
+@CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins="*")
-@RequestMapping("/api/free/post/")
+@RequestMapping("/api/free/")
 public class FreePostController {
     private final FreePostService freePostService;
     private final JwtTokenProvider jwtTokenProvider;

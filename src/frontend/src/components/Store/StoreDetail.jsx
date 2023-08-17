@@ -13,6 +13,8 @@ import { fetchRoom } from "../../api/nodeServer/Room";
 import { useDispatch } from "react-redux";
 import {openChatModal} from "../../store/chatModalSlice";
 
+
+
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
   const { postId } = useParams();
@@ -220,7 +222,6 @@ const StoreDetail = () => {
           조회수 {postData.storePost.views} 관심 {postData.likes}
         </STextSubSee>
       </SFooter>
-
         {!isAuthor ? (
           <SButtons>
             <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
@@ -251,7 +252,6 @@ const StoreDetail = () => {
 export default StoreDetail;
 
 const SMain = styled.div`
-
   margin-top: 170px;
   display: flex;
   // weight: 800px;
@@ -438,7 +438,6 @@ const SButtonWeekPurple = styled.button`
 `;
 
 const SButtonPurple = styled.button`
-
   display: flex;
   width: 106px;
   height: 40px;

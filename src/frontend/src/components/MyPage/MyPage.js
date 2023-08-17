@@ -1,13 +1,12 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { Link, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import SideBarContainer from './containers/SideBarContainer';
 
-const MyPage = () => {
-  // 추후 수정 필요(outlet써야 할듯?)
+const MyPage = ({ form }) => {
   return (
     <SLayout>
-      <div>MyPage</div>
-      <Link to="/my-page/modify-userinfo">회원정보 수정</Link>
+      <SideBarContainer form={form} />
       <Outlet />
     </SLayout>
   );

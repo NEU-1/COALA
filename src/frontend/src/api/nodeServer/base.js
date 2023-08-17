@@ -1,6 +1,6 @@
 import axios from 'axios';
+// const API_URL ='http://127.0.0.1:3030'
 const API_URL ='http://i9d108.p.ssafy.io:3030'
-// const API_URL = process.env.REACT_APP_NODE_SERVER_URL;
 // console.log(API_URL)
 const api = axios.create({
   baseURL: API_URL,

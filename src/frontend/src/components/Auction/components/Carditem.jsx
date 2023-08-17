@@ -1,145 +1,229 @@
 import * as React from "react";
 import styled from "styled-components";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchRoom } from "../../../api/nodeServer/Room";
+import { openChatModal } from "../../../store/chatModalSlice";
+import { images } from "../../../assets/images";
 
 export default function ImgMediaCard({
   img,
-  writer,
-  writeDay,
+  postId,
+  proposerId,
+  title,
+  mainText,
   rentalFee,
   deposit,
   bargaining,
-  onClick,
 }) {
-  return (
-    <SCard onClick={onClick}>
-      <SMaing>
+  console.log(img);
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const handlePictureChange = (direction) => {
+    const totalPictures = img.length;
+    if (direction === "next") {
+      setCurrentImgIndex((currentImgIndex + 1) % totalPictures);
+    } else {
+      setCurrentImgIndex((currentImgIndex - 1 + totalPictures) % totalPictures);
+    }
+  };
+  const dispatch = useDispatch();
 
-      <SMainImg src={img} alt="" />
-      </SMaing>
-      <SWriterAndDay>
-        <SWriter>
-          <SWriterImg src="" alt="" />
-          <SWriterName>{writer}</SWriterName>
-        </SWriter>
-        <SDay>{writeDay}</SDay>
-      </SWriterAndDay>
-      <SRentalFeeAndDeposit>
-        <SRentalFee>{rentalFee}</SRentalFee>
-        <SDeposit>{deposit}</SDeposit>
-      </SRentalFeeAndDeposit>
-      <SBarganingAndChatting>
-      <SBarganing isBargainable={bargaining}>
-          {bargaining ? "흥정 가능" : "흥정 불가능"}
-        </SBarganing>        
-        <SChatting>채팅</SChatting>
-      </SBarganingAndChatting>
+  const generateRoomId = () => {
+    let text = "";
+    let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(let i = 0;i < 5;i++) {
+      text += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+    }
+
+    return text;
+  }
+
+  const goChat = () => {
+    const name = generateRoomId();
+      fetchRoom.create({roomName: name, pr_id: postId, ur_id: proposerId})
+      .then((res)=> {
+        dispatch(openChatModal());
+        setTimeout(()=>{
+          const chatModal = document.getElementById("chatModal");
+          chatModal.src=`/chat/${res.data.result.name}`; // roomID 받아오기
+        }, 100)
+      })
+  };
+  return (
+    <SCard>
+      <SImgDiv>
+        <SButton onClick={() => handlePictureChange("previous")}>
+          <SBtnImg src={images.left} alt="" />
+        </SButton>
+        <SImg src={img[currentImgIndex].url} alt="" />
+        <SButton onClick={() => handlePictureChange("next")}>
+          <SBtnImg src={images.right} alt="" />
+        </SButton>
+      </SImgDiv>
+      <STitleDiv>
+        <STitleP>{title}</STitleP>
+      </STitleDiv>
+      <SMainTextDiv>
+        <SMainTextP>{mainText}</SMainTextP>
+      </SMainTextDiv>
+      <SProductDetail>
+        <SCostDiv>
+          <STextP>대여료 / 보증금</STextP>
+          <STextP>
+            {rentalFee} / {deposit}
+          </STextP>
+        </SCostDiv>
+        <SOfferP offer={bargaining}>
+          {bargaining ? "가격 제안 가능" : "가격 제안 불가"}
+        </SOfferP>
+        <SCostButton onClick={goChat}>
+          <SChateImg src={images.message} alt="" />
+        </SCostButton>
+      </SProductDetail>
     </SCard>
   );
 }
 
 const SCard = styled.div`
-display: flex;
-width: 360px;
-height: 509px;
-flex-direction: column;
-// justify-content: space-between;
-align-items: center;
-border-radius: 20px;
-background: var(--primary, #E9D5FF);
+  display: flex;
+  width: 550px;
+  // height: 530px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: #f5f5f5;
+  overflow: auto;
 `;
 
-const SMaing = styled.div`
-display: flex;
-padding: 25px;
-flex-direction: column;
-align-items: flex-start;
-gap: 10px;
-align-self: stretch;
-`
+const SImgDiv = styled.div`
+  display: flex;
+  padding: 25px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  align-self: stretch;
+`;
 
-const SMainImg = styled.img`
-width: 310px;
-height: 269px;
-flex-shrink: 0;
-border-radius: 10px 10px 0px 0px;
-background: url(<path-to-image>), lightgray 50% / cover no-repeat;
-`
+const SButton = styled.button`
+  // padding: 120px 20px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 20px;
+`;
 
-const SWriterAndDay = styled.div`
-display: flex;
-height: 61px;
-padding: 0px 30px;
-justify-content: space-between;
-align-items: center;
-flex-shrink: 0;
-align-self: stretch;
-`
+const SImg = styled.img`
+  display: flex;
+  height: 250px;
+  // width: 460px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 10px;
+  align-self: stretch;
+  border-radius: 30px;
+  background: url(<path-to-image>), lightgray 50% / cover no-repeat;
+  &[width="460"] {
+    width: auto;
+    height: auto;
+  }
 
-const SWriter = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-`
+  &[height="300"] {
+    width: auto;
+    height: auto;
+  }
+`;
 
-const SWriterImg = styled.img`
-width: 49px;
-height: 48px;
-border-radius: 49px;
-background: url(<path-to-image>), lightgray 0px -0.969px / 100% 142.969% no-repeat;
-`
+const STitleDiv = styled.div`
+  display: flex;
+  width: 550px;
+  padding: 0px 35px;
+  align-items: center;
+  margin-bottom: 20px;
+`;
 
-const SWriterName = styled.p`
-color: var(--white, #FFF);
-font-size: 16px;
-font-weight: 700;
-`
+const STitleP = styled.p`
+  color: #313737;
+  font-size: 24px;
+  font-weight: 700;
+`;
 
-const SDay = styled.p`
-color: var(--white, #FFF);
-font-size: 20px;
-font-weight: 300;
-`
+const SMainTextDiv = styled.div`
+  display: flex;
+  width: 480px;
+  height: 160px;
+  max-height: 160px;
+  overflow-y: auto;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+  align-self: stretch;
+  margin-left: 35px;
+  margin-bottom: 20px;
+`;
 
-const SRentalFeeAndDeposit = styled.div`
-display: flex;
-padding: 10px 30px;
-justify-content: space-between;
-align-items: center;
-align-self: stretch;
-`
+const SMainTextP = styled.p`
+  color: #1a1c3d;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+`;
 
-const SRentalFee = styled.p`
-color: #FFF;
-font-size: 20px;
-font-weight: 700;
-`
+const SProductDetail = styled.div`
+  display: flex;
+  height: 76px;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  align-self: stretch;
+  margin-bottom: 20px;
+`;
 
-const SDeposit = styled.p`
-color: #FFF;
-font-size: 20px;
-font-weight: 500;
-`
+const SCostDiv = styled.div`
+  display: flex;
+  width: 180px;
+  padding: 0px 35px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 13px;
+`;
 
-const SBarganingAndChatting = styled.div`
-display: flex;
-height: 76.251px;
-padding: 0px 30px;
-justify-content: space-between;
-align-items: center;
-flex-shrink: 0;
-align-self: stretch;
-`
+const STextP = styled.p`
+  color: #1a1c3d;
+  font-size: 16px;
+  font-weight: 700;
+`;
 
-const SBarganing = styled.p`
-color: ${({ isBargainable }) => (isBargainable ? "#FFF" : "red")};
-font-size: 20px;
-font-weight: 400;
-line-height: 23px;
-letter-spacing: 0.5px;
-`
+const SOfferP = styled.p`
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  background-color: ${(props) => (props.offer ? "green" : "red")};
+  padding: 10px 15px;
+  border-radius: 5px;
+`;
 
-const SChatting = styled.div`
-width: 51.077px;
-height: 51.001px;
+const SCostButton = styled.div`
+  display: flex;
+  width: 140px;
+  padding: 0px 35px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 13px;
+  margin-left: auto;
+  margin-right: 10px;
+  margin-bottom: 20px;
+`;
+
+const SChateImg = styled.img`
+  width: 80px;
+`;
+
+const SBtnImg = styled.img`
+height: 50px;
 `

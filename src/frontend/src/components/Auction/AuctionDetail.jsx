@@ -2,181 +2,50 @@ import React, { useEffect, useState } from "react";
 import { images } from "../../assets/images";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
-import { useSelector } from "react-redux";
 import ImgMediaCard from "./components/Carditem";
 import TradeOfferForm from "./components/TradeOfferForm";
+import { requestGet, requestDel, setToken } from "../../lib/api/api";
+import { login } from "../../store/LoginSlice";
 
 const AuctionDetail = () => {
-  const [postData, setPostData] = useState(null);
+  console.log("렌더링");
   const [showModal, setShowModal] = useState(false);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [currentProposalIndex, setCurrentProposalIndex] = useState(0);
   const [showFormModal, setShowFormModal] = useState(false);
+  const [postData, setPostData] = useState(null);
+  const [isAuthor, setIsAuthor] = useState(false);
 
   const navigate = useNavigate();
   const { postId } = useParams();
-  const [data, setData] = useState(initialData());
-
-  function initialData() {
-    return [
-      {
-        id: 1,
-        img: undefined,
-        writer: "wilson",
-        writeDay: "8/5",
-        rentalFee: "80000",
-        deposit: "3000",
-        bargaining: false,
-      },
-      {
-        id: 2,
-        img: undefined,
-        writer: "alice",
-        writeDay: "8/4",
-        rentalFee: "75000",
-        deposit: "3500",
-        bargaining: true,
-      },
-      {
-        id: 3,
-        img: undefined,
-        writer: "bob",
-        writeDay: "8/3",
-        rentalFee: "81000",
-        deposit: "2800",
-        bargaining: false,
-      },
-      {
-        id: 4,
-        img: undefined,
-        writer: "charlie",
-        writeDay: "8/2",
-        rentalFee: "83000",
-        deposit: "3200",
-        bargaining: true,
-      },
-      {
-        id: 5,
-        img: undefined,
-        writer: "david",
-        writeDay: "8/1",
-        rentalFee: "85000",
-        deposit: "3100",
-        bargaining: false,
-      },
-      {
-        id: 6,
-        img: undefined,
-        writer: "ella",
-        writeDay: "7/31",
-        rentalFee: "82000",
-        deposit: "3300",
-        bargaining: true,
-      },
-      {
-        id: 7,
-        img: undefined,
-        writer: "frank",
-        writeDay: "7/30",
-        rentalFee: "84000",
-        deposit: "2900",
-        bargaining: false,
-      },
-      {
-        id: 8,
-        img: undefined,
-        writer: "grace",
-        writeDay: "7/29",
-        rentalFee: "79000",
-        deposit: "3400",
-        bargaining: true,
-      },
-      {
-        id: 9,
-        img: undefined,
-        writer: "harry",
-        writeDay: "7/28",
-        rentalFee: "77000",
-        deposit: "3000",
-        bargaining: false,
-      },
-      {
-        id: 10,
-        img: undefined,
-        writer: "irene",
-        writeDay: "7/27",
-        rentalFee: "76000",
-        deposit: "3050",
-        bargaining: true,
-      },
-      {
-        id: 11,
-        img: undefined,
-        writer: "jack",
-        writeDay: "7/26",
-        rentalFee: "78000",
-        deposit: "3150",
-        bargaining: false,
-      },
-      {
-        id: 12,
-        img: undefined,
-        writer: "kelly",
-        writeDay: "7/25",
-        rentalFee: "80000",
-        deposit: "3100",
-        bargaining: true,
-      },
-      {
-        id: 13,
-        img: undefined,
-        writer: "leo",
-        writeDay: "7/24",
-        rentalFee: "79000",
-        deposit: "3200",
-        bargaining: false,
-      },
-      {
-        id: 14,
-        img: undefined,
-        writer: "mia",
-        writeDay: "7/23",
-        rentalFee: "77000",
-        deposit: "3300",
-        bargaining: true,
-      },
-      {
-        id: 15,
-        img: undefined,
-        writer: "nick",
-        writeDay: "7/22",
-        rentalFee: "76000",
-        deposit: "3400",
-        bargaining: false,
-      },
-    ];
-  }
-
-  const isLogin = useSelector((state) => state.login.isLogin);
-  const currentUser = "현재 로그인한 사용자 정보";
-  const postAuthor = "게시글 작성자 정보";
-  const isAuthor = currentUser === postAuthor;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [postResponse] = await Promise.all([
-          axios.get(`your-server-url/posts/${postId}`),
-        ]);
-        setPostData(postResponse.data);
-      } catch (error) {
-        console.error("데이터를 가져오는데 실패:", error);
-      }
-    };
-    fetchData();
-  }, [postId]);
+    setToken();
+    console.log("렌더링2");
+    requestGet(`auction/detail?id=${postId}`)
+      .then((res) => {
+        setPostData(res.data);
+        setIsAuthor(res.data.mine);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (postData) {
+      setIsAuthor(postData.mine);
+    }
+  }, []);
+
+  const isLogin = login;
+
   const showProposalList = () => {
+    if (postData.auctionApplies.length === 0) {
+      alert("제안이 없습니다.");
+      return;
+    }
     setShowProposalModal(!showProposalModal);
   };
 
@@ -184,13 +53,17 @@ const AuctionDetail = () => {
     setShowModal(true);
   };
   const handleDelete = async () => {
-    try {
-      await axios.delete(`your-server-url/posts/${postId}`);
-      navigate("/auction");
-    } catch (error) {
-      console.error("포스트 삭제 오류:", error);
-      alert("포스트 삭제에 실패했습니다.");
-    }
+    setToken();
+    requestDel(`auction/delete?id=${postId}`)
+      .then((res) => {
+        console.log(res);
+        console.log("삭제됨");
+        navigate("/auction");
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("본인 글만 삭제 가능");
+      });
   };
 
   const handleCancel = () => {
@@ -201,23 +74,25 @@ const AuctionDetail = () => {
     navigate("/profile");
   };
   const showForm = () => {
-    // 나중에 로그인 여부 반대로
-    if (!isLogin) {
+    if (isLogin) {
       setShowFormModal(!showFormModal);
     } else {
       alert("로그인하세요");
       navigate("/login");
     }
   };
-  const handleCardClick = (id) => {
-    console.log(id);
-    navigate(`${id}`);
-  };
 
   const goUpdate = () => {
-    if ("대기중") {
-      navigate(`update`);
-    }
+    requestGet(`auction/valid?id=${postId}`)
+      .then((res) => {
+        if (res.status === 200) {
+          navigate(`update`);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("본인글만 수정 가능");
+      });
   };
   const handleBackdropClick = () => {
     setShowModal(false);
@@ -225,9 +100,19 @@ const AuctionDetail = () => {
   const handleModalContentClick = (event) => {
     event.stopPropagation();
   };
+  const formattedDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+  const displayDate = postData
+    ? formattedDate(postData.auctionPost.createdAt)
+    : "";
 
   const handlePictureChange = (direction) => {
-    const totalProposal = data.length;
+    const totalProposal = postData.auctionApplies.length;
     if (direction === "next") {
       setCurrentProposalIndex((currentProposalIndex + 1) % totalProposal);
     } else {
@@ -236,101 +121,132 @@ const AuctionDetail = () => {
       );
     }
   };
+  console.log(isAuthor);
 
   return (
     <SMain>
-      <SHeader>
-        <STitleAndProduct>
-          <SText>{"title"}삼성 민초 키보드 있으신분?</SText>
-          <STextSub>
-            ${"product"} / ${"day"}
-          </STextSub>
-        </STitleAndProduct>
-        <SDayAndCost>
-          <STextSmall>
-            최소 ${"min"}일 / 최대 ${"max"}일
-          </STextSmall>
-          <STextSmall>
-            ${"min"}원 / ${"max"}원
-          </STextSmall>
-        </SDayAndCost>
-      </SHeader>
-      <SContent>
-        <SProfile onClick={goProfile}>
-          <SProfileImg src={images.plus} alt="" />
-          <STextSmall>{"작성자"}작성자</STextSmall>
-        </SProfile>
-        <STextSubSee>
-          조회수 ${"see"} 관심 ${"like"}
-        </STextSubSee>
-      </SContent>
-      <SContentDetail>
-        <STextContent>{"content"} 진짜 없나?</STextContent>
-      </SContentDetail>
-      {isAuthor ? (
-        <div>
-        {showFormModal && (
-          <SModalBackdrop onClick={showForm}>
-            <SFormModal onClick={(e) => e.stopPropagation()}>
-              <TradeOfferForm
-                onClick={showForm}
-                onClose = {() => setShowFormModal(false)}
-              />
-            </SFormModal>
-          </SModalBackdrop>
-        )}
-        <SButtons>
-          <SButtonWeekPurple onClick={showForm}>제안하기</SButtonWeekPurple>
-        </SButtons>
-        </div>
-      ) : (
-        <div>
-          {showProposalModal && (
-            <SModalBackdrop onClick={showProposalList}>
-              <SCardModal onClick={(e) => e.stopPropagation()}>
-                <SButtonArea
-                  onClick={() => handlePictureChange("previous")}
-                ></SButtonArea>
-                <ImgMediaCard
-                  img={data[currentProposalIndex].img}
-                  writer={data[currentProposalIndex].writer}
-                  writeDay={data[currentProposalIndex].writeDay}
-                  rentalFee={data[currentProposalIndex].rentalFee}
-                  deposit={data[currentProposalIndex].deposit}
-                  bargaining={data[currentProposalIndex].bargaining}
-                  onClick={() => handleCardClick(data[currentProposalIndex].id)}
-                />
-                <SButtonArea
-                  onClick={() => handlePictureChange("next")}
-                ></SButtonArea>
-              </SCardModal>
-            </SModalBackdrop>
-          )}
-          <SButtons>
-            <SButtonSeeProposal onClick={showProposalList}>
-              제안 확인
-            </SButtonSeeProposal>
-            <SButtonWeekPurple onClick={showDeleteModal}>
-              삭제
-            </SButtonWeekPurple>
-            <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
-          </SButtons>
-        </div>
-      )}
-      {showModal && (
+      {postData ? (
         <>
-          <SModalBackdrop onClick={handleBackdropClick}>
-            <SModal onClick={handleModalContentClick}>
-              <STextContent>삭제</STextContent>
-              <STextDelete>정말 삭제하시겠습니까?</STextDelete>
-              <SButtonsDelete>
-                <SButtonDelete onClick={handleDelete}>삭제</SButtonDelete>
-                <SButtonBack onClick={handleCancel}>취소</SButtonBack>
-              </SButtonsDelete>
-            </SModal>
-          </SModalBackdrop>
+          <SContent>
+            <SProfile onClick={goProfile}>
+              {postData.url ? (
+                <SProfileImg src={postData.url} alt="" />
+              ) : (
+                <SProfileImg src={images.default_profile} alt="" />
+              )}
+              <STextSmall>{postData.auctionPost.author}</STextSmall>
+            </SProfile>
+            <SDayAndCost>
+              <STextSub>{displayDate}</STextSub>
+              <STextSub>
+                {postData.auctionPost.category.name} / 최소{" "}
+                {postData.auctionPost.minRentalPeriod}일
+              </STextSub>
+            </SDayAndCost>
+          </SContent>
+          <SHeader>
+            <STitleAndProduct>
+              <SText>{postData.auctionPost.title}</SText>
+            </STitleAndProduct>
+          </SHeader>
+
+          <SContentDetail>
+            <STextMainContent>{postData.auctionPost.detail}</STextMainContent>
+          </SContentDetail>
+
+          {!isAuthor ? (
+            <div>
+              {showFormModal && (
+                <SModalBackdrop onClick={showForm}>
+                  <SFormModal onClick={(e) => e.stopPropagation()}>
+                    <TradeOfferForm
+                      onClick={showForm}
+                      onClose={() => setShowFormModal(false)}
+                    />
+                  </SFormModal>
+                </SModalBackdrop>
+              )}{" "}
+              <STextSub>조회수 {postData.auctionPost.views}</STextSub>
+              <SButtons>
+                <SButtonWeekPurple onClick={showForm}>
+                  제안하기
+                </SButtonWeekPurple>
+              </SButtons>
+            </div>
+          ) : (
+            <div>
+              {showProposalModal && (
+                <SModalBackdrop onClick={showProposalList}>
+                  <SCardModal onClick={(e) => e.stopPropagation()}>
+                    <SButtonArea
+                      onClick={() => handlePictureChange("previous")}
+                    >
+                      <SBtnImg src={images.left2} alt="" />
+                    </SButtonArea>
+                    <ImgMediaCard
+                      img={
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionImageList
+                      }
+                      proposerId={
+                        postData.auctionApplies[currentProposalIndex].memberId
+                      }
+                      postId={postId}
+                      title={
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.title
+                      }
+                      mainText={
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.detail
+                      }
+                      rentalFee={
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.rentalCost
+                      }
+                      deposit={
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.deposit
+                      }
+                      bargaining={
+                        postData.auctionApplies[currentProposalIndex]
+                          .auctionApply.negotiation
+                      }
+                    />
+                    <SButtonArea onClick={() => handlePictureChange("next")}>
+                      <SBtnImg src={images.right2} alt="" />
+                    </SButtonArea>
+                  </SCardModal>
+                </SModalBackdrop>
+              )}{" "}
+              <STextSub>조회수 {postData.auctionPost.views}</STextSub>
+              <SButtons>
+                <SButtonSeeProposal onClick={showProposalList}>
+                  제안 확인
+                </SButtonSeeProposal>
+                <SButtonWeekPurple onClick={showDeleteModal}>
+                  삭제
+                </SButtonWeekPurple>
+                <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
+              </SButtons>
+            </div>
+          )}
+          {showModal && (
+            <>
+              <SModalBackdrop onClick={handleBackdropClick}>
+                <SModal onClick={handleModalContentClick}>
+                  <STextContent>삭제</STextContent>
+                  <STextDelete>정말 삭제하시겠습니까?</STextDelete>
+                  <SButtonsDelete>
+                    <SButtonDelete onClick={handleDelete}>삭제</SButtonDelete>
+                    <SButtonBack onClick={handleCancel}>취소</SButtonBack>
+                  </SButtonsDelete>
+                </SModal>
+              </SModalBackdrop>
+            </>
+          )}
         </>
-      )}
+      ) : null}
     </SMain>
   );
 };
@@ -390,7 +306,7 @@ const SContent = styled.div`
   padding: 10px 20px;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--content-underline, #e9d5ff);
+  border-bottom: 1px solid silver;
 `;
 
 const STitleAndProduct = styled.div`
@@ -424,13 +340,12 @@ const STextContent = styled.p`
   font-weight: 700;
 `;
 
-const STextSubSee = styled.p`
-  color: #a4a4a4;
-  font-family: SF Pro Rounded;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
+const STextMainContent = styled.p`
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
+  white-space: pre-wrap;
+  min-height: 200px;
 `;
 
 const SButtons = styled.div`
@@ -446,7 +361,6 @@ const SButtonWeekPurple = styled.button`
   display: flex;
   width: 106px;
   height: 40px;
-  padding: 10px 40px;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -587,12 +501,19 @@ const SCardModal = styled.div`
 const SButtonArea = styled.button`
   flex: 1;
   height: 100%;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 20px;
+  height: 673px;
 `;
 
 const SFormModal = styled.div`
-align-items: center;
-height: 100%;
-padding: 0 20px;
-position:fixed;
-top: 10%;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
+  position: fixed;
+  display: flex;
+`;
+
+const SBtnImg = styled.img`
+  height: 250px;
 `;

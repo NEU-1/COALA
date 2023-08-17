@@ -7,9 +7,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ChatRoom from '../ChatRoom';
 import { requestGet, setToken } from '../../../lib/api/api';
 import Swal from 'sweetalert2';
+import ChatBlank from '../components/ChatBlank';
 
 let socket;
-let inform = {};
+// let inform = {};
 const name = 'chats';
 let email;
 const ChatRoomContainer = () => {
@@ -18,10 +19,7 @@ const ChatRoomContainer = () => {
   const [message, setMessage] = useState('');
   const [memberId, setMemberId] = useState('');
   const [allMessages, setAllMessages] = useState([]);
-  const [productId, setProductId] = useState({
-    pp_id: '',
-    pr_id: '',
-  });
+  const [inform, setInform] = useState(null);
 
   const inputRef = useRef();
   const onChangeMessage = (e) => {
@@ -54,11 +52,7 @@ const ChatRoomContainer = () => {
           }
           console.log(`join room[${roomName}]  successfully`);
           const { data } = await fetchRoom.join({ roomName, email });
-          inform = data;
-          if (inform.roomUser.room.pr_id)
-            setProductId(...productId, { pr_id: inform.roomUser.room.pr_id });
-          else if (inform.roomUser.room.pp_id)
-            setProductId(...productId, { pp_id: inform.roomUser.room.pp_id });
+          setInform(data.roomUser);
           setAllMessages((pre) => [...pre, ...chattingLogs]);
           // console.log("올 메시지",allMessages)
         }
@@ -118,7 +112,7 @@ const ChatRoomContainer = () => {
     requestGet(`member/info`).then((res) => {
       console.log('message emitted');
       socket.emit('send-message', {
-        roomUser: inform.roomUser,
+        roomUser: inform,
         message,
       });
       setMessage('');
@@ -148,7 +142,7 @@ const ChatRoomContainer = () => {
     scrollToBottom();
   }, [allMessages]);
 
-  return (
+  return inform ? (
     <ChatRoom
       inputRef={inputRef}
       message={message}
@@ -158,9 +152,11 @@ const ChatRoomContainer = () => {
       allMessages={allMessages}
       myId={memberId}
       scrollRef={scrollRef}
-      productId={productId}
+      inform={inform}
       onClickExitBtn={onClickExitBtn}
     />
+  ) : (
+    <ChatBlank />
   );
 };
 

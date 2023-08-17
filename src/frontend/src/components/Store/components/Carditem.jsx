@@ -23,18 +23,23 @@ export default function ImgMediaCard({ item, onClick }) {
         console.log("자기가 쓴 글은 추천 못함");
       });
   };
+  const imageSrc = item.storeImageList && item.storeImageList[0]
+    ? item.storeImageList[0].url
+    : null;
 
   return (
     <SCard $isRented={item.isRented} onClick={onClick}>
-      <SCardMedia image={item.image}>
-        <div>{item.isRented ? <SRental>대여 완료</SRental> : ""}</div>
+      <SCardMedia image={imageSrc}>
+      <div>{item.isRented ? <SRental>대여 완료</SRental> : ""}</div>
       </SCardMedia>
-      <SLike onClick={handleLike} isLiked={isLiked}>
-        {isLiked ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
-      </SLike>
+      {!item.mine && (
+        <SLike onClick={handleLike} isLiked={isLiked}>
+          {isLiked ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
+        </SLike>
+      )}
       <SCardText>
         <STitleAndProduct>
-          <STitle>{item.storePost.title}</STitle>
+        <STitle>{item.storePost.title.length > 10 ? item.storePost.title.substring(0, 10) + '...' : item.storePost.title}</STitle>
           <SProduct>{item.storePost.product}</SProduct>
         </STitleAndProduct>
         <SDayAndCost>
@@ -60,10 +65,13 @@ const SCard = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid grey;
+  border: 1px solid #e9d5ff;
   max-width: 345px;
   ${(props) => props.$isRented && `background: rgba(128, 128, 128, 0.5);`}
   border-radius: 10px;
+  &:hover {
+    background: var(--primary, #e9d5ff);
+  }
 `;
 
 const SCardMedia = styled.div`
@@ -71,9 +79,10 @@ const SCardMedia = styled.div`
   height: 122px;
   border-radius: 10px 10px 0px 0px;
   background: url(${(props) => props.image}),
-    ${(props) => (props.$isRented ? "rgba(128, 128, 128, 0.5)" : "lightgray")}
-      50% / cover no-repeat;
+    ${(props) => (props.$isRented ? "rgba(128, 128, 128, 0.5)" : props.image ? "lightgray" : "#ddd")} 
+    50% / cover no-repeat;
   position: relative;
+  background-size: 100%;
 `;
 
 const SLike = styled(({ isLiked, ...props }) => <div {...props} />)`
@@ -148,6 +157,7 @@ const SReservation = styled.p`
   color: white;
   font-size: 8px;
   font-weight: 700;
+  margin-right: auto;
 `;
 
 const SCost = styled.p`
@@ -160,6 +170,7 @@ const SCost = styled.p`
   font-size: 12px;
   font-weight: 700;
   line-height: normal;
+  margin-left: auto;
 `;
 
 const SRental = styled.div`
