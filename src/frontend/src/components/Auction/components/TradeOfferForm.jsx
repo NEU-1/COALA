@@ -100,23 +100,15 @@ const TradeOfferForm = ({ onClose }) => {
     requestPost2(`auction/apply?id=${postId}`, formData)
       .then((res) => {
         console.log(res, "제안 갔음");
+        onClose && onClose();
       })
       .catch((err) => {
         console.error(err);
       });
   };
-  const fetchMySellData = (setMySell) => {
-    axios
-      .then((response) => setMySell(response.data))
-      .catch((error) => console.error("Error fetching my sell data:", error));
-  };
 
   const handleCancel = () => {
     onClose && onClose();
-  };
-  const mySellHandler = () => {
-    setShowDropdown(!showDropdown);
-    fetchMySellData(setMySell);
   };
 
   return (
@@ -164,16 +156,6 @@ const TradeOfferForm = ({ onClose }) => {
             />
           </STitleAndMainTextDiv>
         </STMTDiv>
-        <SMyProductListBtn onClick={mySellHandler}>
-          내 제품
-          {showDropdown && (
-            <SDropdownMenu>
-              {mySell.map((item, index) => (
-                <SDropdownMenuItem key={index}>{item}</SDropdownMenuItem>
-              ))}
-            </SDropdownMenu>
-          )}
-        </SMyProductListBtn>
       </STMTCPDiv>
       <SProductDetailDiv>
         <SProductDetailP>제품 상세 정보</SProductDetailP>
@@ -253,23 +235,6 @@ const STMTDiv = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 19px;
-`;
-
-const SMyProductListBtn = styled.button`
-  display: flex;
-  width: 106px;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 7px;
-  background: var(--reserved, #bd84fc);
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  color: white;
-  text-align: center;
-  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-  font-size: 14px;
-  letter-spacing: -0.14px;
 `;
 
 const SImg = styled.img`
@@ -449,28 +414,4 @@ const SLRBtns = styled.button`
   font-size: 14px;
   font-weight: 700;
   letter-spacing: -0.14px;
-`;
-
-const SDropdownMenu = styled.div`
-  position: absolute;
-  z-index: 1;
-  width: 106px;
-  border-radius: 10px;
-  top: 346px;
-`;
-
-const SDropdownMenuItem = styled.button`
-  height: 41px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  color: white;
-  display: flex;
-  width: 106px;
-  gap: 10px;
-  border-radius: 7px;
-  background: #e9d5ff;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--border, #d9d9d9);
 `;
