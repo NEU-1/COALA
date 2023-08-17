@@ -13,7 +13,7 @@ import { BsX } from "react-icons/bs"
 import CCheckBox from '../../Common/CCheckBox';
 import './Pagination.css';
 import Pagination from "react-js-pagination";
-import { images } from "../../assets/images";
+import { images } from "../../../assets/images";
 
 
 
@@ -201,11 +201,11 @@ const commentDelete = async (commentId) => {
       board && (<Slayout>
       <Container>
         <Profilebox>
-        {/* {postData.url ? (
-            <SProfileImg src={postData.url} alt="" />
+        {board.memberId.imagePath ? (
+            <SProfileImg src={board.memberId.imagePath } alt="" />
           ) : (
             <SProfileImg src={images.default_profile} alt="" />
-          )} */}
+          )}
         <Profiletext>{board.memberId.nickname}</Profiletext>
       
         </Profilebox>

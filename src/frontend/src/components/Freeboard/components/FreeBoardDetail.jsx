@@ -12,7 +12,7 @@ import { BsX } from "react-icons/bs"
 import CCheckBox from '../../Common/CCheckBox';
 import './Pagination.css';
 import Pagination from "react-js-pagination";
-import { images } from "../../assets/images.js";
+import { images } from "../../../assets/images";
 
 
 
