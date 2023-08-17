@@ -56,12 +56,12 @@ const SideBar = ({
 const SLayout = styled.div`
   margin-top: 140px;
   width: 300px;
-  height: 100vh;
+  height: 110vh;
   background-color: white;
   display: flex;
   flex-direction: column;
   padding: 10px;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0px;
   gap: 10px;
