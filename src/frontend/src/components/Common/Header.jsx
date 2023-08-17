@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
 import { images } from '../../assets/images';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import logo from './logo.png'
 
 const Header = ({isLogin, nickname}) => {

@@ -72,8 +72,9 @@ const FreeBoardList = () => {
             </Link>
           </Contentbox>
         ))}
-
+        
         <Footerbutton>
+       
           <Dummi></Dummi>
           <Pagination
             activePage={activepage}

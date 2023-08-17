@@ -6,13 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { Viewer } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import styled from 'styled-components'
-import { BiLike } from "react-icons/bi";
-import { BiSolidLike } from "react-icons/bi";
-import { BsCursor, BsSend } from "react-icons/bs"
+import { BiLike,BiSolidLike } from "react-icons/bi";
+import { BsSend } from "react-icons/bs"
 import { BsX } from "react-icons/bs"
 import CCheckBox from '../../Common/CCheckBox';
 import './Pagination.css';
 import Pagination from "react-js-pagination";
+import { images } from "../../assets/images.js";
 
 
 
@@ -188,7 +188,11 @@ const unlikeBtn = async() => {
       board && (<Slayout>
       <Container>
         <Profilebox>
-          <div>image</div>
+        {board.memberId.imagePath ? (
+            <SProfileImg src={board.memberId.imagePath} alt="" />
+          ) : (
+            <SProfileImg src={images.default_profile} alt="" />
+          )}
         <Profiletext>{board.memberId.nickname}</Profiletext>
       
         </Profilebox>
@@ -537,3 +541,8 @@ const SBtndelete = styled.div`
   const LikeBtn = styled.div`
     padding: 10px;
   `
+  const SProfileImg = styled.img`
+  width: 84px;
+  height: 84px;
+  border-radius: 84px;
+`;
