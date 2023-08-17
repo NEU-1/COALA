@@ -3,6 +3,7 @@ import ChatBoardPreview from '../components/ChatBoardPreview';
 import { requestGet, setToken } from '../../../lib/api/api';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 const ChatBoardPreviewContainer = ({ myId, inform }) => {
   console.log('dd');
@@ -10,6 +11,9 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
   const [consumer, setConsumer] = useState(null);
   const [post, setPost] = useState(null);
   const [imgURL, setImgURL] = useState(null);
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
+
   // 제공자 or 이용자 게시글 정보를 얻어와서 props로 전달
   useEffect(() => {
     setToken();
@@ -59,6 +63,7 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
 
   const onClickContractBtn = () => {
     console.log(inform.room.id);
+    forceUpdate();
     window.parent.postMessage(
       {
         msg: 'openContract',

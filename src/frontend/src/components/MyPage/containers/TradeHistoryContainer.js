@@ -8,7 +8,7 @@ let email = null;
 const TradeHistoryContainer = () => {
   const [trading, setTrading] = useState(true);
   const [traded, setTraded] = useState(true);
-  const [contractList, setContractList] = useState(null);
+  const [contractList, setContractList] = useState([]);
 
   const onChangeTrading = () => {
     setTrading(!trading);
@@ -38,7 +38,9 @@ const TradeHistoryContainer = () => {
 
   return (
     <TradeHistory
-      contractList={contractList}
+      contractList={contractList.sort(function (a, b) {
+        return new Date(b.created_at) - new Date(a.created_at);
+      })}
       trading={trading}
       traded={traded}
       onChangeTrading={onChangeTrading}

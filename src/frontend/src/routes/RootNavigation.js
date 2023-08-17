@@ -116,7 +116,7 @@ const RootNavigation = () => {
         <Route path="/sign-up" element={<SignUpContainer />} />
 
         <Route path="/chat" element={<ChatContainer />}>
-          <Route index path="/chat/chat-list" element={<ChatListContainer />} />
+          <Route path="/chat/chat-list" element={<ChatListContainer />} />
           <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
         </Route>
 

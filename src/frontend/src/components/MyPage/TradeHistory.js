@@ -114,7 +114,7 @@ const STable = styled.table`
     }
 
     th.product {
-      width: 380px;
+      width: 360px;
     }
     th.tradeDate {
       width: 150px;
@@ -123,7 +123,7 @@ const STable = styled.table`
       width: 150px;
     }
     th.status {
-      width: 100px;
+      width: 120px;
     }
   }
 `;

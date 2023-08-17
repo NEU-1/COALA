@@ -37,6 +37,9 @@ const BoardListItem = ({ item, category, onClickItem }) => {
 };
 
 const STr = styled.tr`
+  &:hover {
+    background-color: ${colors.primary};
+  }
   td {
     color: #000;
     font-size: 16px;
