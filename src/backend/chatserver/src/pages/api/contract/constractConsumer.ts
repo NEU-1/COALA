@@ -44,7 +44,7 @@ const receiveData = withCors(async (req: any, res: any) => {
       });
     });
       const {file, id} = req.files;   
-      console.log(file, id);
+      console.log("파일과아이디",file, id);
       const image_consumer = file[0]
       // const image_contract = file[1]
       // 이미지 upload
@@ -56,7 +56,7 @@ const receiveData = withCors(async (req: any, res: any) => {
       const contractFormData = id[0].buffer.toString('utf8');  // buffer를 문자열로 변환
       const contractFormJSON = JSON.parse(contractFormData);  // 문자열을 JSON으로 파싱
       console.log(contractFormJSON);
-      const {contract_id, } = contractFormJSON;
+      const { contract_id } = contractFormJSON;
 
     //   const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
@@ -65,9 +65,9 @@ const receiveData = withCors(async (req: any, res: any) => {
       
       const result = await updateContract(NewConstractData, contract_id);
       const contract_images = await makeContract(contract_id);
-      const contract_path = await uploadToS3('contract', timestamp(), contract_images);
+      const contract_path = await uploadToS3('contract', `${timestamp()}.png`, contract_images);
       const result_ = await updateContract({contract_path}, contract_id);
-      console.log(result_);
+      console.log("리절트 주세요",result_);
       // const contractData = await readQuery('history',{conditionQuery, values})
       if (!result_){
         res.status(500).json({ message: 'contract failed cuz of server error' });
