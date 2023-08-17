@@ -18,7 +18,7 @@ const ChatRoom = ({
   onClickExitBtn,
 }) => {
   console.log('로그 계속 나오는지 채크');
-  console.log(inform)
+  console.log(inform);
   return (
     <SLayout>
       <SChatHeader>
@@ -30,19 +30,33 @@ const ChatRoom = ({
             onClick={onClickBackBtn}
           />
           <SOtherInfo>
-            <img
-              src={`${images.chatModal.default_profile}`}
-              alt=""
-              className="profile"
-            />
-            <div className="otherName">{inform.other.name}</div>
+            {inform.other ? (
+              <img
+                src={
+                  inform.other.image_path
+                    ? `${inform.other.image_path}`
+                    : `${images.default_profile}`
+                }
+                className="profile"
+                alt=""
+              />
+            ) : (
+              <img
+                src={`${images.default_profile}`}
+                className="profile"
+                alt=""
+              />
+            )}
+            <div className="otherName">
+              {inform.other ? inform.other.nickname : '알 수 없는 이용자'}
+            </div>
           </SOtherInfo>
         </SStart>
         <SExitBtn onClick={onClickExitBtn}>나가기</SExitBtn>
       </SChatHeader>
 
       {/* 게시글이 있는 경우에만 랜더링 */}
-      {(inform.room.pr_id || inform.room.pp_id) && (
+      {(inform.room.pr_id || inform.room.pp_id) && inform.other && (
         <ChatBoardPreviewContainer inform={inform} myId={myId} />
       )}
 
@@ -173,10 +187,14 @@ const SOtherInfo = styled.div`
   }
 
   .otherName {
+    width: 150px;
     color: #000;
     font-size: 16px;
     font-weight: 700;
     line-height: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 

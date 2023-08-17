@@ -35,13 +35,23 @@ const ChatListItem = ({ item, onClickListItem }) => {
       }}
     >
       <SStart>
-        <img
-          src={`${images.chatModal.default_profile}`}
-          className="profile"
-          alt=""
-        />
+        {item.other ? (
+          <img
+            src={
+              item.other.image_path
+                ? `${item.other.image_path}`
+                : `${images.default_profile}`
+            }
+            className="profile"
+            alt=""
+          />
+        ) : (
+          <img src={`${images.default_profile}`} className="profile" alt="" />
+        )}
         <SPartnerInfo>
-          <div className="partner">{item.name}</div>
+          <div className="partner">
+            {item.other ? item.other.nickname : '알 수 없는 이용자'}
+          </div>
           {item.latestLog.latestLog && (
             <div className="cur-chat">
               {item.latestLog.latestLog.text_content}
@@ -82,7 +92,7 @@ const SPartnerInfo = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-
+  text-align: left;
   .partner {
     color: ${colors.deepPrimary};
     font-size: 14px;
@@ -95,7 +105,6 @@ const SPartnerInfo = styled.div`
     font-size: 9px;
     font-weight: 400;
     line-height: normal;
-    text-align: left;
   }
 `;
 
