@@ -14,7 +14,7 @@ const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "7일", " 14일", "30일"];
 
 const Store = () => {
-  console.log("렌더링 됩니다~")
+  console.log("렌더링 됩니다~");
   const [filter, setFilter] = useState(false);
   const [productType, setProductType] = useState("");
   const [dayType, setDayType] = useState("");
@@ -27,11 +27,11 @@ const Store = () => {
   const handleFilterToggle = () => {
     setFilter(!filter);
   };
-  console.log(productType, "렌더링 직후")
-  
+  console.log(productType, "렌더링 직후");
+
   const handleProductTypeChange = (index) => {
     if (productType === index) {
-      setProductType("")
+      setProductType("");
     } else {
       setProductType(index);
     }
@@ -39,7 +39,7 @@ const Store = () => {
 
   const handleDayTypeChange = (index) => {
     if (dayType === index) {
-      setDayType("")
+      setDayType("");
     } else {
       setDayType(index);
     }
@@ -55,42 +55,44 @@ const Store = () => {
     setData([]);
     loadMoreData();
   };
-  
+
   const seeProductCheckHandler = (e) => {
     setseeProductCheck(e.target.checked);
   };
-  console.log(dayType,"날짜")
-  console.log(productType, "렌더링 직후2")
-  const loadMoreData = () => { // 함수 들어가면서 값 갱신이 바로바로 안되는데. 변경 전 값을 계속 유지하고 있고 코드 쪽에서 뭐라도 수정하고 저장하면 갱신되네
-    console.log(productType, "렌더링 직후3")
+  console.log(dayType, "날짜");
+  console.log(productType, "렌더링 직후2");
+  const loadMoreData = () => {
+    // 함수 들어가면서 값 갱신이 바로바로 안되는데. 변경 전 값을 계속 유지하고 있고 코드 쪽에서 뭐라도 수정하고 저장하면 갱신되네
+    console.log(productType, "렌더링 직후3");
     const nextPage = pageRef.current + 1;
     pageRef.current = nextPage;
     const dayTypeMapping = {
-      "1": 1,
-      "2": 7,
-      "3": 14,
-      "4": 30
+      1: 1,
+      2: 7,
+      3: 14,
+      4: 30,
     };
     const Period = dayTypeMapping[dayType] || "";
 
-    console.log(productType, "파람스 정의 전") // 스크롤 내리면 렌더링 되나?
+    console.log(productType, "파람스 정의 전"); // 스크롤 내리면 렌더링 되나?
     const params = {
       category: productType,
       Period,
       minRentalCost: priceRange[0],
       maxRentalCost: priceRange[1],
-      status: seeProductCheck,
+      status: 0,
     };
+    console.log(params);
     requestPost(`store/list?page=${nextPage}`, params)
       .then((res) => {
-        console.log(productType, "리퀘스트 안") // 스크롤 내리면 params 가 초기화 됨
-        console.log(res.data)
+        console.log(productType, "리퀘스트 안"); // 스크롤 내리면 params 가 초기화 됨
+        console.log(res.data);
         setData((prevData) => [...prevData, ...res.data.list]);
       })
       .catch((err) => {
         console.error(err);
       });
-    };
+  };
 
   const handleScroll = () => {
     const scrollTTop = document.documentElement.scrollTop;
@@ -220,7 +222,7 @@ const Store = () => {
         <SCardList>
           {data &&
             data
-              .filter((item) => (seeProductCheck ? true : !item.isRented))
+              .filter((item) => seeProductCheck || item.storePost.status === 1)
               .map((item, index) => (
                 <ImgMediaCard
                   key={index}
@@ -235,7 +237,7 @@ const Store = () => {
 };
 
 const Smain = styled.div`
-margin-top: 170px;
+  margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
