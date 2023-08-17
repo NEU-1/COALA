@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
 import SideBar from '../components/SideBar';
-import { requestPost } from '../../../lib/api/api';
+import { requestGet, requestPost } from '../../../lib/api/api';
 
 const SideBarContainer = ({ form }) => {
+  console.log(form);
   const fileInput = useRef(null);
-  const [profileImg, setProfileImg] = useState(form.image_path);
+  const [profileImg, setProfileImg] = useState(form.imagePath);
 
   const onChangeProfile = (e) => {
     if (e.target.files[0]) {
@@ -14,8 +15,11 @@ const SideBarContainer = ({ form }) => {
         'Content-Type': 'multipart/form-data',
       })
         .then((res) => {
-          console.log(res);
-          //   setProfileImg(res.data.url);
+          if (res.data.statusCode === 200) {
+            requestGet('member/info').then((res) => {
+              setProfileImg(res.data.member.imagePath);
+            });
+          }
         })
         .catch((err) => console.log(err));
     }

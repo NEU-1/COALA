@@ -11,7 +11,7 @@ const SideBar = ({
   onChangeProfile,
   onClickUploadImgBtn,
 }) => {
-  console.log(profileImg);
+  console.log('새로운 이미지', profileImg);
   return (
     <SLayout>
       <SProfile>
