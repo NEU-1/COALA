@@ -88,7 +88,7 @@
 
 ---
 ### 1.2. ERD 구조 🎛
-![이미지 추가해주세요](./docs/Structure/COALA_ERD.png)
+![이미지 추가해주세요](./docs/Structure/COALA_ERD_summery.png)
 
 ---
 ### 1.3. 컴포넌트 구조 🎞
