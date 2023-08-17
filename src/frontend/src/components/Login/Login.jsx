@@ -78,6 +78,12 @@ const Login = () => {
 
   const onClickLogin = () => {
     if(inputId && inputPw) {
+      if (saveIdCheck) {
+        localStorage.setItem(saveId, inputId);
+        console.log(inputId);
+      } else {
+        localStorage.removeItem(saveId);
+      }
       requestPost(`member/login`, {
         email: inputId,
         password: inputPw,
@@ -129,12 +135,6 @@ const Login = () => {
 
   const handleSaveIDFlag = (e) => {
     setSaveIDFlag(e.target.checked);
-    if (e.target.checked) {
-      localStorage.setItem(saveId, inputId);
-      console.log(inputId);
-    } else {
-      localStorage.removeItem(saveId);
-    }
   };
 
   const onIdKeyDownHandler = (e) => {
@@ -150,11 +150,14 @@ const Login = () => {
       onClickLogin();
     }
   };
-  const onKeyPress = (e) => {
-    if(e.key === 'Enter') {
-      onClickLogin();
+
+  useEffect(() => {
+    if(localStorage.getItem(saveId)) {
+      setSaveIDFlag(true);
+      setInputId(localStorage.getItem(saveId));
     }
-  }
+  }, [])
+  
 
   return (
     <div className="page">
@@ -171,7 +174,6 @@ const Login = () => {
             onChange={oninputIdHandler}
             onKeyDown={onIdKeyDownHandler}
             placeholder="아이디"
-            onKeyUp={onKeyPress}
           />
         </div>
         <div className="pwBox">
@@ -183,7 +185,6 @@ const Login = () => {
             onChange={oninputPwHandler}
             onKeyDown={onPwKeyDownHandler}
             placeholder="비밀번호"
-            onKeyUp={onKeyPress}
           />
         </div>
         <div>

@@ -50,7 +50,8 @@ const navigate = useNavigate()
     <SLayout>
       <SContainer>
         <SLogoBox>
-          <Link to="/store"><STitle src={`${homelogo}`}/></Link>       
+          <Link to="/"><STitle src={`${homelogo}`}/></Link>       
+        </SLogoBox>
         <SNav>
           <li><SNavLink to="/store">Store</SNavLink></li>
           <li><SNavLink to="/auction">Auction</SNavLink></li>
@@ -58,8 +59,7 @@ const navigate = useNavigate()
           <li><SNavLink to="/free">Free</SNavLink></li>
         </SNav>
           {isLogin ? <SLoginLink to="/my-page">{nickname}</SLoginLink> : <SLoginLink to="/login">{nickname}</SLoginLink>}
-
-        </SLogoBox>
+        
       </SContainer>
     </SLayout>
   );
@@ -81,32 +81,25 @@ const SContainer = styled.div`
   display: flex;
   width: 100%;
   padding: 10px;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 `;
 
 const SLogoBox = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: end;
-  width: 100%;
-  padding: 0px 100px;
+  padding-left: 100px;
 `;
 
 const STitle = styled.img`
-  color: black;
-  font-size: 64px;
-  font-weight: 700;
-  line-height: normal;
-  text-transform: uppercase;
+  width: 222px;
 `;
 
 const SLoginLink = styled(Link)`
   color: #000;
   font-size: 16px;
   font-weight: 500;
-  padding-bottom: 20px;
+  padding: 0px 100px;
 `;
 
 const SNavLink = styled(NavLink)`
@@ -126,7 +119,6 @@ const SNavLink = styled(NavLink)`
 `;
 
 const SNav = styled.ul`
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
