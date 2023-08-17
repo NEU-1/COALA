@@ -62,6 +62,7 @@ const Update = async (target : any, id : any) => {
 
         const {consumer_sign} = target; 
         const result = await updateQuery('History', conditionQuery, [Number(id)]);
+        console.log(result)
         return result;
     }catch(error){
         console.log(error)
