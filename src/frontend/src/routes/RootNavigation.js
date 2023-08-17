@@ -42,16 +42,16 @@ import AuctionDetail from '../components/Auction/AuctionDetail';
 import AuctionUpdate from '../components/Auction/AuctionUpdate';
 
 // 테크게시판
-import TechBoardDetail from "../components/Techboard/components/TechBoardDetail";
-import TechBoardWrite from "../components/Techboard/components/TechBoardWrite";
-import TechBoardList from "../components/Techboard/components/TechBoardList";
-import TechBoardUpdate from "../components/Techboard/components/TechBoardUpdate"
+import TechBoardDetail from '../components/Techboard/components/TechBoardDetail';
+import TechBoardWrite from '../components/Techboard/components/TechBoardWrite';
+import TechBoardList from '../components/Techboard/components/TechBoardList';
+import TechBoardUpdate from '../components/Techboard/components/TechBoardUpdate';
 
 //자유게시판
-import FreeBoardDetail from "../components/Freeboard/components/FreeBoardDetail";
-import FreeBoardWrite from "../components/Freeboard/components/FreeBoardWrite";
-import FreeBoardList from "../components/Freeboard/components/FreeBoardList";
-import FreeBoardUpdate from "../components/Freeboard/components/FreeBoardUpdate"
+import FreeBoardDetail from '../components/Freeboard/components/FreeBoardDetail';
+import FreeBoardWrite from '../components/Freeboard/components/FreeBoardWrite';
+import FreeBoardList from '../components/Freeboard/components/FreeBoardList';
+import FreeBoardUpdate from '../components/Freeboard/components/FreeBoardUpdate';
 
 const RootNavigation = () => {
   return (
@@ -114,7 +114,6 @@ const RootNavigation = () => {
           <Route index path="/chat/chat-list" element={<ChatListContainer />} />
           <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
         </Route>
-
 
         <Route path="*" element={<NotFound />} />
       </Routes>

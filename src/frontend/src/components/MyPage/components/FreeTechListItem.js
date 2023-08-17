@@ -17,7 +17,7 @@ const FreeTechListItem = ({ item, category, onClickItem }) => {
       <td className="title">
         <div>{item.title}</div>
       </td>
-      <td className="date">{printDate(item.createdAt)}</td>
+      <td className="date">{printDate(item.createAt)}</td>
     </STr>
   );
 };
@@ -26,7 +26,6 @@ const STr = styled.tr`
   td {
     color: #000;
     font-size: 16px;
-    text-align: center;
     padding: 20px;
     border-bottom: 1px solid ${colors.primary};
   }

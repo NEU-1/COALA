@@ -15,9 +15,8 @@ const Layout = () => {
     <SLayout>
         <HeaderContainer/>
         <Outlet/>
-        <ChatOpenContainer/>
-        <Footer/>
         {isLogin && <ChatOpenContainer/>}
+        <Footer/>
     </SLayout>
   )
 }

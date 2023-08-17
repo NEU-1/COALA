@@ -51,6 +51,7 @@ const StoreDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  
   const isLogin = login;
 
   const [showModal, setShowModal] = useState(false);
@@ -220,16 +221,16 @@ const StoreDetail = () => {
           조회수 {postData.storePost.views} 관심 {postData.likes}
         </STextSubSee>
       </SFooter>
-      {!isAuthor ? (
-        <SButtons>
-          <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
-        </SButtons>
-      ) : (
-        <SButtons>
-          <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
-          <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
-        </SButtons>
-      )}
+        {!isAuthor ? (
+          <SButtons>
+            <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
+          </SButtons>
+        ) : (
+          <SButtons>
+            <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
+            <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
+          </SButtons>
+        )}
       {showModal && (
         <>
           <SModalBackdrop onClick={handleBackdropClick}>

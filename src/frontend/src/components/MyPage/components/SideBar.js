@@ -10,6 +10,7 @@ const SideBar = ({
   fileInput,
   onChangeProfile,
   onClickUploadImgBtn,
+  onClickLogout,
 }) => {
   console.log('새로운 이미지', profileImg);
   return (
@@ -46,6 +47,7 @@ const SideBar = ({
         <SNavLink to={`/my-page/trade-history`}>거래 내역</SNavLink>
         <SNavLink to={`/my-page/all-community`}>COMMUNITY</SNavLink>
         <SNavLink to={`/my-page/wishlist`}>관심 목록</SNavLink>
+        <SLogout onClick={onClickLogout}>로그아웃</SLogout>
       </SSideNavBar>
     </SLayout>
   );
@@ -148,6 +150,19 @@ const SNavLink = styled(NavLink)`
 
 const SImgUploader = styled.input`
   display: none;
+`;
+
+const SLogout = styled.div`
+  color: #000;
+  font-size: 16px;
+  font-weight: 400;
+  display: flex;
+  height: 71px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  align-self: stretch;
 `;
 
 export default SideBar;
