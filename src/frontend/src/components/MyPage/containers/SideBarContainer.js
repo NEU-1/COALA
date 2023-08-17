@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
 import SideBar from '../components/SideBar';
 import { requestGet, requestPost } from '../../../lib/api/api';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../store/LoginSlice';
 
 const SideBarContainer = ({ form }) => {
   console.log(form);
@@ -32,6 +34,14 @@ const SideBarContainer = ({ form }) => {
     fileInput.current.click();
   };
 
+  const dispatch = useDispatch();
+  const onClickLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    dispatch(logout());
+    window.location.replace('/');
+  };
+
   return (
     <SideBar
       form={form}
@@ -39,6 +49,7 @@ const SideBarContainer = ({ form }) => {
       fileInput={fileInput}
       onChangeProfile={onChangeProfile}
       onClickUploadImgBtn={onClickUploadImgBtn}
+      onClickLogout={onClickLogout}
     />
   );
 };
