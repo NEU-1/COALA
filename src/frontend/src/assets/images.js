@@ -12,15 +12,9 @@ export const images = {
     attach: "../assets/images/ic-attach.png",
     send: "../assets/images/ic-message-send.png",
   },
-<<<<<<< HEAD
   plus: '/assets/images/plus.png',
   like: '/assets/images/like.png',
   notlike: '/assets/images/notlike.png',
   up: '/assets/images/⌃.png',
   down: '/assets/images/⌄.png',
-=======
-  plus: "/assets/images/plus.png",
-  like: "/assets/images/like.png",
-  notlike: "/assets/images/notlike.png",
->>>>>>> develop
 };

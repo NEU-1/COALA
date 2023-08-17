@@ -61,14 +61,11 @@ const RootNavigation = () => {
           <Route path="/store/write" element={<StoreWrite />} />
           <Route path="/store/:postId" element={<StoreDetail />} />
           <Route path="/store/:postId/update" element={<StoreUpdate />} />
-<<<<<<< HEAD
-=======
 
           <Route path="/auction" element={<Auction />} />
           <Route path="/auction/write" element={<AuctionWrite />} />
           <Route path="/auction/:postId" element={<AuctionDetail />} />
           <Route path="/auction/:postId/update" element={<AuctionUpdate />} />
->>>>>>> develop
         </Route>
 
         <Route path="/login" element={<Login />} />

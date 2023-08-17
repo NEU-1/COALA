@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { images } from "../../assets/images";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -11,7 +11,7 @@ import {
 } from "../../lib/api/api";
 import { fetchRoom } from "../../api/nodeServer/Room";
 import { useDispatch } from "react-redux";
-import {openChatModal} from '../../store/chatModalSlice'
+import {openChatModal} from "../../store/chatModalSlice";
 
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
@@ -24,6 +24,10 @@ const StoreDetail = () => {
         setPostData(res.data);
         setLike(res.data.like);
         setIsAuthor(res.data.mine);
+        setPictures(res.data.storeImageList);
+        console.log(res);
+        console.log(res.data.storeImageList);
+        console.log(pictures);
       })
       .catch((err) => {
         console.error(err);
@@ -32,20 +36,22 @@ const StoreDetail = () => {
 
   console.log(postData);
 
-  const [pictures, setPictures] = useState([]);
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setLike] = useState(false);
   const [isAuthor, setIsAuthor] = useState(false);
+  const [pictures, setPictures] = useState([]);
   useEffect(() => {
     if (postData) {
       setLike(postData.like);
       setIsAuthor(postData.mine);
+      setPictures(postData.storeImageList);
     }
   }, []);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  
   const isLogin = login;
 
   const [showModal, setShowModal] = useState(false);
@@ -112,34 +118,34 @@ const StoreDetail = () => {
   const generateRoomId = () => {
     let text = "";
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for(let i = 0;i < 5;i++) {
+    for (let i = 0; i < 5; i++) {
       text += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     }
 
     return text;
-  }
+  };
 
   const goChat = () => {
     if (isLogin) {
       const name = generateRoomId();
-      fetchRoom.create({roomName: name, pp_id: postData.storePost.id, ur_id: postData.memberId})
-      .then((res)=> {
-        dispatch(openChatModal());
-        setTimeout(()=>{
-          const chatModal = document.getElementById("chatModal");
-          // chatModal.src=`/chat/${res.data}`; // roomID 받아오기
-          chatModal.src='/chat/테스트룸1';
-        }, 100)
-      })
+      fetchRoom
+        .create({
+          roomName: name,
+          pp_id: postData.storePost.id,
+          ur_id: postData.memberId,
+        })
+        .then((res) => {
+          dispatch(openChatModal());
+          setTimeout(() => {
+            const chatModal = document.getElementById("chatModal");
+            chatModal.src = `/chat/${res.data.result.name}`; // roomID 받아오기
+          }, 100);
+        });
     } else {
       alert("로그인하세요");
       navigate("/login");
     }
   };
-<<<<<<< HEAD
-=======
-  
->>>>>>> develop
   const goUpdate = () => {
     requestGet(`store/valid?id=${postId}`)
       .then((res) => {
@@ -158,17 +164,28 @@ const StoreDetail = () => {
   const handleModalContentClick = (event) => {
     event.stopPropagation();
   };
+  console.log(pictures);
 
   return postData ? (
     <SMain>
-      <SImgs>
-        <button onClick={handlePictureChange}>{"<"}</button>
-        {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
-        <button onClick={handlePictureChange}>{">"}</button>
-      </SImgs>
+      {pictures.length ? (
+        <SImgs>
+          <SButton onClick={handlePictureChange}>{"<"}</SButton>
+          <SImg src={pictures[pictureNum].url} alt="" />
+          <SButton onClick={handlePictureChange}>{">"}</SButton>
+        </SImgs>
+      ) : (
+        <SImgs>
+          <DefaultImage />
+        </SImgs>
+      )}
       <SHeader>
         <SProfile onClick={goProfile}>
-          <SProfileImg src={images.plus} alt="" />
+          {postData.url ? (
+            <SProfileImg src={postData.url} alt="" />
+          ) : (
+            <SProfileImg src={images.default_profile} alt="" />
+          )}
           <SText>{postData.storePost.author}</SText>
         </SProfile>
         <SDayAndCost>
@@ -183,16 +200,16 @@ const StoreDetail = () => {
       </SHeader>
       <SContent>
         <STitleAndProduct>
-          <SText>{postData.storePost.title}</SText>
-          <STextSub>
+          <STextTitle>{postData.storePost.title}</STextTitle>
+          <STextSubProductAndDay>
             {postData.storePost.category.name} / {displayDate}
-          </STextSub>
+          </STextSubProductAndDay>
         </STitleAndProduct>
         {!isAuthor &&
           (like ? (
-            <img src={images.like} alt="React" onClick={toggleLike} />
+            <SStarimg src={images.like} alt="React" onClick={toggleLike} />
           ) : (
-            <img src={images.notlike} alt="React" onClick={toggleLike} />
+            <SStarimg src={images.notlike} alt="React" onClick={toggleLike} />
           ))}
       </SContent>
       <SContentDetail>
@@ -203,19 +220,8 @@ const StoreDetail = () => {
           조회수 {postData.storePost.views} 관심 {postData.likes}
         </STextSubSee>
       </SFooter>
-<<<<<<< HEAD
-      {isAuthor ? (
-        <SButtons>
-          <SButtonWeekPurple onClick={showDeleteModal}>삭제</SButtonWeekPurple>
-          <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
-        </SButtons>
-      ) : (
-        <SButtons>
-          <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
-        </SButtons>
-      )}
-=======
-        {isAuthor ? (
+
+        {!isAuthor ? (
           <SButtons>
             <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
           </SButtons>
@@ -225,12 +231,10 @@ const StoreDetail = () => {
             <SButtonPurple onClick={goUpdate}>수정</SButtonPurple>
           </SButtons>
         )}
->>>>>>> develop
       {showModal && (
         <>
           <SModalBackdrop onClick={handleBackdropClick}>
             <SModal onClick={handleModalContentClick}>
-              <STextContent>삭제</STextContent>
               <STextDelete>정말 삭제하시겠습니까?</STextDelete>
               <SButtonsDelete>
                 <SButtonDelete onClick={handleDelete}>삭제</SButtonDelete>
@@ -247,27 +251,16 @@ const StoreDetail = () => {
 export default StoreDetail;
 
 const SMain = styled.div`
-<<<<<<< HEAD
+
+  margin-top: 170px;
   display: flex;
   // weight: 800px;
-  height: 1024px;
+  // height: 1024px;
   padding: 10px;
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
-  margin-top: 170px;
 `;
-=======
-margin-top: 170px;
-display: flex;
-// weight: 800px;
-// height: 1024px;
-padding: 10px;
-flex-direction: column;
-align-items: center;
-flex-shrink: 0;
-`
->>>>>>> develop
 
 const SImgs = styled.div`
   display: flex;
@@ -276,9 +269,41 @@ const SImgs = styled.div`
   gap: 10px;
 `;
 
+const SButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e9d5ff;
+  }
+`;
+
 const SImg = styled.img`
   width: 800px;
   height: 372px;
+  object-fit: cover;
+
+  &[width="800"] {
+    width: auto;
+    height: auto;
+  }
+
+  &[height="372"] {
+    width: auto;
+    height: auto;
+  }
+`;
+
+const DefaultImage = styled.div`
+  width: 800px;
+  height: 372px;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px; // 선택적으로 "No Image"와 같은 텍스트도 추가할 수 있습니다.
 `;
 
 const SHeader = styled.div`
@@ -318,6 +343,12 @@ const SText = styled.p`
   font-weight: 700;
 `;
 
+const STextTitle = styled.p`
+  color: #000;
+  font-size: 24px;
+  font-weight: 700;
+`;
+
 const SContent = styled.div`
   display: flex;
   width: 800px;
@@ -337,13 +368,16 @@ const STitleAndProduct = styled.div`
   gap: 8px;
 `;
 
-const STextSub = styled.p`
+// const STextSub = styled.p`
+//   color: #a4a4a4;
+//   font-size: 16px;
+//   font-weight: 700;
+// `;
+
+const STextSubProductAndDay = styled.p`
   color: #a4a4a4;
-  font-family: SF Pro Rounded;
-  font-size: 16px;
-  font-style: normal;
+  font-size: 12px;
   font-weight: 700;
-  line-height: normal;
 `;
 
 const SContentDetail = styled.div`
@@ -357,7 +391,8 @@ const SContentDetail = styled.div`
 const STextContent = styled.p`
   color: #000;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 500;
+  white-space: pre-wrap;
 `;
 
 const SFooter = styled.div`
@@ -371,11 +406,8 @@ const SFooter = styled.div`
 
 const STextSubSee = styled.p`
   color: #a4a4a4;
-  font-family: SF Pro Rounded;
   font-size: 12px;
-  font-style: normal;
   font-weight: 700;
-  line-height: normal;
 `;
 
 const SButtons = styled.div`
@@ -406,7 +438,7 @@ const SButtonWeekPurple = styled.button`
 `;
 
 const SButtonPurple = styled.button`
-<<<<<<< HEAD
+
   display: flex;
   width: 106px;
   height: 40px;
@@ -424,25 +456,6 @@ const SButtonPurple = styled.button`
   font-weight: 700;
   letter-spacing: -0.14px;
 `;
-=======
-display: flex;
-width: 106px;
-height: 40px;
-padding: 10px 40px;
-justify-content: center;
-align-items: center;
-gap: 10px;
-border-radius: 7px;
-background: #BD84FC;
-box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-color: white;
-text-align: center;
-text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
-font-size: 14px;
-font-weight: 700;
-letter-spacing: -0.14px;
-`
->>>>>>> develop
 
 const SModal = styled.div`
   position: fixed;
@@ -514,4 +527,8 @@ const SButtonBack = styled.button`
   color: var(--white, #fff);
   font-size: 12px;
   font-weight: 700;
+`;
+
+const SStarimg = styled.img`
+  height: 25px;
 `;
