@@ -75,11 +75,17 @@ const receiveData = withCors(async (
       // const latestLog = await searchLog(Number(id));
       console.log(`${room_id}의 마지막 로그는 ${latestLog}`);
       return {...room, latestLog : {latestLog}, other : other};
-    }));
 
+    }));
+    const sortedChatRooms = updatedData
+        .sort((a : any , b : any) => {
+            const dateA = a.lastlog ? new Date(a.lastlog.created_at) : new Date(a.created_at);
+            const dateB = b.lastlog ? new Date(b.lastlog.created_at) : new Date(b.created_at);
+            return dateB.getTime() - dateA.getTime();
+        });
     
     // console.log(`채팅로그 포함한 데이터는 ${updatedData}`)
-    res.status(200).json({ rooms: updatedData });
+    res.status(200).json({ rooms: sortedChatRooms });
     
     return
 
