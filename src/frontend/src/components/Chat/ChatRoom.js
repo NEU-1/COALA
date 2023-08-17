@@ -115,6 +115,13 @@ const ChatRoom = ({
                 memberId={myId}
                 displayDate={displayDate}
                 today={today}
+                otherImg={
+                  inform.other
+                    ? inform.other.image_path
+                      ? inform.other.image_path
+                      : `${images.default_profile}`
+                    : `${images.default_profile}`
+                }
               />
             );
           })}
