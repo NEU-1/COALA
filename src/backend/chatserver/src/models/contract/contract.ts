@@ -52,7 +52,7 @@ const Read_Consumer = async (target : object) => {
 
 const Update = async (target : any, id : any) => {
     try{
-        const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
+        const {conditionQuery, values} = buildConditionQuery(target, ' , ');
         const placeholders = [...values, id]
         // const result = await readQuery('history', {conditionQuery, values});
         console.log(target, id)
