@@ -1,6 +1,10 @@
 import axios from 'axios';
 
+// const baseUrl = 'https://i9d108.p.ssafy.io/api/';
 const baseUrl = 'http://i9d108.p.ssafy.io:9999/api/';
+// const baseNodeUrl = 'http://localhost:3030/api/';
+const baseNodeUrl = 'http://i9d108.p.ssafy.io:3030/api/';
+
 // const baseUrl = 'http://localhost:9999/api/';
 
 const headers = {
@@ -14,6 +18,7 @@ const headers2 = {
 export const ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000;
 
 export const getAccessToken = async () => {
+  console.log('새로 토큰을 얻어오자!');
   const accessToken = localStorage.getItem('access_token');
   const refreshToken = localStorage.getItem('refresh_token');
   const headers = {
@@ -48,6 +53,7 @@ export const requestGet = async (url, params) => {
 
 export const requestPost = async (url, body, headers) => {
   try {
+
     const data = await axios.post(baseUrl + url, body, headers);
     return data;
   } catch (error) {
@@ -56,7 +62,20 @@ export const requestPost = async (url, body, headers) => {
   }
 };
 
-export const requestPut = async (url, body) => {
+export const requestPostNode = async (url, body) => {
+  try {
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+    };
+    const data = await axios.post(baseNodeUrl + url, body, headers);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const requestPut = async (url, body, headers) => {
   try {
     const data = await axios.put(baseUrl + url, body, headers);
     return data;

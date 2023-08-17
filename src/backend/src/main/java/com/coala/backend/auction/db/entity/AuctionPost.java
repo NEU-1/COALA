@@ -72,7 +72,6 @@ public class AuctionPost {
     // category 연관
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonIgnore
     private Category category;
 }
 

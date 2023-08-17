@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 
@@ -54,6 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             else if(refreshToken != null){
                 logger.info("AccessToken 이 만료되었습니다. RefreshToken을 확인합니다.");
                 // refreshToken 검증 & RefreshToken이 DB에 존재하는지 유무 판단
+                
                 boolean isRefreshToken = jwtTokenProvider.refreshTokenValidation(refreshToken);
 
                 // refreshToken 유효, DB의 refreshToken과 일치
@@ -73,8 +75,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     // Security context에 인증정보 넣기
                     setAuthentication(jwtTokenProvider.getEmailFromToken(newAccessToken));
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> feature/techboard
                     // 필터 처리 후 AccessToken에 접근하기 위함
                     request.setAttribute("Access_Token", newAccessToken);
+=======
+                    // 이거 처리 너무 힘들다 => 재발급 받는 경우 그냥 프론트에서 다시 한번 쏘는걸로 구성 부탁해야할듯. GPT도 클라이언트에서 해줘 하네...
+
+<<<<<<< HEAD
+>>>>>>> origin/feature/techboard
+=======
+                    // 필터 처리 후 AccessToken에 접근하기 위함
+                    request.setAttribute("Access_Token", newAccessToken);
+>>>>>>> origin/feature/file
+=======
+>>>>>>> f74bc3f84b741d77fab9b89839396e822d3cbadf
+>>>>>>> feature/techboard
                 }
                 // 모든 토큰 만료
                 else{

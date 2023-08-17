@@ -19,11 +19,17 @@ import AgreementContainer from "../components/SignUp/containers/AgreementContain
 import MyPageContainer from "../components/MyPage/containers/MyPageContainer";
 import ModifyUserinfoContainer from "../components/MyPage/containers/ModifyUserinfoContainer";
 
+// 채팅
+import ChatListContainer from "../components/Chat/containers/ChatListContainer";
+import ChatRoomContainer from "../components/Chat/containers/ChatRoomContainer";
+import ChatContainer from "../components/Chat/containers/ChatContainer";
+
+import NotFound from "../pages/NotFound";
 // 제공자 페이지
-import Store from '../components/Store/Store';
-import StoreWrite from '../components/Store/StoreWrite';
-import StoreDetail from '../components/Store/StoreDetail';
-import StoreUpdate from '../components/Store/StoreUpdate';
+import Store from "../components/Store/Store";
+import StoreWrite from "../components/Store/StoreWrite";
+import StoreDetail from "../components/Store/StoreDetail";
+import StoreUpdate from "../components/Store/StoreUpdate";
 
 // 이용자 페이지
 import Auction from "../components/Auction/Auction";
@@ -35,7 +41,13 @@ import AuctionUpdate from "../components/Auction/AuctionUpdate";
 import TechBoardDetail from "../components/Techboard/components/TechBoardDetail";
 import TechBoardWrite from "../components/Techboard/components/TechBoardWrite";
 import TechBoardList from "../components/Techboard/components/TechBoardList";
-import Commentapp from "../components/Techboard/components/Commentapp";
+import TechBoardUpdate from "../components/Techboard/components/TechBoardUpdate"
+
+//자유게시판
+import FreeBoardDetail from "../components/Freeboard/components/FreeBoardDetail";
+import FreeBoardWrite from "../components/Freeboard/components/FreeBoardWrite";
+import FreeBoardList from "../components/Freeboard/components/FreeBoardList";
+import FreeBoardUpdate from "../components/Freeboard/components/FreeBoardUpdate"
 
 const RootNavigation = () => {
   return (
@@ -48,8 +60,13 @@ const RootNavigation = () => {
           </Route>
           <Route path="/tech/write" element={<TechBoardWrite />} />
           <Route path="/tech" element={<TechBoardList />} />
-          <Route path="/tech/:postId" element={<TechBoardDetail />} />
-          <Route path="/tech/comment" element={<Commentapp />} />
+          <Route path="/tech/post/detail/:postid" element={<TechBoardDetail />} />
+          <Route path="/tech/update/:postid" element={<TechBoardUpdate />} />
+          <Route path="/free/update/:postid" element={<FreeBoardUpdate />} />
+          <Route path="/free/post/detail/:postid" element={<FreeBoardDetail />} />
+          <Route path="/free/write" element={<FreeBoardWrite />} />
+          <Route path="/free" element={<FreeBoardList />} />
+          
 
           <Route path="/store" element={<Store />} />
           <Route path="/store/write" element={<StoreWrite />} />
@@ -68,6 +85,13 @@ const RootNavigation = () => {
         <Route path="/sign-up/agreement" element={<AgreementContainer />} />
         <Route path="/sign-up" element={<SignUpContainer />} />
 
+        <Route path="/chat" element={<ChatContainer />}>
+          <Route index path="/chat/chat-list" element={<ChatListContainer />} />
+          <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
+        </Route>
+
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

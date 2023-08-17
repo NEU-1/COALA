@@ -97,21 +97,21 @@ const ModifyUserinfoContainer = () => {
     requestGet(`member/info`)
       .then((res) => {
         console.log(res);
-        if (res.data.statusCode === 200) {
-          console.log(res.data);
+        if (res.data.baseResponseDto.statusCode === 200) {
+          console.log(res.data.member);
           setForm({
             ...form,
-            email: res.data.email,
-            name: res.data.name,
-            nickname: res.data.nickname,
-            studentId: res.data.studentId,
-            depart: res.data.depart,
-            ordinal: res.data.ordinal,
-            phoneNo: res.data.phoneNo,
+            email: res.data.member.email,
+            name: res.data.member.name,
+            nickname: res.data.member.nickname,
+            studentId: res.data.member.studentId,
+            depart: res.data.member.depart,
+            ordinal: res.data.member.ordinal,
+            phoneNo: res.data.member.phoneNo,
           });
-        } else if (res.data.statusCode === 401) {
+        } else if (res.data.baseResponseDto.statusCode === 401) {
           Swal.fire({
-            title: `<div style="font-size: 16px; font-weight: 700">${res.data.msg}</div>`,
+            title: `<div style="font-size: 16px; font-weight: 700">${res.data.baseResponseDto.msg}</div>`,
           }).then(() => {
             //로그아웃 처리
             navigate('/login', { replace: true });

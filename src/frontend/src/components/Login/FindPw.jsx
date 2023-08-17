@@ -24,6 +24,10 @@ const FindPw = () => {
   const [sendCertification, setSendCertification] = useState(false);
   const [certification, setCertification] = useState("");
   const [turnOnTimer, setTurnOnTimer] = useState(false);
+  const emailRef = React.useRef(null);
+  const nameRef = React.useRef(null);
+  const studentIdRef = React.useRef(null);
+  const certificationRef = React.useRef(null);
 
   const onEmailHandler = (e) => {
     setEmail(e.currentTarget.value);
@@ -87,10 +91,7 @@ const FindPw = () => {
         type: "find",
       })
         .then((res) => {
-          showAlert(
-            "success",
-            `${email}로\n인증번호가 전송되었습니다.`
-          );
+          showAlert("success", `${email}로\n인증번호가 전송되었습니다.`);
           console.log(res);
           setSendCertification(true);
         })
@@ -111,7 +112,7 @@ const FindPw = () => {
 
   const onCheckCertification = async (e) => {
     e.preventDefault();
-  
+
     const showAlert = (icon, title) => {
       Swal.fire({
         icon,
@@ -121,14 +122,17 @@ const FindPw = () => {
         showConfirmButton: false,
       });
     };
-  
+
     try {
       const res = await requestPost("member/certification", {
         email: email,
         otp: certification,
         type: "find",
       });
-      showAlert("success", "인증이 완료되었습니다.<br/>비밀번호를 변경해주세요.");
+      showAlert(
+        "success",
+        "인증이 완료되었습니다.<br/>비밀번호를 변경해주세요."
+      );
       navigate("/changepw");
     } catch (err) {
       let errorMessage;
@@ -141,7 +145,16 @@ const FindPw = () => {
       console.log(err);
     }
   };
-  
+
+  const handleKeyPress = (e, nextRef) => {
+    if (e.key === "Enter") {
+      if (nextRef) {
+        nextRef.current.focus();
+      } else {
+        onCallCertification(e);
+      }
+    }
+  };
 
   return (
     <div className="page">
@@ -150,25 +163,31 @@ const FindPw = () => {
           COALA
         </label>
         <input
+          ref={emailRef}
           type="id"
           className="input"
           value={email}
           onChange={onEmailHandler}
           placeholder="이메일"
+          onKeyPress={(e) => handleKeyPress(e, nameRef)}
         />
         <input
+          ref={nameRef}
           type="password"
           className="input"
           value={name}
           onChange={onNameHandler}
           placeholder="이름"
+          onKeyPress={(e) => handleKeyPress(e, studentIdRef)}
         />
         <div className="inputWithBtn">
           <input
+            ref={studentIdRef}
             type="id"
             value={studentId}
             onChange={onStudentIdHandler}
             placeholder="학번"
+            onKeyPress={(e) => handleKeyPress(e)}
           />
           <button type="button" onClick={onCallCertification}>
             인증번호 발송
@@ -178,10 +197,12 @@ const FindPw = () => {
           <div className="inputWithBtn">
             <div className="certificationInput">
               <input
+                ref={certificationRef}
                 type="id"
                 value={certification}
                 onChange={oncertificationHandler}
                 placeholder="인증번호"
+                onKeyPress={(e) => e.key === "Enter" && onCheckCertification(e)}
               />
               {turnOnTimer && (
                 <CertificationTimer setTurnOnTimer={setTurnOnTimer} />
