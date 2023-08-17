@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import {requestGet} from "../../../lib/api/api"
 import './Pagination.css';
 import Pagination from "react-js-pagination";
+import { images } from "../../../assets/images";
 
 
 const FreeBoardList = () => {
@@ -67,7 +68,11 @@ const FreeBoardList = () => {
               </Userbox>
               </div>
               </Freecontainer>
-              <Simg src={imagePath} alt="사진" />
+              {imagePath === "https://coala.s3.ap-northeast-2.amazonaws.com/Free/null" ? (
+                <Simg src={images.coala1} alt="" />
+                ) : (
+                <Simg src={imagePath} alt="" />
+                )}
             </Commentcontainer>
             </Link>
           </Contentbox>

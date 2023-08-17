@@ -545,6 +545,8 @@ const SBtndelete = styled.div`
   const Profilebox = styled.div`
     display: flex;
     border-bottom: 1px solid #e9d5ff;
+    padding-bottom: 10px;
+;
   ` 
 
   const Minititlebox = styled.div`
