@@ -58,7 +58,7 @@ const receiveData = withCors(async (req: any, res: any) => {
 
     //   const {conditionQuery, values} = buildConditionQuery(id, ' AND ');
       
-      const NewConstractData = { consumer_sign, contract_path : "example_Path"}
+      const NewConstractData = { consumer_sign, contract_path : "example_Path", status : -1}
       
       
       const result = await updateContract(NewConstractData, contract_id);
