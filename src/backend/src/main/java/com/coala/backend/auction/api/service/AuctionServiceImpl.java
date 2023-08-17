@@ -97,11 +97,12 @@ public class AuctionServiceImpl implements AuctionService{
         List<ApplyResponseDto> applyResponseDtoList = new ArrayList<>();
 
         for(AuctionApply apply : auctionApplies){
-            applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId(), auctionImageRepository.findByAuctionApply(apply)));
+            applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId(), auctionImageRepository.findByAuctionApply(apply), apply.getMember().getImagePath()));
         }
 
         postResponseDto.setAuctionApplies(applyResponseDtoList);
         postResponseDto.setCategory(auctionPost.getCategory());
+        postResponseDto.setUrl(auctionPost.getMember().getImagePath());
         postResponseDto.setBaseResponseDto(new BaseResponseDto( "성공적으로 정보를 불러왔습니다.", 200));
 
         return postResponseDto;
@@ -238,7 +239,7 @@ public class AuctionServiceImpl implements AuctionService{
 
 
             for(AuctionApply apply : auctionApplies){
-                applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId(), auctionImageRepository.findByAuctionApply(apply)));
+                applyResponseDtoList.add(new ApplyResponseDto(apply, apply.getMember().getId(), auctionImageRepository.findByAuctionApply(apply), apply.getMember().getImagePath()));
             }
 
             postResponseDto.setAuctionApplies(applyResponseDtoList);

@@ -24,7 +24,7 @@ public interface StoreService {
 
     void views(Long id);
 
-    PostResponseDto detail(Long id, String email);
+    PostResponseDto detail(Long id, String email) throws Exception;
 
     BaseResponseDto update(Long id,StorePost storePost, String email);
 

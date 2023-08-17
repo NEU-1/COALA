@@ -27,4 +27,6 @@ public class PostResponseDto {
 
     // 응답 정보
     private BaseResponseDto baseResponseDto;
+
+    private String url;
 }

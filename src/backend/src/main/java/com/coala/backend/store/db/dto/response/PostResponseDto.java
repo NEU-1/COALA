@@ -31,4 +31,6 @@ public class PostResponseDto {
     private boolean mine;
 
     private List<StoreImage> storeImageList;
+
+    private String url;
 }

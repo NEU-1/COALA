@@ -60,7 +60,7 @@ public class StoreController {
     }
 
     @GetMapping("/detail")
-    public PostResponseDto detail(@RequestParam(value = "id") Long id, HttpServletRequest request){
+    public PostResponseDto detail(@RequestParam(value = "id") Long id, HttpServletRequest request) throws Exception{
         storeService.views(id);
         return storeService.detail(id, jwtTokenProvider.getMail(request));
     }

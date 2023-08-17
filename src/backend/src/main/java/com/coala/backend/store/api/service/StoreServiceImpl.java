@@ -124,7 +124,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public PostResponseDto detail(Long id, String email) {
+    public PostResponseDto detail(Long id, String email) throws Exception{
         StorePost storePost = storePostRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
 
@@ -150,6 +150,7 @@ public class StoreServiceImpl implements StoreService {
 
         postResponseDto.setBaseResponseDto(new BaseResponseDto( "성공적으로 정보를 불러왔습니다.", 200));
         postResponseDto.setStoreImageList(storeImageRepository.findByStorePost(storePost));
+        postResponseDto.setUrl(storePost.getMember().getImagePath());
         return postResponseDto;
     }
 

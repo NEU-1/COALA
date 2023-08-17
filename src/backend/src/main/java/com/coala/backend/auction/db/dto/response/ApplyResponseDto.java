@@ -18,4 +18,5 @@ public class ApplyResponseDto {
     private AuctionApply auctionApply;
     private Long memberId;
     private List<AuctionImage> auctionImageList;
+    private String url;
 }
