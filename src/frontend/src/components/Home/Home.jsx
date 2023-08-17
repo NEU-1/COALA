@@ -1,8 +1,8 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import HomeHeader from '../Common/HomeHeader';
-import Coalahome1 from './Coalahome1.png';
-import Coalahome2 from './Coalahome1.png';
+import Coalahome2 from './Coalahome2.png';
+import coala from './coala.png';
 
 
 const Home = () => {
@@ -10,7 +10,7 @@ const Home = () => {
   return(
     <SLayout>
       <HomeHeader/>
-      <Img src={`${Coalahome1}`} alt="사진" />
+      <Img src={`${coala}`} alt="사진" />
       <div className='image-bg' styled>
       <Img2 src={`${Coalahome2}`} alt="사진" />
       </div>

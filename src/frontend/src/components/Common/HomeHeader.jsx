@@ -53,7 +53,7 @@ const SLogoBox = styled.div`
 `;
 
 const STitle = styled(Link)`
-  color: ${colors.primary};
+  color: black;
   font-size: 64px;
   font-weight: 700;
   line-height: normal;
