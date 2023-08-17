@@ -24,10 +24,7 @@ const FreeBoardDetail = () => {
   const moveToUpdate = () => {
     navigate('/free/update/' + postid);
   };
-<<<<<<< HEAD
-=======
 
->>>>>>> feature/develop/front
   const [like, setlike] = useState(false);
   const [login, setLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState("현재 로그인한 사용자 정보");

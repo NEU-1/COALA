@@ -3,13 +3,14 @@ import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
 import { images } from '../../assets/images';
 import { Link } from 'react-router-dom';
+import logo from './logo.png'
 
 const Header = ({isLogin, nickname}) => {
   return (
     <SLayout>
       <SContainer>
         <SLogoBox>
-          <STitle to="/">coala</STitle>
+        <Link to="/"><STitle src={`${logo}`} alt="사진" /></Link>
           <SSearchBar>
             <img src={`${images.search}`} alt="" />
             <input type="text" placeholder="대여하러 가보자~" />
@@ -57,7 +58,7 @@ const SLogoBox = styled.div`
   padding: 0px 100px;
 `;
 
-const STitle = styled(Link)`
+const STitle = styled.img`
   color: ${colors.primary};
   font-size: 64px;
   font-weight: 700;
