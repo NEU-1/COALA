@@ -201,7 +201,6 @@ const StoreDetail = () => {
         <>
           <SModalBackdrop onClick={handleBackdropClick}>
             <SModal onClick={handleModalContentClick}>
-              <STextContent>삭제</STextContent>
               <STextDelete>정말 삭제하시겠습니까?</STextDelete>
               <SButtonsDelete>
                 <SButtonDelete onClick={handleDelete}>삭제</SButtonDelete>

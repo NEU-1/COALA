@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from "../../assets/images";
 import Swal from "sweetalert2";
-import { requestPut2, requestGet, setToken } from "../../lib/api/api";
+import { requestPost2, requestGet, setToken } from "../../lib/api/api";
 
 const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "7일", " 14일", "30일"];
@@ -21,14 +21,10 @@ const SelectButton = ({ itemList, activeIndex, onClickHandler }) =>
   ));
 
 const StoreUpdate = () => {
-  const [mySell, setMySell] = useState([111111, 222222, 33333]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
-  const [imageList, setImageList] = useState({
-    urls: [], 
-    blobs: [],
-  });
+  const [imageList, setImageList] = useState([]);
   const [postData, setPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -86,11 +82,12 @@ const StoreUpdate = () => {
             month,
             date,
           });
-          console.log(res.data.storeImageList)
+          console.log(res.data.storeImageList);
           const initialImageList = res.data.storeImageList.map(
             (imageData) => imageData.url
           );
-          setImageList((prev) => ({ ...prev, urls: initialImageList }));
+          console.log(initialImageList)
+          setImageList((prev) => [...initialImageList]);
         }
         setIsLoading(false);
       })
@@ -108,9 +105,7 @@ const StoreUpdate = () => {
     }
     setState((prev) => ({ ...prev, [name]: newValue }));
   };
-  const mySellHandler = () => {
-    setShowDropdown(!showDropdown);
-  };
+
   const selectHandler = (type, index) => {
     setState((prev) => ({ ...prev, [type]: index }));
 
@@ -154,7 +149,6 @@ const StoreUpdate = () => {
   const date = calendarDay.getDate().toString().padStart(2, "0");
 
   const dataURLtoBlob = (dataURL) => {
-    console.log(dataURL)
     const arr = dataURL.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -166,9 +160,28 @@ const StoreUpdate = () => {
     return new Blob([u8arr], { type: mime });
   };
 
+  const cors = "https://cors-anywhere.herokuapp.com/";
+  async function urlsToBlobs(urls) {
+    const blobs = [];
+    for (let url of urls) {
+      const response = await fetch(cors + url);
+      const blob = await response.blob();
+      blobs.push(blob);
+    }
+    return blobs;
+  }
+
+  useEffect(() => {
+    if (imageList.length > 0 && typeof imageList[0] === "string") {
+      urlsToBlobs(imageList).then((blobs) => {
+        setImageList(blobs);
+      });
+    }
+  }, [imageList]);
+
   const onUpload = async (e) => {
     const files = e.target.files;
-    const newBlobs = [...imageList.blobs];
+    const newBlobs = [];
 
     for (let i = 0; i < files.length; i++) {
       let reader = new FileReader();
@@ -177,17 +190,14 @@ const StoreUpdate = () => {
           resolve(reader.result);
         };
       });
-
       reader.readAsDataURL(files[i]);
       const fileData = await fileRead;
 
       const blob = dataURLtoBlob(fileData);
       newBlobs.push(blob);
     }
-
-    setImageList((prev) => ({ ...prev, blobs: newBlobs }));
+    setImageList((prev) => [...prev, ...newBlobs]);
   };
-  console.log(imageList)
 
   const goBackBtn = () => {
     navigate("/store");
@@ -228,7 +238,6 @@ const StoreUpdate = () => {
       showConfirmButton: false,
     });
   };
-  console.log(imageList)
   const goSellBtn = () => {
     console.log({
       title,
@@ -260,13 +269,14 @@ const StoreUpdate = () => {
         })
       );
 
-      for (let i = 0; i < imageList.blobs.length; i++) {
-        formData.append("multipartFile", imageList.blobs[i]);
+      for (let i = 0; i < imageList.length; i++) {
+        formData.append("multipartFile", imageList[i]);
+        console.log("multipartFile", imageList[i]);
       }
       for (let pair of formData.entries()) {
-        console.log(pair[0] + ', ' + pair[1]);
-    }
-      requestPut2(`store/update?id=${postId}`, formData)
+        console.log(pair[0] + ", " + pair[1].type);
+      }
+      requestPost2(`store/update?id=${postId}`, formData)
         .then((response) => {
           displayMessage("success", "게시글 수정됨");
           console.log(response);
@@ -284,16 +294,6 @@ const StoreUpdate = () => {
       <SHeader>
         <STittleAndBtn>
           <STitle>게시글 업데이트</STitle>
-          {/* <SCallMyProductBtn onClick={mySellHandler}>
-            <SBtnText>내 제품 불러오기</SBtnText>
-            {showDropdown && (
-              <SDropdownMenu>
-                {mySell.map((item, index) => (
-                  <SDropdownMenuItem key={index}>{item}</SDropdownMenuItem>
-                ))}
-              </SDropdownMenu>
-            )}
-          </SCallMyProductBtn> */}
         </STittleAndBtn>
         <SImportantText>*필수 항목</SImportantText>
       </SHeader>
@@ -311,16 +311,12 @@ const StoreUpdate = () => {
         </SSellHeaderPading>
       </SSellHeader>
       <SPicture>
-        <SSubTitle>사진 첨부<SImportantStar>*</SImportantStar></SSubTitle>
+        <SSubTitle>
+          사진 첨부<SImportantStar>*</SImportantStar>
+        </SSubTitle>
         <SPictureList>
-          {imageList.urls.map((src, index) => (
+          {imageList.map((src, index) => (
             <SInsertPicture key={index} src={src} />
-          ))}
-          {imageList.blobs.map((blob, index) => (
-            <SInsertPicture
-              key={`blob-${index}`}
-              src={URL.createObjectURL(blob)}
-            />
           ))}
           <SLabel>
             <input
@@ -460,6 +456,7 @@ const StoreUpdate = () => {
 export default StoreUpdate;
 
 const SMain = styled.div`
+  margin-top: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -766,21 +763,3 @@ const SBtnWritePost = styled.div`
   letter-spacing: -0.14px;
 `;
 
-const SDropdownMenu = styled.div`
-  position: absolute;
-  background: var(--primary, #e9d5ff);
-  z-index: 30;
-  width: 143px;
-  padding: 11px 16px;
-  border-radius: 10px;
-  top: 240px;
-`;
-
-const SDropdownMenuItem = styled.div`
-  height: 41px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  color: white;
-`;
