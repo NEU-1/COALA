@@ -17,11 +17,10 @@ const Header = ({isLogin, nickname}) => {
           {isLogin ? <Link to="/my-page">{nickname}</Link> : <SLoginLink to="/login">{nickname}</SLoginLink>}
         </SLogoBox>
         <SNav>
-          <li><Link to="/store">제공자</Link></li>
-          <li><Link to="/auction">이용자</Link></li>
-          <li><Link to="/tech">커뮤니티</Link></li>
-          <li><Link to="/free">자유게시판</Link></li>
-          <li>검수</li>
+          <li><Link to="/store">Store</Link></li>
+          <li><Link to="/auction">Auction</Link></li>
+          <li><Link to="/tech">Tech</Link></li>
+          <li><Link to="/free">Free</Link></li>
         </SNav>
       </SContainer>
     </SLayout>

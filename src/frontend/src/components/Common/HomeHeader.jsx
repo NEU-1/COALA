@@ -11,10 +11,10 @@ const Header = ({isLogin, nickname}) => {
           <STitle to="/">coala</STitle>
            
         <SNav>
-          <li><SNavLink to="/store">제공자</SNavLink></li>
-          <li><SNavLink to="/auction">이용자</SNavLink></li>
-          <li><SNavLink to="/tech">TechBoard</SNavLink></li>
-          <li><SNavLink to="/free">FreeBoard</SNavLink></li>
+          <li><SNavLink to="/store">Store</SNavLink></li>
+          <li><SNavLink to="/auction">Auction</SNavLink></li>
+          <li><SNavLink to="/tech">Tech</SNavLink></li>
+          <li><SNavLink to="/free">Free</SNavLink></li>
         </SNav>
         {isLogin ? <Link to="/my-page">{nickname}</Link> : <SLoginLink to="/login">{nickname}</SLoginLink>} 
         </SLogoBox>

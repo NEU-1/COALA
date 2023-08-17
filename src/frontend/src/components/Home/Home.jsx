@@ -23,7 +23,7 @@ const SLayout = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('');
+  width: 100vw;
 `
 const Homelayout = styled.div`
   width: 100%;
