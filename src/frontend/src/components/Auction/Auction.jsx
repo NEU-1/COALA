@@ -80,11 +80,15 @@ const Auction = () => {
 
   const generatePageNumbers = () => {
     const numbers = [];
-    for (let i = 1; i <= maxPages; i++) {
+    const startPage = (pageGroup - 1) * 5 + 1;
+    const endPage = startPage + 4;
+  
+    for (let i = startPage; i <= Math.min(endPage, maxPages); i++) {
       numbers.push(i);
     }
     return numbers;
   };
+  
 
   const handleListClick = (id) => navigate(`${id}`);
 
@@ -191,16 +195,12 @@ const SOKBtn = styled.button`
 
 const SChangePageAndCreateBtn = styled.div`
   display: flex;
-  // padding: 0px 35px;
-  // justify-content: flex-end;
   gap: 216px;
-  // align-self: stretch;
 `;
 
 const SCardList = styled.div`
   display: flex;
   width: 800px;
-  // gap: 20px;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;

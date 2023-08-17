@@ -20,7 +20,6 @@ export default function ImgMediaCard({ item, onClick }) {
       })
       .catch((err) => {
         console.error(err);
-        console.log("자기가 쓴 글은 추천 못함");
       });
   };
   const imageSrc =
