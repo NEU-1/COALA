@@ -210,7 +210,7 @@ const Store = () => {
         <SCardList>
           {data &&
             data
-              .filter((item) => seeProductCheck || item.storePost.status === 1)
+              .filter((item) => seeProductCheck || item.storePost.status !== -1)
               .map((item, index) => (
                 <ImgMediaCard
                   key={index}
