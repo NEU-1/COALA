@@ -42,12 +42,10 @@ const receiveData = withCors(async (
   if (req.method === 'GET'){ // read.chatroom
 
     const {email} = req.query;
-    console.log("쿼리",req.query);
     console.log(`${email} 들어간 채팅방 탐색중입니다.`);
     const [usr] : member[] = await readUser({email});
     console.log(`Member ${usr.email}`,usr)
     data = await searchRoom({member_id : usr['id']});
-    console.log("이 들어간 채팅방은 ",data);
 
     
     const updatedData = await Promise.all(data.map(async (room : room & room_member) => {
@@ -55,7 +53,6 @@ const receiveData = withCors(async (
       const latestLog = await searchLog({room_id});
 
       const roomUserRelations = await readRoomMember({room_id});
-      console.log(roomUserRelations);
       let others: any[] = [];
     
       for ( let roomUserRelation of roomUserRelations ){
@@ -84,7 +81,7 @@ const receiveData = withCors(async (
             return dateB.getTime() - dateA.getTime();
         });
     
-    // console.log(`채팅로그 포함한 데이터는 ${updatedData}`)
+    console.log(`채팅방은 ${sortedChatRooms}`)
     res.status(200).json({ rooms: sortedChatRooms });
     
     return
