@@ -71,7 +71,7 @@ function TechBoardWrite() {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-    imagePath: [''],
+    imagePath: '',
     anonymous: false,
   });
 
@@ -101,11 +101,12 @@ function TechBoardWrite() {
       const params = {
         title: board.title,
         detail: editorContent2,// 수정된 부분: editorContent를 사용
-        imagePath: [Imagepath],
+        imagePath: Imagepath,
         anonymous: board.anonymous,
       }
       setToken()
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
+      console.log(params)
       const response = await requestPost("tech/post/save", params);
       
       console.log(response);
