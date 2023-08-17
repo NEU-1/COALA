@@ -55,7 +55,9 @@ const StoreAndAuctionContainer = () => {
 
   return (
     <StoreAndAuction
-      list={list}
+      list={list.sort(function (a, b) {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      })}
       category={category}
       onClickItem={onClickItem}
       showStore={showStore}

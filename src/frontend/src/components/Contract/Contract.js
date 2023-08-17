@@ -185,7 +185,7 @@ const Contract = ({
 };
 
 const SBackground = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -202,7 +202,7 @@ const SLayout = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

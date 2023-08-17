@@ -24,18 +24,21 @@ const ContractListItem = ({ item }) => {
 };
 
 const STr = styled.tr`
+  &:hover {
+    background-color: ${colors.primary};
+  }
   td {
     color: #000;
     font-size: 16px;
-    border-bottom: 1px solid ${colors.primary};
+    border-bottom: 1px solid #d9d9d9;
     padding: 20px;
     text-align: center;
   }
 
   td.product {
-    width: 380px;
+    width: 360px;
     div {
-      width: 340px;
+      width: 320px;
       overflow: hidden; //width 값에 벗어나면 숨김
       white-space: nowrap; //글씨가 길어도 아래로 떨어지지 않게 처리
       text-overflow: ellipsis; //점처리'
@@ -48,7 +51,7 @@ const STr = styled.tr`
     width: 150px;
   }
   td.status {
-    width: 100px;
+    width: 120px;
   }
 `;
 
