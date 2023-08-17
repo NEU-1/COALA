@@ -49,15 +49,9 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
 
   const onClickPost = () => {
     if (inform.room.pp_id) {
-      window.parent.postMessage(
-        { msg: 'moveStorePage', id: post.id },
-        'http://localhost:3000'
-      );
+      window.parent.postMessage({ msg: 'moveStorePage', id: post.id }, '*');
     } else if (inform.room.pr_id) {
-      window.parent.postMessage(
-        { msg: 'moveAuctionPage', id: post.id },
-        'http://localhost:3000'
-      );
+      window.parent.postMessage({ msg: 'moveAuctionPage', id: post.id }, '*');
     }
   };
 
@@ -74,20 +68,23 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
         chatRoomId: inform.room.id,
         contractId: null,
       },
-      'http://localhost:3000'
+      '*'
     );
   };
 
   const onClickAcceptBtn = () => {
-    window.parent.postMessage({
-      msg: 'openContract',
-      post: post,
-      producer: producer,
-      consumer: consumer,
-      myId: myId,
-      chatRoomId: inform.room.id,
-      contractId: inform.room.contract_id,
-    });
+    window.parent.postMessage(
+      {
+        msg: 'openContract',
+        post: post,
+        producer: producer,
+        consumer: consumer,
+        myId: myId,
+        chatRoomId: inform.room.id,
+        contractId: inform.room.contract_id,
+      },
+      '*'
+    );
   };
 
   return (
