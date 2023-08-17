@@ -82,8 +82,8 @@ const FreeBoardDetail = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`free/comment/${postid}/${page}`)
     .then(resp=>{console.log(resp.data.list);setPosts(resp.data.list)})
-   
   }
+  
   const handlePageChange = (page) => {
     setPage(page-1);
     setActivepage(page);
