@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.Random;
 
 @Service
 public class ProfileImageService {
@@ -34,7 +35,7 @@ public class ProfileImageService {
         objectMetadata.setContentLength(multipartFile.getSize());
 
 
-        String key = "member/" + convert(member.getId()) + "/profile";
+        String key = "member/" + convert(member.getId()) + "/" + createCode();
 
         // add
         try(InputStream inputStream = multipartFile.getInputStream()){
@@ -58,5 +59,21 @@ public class ProfileImageService {
             return "0"+id;
         }
         return ""+id;
+    }
+
+    public String createCode() {
+        Random random = new Random();
+        StringBuffer key = new StringBuffer();
+
+        for (int i = 0; i < 8; i++) {
+            int index = random.nextInt(4);
+
+            switch (index) {
+                case 0: key.append((char) ((int) random.nextInt(26) + 97)); break;
+                case 1: key.append((char) ((int) random.nextInt(26) + 65)); break;
+                default: key.append(random.nextInt(9));
+            }
+        }
+        return key.toString();
     }
 }
