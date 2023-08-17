@@ -97,7 +97,7 @@ function FreeBoardWrite() {
   
       const params = {
         title: board.title,
-        detail: editorContent,
+        detail: editorContent2,
         anonymous: board.anonymous,
         imagePath: [Imagepath],
       }
