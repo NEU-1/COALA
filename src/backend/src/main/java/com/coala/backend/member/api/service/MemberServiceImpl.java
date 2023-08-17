@@ -120,7 +120,15 @@ public class MemberServiceImpl implements MemberService{
         // Meber 정보와 응답 한번에 출력
         MemberInfoResponseDto memberInfoResponseDto = new MemberInfoResponseDto();
 <<<<<<< HEAD
+
+
+        memberInfoResponseDto.setMember(member);
+        memberInfoResponseDto.setBaseResponseDto(new BaseResponseDto(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.", HttpStatus.OK.value()));
+
+=======
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> feature/techboard
         memberInfoResponseDto.setId(member.getId());
         memberInfoResponseDto.setEmail(member.getEmail());
         memberInfoResponseDto.setName(member.getName());
@@ -131,6 +139,8 @@ public class MemberServiceImpl implements MemberService{
         memberInfoResponseDto.setPhoneNo(member.getPhoneNo());
         memberInfoResponseDto.setMsg(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.");
         memberInfoResponseDto.setStatusCode(HttpStatus.OK.value());
+<<<<<<< HEAD
+=======
 =======
         memberInfoResponseDto.setMember(member);
         memberInfoResponseDto.setBaseResponseDto(new BaseResponseDto(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.", HttpStatus.OK.value()));
@@ -139,6 +149,7 @@ public class MemberServiceImpl implements MemberService{
         memberInfoResponseDto.setMember(member);
         memberInfoResponseDto.setBaseResponseDto(new BaseResponseDto(member.getName() + " 유저의 정보를 성공적으로 불러왔습니다.", HttpStatus.OK.value()));
 >>>>>>> chat/front
+>>>>>>> feature/techboard
 
         logger.info("member Name : {}", member.getName());
         return memberInfoResponseDto;
@@ -183,7 +194,7 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // otp가 일치하지 않음
-        if(temp.map(Certification::getOtp).orElse("").equals(info.get("otp"))){
+        if(!temp.get().getOtp().equals(info.get("otp"))){
             return new BaseResponseDto("인증번호가 일치하지 않습니다.", 200, 204);
         }
 
@@ -200,7 +211,7 @@ public class MemberServiceImpl implements MemberService{
             certificationRepository.save(certification);
         }
 
-        return new BaseResponseDto("인증이 완료되었습니다. 비밀번호를 변경해주세요.", 200, 201);
+        return new BaseResponseDto("인증이 완료되었습니다.", 200, 201);
     }
 
     // 비밀번호 찾기 후 수행.

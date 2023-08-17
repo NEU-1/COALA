@@ -98,10 +98,15 @@ function FreeBoardWrite() {
       const params = {
         title: board.title,
         detail: editorContent2,
+<<<<<<< HEAD
         isAnonymous: board.anonymous,
+=======
+        anonymous: board.anonymous,
+>>>>>>> feature/develop/front
         imagePath: Imagepath,
       }
       console.log(Imagepath)
+      console.log(params)
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
       const response = await requestPost("free/post/save", params);
       

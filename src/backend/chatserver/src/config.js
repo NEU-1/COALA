@@ -7,6 +7,7 @@ export default {
 
     AMAZONE_S3_ACCESS_KEY:'AKIAQB3JLXITNE6VGLGY',
     AMAZONE_S3_SECRET_KEY:'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',
+    AMAZONE_S3_REGION:'ap-northeast-2',
 
     MONGO_DB_URI:'mongodb+srv://coala1080:9TtkfCk7X7NVYPbc@cluster0.zbqdn4e.mongodb.net',
     MONGO_DB_DATABASE:'chat_logs',

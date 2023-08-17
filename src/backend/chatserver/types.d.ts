@@ -5,7 +5,6 @@ type ConferenceHistoryID = number;
 
 interface room {
     id :  BigInt,
-    member_id : BigInt, 
     pr_id : BigInt, 
     pp_id : BigInt, 
     name : string, 
@@ -14,11 +13,24 @@ interface room {
 
 interface member {
     id :  BigInt,
-    member_id : BigInt, 
-    pr_id : BigInt, 
-    pp_id : BigInt, 
+    email : string, 
+    password : string, 
     name : string, 
+    nickname : string, 
+    student_id : stirng,
+    depart : string,
+    ordinal : string
+    phone_no : Number,
+    image_path : {
+        type : String,
+        default : null
+    },
     created_at : string,
+}
+
+interface room_member{
+    member_id : BigInt,
+    room_id : BigInt 
 }
 
 interface chat {

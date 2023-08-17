@@ -51,13 +51,13 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
     })
     
     socket.on("send-message", async ({roomUser, message}) => {
-      const {room, usr} = roomUser;
-
+      console.log(roomUser);
+      const {room, user} = roomUser;
       const roomName = room.name;
-      const username = usr.email;
+      const username = user.email;
       const chatting_data : chatting_data = {
         room_id : room.id,
-        member_id : usr.id,
+        member_id : user.id,
         text_content : message,
       }
       try{
@@ -69,6 +69,9 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
         console.log(err)
       }
     });
+
+    // socket.on("")
+
 
     socket.on("disconnect", () => {
       console.log("disconnected"); // the Set contains at least the socket ID

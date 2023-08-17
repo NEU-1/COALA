@@ -24,6 +24,10 @@ const FreeBoardDetail = () => {
   const moveToUpdate = () => {
     navigate('/free/update/' + postid);
   };
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/develop/front
   const [like, setlike] = useState(false);
   const [login, setLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState("현재 로그인한 사용자 정보");
@@ -79,8 +83,8 @@ const FreeBoardDetail = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
     requestGet(`free/comment/${postid}/${page}`)
     .then(resp=>{console.log(resp.data.list);setPosts(resp.data.list)})
-   
   }
+  
   const handlePageChange = (page) => {
     setPage(page-1);
     setActivepage(page);

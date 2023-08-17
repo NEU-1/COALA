@@ -50,7 +50,7 @@ const fetchRoom = {
       url: `/api/chat/room_member`,
       data: {
         name: roomName,
-        email,
+        email
         // 유저 정보 넣어야함...
       },
     }).catch((error) => {

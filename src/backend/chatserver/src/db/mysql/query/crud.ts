@@ -23,11 +23,12 @@ const readQuery = async (table : string, target : any,
   }   
   else { // 조인 후 탐색해서 불러오기
     const {conditionQuery, values} = target;
-    const query = `SELECT * FROM ${table} JOIN ${joinTable} ON ?? = ?? WHERE ${conditionQuery}`;
-
+    const query = `SELECT *  FROM ${table} JOIN ${joinTable} ON ?? = ?? WHERE ${conditionQuery}`;
+    console.log(query)
     if (joinCondition && joinTable) {
       values[0] = `${joinTable}.${values[0]}`
       const parameters = [...joinCondition, ...values];
+      console.log(parameters)
       result = await dbQuery(query, parameters);
     } else {
       throw new Error("Join condition and where condition must be defined for a JOIN operation");
@@ -38,8 +39,9 @@ const readQuery = async (table : string, target : any,
   return result
 }
 
-const updateQuery = async (table : string, schema : string, value : any[]) => {
-  
+const updateQuery = async (table : string, target : any, value : any[]) => {
+  return await dbQuery(
+    `UPDATE ${table} SET ${target} WHERE id = ?`, value);
 }
 
 const deleteQuery = async (

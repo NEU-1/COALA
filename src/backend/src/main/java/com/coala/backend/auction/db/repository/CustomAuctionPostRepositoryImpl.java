@@ -25,6 +25,7 @@ public class CustomAuctionPostRepositoryImpl implements CustomAuctionPostReposit
         sb.append("select a from AuctionPost a");
 
         if(info.get("category").equals("") &&  info.get("minRentalPeriod").equals("") && !info.get("status").equals("1")){
+            sb.append(" order by a.id desc");
             System.out.println(sb);
             return entityManager.createQuery(sb.toString(), AuctionPost.class).setFirstResult(page * 10).setMaxResults(10).getResultList();
         }
@@ -57,7 +58,7 @@ public class CustomAuctionPostRepositoryImpl implements CustomAuctionPostReposit
             sb.append("a.status like 1");
         }
 
-
+        sb.append(" order by a.id desc");
         System.out.println(sb);
         List<AuctionPost> list = entityManager.createQuery(sb.toString(),AuctionPost.class).setFirstResult(page * 10).setMaxResults(10).getResultList();
         return list;

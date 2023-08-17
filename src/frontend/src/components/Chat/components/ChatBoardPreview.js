@@ -4,13 +4,19 @@ import { images } from '../../../assets/images';
 import { colors } from '../../../assets/colors';
 import { Link } from 'react-router-dom';
 
-const ChatBoardPreview = ({ post, producer, consumer, myId, onClickPost }) => {
+const ChatBoardPreview = ({
+  post,
+  producer,
+  consumer,
+  myId,
+  onClickPost,
+  onClickContractBtn,
+}) => {
   return (
     <SLayout>
       <SStart
         onClick={() => {
           // 외부 페이지 이동
-          // window.top.location.href = `/store/${post.id}`;
           onClickPost();
         }}
       >
@@ -28,7 +34,7 @@ const ChatBoardPreview = ({ post, producer, consumer, myId, onClickPost }) => {
       </SStart>
       {/* 제공자와 이용자에 따라 활성화 / 비활성화 + 거래하기 / 수락하기 */}
       {myId === producer.id && post.status === 1 && (
-        <STradeBtn>거래하기</STradeBtn>
+        <STradeBtn onClick={onClickContractBtn}>거래하기</STradeBtn>
       )}
       {myId === consumer.id && post.status === 0 && (
         <STradeBtn>수락하기</STradeBtn>

@@ -20,6 +20,7 @@ public class DataLoader implements CommandLineRunner {
 
         // 데이터 자동 입력
         Category keyboard = new Category();
+
         keyboard.setName("키보드");
         categoryRepository.save(keyboard);
 

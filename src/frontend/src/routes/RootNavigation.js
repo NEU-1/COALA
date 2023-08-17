@@ -1,35 +1,35 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Layout from '../pages/Layout';
+import Layout from "../pages/Layout";
 
 // 로그인
-import Home from '../components/Home/Home';
-import Login from '../components/Login/Login';
+import Home from "../components/Home/Home";
+import Login from "../components/Login/Login";
 
 // 비밀번호 변경
-import FindPw from '../components/Login/FindPw';
-import ChangePw from '../components/Login/ChangePw';
+import FindPw from "../components/Login/FindPw";
+import ChangePw from "../components/Login/ChangePw";
 
 // 회원가입
-import SignUpContainer from '../components/SignUp/containers/SignUpContainer';
-import AgreementContainer from '../components/SignUp/containers/AgreementContainer';
+import SignUpContainer from "../components/SignUp/containers/SignUpContainer";
+import AgreementContainer from "../components/SignUp/containers/AgreementContainer";
 
 // 마이페이지
-import MyPageContainer from '../components/MyPage/containers/MyPageContainer';
-import ModifyUserinfoContainer from '../components/MyPage/containers/ModifyUserinfoContainer';
+import MyPageContainer from "../components/MyPage/containers/MyPageContainer";
+import ModifyUserinfoContainer from "../components/MyPage/containers/ModifyUserinfoContainer";
 
 // 채팅
-import ChatListContainer from '../components/Chat/containers/ChatListContainer';
-import ChatRoomContainer from '../components/Chat/containers/ChatRoomContainer';
-import ChatContainer from '../components/Chat/containers/ChatContainer';
+import ChatListContainer from "../components/Chat/containers/ChatListContainer";
+import ChatRoomContainer from "../components/Chat/containers/ChatRoomContainer";
+import ChatContainer from "../components/Chat/containers/ChatContainer";
 
-import NotFound from '../pages/NotFound';
+import NotFound from "../pages/NotFound";
 // 제공자 페이지
-import Store from '../components/Store/Store';
-import StoreWrite from '../components/Store/StoreWrite';
-import StoreDetail from '../components/Store/StoreDetail';
-import StoreUpdate from '../components/Store/StoreUpdate';
+import Store from "../components/Store/Store";
+import StoreWrite from "../components/Store/StoreWrite";
+import StoreDetail from "../components/Store/StoreDetail";
+import StoreUpdate from "../components/Store/StoreUpdate";
 
 // 이용자 페이지
 import Auction from "../components/Auction/Auction";
@@ -55,10 +55,7 @@ const RootNavigation = () => {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/my-page" element={<MyPageContainer />}>
-            <Route
-              path="/my-page/modify-userinfo"
-              element={<ModifyUserinfoContainer />}
-            />
+            <Route path="/my-page/modify-userinfo" element={<ModifyUserinfoContainer />} />
           </Route>
           <Route path="/tech/write" element={<TechBoardWrite />} />
           <Route path="/tech" element={<TechBoardList />} />
@@ -94,11 +91,6 @@ const RootNavigation = () => {
 
 
         <Route path="*" element={<NotFound />} />
-        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
-        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
-
-        <Route path="*" element={<NotFound />} />
-        <Route index path="/" element={<Home />} />
       </Routes>
       
     </BrowserRouter>

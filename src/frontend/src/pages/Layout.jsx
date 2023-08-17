@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { styled } from 'styled-components'
 import ChatOpenContainer from '../components/Chat/containers/ChatOpenContainer'
 import HeaderContainer from '../components/Common/containers/HeaderContainer'
+import Footer from '../components/Common/Footer'
 
 const Layout = () => {
   return (
@@ -10,6 +11,7 @@ const Layout = () => {
         <HeaderContainer/>
         <Outlet/>
         <ChatOpenContainer/>
+        <Footer/>
     </SLayout>
   )
 }

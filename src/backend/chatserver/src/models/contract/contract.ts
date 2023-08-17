@@ -30,7 +30,7 @@ const Read_Producer = async (target : object) => {
     try{
         const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
         // const result = await readQuery('history', {conditionQuery, values});
-        const result = await readQuery('History', {conditionQuery, values}, 'Member', ['member.id', 'history.producer_id']);
+        const result = await readQuery('History', {conditionQuery, values});
         return result;
     }catch(error){
         console.log(error);
@@ -42,7 +42,7 @@ const Read_Consumer = async (target : object) => {
     try{
         const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
         // const result = await readQuery('history', {conditionQuery, values});
-        const result = await readQuery('History', {conditionQuery, values}, 'Member', ['member.id', 'history.consumer_id']);
+        const result = await readQuery('History', {conditionQuery, values});
         return result;
     }catch(error){
         console.log(error);
@@ -50,9 +50,25 @@ const Read_Consumer = async (target : object) => {
     }
 }
 
+const Update = async (target : any, id : any) => {
+    try{
+        const {conditionQuery, values} = buildConditionQuery(target, ' AND ');
+        const placeholders = [...values, id]
+        // const result = await readQuery('history', {conditionQuery, values});
+        console.log(target, id)
+        console.log({conditionQuery, values})
+        console.log(`UPDATE History SET ${conditionQuery} WHERE id = ?`, placeholders);
+        //
+
+        const {consumer_sign} = target; 
+        const result = await updateQuery('History', `consumer_sign = "${consumer_sign}"`, id);
+        return result;
+    }catch(error){
+        console.log(error)
+    }
+}
 const Delete = async (inputData : any) => {
     try{
-
       const { conditionQuery, values} = buildConditionQuery(inputData, ' AND ');
       const result = await deleteQuery('History', conditionQuery, values);
       return {
@@ -74,5 +90,6 @@ export {
     Create,
     Read_Producer,
     Read_Consumer,
+    Update,
     Delete
 }

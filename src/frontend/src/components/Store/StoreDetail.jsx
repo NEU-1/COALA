@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { images } from "../../assets/images";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -16,25 +16,25 @@ import {openChatModal} from '../../store/chatModalSlice'
 const StoreDetail = () => {
   const [postData, setPostData] = useState(null);
   const { postId } = useParams();
-  
+
   setToken();
   useEffect(() => {
     requestGet(`store/detail?id=${postId}`)
-    .then((res) => {
+      .then((res) => {
         setPostData(res.data);
         setLike(res.data.like);
         setIsAuthor(res.data.mine);
-        setPictures(res.data.storeImageList)
-        console.log(res.data.storeImageList)
-        console.log(pictures)
+        setPictures(res.data.storeImageList);
+        console.log(res.data.storeImageList);
+        console.log(pictures);
       })
       .catch((err) => {
         console.error(err);
       });
-    }, []);
-    
-    console.log(postData);
-    
+  }, []);
+
+  console.log(postData);
+
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setLike] = useState(false);
   const [isAuthor, setIsAuthor] = useState(false);
@@ -43,17 +43,16 @@ const StoreDetail = () => {
     if (postData) {
       setLike(postData.like);
       setIsAuthor(postData.mine);
-      setPictures(postData.storeImageList)
-
+      setPictures(postData.storeImageList);
     }
   }, []);
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   
   const isLogin = login;
-  
+
   const [showModal, setShowModal] = useState(false);
 
   const formattedDate = (dateString) => {
@@ -74,7 +73,7 @@ const StoreDetail = () => {
     } else {
       setPictureNum((pictureNum - 1 + totalPictures) % totalPictures);
     }
-  };  
+  };
 
   const toggleLike = () => {
     setLike((prevLike) => !prevLike);
@@ -141,6 +140,7 @@ const StoreDetail = () => {
       navigate("/login");
     }
   };
+  
   const goUpdate = () => {
     requestGet(`store/valid?id=${postId}`)
       .then((res) => {
@@ -159,17 +159,21 @@ const StoreDetail = () => {
   const handleModalContentClick = (event) => {
     event.stopPropagation();
   };
-  console.log(pictures)
+  console.log(pictures);
 
   return postData ? (
     <SMain>
       {pictures.length ? (
-        <SImgs >
+        <SImgs>
           <SButton onClick={handlePictureChange}>{"<"}</SButton>
-          {pictures.length > 0 && <SImg src={pictures[pictureNum].url} alt="" />}
+          <SImg src={pictures[pictureNum].url} alt="" />
           <SButton onClick={handlePictureChange}>{">"}</SButton>
         </SImgs>
-      ) : null}
+      ) : (
+        <SImgs>
+          <DefaultImage />
+        </SImgs>
+      )}
       <SHeader>
         <SProfile onClick={goProfile}>
           <SProfileImg src={images.plus} alt="" />
@@ -187,7 +191,7 @@ const StoreDetail = () => {
       </SHeader>
       <SContent>
         <STitleAndProduct>
-          <SText>{postData.storePost.title}</SText>
+          <STextTitle>{postData.storePost.title}</STextTitle>
           <STextSubProductAndDay>
             {postData.storePost.category.name} / {displayDate}
           </STextSubProductAndDay>
@@ -207,7 +211,7 @@ const StoreDetail = () => {
           조회수 {postData.storePost.views} 관심 {postData.likes}
         </STextSubSee>
       </SFooter>
-        {isAuthor ? (
+        {!isAuthor ? (
           <SButtons>
             <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
           </SButtons>
@@ -221,7 +225,6 @@ const StoreDetail = () => {
         <>
           <SModalBackdrop onClick={handleBackdropClick}>
             <SModal onClick={handleModalContentClick}>
-              <STextContent>삭제</STextContent>
               <STextDelete>정말 삭제하시겠습니까?</STextDelete>
               <SButtonsDelete>
                 <SButtonDelete onClick={handleDelete}>삭제</SButtonDelete>
@@ -269,7 +272,7 @@ const SButton = styled.button`
 const SImg = styled.img`
   width: 800px;
   height: 372px;
-  object-fit: cover; 
+  object-fit: cover;
 
   &[width="800"] {
     width: auto;
@@ -280,6 +283,16 @@ const SImg = styled.img`
     width: auto;
     height: auto;
   }
+`;
+
+const DefaultImage = styled.div`
+  width: 800px;
+  height: 372px;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px; // 선택적으로 "No Image"와 같은 텍스트도 추가할 수 있습니다.
 `;
 
 const SHeader = styled.div`
@@ -316,6 +329,12 @@ const SDayAndCost = styled.div`
 const SText = styled.p`
   color: #000;
   font-size: 16px;
+  font-weight: 700;
+`;
+
+const STextTitle = styled.p`
+  color: #000;
+  font-size: 24px;
   font-weight: 700;
 `;
 
