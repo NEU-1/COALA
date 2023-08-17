@@ -28,16 +28,16 @@ const ChatListContainer = () => {
   useEffect(() => {
     // api.setToken();
     setToken();
-    requestGet(`member/info`).then((res) => {
-      // 나중에 잘되었는지 아닌지 필터 필요
-      setUser(res.data);
-      email = res.data.member.email;
-      console.log("dd",res.data.member.email)
-    }).then(() => {
-      // const email = user.email;
-      fetchRoom.read({ email })
+    requestGet(`member/info`)
       .then((res) => {
-
+        // 나중에 잘되었는지 아닌지 필터 필요
+        setUser(res.data.member);
+        email = res.data.member.email;
+        console.log('dd', res.data.member.email);
+      })
+      .then(() => {
+        // const email = user.email;
+        fetchRoom.read({ email }).then((res) => {
           setList(res.data.rooms);
         });
       });

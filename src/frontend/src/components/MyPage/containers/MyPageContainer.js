@@ -15,16 +15,7 @@ const MyPageContainer = () => {
         console.log(res);
         if (res.data.baseResponseDto.statusCode === 200) {
           console.log(res.data.member);
-          setForm({
-            ...form,
-            email: res.data.member.email,
-            name: res.data.member.name,
-            nickname: res.data.member.nickname,
-            studentId: res.data.member.studentId,
-            depart: res.data.member.depart,
-            ordinal: res.data.member.ordinal,
-            phoneNo: res.data.member.phoneNo,
-          });
+          setForm(res.data.member);
         } else if (res.data.baseResponseDto.statusCode === 401) {
           Swal.fire({
             title: `<div style="font-size: 16px; font-weight: 700">${res.data.baseResponseDto.msg}</div>`,

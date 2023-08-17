@@ -45,6 +45,8 @@ const ModifyUserinfoContainer = () => {
             text: '다시 로그인 해주세요.',
           }).then(() => {
             //로그아웃 처리
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('access_token');
             navigate('/login', { replace: true }); // 이동한 로그인 페이지로 history를 초기화하고 싶음.
           });
         } else if (res.data.statusCode === 401) {
@@ -52,6 +54,8 @@ const ModifyUserinfoContainer = () => {
             title: `<div style="font-size: 20px; font-weight: 700">${res.data.msg}</div>`,
           }).then(() => {
             //로그아웃 처리
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('access_token');
             navigate('/login', { replace: true }); // 이동한 로그인 페이지로 history를 초기화하고 싶음.
           });
         }

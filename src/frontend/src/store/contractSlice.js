@@ -7,6 +7,8 @@ const initialState = {
   producer: null,
   consumer: null,
   myId: null,
+  chatRoomId: null,
+  contractId: null,
 };
 
 const contractSlice = createSlice({
@@ -20,6 +22,8 @@ const contractSlice = createSlice({
       state.producer = action.payload.producer;
       state.consumer = action.payload.consumer;
       state.myId = action.payload.myId;
+      state.chatRoomId = action.payload.chatRoomId;
+      state.contractId = action.payload.contractId;
     },
     closeContractModal: (state) => {
       state.isOpen = false;
@@ -27,6 +31,8 @@ const contractSlice = createSlice({
       state.producer = null;
       state.consumer = null;
       state.myId = null;
+      state.chatRoomId = null;
+      state.contractId = null;
     },
   },
 });

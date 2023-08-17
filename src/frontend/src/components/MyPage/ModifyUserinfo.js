@@ -115,7 +115,6 @@ const STitle = styled.div`
 
   font-weight: 700;
   line-height: normal;
-  text-transform: uppercase;
 `;
 
 const SContentsContainer = styled.div`
