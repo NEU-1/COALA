@@ -14,8 +14,8 @@ const MyPage = ({ form }) => {
 
 const SLayout = styled.div`
   display: flex;
+  min-height: 100vh;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   margin-top: 170px;
 `;
