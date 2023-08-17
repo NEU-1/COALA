@@ -171,9 +171,9 @@ const StoreDetail = () => {
     <SMain>
       {pictures.length ? (
         <SImgs>
-          <SButton onClick={handlePictureChange}>{"<"}</SButton>
+          <SButton onClick={handlePictureChange}><img src={images.left} alt="" /></SButton>
           <SImg src={pictures[pictureNum].url} alt="" />
-          <SButton onClick={handlePictureChange}>{">"}</SButton>
+          <SButton onClick={handlePictureChange}><img src={images.right} alt="" /></SButton>
         </SImgs>
       ) : (
         <SImgs>

@@ -25,7 +25,7 @@ const Auction = () => {
 
   useEffect(() => {
     fetchDataWithCurrentParams();
-  }, []);
+  }, [currentPage]);
 
   const fetchDataWithCurrentParams = () => {
     setToken();
