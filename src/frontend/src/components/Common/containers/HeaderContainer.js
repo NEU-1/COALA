@@ -25,7 +25,6 @@ const HeaderContainer = () => {
       requestGet(`member/info`)
         .then((res) => {
           console.log(res, 'from HeaderContainer');
-          console.log(res.data.baseResponseDto.statusCode);
           if (res.data.baseResponseDto.statusCode === 200) {
             setNickname(res.data.member.nickname);
             dispatch(login());
