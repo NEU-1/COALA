@@ -67,13 +67,8 @@ function FreeBoardWrite() {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-<<<<<<< HEAD
     imagePath: ['string'],
     anonymous: false,
-=======
-    imagePath: '',
-    isAnonymous: false,
->>>>>>> 62860303ac64e26211fe9113bd5972f47181badd
   });
 
   const { title, detail } = board;
@@ -102,15 +97,9 @@ function FreeBoardWrite() {
   
       const params = {
         title: board.title,
-<<<<<<< HEAD
         detail: editorContent,
         anonymous: board.anonymous,
         imagePath: [Imagepath],
-=======
-        detail: editorContent2,
-        isAnonymous: board.isAnonymous,
-        imagePath: Imagepath,
->>>>>>> 62860303ac64e26211fe9113bd5972f47181badd
       }
       console.log(Imagepath)
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
