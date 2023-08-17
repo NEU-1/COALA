@@ -69,13 +69,8 @@ function TechBoardWrite() {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
-<<<<<<< HEAD
     imagePath: [''],
     anonymous: false,
-=======
-    imagePath: '',
-    isAnonymous: false,
->>>>>>> 62860303ac64e26211fe9113bd5972f47181badd
   });
 
   const { title, detail } = board;
@@ -104,15 +99,9 @@ function TechBoardWrite() {
   
       const params = {
         title: board.title,
-<<<<<<< HEAD
         detail: board.detail,// 수정된 부분: editorContent를 사용
         imagePath: [Imagepath],
         anonymous: board.anonymous,
-=======
-        detail: editorContent2, // 수정된 부분: editorContent를 사용
-        imagePath: Imagepath,
-        isAnonymous: board.isAnonymous,
->>>>>>> 62860303ac64e26211fe9113bd5972f47181badd
       }
   
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
