@@ -12,6 +12,7 @@ import java.util.List;
     태크 게시판 요청 Dto 입니다.
 - 추천 수 기능 미구현
 * */
+
 @Getter
 @NoArgsConstructor
 public class TechPostRequestDto {

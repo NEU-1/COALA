@@ -10,20 +10,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TechCommentRequestDto {
     private TechPost tpId;
-    private boolean isAnonymous;
+    private boolean anonymous;
     private String content;
 
     @Builder
-    public TechCommentRequestDto(TechPost tpId, boolean isAnonymous, String content) {
+    public TechCommentRequestDto(TechPost tpId, boolean anonymous, String content) {
         this.tpId = tpId;
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.content = content;
     }
 
     public TechComment toEntity() {
         return TechComment.builder()
                 .tpId(this.tpId)
-                .isAnonymous(this.isAnonymous)
+                .anonymous(this.anonymous)
                 .content(this.content)
                 .build();
     }

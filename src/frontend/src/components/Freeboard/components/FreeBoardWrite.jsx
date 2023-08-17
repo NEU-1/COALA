@@ -67,8 +67,13 @@ function FreeBoardWrite() {
   const [board, setBoard] = useState({
     title: '',
     detail: '',
+<<<<<<< HEAD
     imagePath: ['string'],
     anonymous: false,
+=======
+    imagePath: '',
+    isAnonymous: false,
+>>>>>>> 62860303ac64e26211fe9113bd5972f47181badd
   });
 
   const { title, detail } = board;
@@ -85,7 +90,6 @@ function FreeBoardWrite() {
 
   const saveBoard = async () => {
     try {
-      setToken()
       const editorContent = editorRef.current?.getInstance().getMarkdown();
       const editorContent2 = editorRef.current?.getInstance().getHTML();
   
@@ -93,14 +97,20 @@ function FreeBoardWrite() {
       
       setBoard({
         ...board,
-        detail: editorContent,editorContent2
+        detail: editorContent2
       });
   
       const params = {
         title: board.title,
+<<<<<<< HEAD
         detail: editorContent,
         anonymous: board.anonymous,
         imagePath: [Imagepath],
+=======
+        detail: editorContent2,
+        isAnonymous: board.isAnonymous,
+        imagePath: Imagepath,
+>>>>>>> 62860303ac64e26211fe9113bd5972f47181badd
       }
       console.log(Imagepath)
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
@@ -158,7 +168,7 @@ function FreeBoardWrite() {
               reader.onload = async function(event) {
                 const buffer = event.target.result;
                 console.log(buffer);
-                imgURL = await uploadToS3("Tech", blob.name, buffer);
+                imgURL = await uploadToS3("Free", blob.name, buffer);
                 
                 console.log("함수안",imgURL)
                 callback(imgURL, blob.name);

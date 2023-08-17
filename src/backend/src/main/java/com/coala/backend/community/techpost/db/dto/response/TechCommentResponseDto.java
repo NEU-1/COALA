@@ -14,17 +14,17 @@ public class TechCommentResponseDto {
     private Long tpId;
     private String content;
     private String nickname;
-    private boolean isAnonymous;
+    private boolean anonymous;
     private boolean mine;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
     @Builder
-    public TechCommentResponseDto(Long id, Long tpId, boolean isAnonymous, String content, boolean mine,
+    public TechCommentResponseDto(Long id, Long tpId, boolean anonymous, String content, boolean mine,
                                   String nickname, LocalDateTime createAt, LocalDateTime updateAt) {
         this.id = id;
         this.tpId = tpId;
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.content = content;
         this.nickname = nickname;
         this.mine = mine;

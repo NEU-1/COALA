@@ -8,7 +8,11 @@ import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 import styled from 'styled-components'
 import { BiLike } from "react-icons/bi";
 import { BiSolidLike } from "react-icons/bi";
-import Modal from 'react-modal'
+import { BsCursor, BsSend } from "react-icons/bs"
+import { BsX } from "react-icons/bs"
+import CCheckBox from '../../Common/CCheckBox';
+import './Pagination.css';
+import Pagination from "react-js-pagination";
 
 
 
@@ -22,13 +26,9 @@ const TechBoardDetail = () => {
   const moveToUpdate = () => {
     navigate('/tech/update/' + postid);
   };
-  const [postData, setPostData] = useState();
-  const [pictureNum, setPictureNum] = useState(0);
   const [like, setlike] = useState(false);
-  const [currentUser, setCurrentUser] = useState("현재 로그인한 사용자 정보");
-  const [postAuthor, setPostAuthor] = useState("게시글 작성자 정보");
-  const isAuthor = currentUser === postAuthor;
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+
 
   const deleteBoard = async () => {
     if (window.confirm('게시글을 삭제하시겠습니까?')) {
@@ -36,7 +36,7 @@ const TechBoardDetail = () => {
         const resp = await axios.delete(`http://i9d108.p.ssafy.io:9999/api/tech/post/delete/${postid}`);
         if (resp.status === 200) {
           alert('삭제되었습니다.');
-          navigate('/free');
+          navigate('/tech');
         }
       } catch (error) {
         console.error("Error deleting board:", error);
@@ -74,7 +74,7 @@ const TechBoardDetail = () => {
       setlike(true);
       console.log(like)
       console.log('성공')
-    
+
   }
   const unlikeBtn = async() => {
     const param2 = {
@@ -104,16 +104,53 @@ const TechBoardDetail = () => {
 
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0);
+  const [anonymous, setAnonymous] = useState(false);
+  const [maxpage, setMaxpage] = useState();
+  const [activepage, setActivepage] = useState();
+
+  const onChangeAnonymous = () => {
+    setAnonymous(!anonymous);
+    console.log(anonymous)
+  };
+
+  const saveCommentBoard = async () => {
+    try {
+  
+      const params = {
+        tpId: {
+          "id": Number(postid),       
+      },
+        content:commentboard.commentcontent,
+        anonymous : anonymous,
+      }
+      
+      // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
+      const response = await requestPost(`tech/comment/save/${postid}`, params);
+      console.log(response);
+      alert('등록되었습니다.');
+      getBoardList();
+      
+      
+    } catch (error) {
+      console.error('댓글 등록 에러:', error);
+      getBoardList();
+    }
+    
+  };
   
 
 
   const getBoardList = () => {
     // const resp = await axios.get(`http://i9d108.p.ssafy.io:9999/api/tech/post/${page}`)
+    console.log(page)
     requestGet(`tech/comment/${postid}/${page}`)
-    .then(resp=>{console.log(resp.data);setPosts(resp.data.list)})
-   
+    .then(resp=>{console.log(resp);setPosts(resp.data.list);setMaxpage(resp.data.detail);})
+    setcommentBoard({...commentboard, author: '', commentcontent: ''});
   }
-
+  const handlePageChange = (page) => {
+    setPage(page-1);
+    setActivepage(page);
+  };
   useEffect(() => {
     getBoardList() // 1) 게시글 목록 조회 함수 호출
     getBoard();
@@ -121,12 +158,13 @@ const TechBoardDetail = () => {
   }, []);
 
 // 코멘트 작성 폼
+
 const [commentboard, setcommentBoard] = useState({
   tpId: {
     "id": "int",
   },
-  author: '',
   commentcontent: '',
+  anonymous: false,
 });
 
 const { author , commentcontent} = commentboard;
@@ -139,46 +177,6 @@ setcommentBoard({
 });
 };
 
-const saveCommentBoard = async () => {
-  try {
-
-    const params = {
-      tpId: {
-        "id": Number(postid),       
-    },
-      author: commentboard.author,
-      content:commentboard.commentcontent,
-    }
-    // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-    const response = await requestPost(`tech/comment/save/${postid}`, params);
-    console.log(response);
-    alert('등록되었습니다.');
-    navigate(`/tech/post/detail/${postid}`);
-  } catch (error) {
-    console.error('댓글 등록 에러:', error);
-    navigate(`/tech/post/detail/${postid}`)
-  }
-  
-};
-
-const commentUpdate = async(commentId) => {
-  try {
-  const params = {
-    tpId: {
-      "id": Number(postid),       
-  },
-    author: commentboard.author,
-    content:commentboard.commentcontent,
-  }
-  // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
-  const response = await requestPut(`tech/post/update/${commentId}`, params);
-  
-  console.log(response);
-  alert('등록되었습니다.');
-  navigate('/tech/post/detail/' + postid);
-}catch (error) {
-  console.error('게시글 등록 에러:', error);
-}} 
 
   
 
@@ -188,7 +186,7 @@ const commentDelete = async (commentId) => {
       const resp = await axios.delete(`http://i9d108.p.ssafy.io:9999/api/tech/comment/delete/${commentId}`);
       if (resp.status === 200) {
         alert('삭제되었습니다.');
-        navigate(`/tech/post/detail/${postid}`);
+        getBoardList();
       }
     } catch (error) {
       console.error("Error deleting board:", error);
@@ -196,24 +194,28 @@ const commentDelete = async (commentId) => {
   }
 };
 
+
   
   return (
       board && (<Slayout>
       <Container>
-      <Profiletext>작성자</Profiletext>
+        <Profilebox>
+          <div>image</div>
+        <Profiletext>{board.memberId.nickname}</Profiletext>
+      
+        </Profilebox>
         <Titlecontainer>
-       <div>
-       <Titletext>{board.title}</Titletext>
-        <Createat>{board.createAt && board.createAt.slice(0,10)}</Createat>
-       </div>
+        <div>
+        <Titletext>{board.title}</Titletext>
+          <Createat>{board.createAt && board.createAt.slice(0,10)}</Createat>
+        </div>
        
-       {(like ? (
-            <BiSolidLike size={40} onClick={unlikeBtn}/>
-          ) : (
-            <BiLike size={40} onClick={likeBtn}/>
-          ))}
+        {(like ? (
+              <LikeBtn><BiSolidLike size={40} onClick={unlikeBtn}/></LikeBtn>
+            ) : (
+              <LikeBtn><BiLike size={40} onClick={likeBtn}/></LikeBtn>
+            ))}
        </Titlecontainer>
-      <hr />
      <Detailconteiner>
       <Viewer initialValue={board.detail} />
 
@@ -225,57 +227,71 @@ const commentDelete = async (commentId) => {
       </Container>
         <div>댓글{board.commentCount}</div>
         <CommentSlayout>
-        <Writecontainer>
-        <p>작성자:</p>
-        <CommentTextinput type="text" name="author" value={author} onChange={onChange} />
-        <p>내용:</p>
-        <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} />
-      </Writecontainer>
-        <SBtn onClick={saveCommentBoard}>등록</SBtn>
+          <Writecontainer>
+            <CCheckBoxcontainer>
+              <CCheckBox
+                    text={'익명'}
+                    checked={anonymous}
+                    onChange={onChangeAnonymous}
+                  />
+            </CCheckBoxcontainer>
+            <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} placeholder="  내용을 입력하세요." />
+            </Writecontainer>
+        <BsSend size={30} color='#e9d5ff' className='sendbtn' onClick={saveCommentBoard}></BsSend>
       </CommentSlayout>  
-      
-
     <div>
       
       {/* {posts.slice(offset, offset + limit).map(({ id, title, detail, views, createAt,imagePath,memberId }) => ( */}
-      {posts && posts.map(({ id, author , content, createAt,}) => (
+      {posts && posts.map(({ id, author , content, createAt,nickname,mine ,anonymous}) => (
         <Contentbox key={id}>
+          
           <Commenttitlebox>
-          <Titletext2
-                    type="text"
-                    name="author"
-                    value={author}
-                    onChange={(event) => onChange(event, id)}
-                  />
-            <Userbox>
-              <Numbertext>{createAt.slice(0,10)}</Numbertext>
-            </Userbox>
-          </Commenttitlebox>
-            <Commentcontentbox>
-            {content}
-            </Commentcontentbox>
-            <Subcommentupdatebox>
-            <SBtn onClick={()=> setModalIsOpen(true)}>수정</SBtn>
-            <Modal isOpen={true}>
-              This is Modal content
-              <button onClick={()=> setModalIsOpen(false)}>x</button>
-            </Modal>
-            <SBtn onClick={() => commentDelete(id)}>삭제</SBtn>
+            <Middbox>
+            <Minititlebox>
+            {(anonymous ? (
+            <Titletext2>익명</Titletext2>
+          ) : ( <Titletext2>{nickname.length > 6 ? `${nickname.slice(0, 6)}...` : nickname}</Titletext2>
+          ))}    
             
-            </Subcommentupdatebox>
+            <Numbertext>{createAt.slice(0,10)}</Numbertext>
+            </Minititlebox>
+            <Subcommentupdatebox>
+            {(mine ? (
+              <BsX className='xbtn' onClick={() => commentDelete(id)}></BsX>
+            ) : ( <div></div>
+            ))}              
+          </Subcommentupdatebox>
+          </Middbox>
+          <Commentcontentbox>
+            {content}
+          </Commentcontentbox>
+          </Commenttitlebox>
           
         </Contentbox>
       ))}
       
-      <SBtnContainer>
-        <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
-        <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
-        <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
-      </SBtnContainer> 
+      <Pagination
+          activePage={activepage}
+          itemsCountPerPage={5}
+          totalItemsCount={maxpage*5}
+          pageRangeDisplayed={maxpage}
+          prevPageText={"‹"}
+          nextPageText={"›"}
+          onChange={handlePageChange}
+        />
+        {(board.mine ? (
+            <SBtnContainer>
+            <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
+            <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
+            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
+            </SBtnContainer> 
+          ) : (
+            <SBtnContainer>
+            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
+            </SBtnContainer>
+          ))}
     </div>
-
   </Slayout>)
-    
   );
 };
 
@@ -286,13 +302,28 @@ const Slayout = styled.div`
   margin-top: 170px;
   width: 800px;
   margin-bottom: 0;
+
+  .sendbtn {
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  .xbtn {
+    margin-right: 20px;
+    cursor: pointer;
+  }
+`
+const Middbox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 800px;
 `
 
 const SBtn1 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 20px 20px;
   justify-content: center;
   align-items: center;
   background-color: #E9D5FF;
@@ -304,7 +335,7 @@ const SBtn2 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 20px 20px;
   justify-content: center;
   align-items: center;
   background-color: #BD84FC;
@@ -316,7 +347,7 @@ const SBtn3 = styled.div`
   font-size: 8px;
   display: flex;
   height: 50px;
-  padding: 20px 30px;
+  padding: 10px 10px;
   justify-content: center;
   align-items: center;
   background-color: #D9D9D9;
@@ -338,11 +369,9 @@ padding-bottom: 20px;
 `;
 
 const Profiletext = styled.div`
-  
   width: 800px;
   margin-bottom: 3px;
   font-size: 15px;
-  border-bottom: 1px solid #BD84FC;
   padding-bottom: 15px;
 
 `
@@ -350,6 +379,7 @@ const Profiletext = styled.div`
 const LIkeconteiner = styled.div`
   display: flex;
   font-size: 10px;
+  padding: 10px;
 `
 
 const Detailconteiner = styled.div`
@@ -373,58 +403,50 @@ const Titlecontainer = styled.div`
 `
 const Createat = styled.div`
   font-size: 10px;
-  margin-left: 10px;
+  margin-left: 15px;
 `
 
 const Contentbox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #BD84FC;
+  border-bottom: 1px solid #e9d5ff;
   margin-bottom: 20px;
   width: 800px;
   margin-bottom: 0;
   padding: 3px;
 `
 
-const Userbox = styled.div`
-  display: flex;
-  margin-bottom: 10px;
-  margin-top: 5px;
-`
-const Usertext = styled.div`
-  margin-left: 5px;
-  margin-right: 5px;
-  font-size: 13px;
-`
 const Numbertext = styled.div`
-  margin-left: 5px;
+  margin-left: 3px;
   margin-right: 5px;
-  font-size: 13px;
-  margin-top: 3px;
+  font-size: 8px;
+  color: gray;
 `
 const Titletext = styled.div`
   font-size: 30px;
   margin-left: 5px;
-  margin-bottom: 3px;
-`
+  padding: 10px;`
 
 const Count = styled.div`
   padding-right: 10px;
   font-size: 15px;
 `
 
-const Titletext2 = styled.input`
-  font-size: 15px;
-  margin-left: 10px;
-  width: 80px;
+const Titletext2 = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: center;
+  align-items: end;
+  font-size: 14px;
+  width: 100px;
+  margin-left: 10px;
+  display: flex;
+
 `
 
 const Container = styled.div`
-  border-bottom: 1px solid #BD84FC;
+  border-bottom: 1px solid #e9d5ff;
   margin-bottom: 50px;
 `
 const Like = styled.div`
@@ -435,33 +457,59 @@ const CommentSlayout = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     width: 800px;
     margin-top: 20px;
-    border-top: 1px solid #BD84FC;
-    border-bottom: 1px solid #BD84FC;
+    border-top: 1px solid #e9d5ff;
+    border-bottom: 1px solid #e9d5ff;
     padding-top: 10px;
     padding-bottom: 10px;
 
 `
 const Writecontainer = styled.div`
-    display: flex;`
+      display: flex;
+      align-items: start;
+    `
 
-const CommentTextinput = styled.input`
+const CommentTextinput = styled.textarea`
+    display: flex;
+    justify-content: start;
+    align-items: start;
     font-size: 12px;
-    border: 1px black;
+    height: 80px;
+    width: 650px;
+    border: 1px solid #d9d9d9;
+    resize: none;
 `
 
 const SBtn = styled.div`
+  display: flex;
+  height: 50px;
+  width: 50px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  margin-right: 13px;
+  gap: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+  background-color:#e9d5ff;
+  color: white;
+  cursor: pointer;
+  `
+
+const SBtndelete = styled.div`
   display: flex;
   height: 30px;
   width: 40px;
   justify-content: center;
   align-items: center;
   margin-left: 10px;
+  margin-right: 10px;
   gap: 10px;
   border-radius: 7px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => (props.color ? props.color : '#d9d9d9')};
+  background-color:#e9d5ff;
   color: white;
   cursor: pointer;
   `
@@ -472,14 +520,38 @@ const SBtn = styled.div`
 `
   const Commenttitlebox = styled.div`
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
   `
   const Subcommentupdatebox = styled.div`
     display: flex;
   `
 
   const Commentcontentbox = styled.div`
-    
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    width: 800px;
+    font-size: 14px;
+    height: 100px;
+    overflow: scroll;
+  `
+  const Profilebox = styled.div`
+    display: flex;
+    border-bottom: 1px solid #e9d5ff;
+  ` 
+
+  const Minititlebox = styled.div`
+    display: flex;
+    align-items: end;
+    width: 200px;
+
+  `
+  const CCheckBoxcontainer = styled.div`
+    width: 70px;
+    margin-left: 15px;
+`
+  const LikeBtn = styled.div`
+    padding: 10px;
   `

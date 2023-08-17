@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { images } from "../../assets/images";
 import Swal from "sweetalert2";
-import { requestPut, requestGet, setToken } from "../../lib/api/api";
+import { requestPut2, requestGet, setToken } from "../../lib/api/api";
 
 const product = ["키보드", "마우스", "헤드셋", "태블릿"];
 const day = ["1일", "7일", " 14일", "30일"];
@@ -25,7 +25,10 @@ const StoreUpdate = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
-  const [imageList, setImageList] = useState([]);
+  const [imageList, setImageList] = useState({
+    urls: [], 
+    blobs: [],
+  });
   const [postData, setPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,7 +36,6 @@ const StoreUpdate = () => {
 
   const initialState = {
     title: "",
-    // productName: "",
     rentalFee: "",
     deposit: "",
     minRentalDay: "",
@@ -66,14 +68,15 @@ const StoreUpdate = () => {
           } = res.data.storePost;
 
           const calendarDay = new Date(limitDate);
-          const year = calendarDay.getUTCFullYear();
-          const month = calendarDay.getUTCMonth() + 1;
-          const date = calendarDay.getUTCDate();
+          const year = calendarDay.getFullYear();
+          const month = (calendarDay.getMonth() + 1)
+            .toString()
+            .padStart(2, "0");
+          const date = calendarDay.getDate().toString().padStart(2, "0");
 
           setState({
             title,
             productSelect: res.data.storePost.category.id - 1,
-            // productName: "",
             rentalFee: rentalCost,
             deposit,
             minRentalDay: minRentalPeriod,
@@ -83,6 +86,11 @@ const StoreUpdate = () => {
             month,
             date,
           });
+          console.log(res.data.storeImageList)
+          const initialImageList = res.data.storeImageList.map(
+            (imageData) => imageData.url
+          );
+          setImageList((prev) => ({ ...prev, urls: initialImageList }));
         }
         setIsLoading(false);
       })
@@ -100,7 +108,6 @@ const StoreUpdate = () => {
     }
     setState((prev) => ({ ...prev, [name]: newValue }));
   };
-
   const mySellHandler = () => {
     setShowDropdown(!showDropdown);
   };
@@ -127,7 +134,6 @@ const StoreUpdate = () => {
 
   const {
     title,
-    // productName,
     rentalFee,
     deposit,
     minRentalDay,
@@ -144,13 +150,44 @@ const StoreUpdate = () => {
   };
 
   const year = calendarDay.getFullYear();
-  const month = calendarDay.getMonth() + 1;
-  const date = calendarDay.getDate();
+  const month = (calendarDay.getMonth() + 1).toString().padStart(2, "0");
+  const date = calendarDay.getDate().toString().padStart(2, "0");
+
+  const dataURLtoBlob = (dataURL) => {
+    console.log(dataURL)
+    const arr = dataURL.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+  const urls = [
+    "https://coala.s3.ap-northeast-2.amazonaws.com/store/021/001",
+    "https://coala.s3.ap-northeast-2.amazonaws.com/store/021/002"
+  ];
+  
+  async function urlsToBlobs(urls) {
+    const blobs = [];
+    for (let url of urls) {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      blobs.push(blob);
+    }
+    return blobs;
+  }
+  
+  urlsToBlobs(urls).then(blobs => {
+    console.log(blobs); // 이곳에 Blob 객체들이 배열로 담겨있습니다.
+  });
+  
 
   const onUpload = async (e) => {
     const files = e.target.files;
-    const newImages = [...imageList];
-    setImageList([...imageList, ...files]);
+    const newBlobs = [...imageList.blobs];
 
     for (let i = 0; i < files.length; i++) {
       let reader = new FileReader();
@@ -162,11 +199,14 @@ const StoreUpdate = () => {
 
       reader.readAsDataURL(files[i]);
       const fileData = await fileRead;
-      newImages.push(fileData);
+
+      const blob = dataURLtoBlob(fileData);
+      newBlobs.push(blob);
     }
 
-    setImageList(newImages);
+    setImageList((prev) => ({ ...prev, blobs: newBlobs }));
   };
+  console.log(imageList)
 
   const goBackBtn = () => {
     navigate("/store");
@@ -176,7 +216,6 @@ const StoreUpdate = () => {
       isValid:
         title !== "" &&
         productSelect !== "" &&
-        // productName !== "" &&
         rentalFee !== "" &&
         minRentalDay !== "" &&
         maxRentalDay !== "" &&
@@ -187,9 +226,7 @@ const StoreUpdate = () => {
           ? "제목"
           : productSelect === ""
           ? "분류"
-          : // : productName === ""
-          // ? "제품명"
-          rentalFee === ""
+          : rentalFee === ""
           ? "대여료"
           : minRentalDay === ""
           ? "최소 대여 기간"
@@ -210,6 +247,7 @@ const StoreUpdate = () => {
       showConfirmButton: false,
     });
   };
+  console.log(imageList)
   const goSellBtn = () => {
     console.log({
       title,
@@ -225,17 +263,29 @@ const StoreUpdate = () => {
 
     if (validation.isValid) {
       setToken();
-      requestPut(`store/update?id=${postId}`, {
-        title: title,
-        detail: content,
-        minRentalPeriod: minRentalDay,
-        maxRentalPeriod: maxRentalDay,
-        limitDate: `${year}-${month}-${date}`,
-        rentalCost: rentalFee,
-        deposit: deposit,
-        category: productSelect + 1,
-        // "image": imageList,
-      })
+
+      const formData = new FormData();
+      formData.append(
+        "json",
+        JSON.stringify({
+          title: title,
+          detail: content,
+          minRentalPeriod: minRentalDay,
+          maxRentalPeriod: maxRentalDay,
+          limitDate: `${year}-${month}-${date}`,
+          rentalCost: rentalFee,
+          deposit: deposit,
+          category: productSelect + 1,
+        })
+      );
+
+      for (let i = 0; i < imageList.blobs.length; i++) {
+        formData.append("multipartFile", imageList.blobs[i]);
+      }
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ', ' + pair[1]);
+    }
+      requestPut2(`store/update?id=${postId}`, formData)
         .then((response) => {
           displayMessage("success", "게시글 수정됨");
           console.log(response);
@@ -243,7 +293,6 @@ const StoreUpdate = () => {
         })
         .catch((error) => {
           displayMessage("error", "게시글 수정에 실패하였습니다.");
-          console.log(error);
         });
     } else {
       displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
@@ -254,7 +303,7 @@ const StoreUpdate = () => {
       <SHeader>
         <STittleAndBtn>
           <STitle>게시글 업데이트</STitle>
-          <SCallMyProductBtn onClick={mySellHandler}>
+          {/* <SCallMyProductBtn onClick={mySellHandler}>
             <SBtnText>내 제품 불러오기</SBtnText>
             {showDropdown && (
               <SDropdownMenu>
@@ -263,7 +312,7 @@ const StoreUpdate = () => {
                 ))}
               </SDropdownMenu>
             )}
-          </SCallMyProductBtn>
+          </SCallMyProductBtn> */}
         </STittleAndBtn>
         <SImportantText>*필수 항목</SImportantText>
       </SHeader>
@@ -281,11 +330,17 @@ const StoreUpdate = () => {
         </SSellHeaderPading>
       </SSellHeader>
       <SPicture>
-        <SSubTitle>사진 첨부</SSubTitle>
+        <SSubTitle>사진 첨부<SImportantStar>*</SImportantStar></SSubTitle>
         <SPictureList>
-          {imageList.map((src, index) => {
-            return <SInsertPicture key={index} src={src} />;
-          })}
+          {imageList.urls.map((src, index) => (
+            <SInsertPicture key={index} src={src} />
+          ))}
+          {imageList.blobs.map((blob, index) => (
+            <SInsertPicture
+              key={`blob-${index}`}
+              src={URL.createObjectURL(blob)}
+            />
+          ))}
           <SLabel>
             <input
               id="fileInput"
@@ -299,17 +354,6 @@ const StoreUpdate = () => {
           </SLabel>
         </SPictureList>
       </SPicture>
-      {/* <SCalendarDate>
-          <SSubTitle>상한 날짜</SSubTitle>
-          <SSubTitle
-            onClick={calendarHandler}
-          >{`${year}년 ${month}월 ${date}일`}</SSubTitle>
-        </SCalendarDate>
-        {calendar ? (
-          <Calendar onChange={setCalendarDay} value={calendarDay} />
-        ) : (
-          ""
-        )} */}
       <SFilterContainer>
         <SFilterDoubleBox>
           <SFilterBoxGap35>
@@ -327,7 +371,6 @@ const StoreUpdate = () => {
             </SSelectProduct>
           </SFilterBoxGap35>
           <SFilterBoxGap10>
-            {/* <SCalendarDate> */}
             <SSubTitle>상한 날짜</SSubTitle>
             <SSubTitle
               onClick={calendarHandler}
@@ -335,15 +378,6 @@ const StoreUpdate = () => {
             {calendar && (
               <Calendar onChange={onDateChange} value={calendarDay} />
             )}
-            {/* <SSubTitle>
-                제품명<SImportantStar>*</SImportantStar>
-              </SSubTitle>
-              <SFilterInput
-                name="productName"
-                type="text"
-                value={productName}
-                onChange={handleChange}
-              /> */}
           </SFilterBoxGap10>
         </SFilterDoubleBox>
         <SFilterDoubleBox>
@@ -478,24 +512,24 @@ const STitle = styled.p`
   line-height: normal;
 `;
 
-const SCallMyProductBtn = styled.button`
-  display: flex;
-  width: 143px;
-  height: 41px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
-  background: var(--primary, #e9d5ff);
-`;
+// const SCallMyProductBtn = styled.button`
+//   display: flex;
+//   width: 143px;
+//   height: 41px;
+//   padding: 11px 16px;
+//   justify-content: center;
+//   align-items: center;
+//   gap: 10px;
+//   border-radius: 10px;
+//   background: var(--primary, #e9d5ff);
+// `;
 
-const SBtnText = styled.p`
-  color: var(--white, #fff);
-  text-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
-  font-family: Inter;
-  font-weight: 700;
-`;
+// const SBtnText = styled.p`
+//   color: var(--white, #fff);
+//   text-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
+//   font-family: Inter;
+//   font-weight: 700;
+// `;
 
 const SImportantText = styled.p`
   color: var(--necessary, #fb1818);
@@ -610,17 +644,6 @@ const SSelectProductBtn = styled.button`
   color: ${(props) => (props.$activeProduct ? "#A255F7" : "#D9D9D9")};
 `;
 
-// const SFilterInput = styled.input`
-//   display: flex;
-//   padding: 16px;
-//   justify-content: center;
-//   align-items: flex-start;
-//   gap: 10px;
-//   align-self: stretch;
-//   border-radius: 10px;
-//   border: 1px solid var(--border, #d9d9d9);
-// `;
-
 const SFilterInputCost = styled.input`
   display: flex;
   width: 277px;
@@ -653,16 +676,6 @@ const SFilterInFutAndWon = styled.div`
   gap: 20px;
   align-self: stretch;
 `;
-
-// const SCalendarDate = styled.div`
-//   display: flex;
-//   width: 800px;
-//   padding: 30px 20px;
-//   align-items: flex-start;
-//   gap: 30px;
-//   // justify-content: center;
-//   border-bottom: 1px solid var(--content-underline, #e9d5ff);
-// `;
 
 const SPicture = styled.div`
   display: flex;

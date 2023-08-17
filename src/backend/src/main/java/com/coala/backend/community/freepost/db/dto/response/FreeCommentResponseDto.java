@@ -16,18 +16,18 @@ public class FreeCommentResponseDto {
     private String nickname;
     private String content;
     private boolean mine;
-    private boolean isAnonymous;
+    private boolean anonymous;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 
     @Builder
     public FreeCommentResponseDto(Long id, Long fpId, String nickname, String content, boolean mine,
-                                  boolean isAnonymous, LocalDateTime createAt, LocalDateTime updateAt) {
+                                  boolean anonymous, LocalDateTime createAt, LocalDateTime updateAt) {
         this.id = id;
         this.fpId = fpId;
         this.nickname = nickname;
         this.content = content;
-        this.isAnonymous = isAnonymous;
+        this.anonymous = anonymous;
         this.mine = mine;
         this.createAt = createAt;
         this.updateAt = updateAt;

@@ -42,7 +42,7 @@ public class FreePostServiceImpl implements FreePostService{
                 .title(postDto.getTitle())
                 .detail(postDto.getDetail())
                 .images(postDto.getImagePath())
-                .isAnonymous(postDto.isAnonymous())
+                .anonymous(postDto.isAnonymous())
                 .build();
 
         freePostRepository.saveAndFlush(freePost);
@@ -59,8 +59,6 @@ public class FreePostServiceImpl implements FreePostService{
     public CommunityBaseResponseDto getPostList(int page, Member member) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
-
-
         int allPost = freePostRepository.findAll().size();
         List<FreePostResponseDto> allList = freePostRepository.findAll(pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
@@ -72,7 +70,7 @@ public class FreePostServiceImpl implements FreePostService{
                         .updateAt(freePost.getUpdateAt())
                         .imagePath(str + freePost.getImages())
                         .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
-                        .isAnonymous(freePost.isAnonymous())
+                        .anonymous(freePost.isAnonymous())
                         .views(freePost.getViews())
                         .commentCount(freePost.getComments().size())
                         .goodCount(freePost.getGoods().size())
@@ -82,7 +80,7 @@ public class FreePostServiceImpl implements FreePostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 전체 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + (allPost / 7))
+                .detail(1 + (allPost / 8))
                 .list(allList)
                 .build();
     }
@@ -113,7 +111,7 @@ public class FreePostServiceImpl implements FreePostService{
                 .updateAt(freePost.getUpdateAt())
                 .good(good)
                 .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
-                .isAnonymous(freePost.isAnonymous())
+                .anonymous(freePost.isAnonymous())
                 .views(freePost.getViews())
                 .commentCount(freePost.getComments().size())
                 .goodCount(freePost.getGoods().size())
@@ -140,6 +138,9 @@ public class FreePostServiceImpl implements FreePostService{
     public CommunityBaseResponseDto searchPosts(String keyword, int page, Member member) {
         Pageable pageable = PageRequest.of(page,7, Sort.by("createAt").descending().and(Sort.by("updateAt")));
 
+        System.out.println(pageable.getPageSize());
+        System.out.println(pageable.getPageNumber());
+
         List<FreePost> allPost = freePostRepository.findByTitleContaining(keyword);
         List<FreePostResponseDto> searchList = freePostRepository.findByTitleContaining(keyword, pageable).stream()
                 .map(freePost -> FreePostResponseDto.builder()
@@ -149,7 +150,7 @@ public class FreePostServiceImpl implements FreePostService{
                         .detail(freePost.getDetail())
                         .createAt(freePost.getCreateAt())
                         .updateAt(freePost.getUpdateAt())
-                        .isAnonymous(freePost.isAnonymous())
+                        .anonymous(freePost.isAnonymous())
                         .mine(freePost.getMemberId().getEmail().equals(member.getEmail()))
                         .imagePath(str + freePost.getImages())
                         .views(freePost.getViews())
@@ -161,7 +162,7 @@ public class FreePostServiceImpl implements FreePostService{
         return CommunityBaseResponseDto.builder()
                 .statusCode(200)
                 .msg("성공, 페이지 수 & 해당 페이지 글 목록")
-                .detail(1 + allPost.size() / 7)
+                .detail(1 + allPost.size() / 8)
                 .list(searchList)
                 .build();
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { images } from "../../assets/images";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -24,6 +24,9 @@ const StoreDetail = () => {
         setPostData(res.data);
         setLike(res.data.like);
         setIsAuthor(res.data.mine);
+        setPictures(res.data.storeImageList);
+        console.log(res.data.storeImageList);
+        console.log(pictures);
       })
       .catch((err) => {
         console.error(err);
@@ -32,20 +35,22 @@ const StoreDetail = () => {
 
   console.log(postData);
 
-  const [pictures, setPictures] = useState([]);
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setLike] = useState(false);
   const [isAuthor, setIsAuthor] = useState(false);
+  const [pictures, setPictures] = useState([]);
   useEffect(() => {
     if (postData) {
       setLike(postData.like);
       setIsAuthor(postData.mine);
+      setPictures(postData.storeImageList);
     }
   }, []);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  
   const isLogin = login;
 
   const [showModal, setShowModal] = useState(false);
@@ -154,16 +159,21 @@ const StoreDetail = () => {
   const handleModalContentClick = (event) => {
     event.stopPropagation();
   };
+  console.log(pictures);
 
   return postData ? (
     <SMain>
       {pictures.length ? (
         <SImgs>
-          <button onClick={handlePictureChange}>{"<"}</button>
-          {pictures.length > 0 && <SImg src={pictures[pictureNum]} alt="" />}
-          <button onClick={handlePictureChange}>{">"}</button>
+          <SButton onClick={handlePictureChange}>{"<"}</SButton>
+          <SImg src={pictures[pictureNum].url} alt="" />
+          <SButton onClick={handlePictureChange}>{">"}</SButton>
         </SImgs>
-      ) : null}
+      ) : (
+        <SImgs>
+          <DefaultImage />
+        </SImgs>
+      )}
       <SHeader>
         <SProfile onClick={goProfile}>
           <SProfileImg src={images.plus} alt="" />
@@ -181,7 +191,7 @@ const StoreDetail = () => {
       </SHeader>
       <SContent>
         <STitleAndProduct>
-          <SText>{postData.storePost.title}</SText>
+          <STextTitle>{postData.storePost.title}</STextTitle>
           <STextSubProductAndDay>
             {postData.storePost.category.name} / {displayDate}
           </STextSubProductAndDay>
@@ -201,7 +211,7 @@ const StoreDetail = () => {
           조회수 {postData.storePost.views} 관심 {postData.likes}
         </STextSubSee>
       </SFooter>
-        {isAuthor ? (
+        {!isAuthor ? (
           <SButtons>
             <SButtonWeekPurple onClick={goChat}>거래 요청</SButtonWeekPurple>
           </SButtons>
@@ -249,9 +259,41 @@ const SImgs = styled.div`
   gap: 10px;
 `;
 
+const SButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e9d5ff;
+  }
+`;
+
 const SImg = styled.img`
   width: 800px;
   height: 372px;
+  object-fit: cover;
+
+  &[width="800"] {
+    width: auto;
+    height: auto;
+  }
+
+  &[height="372"] {
+    width: auto;
+    height: auto;
+  }
+`;
+
+const DefaultImage = styled.div`
+  width: 800px;
+  height: 372px;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px; // 선택적으로 "No Image"와 같은 텍스트도 추가할 수 있습니다.
 `;
 
 const SHeader = styled.div`
@@ -288,6 +330,12 @@ const SDayAndCost = styled.div`
 const SText = styled.p`
   color: #000;
   font-size: 16px;
+  font-weight: 700;
+`;
+
+const STextTitle = styled.p`
+  color: #000;
+  font-size: 24px;
   font-weight: 700;
 `;
 
