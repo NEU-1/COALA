@@ -25,16 +25,11 @@ const StoreDetail = () => {
         setLike(res.data.like);
         setIsAuthor(res.data.mine);
         setPictures(res.data.storeImageList);
-        console.log(res);
-        console.log(res.data.storeImageList);
-        console.log(pictures);
       })
       .catch((err) => {
         console.error(err);
       });
   }, []);
-
-  console.log(postData);
 
   const [pictureNum, setPictureNum] = useState(0);
   const [like, setLike] = useState(false);
@@ -86,7 +81,6 @@ const StoreDetail = () => {
       })
       .catch((err) => {
         console.error(err);
-        console.log("자기가 쓴 글은 추천 못함");
       });
   };
 
@@ -97,13 +91,10 @@ const StoreDetail = () => {
     setToken();
     requestDel(`store/delete?id=${postId}`)
       .then((res) => {
-        console.log(res);
-        console.log("삭제됨");
         navigate("/store");
       })
       .catch((err) => {
         console.error(err);
-        console.log("본인 글만 삭제 가능");
       });
   };
 
@@ -138,7 +129,7 @@ const StoreDetail = () => {
           dispatch(openChatModal());
           setTimeout(() => {
             const chatModal = document.getElementById("chatModal");
-            chatModal.src = `/chat/${res.data.result.name}`; // roomID 받아오기
+            chatModal.src = `/chat/${res.data.result.name}`;
           }, 100);
         });
     } else {
@@ -156,7 +147,6 @@ const StoreDetail = () => {
       })
       .catch((err) => {
         console.error(err);
-        console.log("본인글만 수정 가능");
       });
   };
   const handleBackdropClick = (event) => {
@@ -165,15 +155,14 @@ const StoreDetail = () => {
   const handleModalContentClick = (event) => {
     event.stopPropagation();
   };
-  console.log(pictures);
 
   return postData ? (
     <SMain>
       {pictures.length ? (
         <SImgs>
-          <SButton onClick={handlePictureChange}>{"<"}</SButton>
+          <SButton onClick={handlePictureChange}><img src={images.left} alt="" /></SButton>
           <SImg src={pictures[pictureNum].url} alt="" />
-          <SButton onClick={handlePictureChange}>{">"}</SButton>
+          <SButton onClick={handlePictureChange}><img src={images.right} alt="" /></SButton>
         </SImgs>
       ) : (
         <SImgs>
@@ -253,8 +242,6 @@ export default StoreDetail;
 const SMain = styled.div`
   margin-top: 170px;
   display: flex;
-  // weight: 800px;
-  // height: 1024px;
   padding: 10px;
   flex-direction: column;
   align-items: center;
@@ -302,7 +289,7 @@ const DefaultImage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 20px; // 선택적으로 "No Image"와 같은 텍스트도 추가할 수 있습니다.
+  font-size: 20px; 
 `;
 
 const SHeader = styled.div`
@@ -352,7 +339,6 @@ const SContent = styled.div`
   display: flex;
   width: 800px;
   padding: 20px;
-  // align-items: center;
   gap: 10px;
   border-bottom: 1px solid var(--content-underline, #e9d5ff);
   justify-content: space-between;
@@ -366,12 +352,6 @@ const STitleAndProduct = styled.div`
   align-items: flex-start;
   gap: 8px;
 `;
-
-// const STextSub = styled.p`
-//   color: #a4a4a4;
-//   font-size: 16px;
-//   font-weight: 700;
-// `;
 
 const STextSubProductAndDay = styled.p`
   color: #a4a4a4;

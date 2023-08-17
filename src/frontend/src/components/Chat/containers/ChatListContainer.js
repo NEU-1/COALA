@@ -17,7 +17,7 @@ const ChatListContainer = () => {
   const [Lists, setList] = useState([]);
 
   const onClickCloseChatBtn = () => {
-    window.parent.postMessage('closeChatModal', 'http://localhost:3000');
+    window.parent.postMessage('closeChatModal', '*');
   };
 
   const navigate = useNavigate();

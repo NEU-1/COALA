@@ -39,6 +39,7 @@ const SideBarContainer = ({ form }) => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     dispatch(logout());
+    localStorage.removeItem('login');
     window.location.replace('/');
   };
 

@@ -53,9 +53,13 @@ import FreeBoardWrite from '../components/Freeboard/components/FreeBoardWrite';
 import FreeBoardList from '../components/Freeboard/components/FreeBoardList';
 import FreeBoardUpdate from '../components/Freeboard/components/FreeBoardUpdate';
 
+import ScrollToTop from './ScrollToTop';
+import PrivateRoute from './PrivateRoute';
+
 const RootNavigation = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route index path="/" element={<Home />} />
 
@@ -80,7 +84,10 @@ const RootNavigation = () => {
             <Route path="/my-page/wishlist" element={<WishlistContainer />} />
           </Route>
           <Route path="/tech/write" element={<TechBoardWrite />} />
-          <Route path="/tech" element={<TechBoardList />} />
+          <Route
+            path="/tech"
+            element={<PrivateRoute component={<TechBoardList />} />}
+          />
           <Route
             path="/tech/post/detail/:postid"
             element={<TechBoardDetail />}
@@ -92,14 +99,23 @@ const RootNavigation = () => {
             element={<FreeBoardDetail />}
           />
           <Route path="/free/write" element={<FreeBoardWrite />} />
-          <Route path="/free" element={<FreeBoardList />} />
+          <Route
+            path="/free"
+            element={<PrivateRoute component={<FreeBoardList />} />}
+          />
 
-          <Route path="/store" element={<Store />} />
+          <Route
+            path="/store"
+            element={<PrivateRoute component={<Store />} />}
+          />
           <Route path="/store/write" element={<StoreWrite />} />
           <Route path="/store/:postId" element={<StoreDetail />} />
           <Route path="/store/:postId/update" element={<StoreUpdate />} />
 
-          <Route path="/auction" element={<Auction />} />
+          <Route
+            path="/auction"
+            element={<PrivateRoute component={<Auction />} />}
+          />
           <Route path="/auction/write" element={<AuctionWrite />} />
           <Route path="/auction/:postId" element={<AuctionDetail />} />
           <Route path="/auction/:postId/update" element={<AuctionUpdate />} />
@@ -112,7 +128,7 @@ const RootNavigation = () => {
         <Route path="/sign-up" element={<SignUpContainer />} />
 
         <Route path="/chat" element={<ChatContainer />}>
-          <Route index path="/chat/chat-list" element={<ChatListContainer />} />
+          <Route path="/chat/chat-list" element={<ChatListContainer />} />
           <Route path="/chat/:roomName" element={<ChatRoomContainer />} />
         </Route>
 
@@ -121,9 +137,7 @@ const RootNavigation = () => {
         {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
 
         {/* <Route path="*" element={<NotFound />} /> */}
-
       </Routes>
-      
     </BrowserRouter>
   );
 };

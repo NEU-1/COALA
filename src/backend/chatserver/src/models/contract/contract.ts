@@ -61,7 +61,7 @@ const Update = async (target : any, id : any) => {
         //
 
         const {consumer_sign} = target; 
-        const result = await updateQuery('History', `consumer_sign = "${consumer_sign}"`, id);
+        const result = await updateQuery('History', `consumer_sign = "${consumer_sign}"`, placeholders);
         return result;
     }catch(error){
         console.log(error)

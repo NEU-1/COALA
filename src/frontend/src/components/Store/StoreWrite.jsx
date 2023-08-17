@@ -9,13 +9,10 @@ import Swal from "sweetalert2";
 import { requestPost2, setToken } from "../../lib/api/api";
 
 const StoreWrite = () => {
-  console.log(images);
 
   const product = ["키보드", "마우스", "헤드셋", "태블릿"];
   const day = ["1일", "7일", " 14일", "30일"];
 
-  const [mySell, setMySell] = useState([111111, 222222, 33333]);
-  const [showDropdown, setshowDropdown] = useState(false);
   const [title, setTitle] = useState("");
   const [rentalFee, setRentalFee] = useState("");
   const [deposit, setDeposit] = useState(0);
@@ -29,19 +26,6 @@ const StoreWrite = () => {
   const [calendar, setCalendar] = useState(false);
   const [imageList, setImageList] = useState([]);
 
-  const mySellHandler = () => {
-    setshowDropdown(!showDropdown);
-    setToken();
-    axios
-      .get("--서버 주소--")
-      .then((response) => {
-        const data = response.data;
-        setMySell(data);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
-      });
-  };
   const titleHandler = (e) => {
     setTitle(e.target.value);
   };
@@ -153,7 +137,6 @@ const StoreWrite = () => {
       isValid:
         title !== "" &&
         productSelect !== "" &&
-        // productName !== "" &&
         rentalFee !== "" &&
         minRentalDay !== "" &&
         maxRentalDay !== "" &&
@@ -164,9 +147,7 @@ const StoreWrite = () => {
           ? "제목"
           : productSelect === ""
           ? "분류"
-          : // : productName === ""
-          // ? "제품명"
-          rentalFee === ""
+          : rentalFee === ""
           ? "대여료"
           : minRentalDay === ""
           ? "최소 대여 기간"
@@ -189,18 +170,8 @@ const StoreWrite = () => {
   };
 
   const goSellBtn = () => {
-    console.log({
-      title,
-      content,
-      minRentalDay,
-      maxRentalDay,
-      rentalFee,
-      deposit,
-      productSelect,
-    });
 
     const validation = validateForm();
-    console.log(validation);
 
     if (validation.isValid) {
       setToken();
@@ -227,7 +198,6 @@ const StoreWrite = () => {
       requestPost2("store/write", formData)
         .then((response) => {
           displayMessage("success", "게시글 등록됨");
-          console.log(response);
           navigate("/store");
         })
         .catch((error) => {
@@ -238,25 +208,11 @@ const StoreWrite = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(productSelect, mindaySelect, maxdaySelect, calendarDay);
-  }, [productSelect, mindaySelect, maxdaySelect, calendarDay]);
-
   return (
     <SMain>
       <SHeader>
         <STittleAndBtn>
           <STitle>게시글 등록</STitle>
-          {/* <SCallMyProductBtn onClick={mySellHandler}>
-            <SBtnText>내 제품 불러오기</SBtnText>
-            {showDropdown && (
-              <SDropdownMenu>
-                {mySell.map((item, index) => (
-                  <SDropdownMenuItem key={index}>{item}</SDropdownMenuItem>
-                ))}
-              </SDropdownMenu>
-            )}
-          </SCallMyProductBtn> */}
         </STittleAndBtn>
         <SImportantText>*필수 항목</SImportantText>
       </SHeader>
@@ -469,25 +425,6 @@ const STitle = styled.p`
   line-height: normal;
 `;
 
-// const SCallMyProductBtn = styled.button`
-//   display: flex;
-//   width: 143px;
-//   height: 41px;
-//   padding: 11px 16px;
-//   justify-content: center;
-//   align-items: center;
-//   gap: 10px;
-//   border-radius: 10px;
-//   background: var(--primary, #e9d5ff);
-// `;
-
-// const SBtnText = styled.p`
-//   color: var(--white, #fff);
-//   text-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
-//   font-family: Inter;
-//   font-weight: 700;
-// `;
-
 const SImportantText = styled.p`
   color: var(--necessary, #fb1818);
   text-align: center;
@@ -509,7 +446,6 @@ const SSellHeader = styled.div`
 
 const SSellHeaderPading = styled.div`
   display: flex;
-  // align-items: flex-start;
   gap: 30px;
 `;
 
@@ -531,11 +467,9 @@ const SImportantStar = styled.span`
 
 const SSellTitleInput = styled.input`
   color: #000;
-  // text-align: center;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
-  // maxLength={15}
 `;
 
 const SFilterContainer = styled.div`
@@ -694,12 +628,10 @@ const SContentBorder = styled.div`
 
 const SSellContentInput = styled.textarea`
   color: #000;
-  // text-align: center;
   height: 400px;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
-  // overflow: hidden;
   resize: none;
 `;
 
@@ -756,23 +688,4 @@ const SBtnWritePost = styled.div`
   font-weight: 700;
   line-height: 20px; /* 142.857% */
   letter-spacing: -0.14px;
-`;
-
-const SDropdownMenu = styled.div`
-  position: absolute;
-  background: var(--primary, #e9d5ff);
-  z-index: 30;
-  width: 143px;
-  padding: 11px 16px;
-  border-radius: 10px;
-  top: 240px;
-`;
-
-const SDropdownMenuItem = styled.div`
-  height: 41px;
-  padding: 11px 16px; 
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  color: white;
 `;

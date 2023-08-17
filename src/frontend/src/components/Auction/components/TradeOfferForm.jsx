@@ -37,10 +37,7 @@ const TradeOfferForm = ({ onClose }) => {
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
-  console.log(imageList);
-
   const dataURLtoBlob = (dataURL) => {
-    console.log(dataURL);
     const arr = dataURL.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -96,7 +93,6 @@ const TradeOfferForm = ({ onClose }) => {
     }
     requestPost2(`auction/apply?id=${postId}`, formData)
       .then((res) => {
-        console.log(res, "제안 갔음");
         onClose && onClose();
       })
       .catch((err) => {

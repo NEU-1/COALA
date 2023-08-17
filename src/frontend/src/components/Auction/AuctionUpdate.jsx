@@ -7,13 +7,6 @@ import { requestPut, requestGet, setToken } from "../../lib/api/api";
 const product = ["키보드", "마우스", "헤드폰", "태블릿"];
 const day = ["1일", "7일", " 14일", "30일"];
 
-// const fetchMySellData = (setMySell) => {
-//   axios
-//     .get(SERVER_URL)
-//     .then((response) => setMySell(response.data))
-//     .catch((error) => console.error("Error fetching my sell data:", error));
-// };
-
 const SelectButton = ({ itemList, activeIndex, onClickHandler }) =>
   itemList.map((item, index) => (
     <SSelectProductBtn
@@ -26,8 +19,6 @@ const SelectButton = ({ itemList, activeIndex, onClickHandler }) =>
   ));
 
 const AuctionUpdate = () => {
-  const [mySell, setMySell] = useState([111111, 222222, 33333]);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [postData, setPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -50,7 +41,6 @@ const AuctionUpdate = () => {
   useEffect(() => {
     requestGet(`auction/detail?id=${postId}`)
       .then((res) => {
-        console.log(res.data);
         setPostData(res.data);
         if (res.data) {
           const { title, detail, minRentalPeriod } = res.data.auctionPost;
@@ -70,10 +60,6 @@ const AuctionUpdate = () => {
       });
   }, []);
 
-  const mySellHandler = () => {
-    setShowDropdown(!showDropdown);
-    // fetchMySellData(setMySell);
-  };
   const selectHandler = (type, index) => {
     if (type === "minDaySelect") {
       setState((prev) => ({
@@ -123,12 +109,6 @@ const AuctionUpdate = () => {
   };
 
   const goSellBtn = () => {
-    console.log({
-      title,
-      minRentalDay,
-      content,
-      productSelect,
-    });
 
     const validation = validateForm();
 
@@ -142,37 +122,22 @@ const AuctionUpdate = () => {
       })
         .then((response) => {
           displayMessage("success", "게시글 수정됨");
-          console.log(response);
           navigate("/auction");
         })
         .catch((error) => {
           displayMessage("error", "게시글 수정에 실패하였습니다.");
-          console.log(error);
+          console.error(error);
         });
     } else {
       displayMessage("warning", `${validation.errorField}을(를) 입력해주세요.`);
     }
   };
 
-  useEffect(() => {
-    console.log(title, minRentalDay, content, productSelect);
-  }, [title, minRentalDay, content, productSelect]);
-
   return (
     <SMain>
       <SHeader>
         <STittleAndBtn>
           <STitle>게시글 업데이트</STitle>
-          <SCallMyProductBtn onClick={mySellHandler}>
-            <SBtnText>내 제품 불러오기</SBtnText>
-            {showDropdown && (
-              <SDropdownMenu>
-                {mySell.map((item, index) => (
-                  <SDropdownMenuItem key={index}>{item}</SDropdownMenuItem>
-                ))}
-              </SDropdownMenu>
-            )}
-          </SCallMyProductBtn>
         </STittleAndBtn>
         <SImportantText>*필수 항목</SImportantText>
       </SHeader>
@@ -259,7 +224,6 @@ const SMain = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  //   gap: 30px;
 `;
 
 const SHeader = styled.div`
@@ -285,25 +249,6 @@ const STitle = styled.p`
   font-size: 32px;
   font-weight: 700;
   line-height: normal;
-`;
-
-const SCallMyProductBtn = styled.button`
-  display: flex;
-  width: 143px;
-  height: 41px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: 10px;
-  background: var(--primary, #e9d5ff);
-`;
-
-const SBtnText = styled.p`
-  color: var(--white, #fff);
-  text-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
-  font-family: Inter;
-  font-weight: 700;
 `;
 
 const SImportantText = styled.p`
@@ -348,7 +293,6 @@ const SImportantStar = styled.span`
 
 const SSellTitleInput = styled.input`
   color: #000;
-  // text-align: center;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
@@ -441,12 +385,10 @@ const SContentBorder = styled.div`
 
 const SSellContentInput = styled.textarea`
   color: #000;
-  // text-align: center;
   height: 400px;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
-  // overflow: hidden;
   resize: none;
 `;
 
@@ -503,23 +445,4 @@ const SBtnWritePost = styled.div`
   font-weight: 700;
   line-height: 20px; /* 142.857% */
   letter-spacing: -0.14px;
-`;
-
-const SDropdownMenu = styled.div`
-  position: absolute;
-  background: var(--primary, #e9d5ff);
-  z-index: 1;
-  width: 143px;
-  padding: 11px 16px;
-  border-radius: 10px;
-  top: 64px;
-`;
-
-const SDropdownMenuItem = styled.div`
-  height: 41px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  color: white;
 `;

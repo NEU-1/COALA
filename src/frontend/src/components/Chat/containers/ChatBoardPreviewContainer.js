@@ -3,6 +3,7 @@ import ChatBoardPreview from '../components/ChatBoardPreview';
 import { requestGet, setToken } from '../../../lib/api/api';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 const ChatBoardPreviewContainer = ({ myId, inform }) => {
   console.log('dd');
@@ -10,6 +11,9 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
   const [consumer, setConsumer] = useState(null);
   const [post, setPost] = useState(null);
   const [imgURL, setImgURL] = useState(null);
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
+
   // 제공자 or 이용자 게시글 정보를 얻어와서 props로 전달
   useEffect(() => {
     setToken();
@@ -45,20 +49,15 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
 
   const onClickPost = () => {
     if (inform.room.pp_id) {
-      window.parent.postMessage(
-        { msg: 'moveStorePage', id: post.id },
-        'http://localhost:3000'
-      );
+      window.parent.postMessage({ msg: 'moveStorePage', id: post.id }, '*');
     } else if (inform.room.pr_id) {
-      window.parent.postMessage(
-        { msg: 'moveAuctionPage', id: post.id },
-        'http://localhost:3000'
-      );
+      window.parent.postMessage({ msg: 'moveAuctionPage', id: post.id }, '*');
     }
   };
 
   const onClickContractBtn = () => {
     console.log(inform.room.id);
+    forceUpdate();
     window.parent.postMessage(
       {
         msg: 'openContract',
@@ -69,20 +68,23 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
         chatRoomId: inform.room.id,
         contractId: null,
       },
-      'http://localhost:3000'
+      '*'
     );
   };
 
   const onClickAcceptBtn = () => {
-    window.parent.postMessage({
-      msg: 'openContract',
-      post: post,
-      producer: producer,
-      consumer: consumer,
-      myId: myId,
-      chatRoomId: inform.room.id,
-      contractId: inform.room.contract_id,
-    });
+    window.parent.postMessage(
+      {
+        msg: 'openContract',
+        post: post,
+        producer: producer,
+        consumer: consumer,
+        myId: myId,
+        chatRoomId: inform.room.id,
+        contractId: inform.room.contract_id,
+      },
+      '*'
+    );
   };
 
   return (

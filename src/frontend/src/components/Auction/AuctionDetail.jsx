@@ -8,7 +8,6 @@ import { requestGet, requestDel, setToken } from "../../lib/api/api";
 import { login } from "../../store/LoginSlice";
 
 const AuctionDetail = () => {
-  console.log("렌더링");
   const [showModal, setShowModal] = useState(false);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [currentProposalIndex, setCurrentProposalIndex] = useState(0);
@@ -21,12 +20,10 @@ const AuctionDetail = () => {
 
   useEffect(() => {
     setToken();
-    console.log("렌더링2");
     requestGet(`auction/detail?id=${postId}`)
       .then((res) => {
         setPostData(res.data);
         setIsAuthor(res.data.mine);
-        console.log(res);
       })
       .catch((err) => {
         console.error(err);
@@ -56,13 +53,10 @@ const AuctionDetail = () => {
     setToken();
     requestDel(`auction/delete?id=${postId}`)
       .then((res) => {
-        console.log(res);
-        console.log("삭제됨");
         navigate("/auction");
       })
       .catch((err) => {
         console.error(err);
-        console.log("본인 글만 삭제 가능");
       });
   };
 
@@ -91,7 +85,6 @@ const AuctionDetail = () => {
       })
       .catch((err) => {
         console.error(err);
-        console.log("본인글만 수정 가능");
       });
   };
   const handleBackdropClick = () => {
@@ -121,7 +114,6 @@ const AuctionDetail = () => {
       );
     }
   };
-  console.log(isAuthor);
 
   return (
     <SMain>
@@ -256,8 +248,6 @@ export default AuctionDetail;
 const SMain = styled.div`
   margin-top: 170px;
   display: flex;
-  // weight: 800px;
-  // height: 1024px;
   padding: 10px;
   flex-direction: column;
   align-items: center;
@@ -493,7 +483,7 @@ const STextSmall = styled.p`
 const SCardModal = styled.div`
   display: flex;
   align-items: center;
-  width: 66%;
+  width: 50%;
   height: 100%;
   padding: 0 20px;
 `;
@@ -515,5 +505,5 @@ const SFormModal = styled.div`
 `;
 
 const SBtnImg = styled.img`
-  height: 250px;
+  height: 70px;
 `;

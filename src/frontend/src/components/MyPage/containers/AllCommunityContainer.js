@@ -51,7 +51,9 @@ const AllCommunityContainer = () => {
 
   return (
     <AllCommunity
-      list={list}
+      list={list.sort(function (a, b) {
+        return new Date(b.createAt) - new Date(a.createAt);
+      })}
       category={category}
       onClickItem={onClickItem}
       showTech={showTech}
