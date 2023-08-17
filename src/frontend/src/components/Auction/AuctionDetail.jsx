@@ -129,7 +129,11 @@ const AuctionDetail = () => {
         <>
           <SContent>
             <SProfile onClick={goProfile}>
-              <SProfileImg src={images.plus} alt="" />
+              {postData.url ? (
+                <SProfileImg src={postData.url} alt="" />
+              ) : (
+                <SProfileImg src={images.default_profile} alt="" />
+              )}
               <STextSmall>{postData.auctionPost.author}</STextSmall>
             </SProfile>
             <SDayAndCost>
