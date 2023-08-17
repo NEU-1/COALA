@@ -2,14 +2,15 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
 import { images } from '../../assets/images';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import logo from './logo.png'
 
 const Header = ({isLogin, nickname}) => {
   return (
     <SLayout>
       <SContainer>
         <SLogoBox>
-          <STitle to="/">coala</STitle>
+        <Link to="/"><STitle src={`${logo}`} alt="사진" /></Link>
           <SSearchBar>
             <img src={`${images.search}`} alt="" />
             <input type="text" placeholder="대여하러 가보자~" />
@@ -17,10 +18,10 @@ const Header = ({isLogin, nickname}) => {
           {isLogin ? <Link to="/my-page/store-and-auction">{nickname}</Link> : <SLoginLink to="/login">{nickname}</SLoginLink>}
         </SLogoBox>
         <SNav>
-          <li><SNavLink to="/store">제공자</SNavLink></li>
-          <li><SNavLink to="/auction">이용자</SNavLink></li>
-          <li><SNavLink to="/tech">커뮤니티</SNavLink></li>
-          <li>검수</li>
+          <li><Link to="/store">Store</Link></li>
+          <li><Link to="/auction">Auction</Link></li>
+          <li><Link to="/tech">Tech</Link></li>
+          <li><Link to="/free">Free</Link></li>
         </SNav>
       </SContainer>
     </SLayout>
@@ -57,7 +58,7 @@ const SLogoBox = styled.div`
   padding: 0px 100px;
 `;
 
-const STitle = styled(Link)`
+const STitle = styled.img`
   color: ${colors.primary};
   font-size: 64px;
   font-weight: 700;

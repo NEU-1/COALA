@@ -57,8 +57,9 @@ const RootNavigation = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route index path="/" element={<Home />} />
+
         <Route element={<Layout />}>
-          <Route index path="/" element={<Home />} />
           <Route path="/my-page" element={<MyPageContainer />}>
             <Route
               path="/my-page/modify-userinfo"
@@ -116,7 +117,13 @@ const RootNavigation = () => {
         </Route>
 
         <Route path="*" element={<NotFound />} />
+        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
+        {/* <Route path="/selllistboard" element={<SellListBoard />} /> */}
+
+        {/* <Route path="*" element={<NotFound />} /> */}
+
       </Routes>
+      
     </BrowserRouter>
   );
 };

@@ -10674,10 +10674,17 @@ svgo@^2.7.0:
     picocolors "^1.0.0"
     stable "^0.1.8"
 
+<<<<<<< HEAD
+sweetalert2@^11.7.23:
+  version "11.7.23"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-11.7.23.tgz#058046c174b89ce9e70556f565a4262dd3c7a6d9"
+  integrity sha512-zhc2Jc/coeUFPCM7LyVaUddbSz1Av9/EgQVXxZVPre8cwJrTZXCOEAboCT11StS3vaFTio74cumWustmNzDOEw==
+=======
 sweetalert2@^11.7.20:
   version "11.7.20"
   resolved "https://registry.npmjs.org/sweetalert2/-/sweetalert2-11.7.20.tgz"
   integrity sha512-GdU1TkiLpGGC0mcPV8bKmS7G0MR7caxambPkEU8zyepRSNR9EaEvIjNhX5QNkL0VFVzHbI3l12NtuEklkJ0D4Q==
+>>>>>>> feature/develop/front
 
 symbol-tree@^3.2.4:
   version "3.2.4"
