@@ -14,7 +14,14 @@ RUN apk --no-cache add build-base \
     jpeg-dev \
     pango-dev \
     giflib-dev \
-    librsvg-dev
+    librsvg-dev\
+    build-essential \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev
+
 # RUN npm config set python3 /usr/bin/python3
 ENV PYTHON=/usr/bin/python3
 RUN npm ci
@@ -48,6 +55,21 @@ ENV NODE_ENV production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+RUN apk update && apk add --no-cache python3 make g++ && apk add --no-cache pkgconfig pixman-dev
+RUN apk --no-cache add build-base \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    giflib-dev \
+    librsvg-dev\
+    build-essential \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev
+
 
 COPY --from=builder /app/public ./public
 
