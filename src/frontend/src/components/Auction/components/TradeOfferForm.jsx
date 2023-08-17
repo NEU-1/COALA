@@ -224,6 +224,7 @@ const STMTCPDiv = styled.div`
 
 const STMTDiv = styled.div`
   display: flex;
+  width: 100%;
   padding: 0px 25px;
   flex-direction: column;
   align-items: center;
@@ -263,7 +264,7 @@ const SMainP = styled.p`
 
 const STitleAndMainTextInput = styled.input`
   display: flex;
-  width: 300px;
+  flex-grow: 1;
   height: 19px;
   padding: 16px;
   align-items: center;

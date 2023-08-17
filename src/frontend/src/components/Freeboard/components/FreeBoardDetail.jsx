@@ -217,6 +217,15 @@ const unlikeBtn = async() => {
         <Like>좋아요{board.goodCount}</Like>
         </LIkeconteiner>
       </Container>
+      {(board.mine ? (
+            <SBtnContainer>
+            <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
+            <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
+            </SBtnContainer> 
+          ) : (
+            <></>
+          ))}
+      
       <div>댓글{board.commentCount}</div>
         <CommentSlayout>
         <Writecontainer>
@@ -260,7 +269,7 @@ const unlikeBtn = async() => {
         </Subcommentupdatebox>   
       </Contentbox>
     ))}
-      <Pagination
+      {posts.length > 0 && <Pagination
           activePage={activepage}
           itemsCountPerPage={5}
           totalItemsCount={maxpage*5}
@@ -268,18 +277,7 @@ const unlikeBtn = async() => {
           prevPageText={"‹"}
           nextPageText={"›"}
           onChange={handlePageChange}
-        />
-      {(board.mine ? (
-            <SBtnContainer>
-            <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
-            <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
-            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
-            </SBtnContainer> 
-          ) : (
-            <SBtnContainer>
-            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
-            </SBtnContainer>
-          ))}
+        />}
     </div>
 
   </Slayout>)
@@ -305,47 +303,39 @@ const Slayout = styled.div`
 `
 
 const SBtn1 = styled.div`
-  font-size: 8px;
   display: flex;
-  height: 50px;
-  padding: 20px 20px;
+  width: 70px;
+  height: 30px;
   justify-content: center;
   align-items: center;
-  background-color: #E9D5FF;
   border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  cursor: pointer;`
+  background: #e9d5ff;
+  color: white;
+  text-align: center;
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: 700;
+  `
 
 const SBtn2 = styled.div`
-  font-size: 8px;
   display: flex;
-  height: 50px;
-  padding: 20px 20px;
+  width: 70px;
+  height: 30px;
   justify-content: center;
   align-items: center;
-  background-color: #BD84FC;
   border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  cursor: pointer;`
-
-const SBtn3 = styled.div`
-  font-size: 8px;
-  display: flex;
-  height: 50px;
-  padding: 10px 10px;
-  justify-content: center;
-  align-items: center;
-  background-color: #D9D9D9;
-  border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  cursor: pointer;`
+  background: #BD84FC;
+  color: white;
+  text-align: center;
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: 700;`
 
 const SBtnContainer = styled.div`
 display: flex;
 flex-direction: row;
 align-items: end;
 padding: 10px;
-margin-bottom: 100px;
 justify-content: end;
 align-items: center;
 gap: 10px;
@@ -369,18 +359,7 @@ const LIkeconteiner = styled.div`
 
 const Detailconteiner = styled.div`
   margin-bottom: 200px;
-`
-
-const SImgs = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-`
-
-const SImg = styled.img`
-width: 800px;
-height: 372px;
+  margin-left: 5px;
 `
 const Titlecontainer = styled.div`
   display: flex;
@@ -391,7 +370,7 @@ const Createat = styled.div`
   font-size: 10px;
   margin-left: 10px;
   padding-top: 5px;
-  
+  margin-bottom: 10px;
 `
 
 const Contentbox = styled.div`
@@ -436,7 +415,7 @@ const Titletext2 = styled.div`
 
 const Container = styled.div`
   border-bottom: 1px solid #e9d5ff;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 `
 const Like = styled.div`
   font-size: 15px
@@ -471,42 +450,6 @@ const CommentTextinput = styled.input`
     border: 1px solid #d9d9d9;
 `
 
-const SBtn = styled.div`
-  display: flex;
-  height: 50px;
-  width: 50px;
-  justify-content: center;
-  align-items: center;
-  margin-left: 10px;
-  margin-right: 13px;
-  gap: 10px;
-  border-radius: 5px;
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
-  background-color:#e9d5ff;
-  color: white;
-  cursor: pointer;
-  `
-
-const SBtndelete = styled.div`
-  display: flex;
-  height: 30px;
-  width: 40px;
-  justify-content: center;
-  align-items: center;
-  margin-left: 10px;
-  margin-right: 10px;
-  gap: 10px;
-  border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color:#e9d5ff;
-  color: white;
-  cursor: pointer;
-  `
-
-  const Textinput = styled.input`
-    font-size: 12px;
-    border: 1px black;
-`
   const Commenttitlebox = styled.div`
     display: flex;
     flex-direction: column;
@@ -545,9 +488,7 @@ const SBtndelete = styled.div`
     width: 70px;
     margin-left: 15px;
 `
-  const LikeBtn = styled.div`
-    padding: 10px;
-  `
+
   const SProfileImg = styled.img`
   width: 84px;
   height: 84px;

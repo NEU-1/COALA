@@ -30,7 +30,7 @@ const SLayout = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100vw;
+  width: 100%;
   position: absolute;
   top: 0;
   left: 0;
