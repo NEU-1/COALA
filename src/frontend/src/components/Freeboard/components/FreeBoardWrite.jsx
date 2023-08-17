@@ -68,7 +68,7 @@ function FreeBoardWrite() {
     title: '',
     detail: '',
     imagePath: '',
-    isAnonymous: false,
+    anonymous: false,
   });
 
   const { title, detail } = board;
@@ -98,7 +98,7 @@ function FreeBoardWrite() {
       const params = {
         title: board.title,
         detail: editorContent2,
-        isAnonymous: board.isAnonymous,
+        isAnonymous: board.anonymous,
         imagePath: Imagepath,
       }
       console.log(Imagepath)

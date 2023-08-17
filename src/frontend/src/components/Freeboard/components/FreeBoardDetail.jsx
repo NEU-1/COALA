@@ -24,15 +24,12 @@ const FreeBoardDetail = () => {
   const moveToUpdate = () => {
     navigate('/free/update/' + postid);
   };
-  const [postData, setPostData] = useState();
-  const [pictures, setPictures] = useState([]); 
-  const [pictureNum, setPictureNum] = useState(0);
   const [like, setlike] = useState(false);
   const [login, setLogin] = useState(false);
   const [currentUser, setCurrentUser] = useState("현재 로그인한 사용자 정보");
   const [postAuthor, setPostAuthor] = useState("게시글 작성자 정보");
   const isAuthor = currentUser === postAuthor;
-  const [showModal, setShowModal] = useState(false);
+
   
   const deleteBoard = async () => {
     if (window.confirm('게시글을 삭제하시겠습니까?')) {
