@@ -86,7 +86,7 @@ const StoreUpdate = () => {
           const initialImageList = res.data.storeImageList.map(
             (imageData) => imageData.url
           );
-          console.log(initialImageList);
+          console.log(initialImageList)
           setImageList((prev) => [...initialImageList]);
         }
         setIsLoading(false);
@@ -159,24 +159,6 @@ const StoreUpdate = () => {
     }
     return new Blob([u8arr], { type: mime });
   };
-  const urls = [
-    "https://coala.s3.ap-northeast-2.amazonaws.com/store/021/001",
-    "https://coala.s3.ap-northeast-2.amazonaws.com/store/021/002",
-  ];
-
-  async function urlsToBlobs(urls) {
-    const blobs = [];
-    for (let url of urls) {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      blobs.push(blob);
-    }
-    return blobs;
-  }
-
-  urlsToBlobs(urls).then((blobs) => {
-    console.log(blobs); // 이곳에 Blob 객체들이 배열로 담겨있습니다.
-  });
 
   const cors = "https://cors-anywhere.herokuapp.com/";
   async function urlsToBlobs(urls) {
