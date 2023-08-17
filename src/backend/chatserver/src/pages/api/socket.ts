@@ -26,7 +26,7 @@ const SocketHandler = (req : NextApiRequest, res : NextApiResponseServerIO) => {
     const io = new Server(res.socket.server as any, {
       path: `/${name}/socket.io`,
       cors: {
-        origin: "http://localhost:3000",
+        origin: ["http://localhost:3000", "http://i9d108.p.ssafy.io:3000"],
         methods : ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true
