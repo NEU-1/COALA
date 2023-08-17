@@ -1,10 +1,12 @@
 import { readQuery } from '@/db/mysql/query/crud';
 import {Read as readUser} from '@/models/user';
 import { buildConditionQuery } from '@/lib/queryBuilder';
-import { createCanvas, loadImage } from 'canvas';
+import { createCanvas, loadImage, registerFont } from 'canvas';
 
 
-// registerFont('public/VarelaRound-Regular.ttf', { family: 'VarelaRound' });
+registerFont('public/VarelaRound-Regular.ttf', { family: 'VarelaRound' });
+registerFont('public/NanumSquareRoundR.ttf', { family: 'NanumSquare' });
+
 
 function formatDate(dateString : string) {
     const date = new Date(dateString);
@@ -28,7 +30,7 @@ export default async (contract_id : Number | BigInt) => {
     const [producer] : member[] = await readUser({id : result.producer_id});
     const [consumer] : member[] = await readUser({id : result.consumer_id});
 
-    context.font = '30px "Noto Sans KR"';
+    context.font = '30px "NanumSquare"';
     context.fillStyle = '#000000';
     const pd_name = producer.name;
     const cs_name = consumer.name
@@ -41,7 +43,7 @@ export default async (contract_id : Number | BigInt) => {
     context.fillText(result.productName, 223, 282);
     
     // 계약기간
-    context.font = '25px "Noto Sans KR"';
+    context.font = '25px "NanumSquare"';
     const rental_at = formatDate(result.rental_at);
     const metrics_rental = context.measureText(rental_at);
     const textWidth_rental = metrics_rental.width;
@@ -53,7 +55,7 @@ export default async (contract_id : Number | BigInt) => {
     context.fillText(`[${result.period} 일]`, image.width - 150, 344);
 
     //대여료
-    context.font = '30px "Noto Sans KR"';
+    context.font = '30px "NanumSquare"';
     const rental_cost = `${result.rental_cost}`;
     const metrics_rt = context.measureText(rental_cost);
     const textWidth_rt = metrics_rt.width;
