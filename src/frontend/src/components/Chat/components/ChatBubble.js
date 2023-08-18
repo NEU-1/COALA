@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
 
-const ChatBubble = ({ message, memberId, displayDate, today }) => {
+const ChatBubble = ({ message, memberId, otherImg, displayDate, today }) => {
   // console.log(message)
   const dateObject = new Date(message.created_at);
   dateObject.setHours(dateObject.getHours() - 9);
@@ -22,11 +22,7 @@ const ChatBubble = ({ message, memberId, displayDate, today }) => {
         </SMyBubble>
       ) : (
         <SOtherBubble>
-          <img
-            src={`${images.chatModal.default_profile}`}
-            alt="profile"
-            className="profile"
-          />
+          <img src={otherImg} alt="profile" className="profile" />
           <SOtherBubbleContent>{message.text_content}</SOtherBubbleContent>
           <SSendTime>{formattedTime}</SSendTime>
         </SOtherBubble>
@@ -54,7 +50,7 @@ const SMyBubbleContent = styled.div`
   background-color: ${colors.middlePrimary};
   border-radius: 10px 10px 0px 10px;
   color: white;
-  text-align: right;
+  text-align: left;
   font-size: 15px;
   font-weight: 400;
   word-break: break-all;

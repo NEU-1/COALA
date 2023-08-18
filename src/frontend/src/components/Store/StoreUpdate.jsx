@@ -21,7 +21,6 @@ const SelectButton = ({ itemList, activeIndex, onClickHandler }) =>
   ));
 
 const StoreUpdate = () => {
-  const [showDropdown, setShowDropdown] = useState(false);
   const [calendarDay, setCalendarDay] = useState(new Date());
   const [calendar, setCalendar] = useState(false);
   const [imageList, setImageList] = useState([]);
@@ -50,7 +49,6 @@ const StoreUpdate = () => {
   useEffect(() => {
     requestGet(`store/detail?id=${postId}`)
       .then((res) => {
-        console.log(res);
         setPostData(res.data);
         if (res.data) {
           const {
@@ -82,11 +80,9 @@ const StoreUpdate = () => {
             month,
             date,
           });
-          console.log(res.data.storeImageList);
           const initialImageList = res.data.storeImageList.map(
             (imageData) => imageData.url
           );
-          console.log(initialImageList)
           setImageList((prev) => [...initialImageList]);
         }
         setIsLoading(false);
@@ -239,15 +235,6 @@ const StoreUpdate = () => {
     });
   };
   const goSellBtn = () => {
-    console.log({
-      title,
-      content,
-      minRentalDay,
-      maxRentalDay,
-      rentalFee,
-      deposit: deposit || "0",
-      productSelect,
-    });
 
     const validation = validateForm();
 
@@ -271,15 +258,10 @@ const StoreUpdate = () => {
 
       for (let i = 0; i < imageList.length; i++) {
         formData.append("multipartFile", imageList[i]);
-        console.log("multipartFile", imageList[i]);
-      }
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1].type);
       }
       requestPost2(`store/update?id=${postId}`, formData)
         .then((response) => {
           displayMessage("success", "게시글 수정됨");
-          console.log(response);
           navigate(`/store/${postId}`);
         })
         .catch((error) => {
@@ -510,7 +492,6 @@ const SSellHeader = styled.div`
 
 const SSellHeaderPading = styled.div`
   display: flex;
-  // align-items: flex-start;
   gap: 30px;
 `;
 
@@ -532,7 +513,6 @@ const SImportantStar = styled.span`
 
 const SSellTitleInput = styled.input`
   color: #000;
-  // text-align: center;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
@@ -680,12 +660,10 @@ const SContentBorder = styled.div`
 
 const SSellContentInput = styled.textarea`
   color: #000;
-  // text-align: center;
   height: 400px;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
-  // overflow: hidden;
   resize: none;
 `;
 

@@ -13,6 +13,7 @@ import { BsX } from "react-icons/bs"
 import CCheckBox from '../../Common/CCheckBox';
 import './Pagination.css';
 import Pagination from "react-js-pagination";
+import { images } from "../../../assets/images";
 
 
 
@@ -127,7 +128,6 @@ const TechBoardDetail = () => {
       // 서버에 보낼 데이터 구조를 맞추기 위해 board 객체를 변경합니다.
       const response = await requestPost(`tech/comment/save/${postid}`, params);
       console.log(response);
-      alert('등록되었습니다.');
       getBoardList();
       
       
@@ -200,7 +200,11 @@ const commentDelete = async (commentId) => {
       board && (<Slayout>
       <Container>
         <Profilebox>
-          <div>image</div>
+        {board.memberId.imagePath ? (
+            <SProfileImg src={board.memberId.imagePath } alt="" />
+          ) : (
+            <SProfileImg src={images.default_profile} alt="" />
+          )}
         <Profiletext>{board.memberId.nickname}</Profiletext>
       
         </Profilebox>
@@ -225,6 +229,14 @@ const commentDelete = async (commentId) => {
         <Like>좋아요{board.goodCount}</Like>
         </LIkeconteiner>
       </Container>
+      {(board.mine ? (
+            <SBtnContainer>
+            <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
+            <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
+            </SBtnContainer> 
+          ) : (
+            <></>
+          ))}
         <div>댓글{board.commentCount}</div>
         <CommentSlayout>
           <Writecontainer>
@@ -235,7 +247,7 @@ const commentDelete = async (commentId) => {
                     onChange={onChangeAnonymous}
                   />
             </CCheckBoxcontainer>
-            <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} placeholder="  내용을 입력하세요." />
+            <CommentTextinput type="text" name="commentcontent" value={commentcontent} onChange={onChange} placeholder="내용을 입력하세요." />
             </Writecontainer>
         <BsSend size={30} color='#e9d5ff' className='sendbtn' onClick={saveCommentBoard}></BsSend>
       </CommentSlayout>  
@@ -270,7 +282,7 @@ const commentDelete = async (commentId) => {
         </Contentbox>
       ))}
       
-      <Pagination
+      {posts.length > 0 && <Pagination
           activePage={activepage}
           itemsCountPerPage={5}
           totalItemsCount={maxpage*5}
@@ -278,18 +290,7 @@ const commentDelete = async (commentId) => {
           prevPageText={"‹"}
           nextPageText={"›"}
           onChange={handlePageChange}
-        />
-        {(board.mine ? (
-            <SBtnContainer>
-            <SBtn1 onClick={moveToUpdate}>수정</SBtn1>
-            <SBtn2 onClick={deleteBoard}>삭제</SBtn2>
-            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
-            </SBtnContainer> 
-          ) : (
-            <SBtnContainer>
-            <SBtn3 onClick={moveToList}>뒤로가기</SBtn3>
-            </SBtnContainer>
-          ))}
+        />}
     </div>
   </Slayout>)
   );
@@ -320,47 +321,39 @@ const Middbox = styled.div`
 `
 
 const SBtn1 = styled.div`
-  font-size: 8px;
   display: flex;
-  height: 50px;
-  padding: 20px 20px;
+  width: 70px;
+  height: 30px;
   justify-content: center;
   align-items: center;
-  background-color: #E9D5FF;
   border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  cursor: pointer;`
+  background: #e9d5ff;
+  color: white;
+  text-align: center;
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: 700;
+  `
 
 const SBtn2 = styled.div`
-  font-size: 8px;
   display: flex;
-  height: 50px;
-  padding: 20px 20px;
+  width: 70px;
+  height: 30px;
   justify-content: center;
   align-items: center;
-  background-color: #BD84FC;
   border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  cursor: pointer;`
-
-const SBtn3 = styled.div`
-  font-size: 8px;
-  display: flex;
-  height: 50px;
-  padding: 10px 10px;
-  justify-content: center;
-  align-items: center;
-  background-color: #D9D9D9;
-  border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  cursor: pointer;`
+  background: #BD84FC;
+  color: white;
+  text-align: center;
+  text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: 700;`
 
 const SBtnContainer = styled.div`
 display: flex;
 flex-direction: row;
 align-items: end;
 padding: 10px;
-margin-bottom: 100px;
 justify-content: end;
 align-items: center;
 gap: 10px;
@@ -372,7 +365,8 @@ const Profiletext = styled.div`
   width: 800px;
   margin-bottom: 3px;
   font-size: 15px;
-  padding-bottom: 15px;
+  padding-left: 15px;
+  border: 1px;
 
 `
 
@@ -384,19 +378,9 @@ const LIkeconteiner = styled.div`
 
 const Detailconteiner = styled.div`
   margin-bottom: 200px;
+  margin-left: 5px;
 `
 
-const SImgs = styled.div`
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-`
-
-const SImg = styled.img`
-width: 800px;
-height: 372px;
-`
 const Titlecontainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -404,6 +388,7 @@ const Titlecontainer = styled.div`
 const Createat = styled.div`
   font-size: 10px;
   margin-left: 15px;
+  margin-bottom: 10px;
 `
 
 const Contentbox = styled.div`
@@ -442,12 +427,11 @@ const Titletext2 = styled.div`
   width: 100px;
   margin-left: 10px;
   display: flex;
-
 `
 
 const Container = styled.div`
   border-bottom: 1px solid #e9d5ff;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 `
 const Like = styled.div`
   font-size: 15px
@@ -480,44 +464,10 @@ const CommentTextinput = styled.textarea`
     width: 650px;
     border: 1px solid #d9d9d9;
     resize: none;
+    padding: 10px;
 `
 
-const SBtn = styled.div`
-  display: flex;
-  height: 50px;
-  width: 50px;
-  justify-content: center;
-  align-items: center;
-  margin-left: 10px;
-  margin-right: 13px;
-  gap: 10px;
-  border-radius: 5px;
-  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
-  background-color:#e9d5ff;
-  color: white;
-  cursor: pointer;
-  `
 
-const SBtndelete = styled.div`
-  display: flex;
-  height: 30px;
-  width: 40px;
-  justify-content: center;
-  align-items: center;
-  margin-left: 10px;
-  margin-right: 10px;
-  gap: 10px;
-  border-radius: 7px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  background-color:#e9d5ff;
-  color: white;
-  cursor: pointer;
-  `
-
-  const Textinput = styled.input`
-    font-size: 12px;
-    border: 1px black;
-`
   const Commenttitlebox = styled.div`
     display: flex;
     flex-direction: column;
@@ -539,7 +489,12 @@ const SBtndelete = styled.div`
   `
   const Profilebox = styled.div`
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     border-bottom: 1px solid #e9d5ff;
+    padding-bottom: 10px;
+;
   ` 
 
   const Minititlebox = styled.div`
@@ -555,3 +510,8 @@ const SBtndelete = styled.div`
   const LikeBtn = styled.div`
     padding: 10px;
   `
+  const SProfileImg = styled.img`
+  width: 84px;
+  height: 84px;
+  border-radius: 84px;
+`;

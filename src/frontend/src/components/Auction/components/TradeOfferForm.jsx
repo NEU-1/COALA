@@ -37,10 +37,7 @@ const TradeOfferForm = ({ onClose }) => {
     setState((prev) => ({ ...prev, [name]: value }));
   };
 
-  console.log(imageList);
-
   const dataURLtoBlob = (dataURL) => {
-    console.log(dataURL);
     const arr = dataURL.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -96,7 +93,6 @@ const TradeOfferForm = ({ onClose }) => {
     }
     requestPost2(`auction/apply?id=${postId}`, formData)
       .then((res) => {
-        console.log(res, "제안 갔음");
         onClose && onClose();
       })
       .catch((err) => {
@@ -228,6 +224,7 @@ const STMTCPDiv = styled.div`
 
 const STMTDiv = styled.div`
   display: flex;
+  width: 100%;
   padding: 0px 25px;
   flex-direction: column;
   align-items: center;
@@ -267,7 +264,7 @@ const SMainP = styled.p`
 
 const STitleAndMainTextInput = styled.input`
   display: flex;
-  width: 300px;
+  flex-grow: 1;
   height: 19px;
   padding: 16px;
   align-items: center;

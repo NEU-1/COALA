@@ -9,9 +9,6 @@ import { requestPost, setToken } from "../../lib/api/api";
 const AuctionWrite = () => {
   const product = ["키보드", "마우스", "헤드폰", "태블릿"];
   const day = ["1일", "7일", " 14일", "30일"];
-
-  const [mySell, setMySell] = useState([111111, 222222, 33333]);
-  const [showDropdown, setshowDropdown] = useState(false);
   const [title, setTitle] = useState("");
   const [minRentalDay, setMinRentalDay] = useState("");
   const [content, setContent] = useState("");
@@ -79,15 +76,7 @@ const AuctionWrite = () => {
   };
 
   const goSellBtn = () => {
-    console.log({
-      title,
-      content,
-      minRentalDay,
-      productSelect,
-    });
-
     const validation = validateForm();
-    console.log(validation);
 
     if (validation.isValid) {
       setToken();
@@ -99,8 +88,6 @@ const AuctionWrite = () => {
       })
         .then((response) => {
           displayMessage("success", "게시글 등록됨");
-          console.log(response);
-          console.log(content);
           navigate("/auction");
         })
         .catch((error) => {
@@ -213,7 +200,6 @@ const SMain = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  //   gap: 30px;
 `;
 
 const SHeader = styled.div`
@@ -283,7 +269,6 @@ const SImportantStar = styled.span`
 
 const SSellTitleInput = styled.input`
   color: #000;
-  // text-align: center;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
@@ -390,12 +375,10 @@ const SContentBorder = styled.div`
 
 const SSellContentInput = styled.textarea`
   color: #000;
-  // text-align: center;
   height: 400px;
   font-size: 20px;
   font-weight: 700;
   width: 600px;
-  // overflow: hidden;
   resize: none;
 `;
 

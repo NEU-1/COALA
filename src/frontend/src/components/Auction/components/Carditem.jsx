@@ -16,7 +16,6 @@ export default function ImgMediaCard({
   deposit,
   bargaining,
 }) {
-  console.log(img);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const handlePictureChange = (direction) => {
     const totalPictures = img.length;
@@ -45,7 +44,7 @@ export default function ImgMediaCard({
         dispatch(openChatModal());
         setTimeout(()=>{
           const chatModal = document.getElementById("chatModal");
-          chatModal.src=`/chat/${res.data.result.name}`; // roomID 받아오기
+          chatModal.src=`/chat/${res.data.result.name}`; 
         }, 100)
       })
   };
@@ -87,7 +86,6 @@ export default function ImgMediaCard({
 const SCard = styled.div`
   display: flex;
   width: 550px;
-  // height: 530px;
   flex-direction: column;
   align-items: center;
   gap: 12px;
@@ -107,7 +105,7 @@ const SImgDiv = styled.div`
 `;
 
 const SButton = styled.button`
-  // padding: 120px 20px;
+  padding: 100px 20px;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -119,7 +117,6 @@ const SButton = styled.button`
 const SImg = styled.img`
   display: flex;
   height: 250px;
-  // width: 460px;
   justify-content: flex-end;
   align-items: flex-start;
   gap: 10px;
@@ -225,5 +222,5 @@ const SChateImg = styled.img`
 `;
 
 const SBtnImg = styled.img`
-height: 50px;
+height: 25px;
 `

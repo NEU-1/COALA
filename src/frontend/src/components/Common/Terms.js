@@ -40,6 +40,7 @@ const SContent = styled.div`
   font-size: 16px;
   font-weight: 400;
   overflow: auto;
+  white-space:pre-wrap;
 `;
 
 const SCheckbox = styled.div`

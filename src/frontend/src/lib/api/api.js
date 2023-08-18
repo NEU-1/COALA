@@ -28,7 +28,13 @@ export const getAccessToken = async () => {
   await axios.get(baseUrl + `member/info`, headers).then((res) => {
     if (res.data.baseResponseDto.statusCode === 200) {
       localStorage.setItem('access_token', res.headers['access_token']);
+      localStorage.setItem('login', true);
       setTimeout(getAccessToken, ACCESS_TOKEN_EXPIRE_TIME);
+    } else {
+      localStorage.removeItem('login');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('access_token');
+      window.location.href = '/';
     }
   });
 };
