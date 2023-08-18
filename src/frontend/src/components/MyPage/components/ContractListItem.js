@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../../assets/colors';
 import { images } from '../../../assets/images';
@@ -27,8 +27,20 @@ const ContractListItem = ({ item, myId, onChangeRender }) => {
     });
   };
 
+  const downloadLink = useRef(null);
+
+  const onClickTr = (status) => {
+    if (status === -1) {
+      downloadLink.current.click();
+    }
+  };
+
   return (
-    <STr>
+    <STr
+      onClick={() => {
+        onClickTr(item.status);
+      }}
+    >
       <td className="product">
         <div>{item.productName}</div>
       </td>
@@ -48,7 +60,9 @@ const ContractListItem = ({ item, myId, onChangeRender }) => {
             <SPayment src={`${images.payment}`} />
           </a>
         ) : (
-          <SStatus status={`${item.status}`}>거래 완료</SStatus>
+          <a href={`${item.contract_path}`} download ref={downloadLink}>
+            <SStatus status={`${item.status}`}>거래 완료</SStatus>
+          </a>
         )}
       </td>
     </STr>
