@@ -29,18 +29,22 @@ const ChatBoardPreviewContainer = ({ myId, inform }) => {
         }
       });
     } else if (inform.room.pr_id) {
-      requestGet(`auction/detail?id=${inform.room.pr_id}`).then((res) => {
-        if (res.data.baseResponseDto.statusCode === 200) {
-          setPost(res.data.auctionPost);
-          if (res.data.mine) {
-            setProducer(inform.other);
-            setConsumer(inform.user);
-          } else {
-            setProducer(inform.user);
-            setConsumer(inform.other);
+      requestGet(`auction/detail?id=${inform.room.pr_id}`)
+        .then((res) => {
+          if (res.data.baseResponseDto.statusCode === 200) {
+            setPost(res.data.auctionPost);
+            if (res.data.mine) {
+              setProducer(inform.other);
+              setConsumer(inform.user);
+            } else {
+              setProducer(inform.user);
+              setConsumer(inform.other);
+            }
           }
-        }
-      });
+        })
+        .catch((err) => {
+          setPost(null);
+        });
     }
   }, []);
 

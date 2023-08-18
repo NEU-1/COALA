@@ -29,8 +29,8 @@ const ContractListItem = ({ item, myId, onChangeRender }) => {
 
   const downloadLink = useRef(null);
 
-  const onClickTr = (status) => {
-    if (status === -1) {
+  const onClickTr = (status, payed) => {
+    if (status === -1 && payed === true) {
       downloadLink.current.click();
     }
   };
@@ -38,7 +38,7 @@ const ContractListItem = ({ item, myId, onChangeRender }) => {
   return (
     <STr
       onClick={() => {
-        onClickTr(item.status);
+        onClickTr(item.status, item.payed);
       }}
     >
       <td className="product">
