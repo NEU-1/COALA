@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import { colors } from '../../assets/colors';
 import TermsContainer from '../Common/containers/TermsContainer';
 import SignatureContainer from './containers/SignatureContainer';
 import CButton from '../Common/CButton';
+
+import DaeYou from '../../assets/DaeYou.txt'
+import PyoJun from '../../assets/PyoJun.txt'
 
 const Contract = ({
   contractForm,
@@ -30,6 +33,33 @@ const Contract = ({
   onClickClose,
   onClickFinishBtn,
 }) => {
+  const [PyoJunContent, setPyoJunContent] = useState("");
+  const [DaeYouContent, setDaeYouContent] = useState("");
+
+  useEffect(() => {
+    fetch(PyoJun)  // PyoJun이 .txt 파일의 URL일 경우
+        .then(response => response.text())
+        .then(data => {
+            const renderedContent = renderContent(data);
+            setPyoJunContent(renderedContent);
+        });
+    fetch(DaeYou)  // PyoJun이 .txt 파일의 URL일 경우
+        .then(response => response.text())
+        .then(data => {
+            const renderedContent = renderContent(data);
+            setDaeYouContent(renderedContent);
+        });
+
+}, []);
+  
+
+  const renderContent = (content) => {
+    // 여기서 content를 원하는대로 처리하실 수 있습니다.
+    // 예를 들면, 볼드 처리를 하거나 다른 파싱 작업을 수행하실 수 있습니다.
+    // 현재 예시에서는 그냥 원본 내용을 그대로 반환하도록 합니다.
+    return content;
+  };
+
   return (
     <>
       <SBackground onClick={onClickClose} />
@@ -38,14 +68,14 @@ const Contract = ({
         <TermsContainer
           title={'전자상거래 표준약관'}
           text={
-            '전자상거래(인터넷사이버몰) 표준 약관\n\n제1조 (목적)\n이 약관은 D-1080이 운영하는 COALA 사이버 몰'
+            PyoJunContent
           }
           checked={isAgree1}
           onChange={onChangeAgree1}
         />
         <TermsContainer
           title={'코알라 대여약관'}
-          text={'분실과 파손 저희 책임 아니에요ㅠㅠ'}
+          text={DaeYouContent}
           checked={isAgree2}
           onChange={onChangeAgree2}
         />
